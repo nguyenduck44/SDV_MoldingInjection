@@ -8,9 +8,13 @@ namespace SDV_BIM_Line_DotDispenser.Defines
 {
     public enum EMotion
     {
+        StageY1Axis,
+        StageY2Axis,
+        DispenserHeadXAxis,
+        DispenserHeadZAxis,
+        InspectVisionXAxis,
+        UVHeadXAxis,
         TransferXAxis,
-        TransferYAxis,
-        TransferZAxis,
-        ShuttleXAxis,
+        TransferYAxis
     }
 }

@@ -22,11 +22,13 @@ namespace SDV_BIM_Line_DotDispenser.Defines
         public IMotionMaster AjinMaster { get; }
         #endregion
 
-        #region AJINEXTEK MOTIONS
+        public IMotion StageY1Axiss => AjinMotions.All.First(m => m.Id == (int)EMotion.StageY1Axis);
+        public IMotion StageY2Axiss => AjinMotions.All.First(m => m.Id == (int)EMotion.StageY2Axis);
+        public IMotion DispenserHeadXAxis => AjinMotions.All.First(m => m.Id == (int)EMotion.DispenserHeadXAxis);
+        public IMotion DispenserHeadZAxis => AjinMotions.All.First(m => m.Id == (int)EMotion.DispenserHeadZAxis);
+        public IMotion InspectVisionXAxis => AjinMotions.All.First(m => m.Id == (int)EMotion.InspectVisionXAxis);
+        public IMotion UVHeadXAxis => AjinMotions.All.First(m => m.Id == (int)EMotion.UVHeadXAxis);
         public IMotion TransferXAxis => AjinMotions.All.First(m => m.Id == (int)EMotion.TransferXAxis);
         public IMotion TransferYAxis => AjinMotions.All.First(m => m.Id == (int)EMotion.TransferYAxis);
-        public IMotion TransferZAxis => AjinMotions.All.First(m => m.Id == (int)EMotion.TransferZAxis);
-        public IMotion ShuttleXAxis => AjinMotions.All.First(m => m.Id == (int)EMotion.ShuttleXAxis);
-        #endregion
     }
 }

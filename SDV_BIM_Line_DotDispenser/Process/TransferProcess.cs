@@ -17,7 +17,7 @@ namespace SDV_BIM_Line_DotDispenser.Process
 
         private IMotion XAxis => _devices.Motions.TransferXAxis;
         private IMotion YAxis => _devices.Motions.TransferYAxis;
-        private IMotion ZAxis => _devices.Motions.TransferZAxis;
+        private IMotion ZAxis => _devices.Motions.DispenserHeadZAxis;
         #endregion
 
         #region Flags

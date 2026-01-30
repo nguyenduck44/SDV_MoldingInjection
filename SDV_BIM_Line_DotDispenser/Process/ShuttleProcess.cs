@@ -15,7 +15,7 @@ namespace SDV_BIM_Line_DotDispenser.Process
         private readonly VirtualIO _virtualIO;
         private readonly Devices _devices;
 
-        private IMotion XAxis => _devices.Motions.ShuttleXAxis;
+        private IMotion XAxis => _devices.Motions.DispenserHeadXAxis;
         #endregion
 
         #region Flags
