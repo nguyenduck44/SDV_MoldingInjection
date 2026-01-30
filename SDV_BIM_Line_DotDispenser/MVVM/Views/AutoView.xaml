@@ -125,9 +125,7 @@
                           FontSize="16"
                           Height="40"
                           ItemsSource="{Binding Cultures}"
-                          DisplayMemberPath="DisplayName"
-                          SelectedValuePath="DisplayName"
-                          SelectedValue="{Binding RecipeSelector.CurrentRecipe.CommonRecipe.SelectedLanguage, Mode=OneWay}" />
+                          SelectedValue="{Binding RecipeSelector.CurrentRecipe.CommonRecipe.SelectedLanguage, Mode=TwoWay}" />
             </UniformGrid>
 
             <UniformGrid Columns="1"
