@@ -1,0 +1,38 @@
+﻿namespace EQX.TemplateProject.Defines
+{
+    public enum EInput
+    {
+        OP_BUTTON_START = 0,
+        OP_BUTTON_STOP = 1,
+        OP_BUTTON_RESET = 2,
+        DOOR_SENSOR = 3,
+        EMERGENCY = 4,
+        MAIN_AIR = 5,
+        POWER_MC_ON = 6,
+        SPARE_IN7 = 7,
+        SPARE_IN8 = 8,
+        SPARE_IN9 = 9,
+        IN_CV_STOPPER_UP = 10,
+        IN_CV_STOPPER_DOWN = 11,
+        OUT_CV_STOPPER_UP = 12,
+        OUT_CV_STOPPER_DOWN = 13,
+        SPARE_IN14 = 14,
+        SPARE_IN15 = 15,
+        SPARE_IN16 = 16,
+        SPARE_IN17 = 17,
+        SPARE_IN18 = 18,
+        SPARE_IN19 = 19,
+        SPARE_IN20 = 20,
+        SPARE_IN21 = 21,
+        SPARE_IN22 = 22,
+        SPARE_IN23 = 23,
+        SPARE_IN24 = 24,
+        SPARE_IN25 = 25,
+        SPARE_IN26 = 26,
+        SPARE_IN27 = 27,
+        SPARE_IN28 = 28,
+        SPARE_IN29 = 29,
+        SPARE_IN30 = 30,
+        SPARE_IN31 = 31,
+    }
+}

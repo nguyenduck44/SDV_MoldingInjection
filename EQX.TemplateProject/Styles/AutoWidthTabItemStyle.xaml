@@ -1,0 +1,96 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style x:Key="AutoWidthTabItemStyle"
+           TargetType="{x:Type TabItem}"
+           BasedOn="{StaticResource {x:Type TabItem}}">
+        <Setter Property="Width"
+                Value="Auto" />
+        <Setter Property="Height"
+                Value="Auto" />
+        <Setter Property="Background"
+                Value="#F5F5F5" />
+        <Setter Property="Foreground"
+                Value="#333333" />
+        <Setter Property="BorderBrush"
+                Value="#CCCCCC" />
+        <Setter Property="BorderThickness"
+                Value="1" />
+        <Setter Property="Margin"
+                Value="1" />
+        <Setter Property="FontWeight"
+                Value="SemiBold" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                    <Grid>
+                        <Border Name="Border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4,0,0,4"
+                                Margin="{TemplateBinding Margin}">
+                            <ContentPresenter x:Name="ContentSite"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"
+                                              ContentSource="Header"
+                                              Margin="{TemplateBinding Padding}"
+                                              RecognizesAccessKey="True" />
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <!-- Trạng thái đã chọn (Selected) - Tab chính -->
+                        <Trigger Property="IsSelected"
+                                 Value="True">
+                            <Setter TargetName="Border"
+                                    Property="Background"
+                                    Value="#2196F3" />
+                            <Setter Property="Foreground"
+                                    Value="White" />
+                            <Setter Property="FontWeight"
+                                    Value="Bold" />
+                            <Setter TargetName="Border"
+                                    Property="BorderBrush"
+                                    Value="#1976D2" />
+                        </Trigger>
+
+                        <!-- Trạng thái hover (IsMouseOver) - Tab chính -->
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="Border"
+                                    Property="Background"
+                                    Value="#64B5F6" />
+                            <Setter Property="Foreground"
+                                    Value="White" />
+                            <Setter TargetName="Border"
+                                    Property="BorderBrush"
+                                    Value="#2196F3" />
+                        </Trigger>
+
+                        <!-- Trạng thái bình thường - Tab chính -->
+                        <Trigger Property="IsSelected"
+                                 Value="False">
+                            <Setter TargetName="Border"
+                                    Property="Background"
+                                    Value="#F5F5F5" />
+                            <Setter Property="Foreground"
+                                    Value="Black" />
+                            <Setter TargetName="Border"
+                                    Property="BorderBrush"
+                                    Value="#E0E0E0" />
+                        </Trigger>
+
+                        <!-- Hiệu ứng khi focus - Tab chính -->
+                        <Trigger Property="IsKeyboardFocused"
+                                 Value="True">
+                            <Setter TargetName="Border"
+                                    Property="Background"
+                                    Value="#42A5F5" />
+                            <Setter Property="Foreground"
+                                    Value="White" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

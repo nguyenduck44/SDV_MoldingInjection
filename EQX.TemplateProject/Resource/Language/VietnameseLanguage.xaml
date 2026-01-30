@@ -1,0 +1,144 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary>
+            <system:String x:Key="str_SequenceOptions">Cài đặt Trình tự</system:String>
+            <system:String x:Key="str_Direction">Hướng thả kính</system:String>
+            
+            <system:String x:Key="str_Language">Ngôn Ngữ</system:String>
+            <system:String x:Key="str_Models">Danh sách model</system:String>
+            
+            <system:String x:Key="str_Select">Chọn</system:String>
+            <system:String x:Key="str_Save">Lưu</system:String>
+            <system:String x:Key="str_Load">Tải Dữ Liệu</system:String>
+            <system:String x:Key="str_Refresh">Làm Mới</system:String>
+            <system:String x:Key="str_Copy">Sao Chép</system:String>
+
+            <system:String x:Key="str_Cassette_In">Cassette Vào</system:String>
+            <system:String x:Key="str_Cassette_Out">Cassette Ra</system:String>
+            <system:String x:Key="str_Reset">Đặt Lại</system:String>
+            <system:String x:Key="str_Machine_Status">Trạng Thái Máy</system:String>
+            <system:String x:Key="str_IO_Monitoring">Theo Dõi IO</system:String>
+            <system:String x:Key="str_Initialize">Khởi Tạo</system:String>
+            <system:String x:Key="str_Origin">Ban Đầu</system:String>
+            <system:String x:Key="str_Start">Bắt Đầu</system:String>
+            <system:String x:Key="str_Stop">Dừng</system:String>
+            <system:String x:Key="str_Buzzer_Off">Tắt Chuông</system:String>
+
+
+            <system:String x:Key="str_Product_Left">Trái</system:String>
+            <system:String x:Key="str_Product_Right">Phải</system:String>
+            <system:String x:Key="str_Product_Ave">Trung Bình</system:String>
+            <system:String x:Key="str_Product_Max">Cao Nhất</system:String>
+            <system:String x:Key="str_ProductInformation">Thông Tin Sản Xuất</system:String>
+            <system:String x:Key="str_Product_Total">Tổng</system:String>
+            <system:String x:Key="str_Product_CycleCurrent">Chu Kỳ Hiện Tại</system:String>
+            <system:String x:Key="str_Product_Reset">Đặt Lại</system:String>
+
+            <system:String x:Key="str_Log">Lịch Sử</system:String>
+            <system:String x:Key="str_Exit">Thoát</system:String>
+            <system:String x:Key="str_Login">Đăng Nhập</system:String>
+
+            <system:String x:Key="str_Select_all">Chọn Tất Cả</system:String>
+            <system:String x:Key="str_Unselect_all">Bỏ Chọn Tất Cả</system:String>
+
+            <system:String x:Key="str_Enable_Test_Mode">Bật Chế Độ Test</system:String>
+            <system:String x:Key="str_Check_To_Enable_Test_Mode">Kiểm tra chế độ test</system:String>
+            <system:String x:Key="str_Select_Model">Chọn Model</system:String>
+            <system:String x:Key="str_Send_Motion_Command">Gửi lệnh chuyển động</system:String>
+            <system:String x:Key="str_Send_Motion_Parameters_Command">Gửi lệnh thông số chuyển động</system:String>
+            <system:String x:Key="str_PCPGMStart_Command">Lệnh PCPGMStart</system:String>
+            <system:String x:Key="str_Connect">Kết Nối</system:String>
+            <system:String x:Key="str_Disconnect">Ngắt Kết Nối</system:String>
+            <system:String x:Key="str_Last_position_check">Kiểm tra vị trí lần cuối</system:String>
+
+
+
+            <system:String x:Key="str_Horizontal">Hướng ngang</system:String>
+            <system:String x:Key="str_Vertical">Hướng dọc</system:String>
+            <system:String x:Key="str_Horizontal_Content">Thả kính theo hướng xoay ngang</system:String>
+            <system:String x:Key="str_Vertical_Content">Thả kính theo hướng dọc</system:String>
+            <system:String x:Key="str_ReverseSequence">Đảo ngược trình tự</system:String>
+            <system:String x:Key="str_DryRun">Chạy không tải</system:String>
+            <system:String x:Key="str_DryRunDescription">Vận hành thử nghiệm máy móc không sử dụng nguyên liệu thực tế</system:String>
+            <system:String x:Key="str_SkipTransfer">Không sử dụng transfer tray</system:String>
+            <system:String x:Key="str_VisionOptions">Cài đặt Vision</system:String>
+            <system:String x:Key="str_VacuumOptions">Cài đặt Vacuum</system:String>
+            <system:String x:Key="str_GlassDetectOptions">Cài đặt nhận diện kính</system:String>
+            <system:String x:Key="str_OtherOptions">Cài đặt khác</system:String>
+            <system:String x:Key="str_GlassAlignVision">Vision căn chỉnh kính</system:String>
+            <system:String x:Key="str_CheckToEnableSaveResultImage">Chọn để bật lưu hình ảnh kết quả</system:String>
+            <system:String x:Key="str_ChecktoenableMachineRunReverseSequence">Chọn để bật chế độ chạy đảo ngược trình tự (Phải → Trái)</system:String>
+            <system:String x:Key="str_UseVacuum1">Sử dụng Vacuum số 1</system:String>
+            <system:String x:Key="str_UseVacuum2">Sử dụng Vacuum số 2</system:String>
+            <system:String x:Key="str_UseVacuum3">Sử dụng Vacuum số 3</system:String>
+            <system:String x:Key="str_ChecktoenableVacuum1">Chọn để dùng Vacuum số 1</system:String>
+            <system:String x:Key="str_ChecktoenableVacuum2">Chọn để dùng Vacuum số 2</system:String>
+            <system:String x:Key="str_ChecktoenableVacuum3">Chọn để dùng Vacuum số 2</system:String>
+            <system:String x:Key="str_UseGlassDetect1">Dùng c.biến phát hiện kính số 1</system:String>
+            <system:String x:Key="str_UseGlassDetect2">Dùng c.biến phát hiện kính số 2</system:String>
+            <system:String x:Key="str_ChecktoenableusingGlassDetect1Sensor">Chọn để sử dụng cảm phát hiện kính số 1</system:String>
+            <system:String x:Key="str_ChecktoenableusingGlassDetect2Sensor">Chọn để sử dụng cảm phát hiện kính số 2</system:String>
+            <system:String x:Key="str_UseJigTypeCheckInput">Sử dụng cảm biến JigType</system:String>
+            <system:String x:Key="str_ChecktoenableJigTypecheckInput">Chọn để bật sử dụng cảm biến JigType</system:String>
+            <system:String x:Key="str_DevOptions">CÀI ĐẶT NHÀ PHÁT TRIỂN</system:String>
+            <system:String x:Key="str_SoftwareByPass">Bypass Phần mềm</system:String>
+            <system:String x:Key="str_SkipGlassDetect">Skip Glass Detect</system:String>
+            <system:String x:Key="str_SkipGlassDetectDetail">Check To Skip Glass Detect</system:String>
+            <system:String x:Key="str_ChecktoenableRobotDoorSoftwareByPass">Chọn để bật Bypass Cửa/Robot</system:String>
+            <system:String x:Key="str_SendSelectModel">Gửi Model đang chọn</system:String>
+            <system:String x:Key="str_SendMotionCommand">Gửi lệnh di chuyển</system:String>
+            <system:String x:Key="str_SendMotionParametersCommand">Gửi lệnh di chuyển kèm tham số</system:String>
+            <system:String x:Key="str_PCPGMStartCommand">Gửi lệnh khởi chạy phầm mềm PC</system:String>
+            <system:String x:Key="str_GlassSizeWidth">Kích thước tấm kính (Chiều rộng)</system:String>
+            <system:String x:Key="str_GlassSizeHeight">Kích thước tấm kính (Chiều cao)</system:String>
+            <system:String x:Key="str_MotionTimeout">Thời gian chờ chuyển động</system:String>
+            <system:String x:Key="str_MotionOriginTimeout">Thời gian chờ gốc chuyển động</system:String>
+            <system:String x:Key="str_CylinderMoveTimeout">Thời gian chờ di chuyển xi-lanh</system:String>
+            <system:String x:Key="str_VacuumTimeout">Thời gian chờ Vacuum</system:String>
+            <system:String x:Key="str_CylinderDelayAfterMove">Độ trễ sau khi di chuyển xi-lanh</system:String>
+            <system:String x:Key="str_SelectModelForRobot">Chọn mẫu cho robot</system:String>
+            <system:String x:Key="str_ZTiltPosition">Vị trí nghiêng trục Z</system:String>
+            <system:String x:Key="str_RowCount">Số hàng</system:String>
+            <system:String x:Key="str_ColumnCount">Số cột</system:String>
+            <system:String x:Key="str_ZAxisChangePosition">Vị trí thay tray trục Z</system:String>
+            <system:String x:Key="str_JigOrientation">Hướng của jig</system:String>
+            <system:String x:Key="str_TrayZPitch">Khoảng cách Z của tray</system:String>
+            <system:String x:Key="str_TrayUpOffset">Khoảng cách lên của tray</system:String>
+            <system:String x:Key="str_TrayDownOffset">Khoảng cách xuống của tray</system:String>
+            <system:String x:Key="str_OverrideSpeed">Tốc độ ghi đè</system:String>
+            <system:String x:Key="str_GrabDelay">Độ trễ chụp</system:String>
+            <system:String x:Key="str_PixelSize">Kích thước điểm ảnh</system:String>
+            <system:String x:Key="str_ExposureTime">Thời gian phơi sáng</system:String>
+            <system:String x:Key="str_LightLevel">Mức độ ánh sáng</system:String>
+            <system:String x:Key="str_TraySupplierZAxisChangePosition">Vị trí thay tray của tray supplier</system:String>
+            <system:String x:Key="str_TraySupplierZAxisStartWorkingPosition">Vị trí bắt đầu làm việc của tray supplier</system:String>
+            <system:String x:Key="str_DelayAfterVacuumDetected">Thời gian delay sau khi vacuum hút kính</system:String>
+            <system:String x:Key="str_ChooseRightModelForRobot">Chọn đúng model cho robot</system:String>
+            <system:String x:Key="str_11CassetteTiltPosition">Vị trí cassette nghiêng 11°</system:String>
+            <system:String x:Key="str_0TopLeft1TopRight2BottomLeft3BottomRight">0: trên - trái; 1: trên - phải; 2: dưới - trái; 3: dưới - phải</system:String>
+            <system:String x:Key="str_FromSensorTrayUpDetectedPositionToAlignPosition">Khoảng cách từ sensor TrayEndUp đến vị trí Align</system:String>
+            <system:String x:Key="str_ShouldBiggerThanTrayUpOffset3mm">Nên lớn hơn vị trí TrayUpOffset 3mm</system:String>
+            <system:String x:Key="str_LeftInLoad">Load tray bên trái lên vị trí làm việc</system:String>
+            <system:String x:Key="str_LeftInPlace">Thả hàng vào tray bên trái</system:String>
+            <system:String x:Key="str_LeftInPick">Lấy hàng từ tray bên trái</system:String>
+            <system:String x:Key="str_LeftInChange">Thay tray bên trái</system:String>
+            <system:String x:Key="str_LeftInTransfer">Chuyển tray trống bên trái</system:String>
+            <system:String x:Key="str_RightInLoad">Load tray bên phải lên vị trí làm việc</system:String>
+            <system:String x:Key="str_RightInPick">Lấy hàng từ tray bên phải</system:String>
+            <system:String x:Key="str_RightInPlace">Thả hàng vào tray bên phải</system:String>
+            <system:String x:Key="str_RightInChange">Thay tray bên phải</system:String>
+            <system:String x:Key="str_TrayNGLoad">Load tray NG lên vị trí làm việc</system:String>
+            <system:String x:Key="str_TrayNGPlaceNG">Thả hàng NG vào tray NG</system:String>
+            <system:String x:Key="str_TrayNGTransfer">Chuyển tray trống sang tray NG</system:String>
+            <system:String x:Key="str_TrayNGChange">Thay tray NG</system:String>
+            <system:String x:Key="str_Inspect">Kiểm tra</system:String>
+            <system:String x:Key="str_TraySuplierLoad">Load tray Suplier lên vị trí làm việc</system:String>
+            <system:String x:Key="str_TraySuplierChange">Thay tray suplier</system:String>
+            <system:String x:Key="str_RobotSpeed">Tốc độ robot</system:String>
+            <system:String x:Key="str_RobotSlowSpeed">Tốc độ robot chậm hơn</system:String>
+            <system:String x:Key="str_SlowerSpeed">Chậm hơn</system:String>
+        </ResourceDictionary>
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>
