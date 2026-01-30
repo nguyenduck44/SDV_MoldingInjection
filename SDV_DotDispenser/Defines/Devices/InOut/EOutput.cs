@@ -1,0 +1,38 @@
+﻿namespace SDV_DotDispenser.Defines
+{
+    public enum EOutput
+    {
+        TOWER_LAMP_RED = 0,
+        TOWER_LAMP_YELLOW = 1,
+        TOWER_LAMP_GREEN = 2,
+        TOWER_BUZZER = 3,
+        OP_BUTTON_START_LAMP = 4,
+        OP_BUTTON_STOP_LAMP = 5,
+        OP_BUTTON_RESET_LAMP = 6,
+        DOOR_OPEN = 7,
+        OUT_SPARE8 = 8,
+        OUT_SPARE9 = 9,
+        IN_CV_STOPPER_UP = 10,
+        IN_CV_STOPPER_DOWN = 11,
+        OUT_CV_STOPPER_UP = 12,
+        OUT_CV_STOPPER_DOWN = 13,
+        OUT_SPARE14 = 14,
+        OUT_SPARE15 = 15,
+        OUT_SPARE16 = 16,
+        OUT_SPARE17 = 17,
+        OUT_SPARE18 = 18,
+        OUT_SPARE19 = 19,
+        OUT_SPARE20 = 20,
+        OUT_SPARE21 = 21,
+        OUT_SPARE22 = 22,
+        OUT_SPARE23 = 23,
+        OUT_SPARE24 = 24,
+        OUT_SPARE25 = 25,
+        OUT_SPARE26 = 26,
+        OUT_SPARE27 = 27,
+        OUT_SPARE28 = 28,
+        OUT_SPARE29 = 29,
+        OUT_SPARE30 = 30,
+        OUT_SPARE31 = 31,
+    }
+}

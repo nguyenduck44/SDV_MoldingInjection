@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDV_DotDispenser.Defines
+{
+    public enum ETransferProcessInput
+    {
+        SHUTTLE_REQUEST_LOAD
+    }
+}

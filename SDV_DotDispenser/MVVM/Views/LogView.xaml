@@ -1,0 +1,264 @@
+﻿<UserControl x:Class="SDV_DotDispenser.MVVM.Views.LogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:SDV_DotDispenser.MVVM.Views"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d"
+             xmlns:vm="clr-namespace:SDV_DotDispenser.MVVM.ViewModels"
+             d:DataContext="{d:DesignInstance Type= {x:Type vm:LogViewModel}}"
+             Loaded="UserControl_Loaded"
+             d:DesignHeight="450"
+             d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/EQX.UI;component/Styles/ComboBoxCommonStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <TabControl>
+        <TabItem Header="Log"
+                 Style="{StaticResource TabItemCornerStyle}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TreeView x:Name="LogTreeView"
+                          Grid.Column="0"
+                          ItemsSource="{Binding LogFiles}"
+                          Margin="5"
+                          SelectedItemChanged="LogTreeView_SelectedItemChanged">
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                            <TextBlock Text="{Binding Name}"
+                                       FontSize="16"
+                                       FontWeight="SemiBold" />
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="TreeViewItem">
+                            <Setter Property="IsExpanded"
+                                    Value="True" />
+                        </Style>
+                    </TreeView.ItemContainerStyle>
+                </TreeView>
+
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <GroupBox Margin="5 0 5 0"
+                              Style="{x:Null}">
+                        <GroupBox.Header>
+                            <TextBlock Text="Filter" />
+                        </GroupBox.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Filter Type:"
+                                       VerticalAlignment="Center"
+                                       Margin="5" />
+                            <ComboBox x:Name="FilterTypeComboBox"
+                                      Width="120"
+                                      Margin="5"
+                                      SelectionChanged="FilterTypeComboBox_SelectionChanged">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Name}"
+                                                   Foreground="{Binding Color}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+
+                            <TextBlock Text="Filter Source:"
+                                       VerticalAlignment="Center"
+                                       Margin="10,5,5,5" />
+                            <ComboBox x:Name="FilterSourceComboBox"
+                                      Width="260"
+                                      Margin="5"
+                                      SelectionChanged="FilterSourceComboBox_SelectionChanged">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox Content="{Binding Name}"
+                                                  IsChecked="{Binding IsSelected}"
+                                                  Checked="FilterSourceCheckBox_Changed"
+                                                  Unchecked="FilterSourceCheckBox_Changed" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                    </GroupBox>
+                    <DataGrid x:Name="LogDataGrid"
+                              Grid.Row="1"
+                              FontSize="13"
+                              AutoGenerateColumns="False"
+                              CanUserResizeColumns="False"
+                              CanUserSortColumns="False"
+                              SelectionUnit="CellOrRowHeader"
+                              SelectionMode="Extended"
+                              ClipboardCopyMode="ExcludeHeader"
+                              CanUserAddRows="False"
+                              Margin="5">
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Type}"
+                                                 Value="INFO">
+                                        <Setter Property="Background"
+                                                Value="#90CAF9" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Type}"
+                                                 Value="WARN">
+                                        <Setter Property="Background"
+                                                Value="#FFF4CE" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Type}"
+                                                 Value="ERROR">
+                                        <Setter Property="Background"
+                                                Value="#FFAB91" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Type}"
+                                                 Value="FATAL">
+                                        <Setter Property="Background"
+                                                Value="#FF7043" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Time"
+                                                IsReadOnly="True"
+                                                Binding="{Binding Time}"
+                                                Width="150" />
+                            <DataGridTextColumn Header="Type"
+                                                IsReadOnly="True"
+                                                Binding="{Binding Type}"
+                                                Width="100" />
+                            <DataGridTextColumn Header="Source"
+                                                IsReadOnly="True"
+                                                Binding="{Binding Source}"
+                                                Width="200" />
+                            <DataGridTextColumn Header="Description"
+                                                IsReadOnly="True"
+                                                Binding="{Binding Description}"
+                                                Width="*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="TextWrapping"
+                                                Value="Wrap" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Alarm"
+                 Style="{StaticResource TabItemCornerStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal"
+                            Grid.Column="1">
+                    <TextBlock Text="Select Day"
+                               VerticalAlignment="Center" />
+
+                    <ComboBox Width="150"
+                              Margin="10 0 0 0"
+                              ItemsSource="{Binding LogDays}"
+                              SelectedItem="{Binding SelectedDay}" 
+                              SelectionChanged="ComboBox_SelectionChanged"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical"
+                            Grid.Row="1">
+                    <RadioButton Content="Warning"
+                                 x:Name="RadioButtonWarning"
+                                 Checked="RadioButtonWarningChecked"
+                                 Style="{StaticResource ButtonLikeRadioButtonStyle}"/>
+                    <RadioButton Content="Alarm"
+                                 x:Name="RadioButtonAlarm"
+                                 Checked="RadioButtonAlarmChecked"
+                                 Style="{StaticResource ButtonLikeRadioButtonStyle}"/>
+                </StackPanel>
+
+                <DataGrid x:Name="AlarmDataGrid"
+                          Grid.Row="1"
+                          Grid.Column="1"
+                          FontSize="13"
+                          AutoGenerateColumns="False"
+                          CanUserResizeColumns="False"
+                          CanUserSortColumns="False"
+                          SelectionUnit="CellOrRowHeader"
+                          SelectionMode="Extended"
+                          ClipboardCopyMode="ExcludeHeader"
+                          CanUserAddRows="False"
+                          Margin="5">
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Type}"
+                                             Value="INFO">
+                                    <Setter Property="Background"
+                                            Value="#90CAF9" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Type}"
+                                             Value="WARN">
+                                    <Setter Property="Background"
+                                            Value="#FFF4CE" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Type}"
+                                             Value="ERROR">
+                                    <Setter Property="Background"
+                                            Value="#FFAB91" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Type}"
+                                             Value="FATAL">
+                                    <Setter Property="Background"
+                                            Value="#FF7043" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Time"
+                                            IsReadOnly="True"
+                                            Binding="{Binding Time}"
+                                            Width="150" />
+                        <DataGridTextColumn Header="Type"
+                                            IsReadOnly="True"
+                                            Binding="{Binding Type}"
+                                            Width="100" />
+                        <DataGridTextColumn Header="Source"
+                                            IsReadOnly="True"
+                                            Binding="{Binding Source}"
+                                            Width="200" />
+                        <DataGridTextColumn Header="Description"
+                                            IsReadOnly="True"
+                                            Binding="{Binding Description}"
+                                            Width="*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextWrapping"
+                                            Value="Wrap" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+            </Grid>
+        </TabItem>
+    </TabControl>
+
+</UserControl>
