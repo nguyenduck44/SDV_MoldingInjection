@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace SDV_DotDispenser.MVVM.Views
 {
     /// <summary>
-    /// Interaction logic for TeachView.xaml
+    /// Interaction logic for AlarmView.xaml
     /// </summary>
-    public partial class TeachView : UserControl
+    public partial class AlarmView : UserControl
     {
-        public TeachView()
+        public AlarmView()
         {
             InitializeComponent();
         }

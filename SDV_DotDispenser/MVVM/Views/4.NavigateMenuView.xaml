@@ -52,10 +52,6 @@
             </ItemsControl.ItemsPanel>
         </ItemsControl>
 
-        <ui:LogDisplayer d:Width="200"
-            Grid.Column="1"
-            Margin="20 0"/>
-
         <StackPanel Orientation="Horizontal"
                 DockPanel.Dock="Right"
                 Grid.Column="2">

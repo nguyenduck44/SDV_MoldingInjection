@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SDV_DotDispenser.MVVM.ViewModels
 {
-    public class TeachViewModel : ViewModelBase
+    public class AlarmViewModel : ViewModelBase
     {
     }
 }

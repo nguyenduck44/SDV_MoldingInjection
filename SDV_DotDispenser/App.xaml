@@ -7,8 +7,6 @@
              xmlns:uiCvt="clr-namespace:EQX.UI.Converters;assembly=EQX.UI"
              xmlns:inout="clr-namespace:EQX.InOut;assembly=EQX.InOut"
              xmlns:viewsLib="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
-             xmlns:manualVM="clr-namespace:SDV_DotDispenser.MVVM.ViewModels.Manual"
-             xmlns:teachingVM="clr-namespace:SDV_DotDispenser.MVVM.ViewModels.Teaching"
              xmlns:local="clr-namespace:SDV_DotDispenser">
     <Application.Resources>
         <ResourceDictionary>

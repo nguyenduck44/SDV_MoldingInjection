@@ -4,7 +4,6 @@ using EQX.UI.Language;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SDV_DotDispenser.Defines;
-using SDV_DotDispenser.Services.Factories;
 
 namespace SDV_DotDispenser.Extensions
 {
@@ -16,9 +15,6 @@ namespace SDV_DotDispenser.Extensions
             {
                 services.AddSingleton<UserStore>();
                 services.AddSingleton<CellStatusToColorConverter>();
-
-                services.AddSingleton<TeachingViewModelFactory>();
-                services.AddSingleton<ManualViewModelFactory>();
 
                 services.AddKeyedScoped<IAlertService, AlarmService<EAlarm>>("AlarmService");
                 services.AddKeyedScoped<IAlertService, WarningService<EWarning>>("WarningService");

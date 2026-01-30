@@ -19,3 +19,6 @@
 [submodule "EQX.ThirdParty"]
 	path = EQX.ThirdParty
 	url = http://192.168.0.39:7990/scm/el/eqx.ThirdParty.git
+[submodule "EQX.Vision"]
+	path = EQX.Vision
+	url = http://192.168.0.39:7990/scm/el/eqx.vision.git
