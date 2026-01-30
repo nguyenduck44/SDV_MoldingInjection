@@ -22,8 +22,8 @@ namespace SDV_DotDispenser.Defines
         public IMotionMaster AjinMaster { get; }
         #endregion
 
-        public IMotion StageY1Axiss => AjinMotions.All.First(m => m.Id == (int)EMotion.StageY1Axis);
-        public IMotion StageY2Axiss => AjinMotions.All.First(m => m.Id == (int)EMotion.StageY2Axis);
+        public IMotion StageY1Axis => AjinMotions.All.First(m => m.Id == (int)EMotion.StageY1Axis);
+        public IMotion StageY2Axis => AjinMotions.All.First(m => m.Id == (int)EMotion.StageY2Axis);
         public IMotion DispenserHeadXAxis => AjinMotions.All.First(m => m.Id == (int)EMotion.DispenserHeadXAxis);
         public IMotion DispenserHeadZAxis => AjinMotions.All.First(m => m.Id == (int)EMotion.DispenserHeadZAxis);
         public IMotion InspectVisionXAxis => AjinMotions.All.First(m => m.Id == (int)EMotion.InspectVisionXAxis);
