@@ -19,6 +19,109 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <TabControl>
+        <TabItem Header="Alarm"
+                 Style="{StaticResource TabItemCornerStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal"
+                            Grid.Column="0">
+                    <TextBlock Text="Select Day"
+                               VerticalAlignment="Center" />
+
+                    <ComboBox Width="150"
+                              Margin="10 0 0 0"
+                              ItemsSource="{Binding LogDays}"
+                              SelectedItem="{Binding SelectedDay}"
+                              SelectionChanged="ComboBox_SelectionChanged" />
+                </StackPanel>
+
+
+                <DataGrid x:Name="ErrorListHistoryDataGrid"
+                          Margin="5"
+                          Grid.Row="1"
+                          AutoGenerateColumns="False"
+                          CanUserResizeColumns="True"
+                          CanUserSortColumns="True"
+                          SelectionUnit="CellOrRowHeader"
+                          SelectionMode="Extended"
+                          ClipboardCopyMode="ExcludeHeader"
+                          CanUserAddRows="False"
+                          Sorting="ErrorListHistoryDataGrid_Sorting"
+                          ItemsSource="{Binding ErrorListEntry}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn x:Name="TextCollumnTypeData"
+                                            Header="Type"
+                                            IsReadOnly="True"
+                                            Binding="{Binding Type}"
+                                            SortMemberPath="Timestamp"
+                                            Width="60" />
+                        <DataGridTextColumn x:Name="TextCollumnErrorData"
+                                            Header="DateTime"
+                                            IsReadOnly="True"
+                                            SortDirection="Descending"
+                                            Binding="{Binding Timestamp}"
+                                            SortMemberPath="Timestamp"
+                                            Width="90" />
+                        <DataGridTextColumn Header="ErrorCode"
+                                            IsReadOnly="True"
+                                            Binding="{Binding ErrorCode}"
+                                            Width="80" />
+                        <DataGridTextColumn Header="Message"
+                                            IsReadOnly="True"
+                                            Binding="{Binding Message}"
+                                            Width="*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextWrapping"
+                                            Value="Wrap" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+
+                </DataGrid>
+
+                <DataGrid Grid.Column="1"
+                          Grid.Row="1"
+                          Margin="5"
+                          AutoGenerateColumns="False"
+                          HeadersVisibility="Column"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False"
+                          IsReadOnly="True"
+                          ItemsSource="{Binding ErrorLogCount}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Count"
+                                            IsReadOnly="True"
+                                            Binding="{Binding Count}"
+                                            Width="50" />
+                        <DataGridTextColumn Header="ErrorCode"
+                                            IsReadOnly="True"
+                                            Binding="{Binding ErrorCode}"
+                                            Width="80" />
+                        <DataGridTextColumn Header="Message"
+                                            IsReadOnly="True"
+                                            Binding="{Binding Message}"
+                                            Width="*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextWrapping"
+                                            Value="Wrap" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </TabItem>
         <TabItem Header="Log"
                  Style="{StaticResource TabItemCornerStyle}">
             <Grid>
@@ -154,109 +257,6 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
-            </Grid>
-        </TabItem>
-        <TabItem Header="Alarm"
-                 Style="{StaticResource TabItemCornerStyle}">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="200"/>
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal"
-                            Grid.Column="1">
-                    <TextBlock Text="Select Day"
-                               VerticalAlignment="Center" />
-
-                    <ComboBox Width="150"
-                              Margin="10 0 0 0"
-                              ItemsSource="{Binding LogDays}"
-                              SelectedItem="{Binding SelectedDay}" 
-                              SelectionChanged="ComboBox_SelectionChanged"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Vertical"
-                            Grid.Row="1">
-                    <RadioButton Content="Warning"
-                                 x:Name="RadioButtonWarning"
-                                 Checked="RadioButtonWarningChecked"
-                                 Style="{StaticResource ButtonLikeRadioButtonStyle}"/>
-                    <RadioButton Content="Alarm"
-                                 x:Name="RadioButtonAlarm"
-                                 Checked="RadioButtonAlarmChecked"
-                                 Style="{StaticResource ButtonLikeRadioButtonStyle}"/>
-                </StackPanel>
-
-                <DataGrid x:Name="AlarmDataGrid"
-                          Grid.Row="1"
-                          Grid.Column="1"
-                          FontSize="13"
-                          AutoGenerateColumns="False"
-                          CanUserResizeColumns="False"
-                          CanUserSortColumns="False"
-                          SelectionUnit="CellOrRowHeader"
-                          SelectionMode="Extended"
-                          ClipboardCopyMode="ExcludeHeader"
-                          CanUserAddRows="False"
-                          Margin="5">
-                    <DataGrid.RowStyle>
-                        <Style TargetType="DataGridRow">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Type}"
-                                             Value="INFO">
-                                    <Setter Property="Background"
-                                            Value="#90CAF9" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Type}"
-                                             Value="WARN">
-                                    <Setter Property="Background"
-                                            Value="#FFF4CE" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Type}"
-                                             Value="ERROR">
-                                    <Setter Property="Background"
-                                            Value="#FFAB91" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Type}"
-                                             Value="FATAL">
-                                    <Setter Property="Background"
-                                            Value="#FF7043" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGrid.RowStyle>
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Time"
-                                            IsReadOnly="True"
-                                            Binding="{Binding Time}"
-                                            Width="150" />
-                        <DataGridTextColumn Header="Type"
-                                            IsReadOnly="True"
-                                            Binding="{Binding Type}"
-                                            Width="100" />
-                        <DataGridTextColumn Header="Source"
-                                            IsReadOnly="True"
-                                            Binding="{Binding Source}"
-                                            Width="200" />
-                        <DataGridTextColumn Header="Description"
-                                            IsReadOnly="True"
-                                            Binding="{Binding Description}"
-                                            Width="*">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="TextWrapping"
-                                            Value="Wrap" />
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-
             </Grid>
         </TabItem>
     </TabControl>

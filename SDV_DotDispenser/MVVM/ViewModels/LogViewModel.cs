@@ -1,9 +1,11 @@
 ﻿using EQX.Core.Common;
 using EQX.Core.LogHistory;
 using Microsoft.Extensions.Configuration;
+using SDV_DotDispenser.Defines.ErrorLog;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows;
 
 namespace SDV_DotDispenser.MVVM.ViewModels
@@ -126,54 +128,36 @@ namespace SDV_DotDispenser.MVVM.ViewModels
             return logEntries;
         }
 
-        public List<LogEntry> LoadErrorEntries(string folderDayPath, string filterType)
+        private List<ErrorLogEntry> LoadErrorLogEntries(string filePath)
         {
-            var logEntries = new List<LogEntry>();
+            var logEntries = new List<ErrorLogEntry>();
+            if (File.Exists(filePath) == false) return logEntries;
+            var lines = File.ReadAllLines(filePath);
 
-            if (string.IsNullOrWhiteSpace(folderDayPath))
-                return logEntries;
+            var regex = new Regex(@"\[(?<time>[0-9:\.]+)\],(?<type>\w+)\s*,(?<source>.{0,180}),\[(?<errorcode>\d+)\]\s*(?<message>.+)");
 
-            // yyyy-MM
-            var month = folderDayPath.Substring(0, 7);
-
-            // D:\...\Log\yyyy-MM\yyyy-MM-dd
-            var dayFolder = Path.Combine(ErrorFolder, month, folderDayPath);
-
-            if (!Directory.Exists(dayFolder))
-                return logEntries;
-
-            foreach (var file in Directory.GetFiles(dayFolder, "*.txt"))
+            foreach (var line in lines)
             {
-                foreach (var line in File.ReadAllLines(file))
+                var match = regex.Match(line);
+
+                if (Int32.TryParse(match.Groups["errorcode"].Value.Trim(), out int errCode) == false)
                 {
-                    if (string.IsNullOrWhiteSpace(line))
-                        continue;
+                    continue;
+                }
 
-                    var parts = line.Split(new[] { ',' }, 4);
-
-                    if (parts.Length < 4)
-                        continue;
-
-                    var time = parts[0].Trim().Trim('[', ']');
-                    var type = parts[1].Trim();
-                    var source = parts[2].Trim();
-                    var description = parts[3].Trim();
-
-                    if (type != filterType || description.Contains("exception")) continue;
-
-                    logEntries.Add(new LogEntry
+                if (match.Success && (match.Groups["type"].Value.Trim() == "ERROR" || match.Groups["type"].Value.Trim() == "WARN"))
+                {
+                    logEntries.Add(new ErrorLogEntry
                     {
-                        Time = time,
-                        Type = type,
-                        Source = source,
-                        Description = description
+                        Type = match.Groups["type"].Value.Trim(),
+                        Timestamp = DateTime.Parse(match.Groups["time"].Value.Trim()).ToString("HH:mm:ss"),
+                        ErrorCode = int.Parse(match.Groups["errorcode"].Value.Trim()),
+                        Message = match.Groups["message"].Value.Trim()
                     });
                 }
             }
-            logEntries.Reverse();
             return logEntries;
         }
-
 
         public void LoadLogFiles()
         {
