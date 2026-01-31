@@ -15,6 +15,6 @@ namespace SDV_DotDispenser.Defines
         InspectVisionXAxis,
         UVHeadXAxis,
         TransferXAxis,
-        TransferYAxis
+        TransferZAxis
     }
 }

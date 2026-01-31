@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace SDV_DotDispenser.Defines
 {
-    public enum ETransferProcessOriginStep
+    public enum EVisionInspectionProcessOriginStep
     {
         Start,
-        ZAxis_Origin,
-        ZAxis_Origin_Wait,
         XAxis_Origin,
         XAxis_Origin_Wait,
         End

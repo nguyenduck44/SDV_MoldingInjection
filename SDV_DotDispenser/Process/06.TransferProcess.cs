@@ -16,7 +16,7 @@ namespace SDV_DotDispenser.Process
         private readonly RecipeList _recipeList;
 
         private IMotion XAxis => _devices.Motions.TransferXAxis;
-        private IMotion YAxis => _devices.Motions.TransferYAxis;
+        private IMotion ZAxis => _devices.Motions.TransferZAxis;
         #endregion
 
         #region Flags
@@ -46,31 +46,34 @@ namespace SDV_DotDispenser.Process
                     break;
                 case ETransferProcessOriginStep.ZAxis_Origin:
                     Log.Debug("Z Axis Origin");
+                    ZAxis.SearchOrigin();
+                    Wait((int)(_recipeList.CommonRecipe.MotionOriginTimeout * 1000), () => ZAxis.Status.IsHomeDone);
                     Step.OriginStep++;
                     break;
                 case ETransferProcessOriginStep.ZAxis_Origin_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseAlarm(EAlarm.Transfer_ZAxis_OriginFail);
+                        break;
+                    }
+
                     Log.Debug("Z Axis Origin Done");
                     Step.OriginStep++;
                     break;
-                case ETransferProcessOriginStep.XY_Axis_Origin:
-                    Log.Debug("XY Axis Origin");
+                case ETransferProcessOriginStep.XAxis_Origin:
+                    Log.Debug("X Axis Origin");
                     XAxis.SearchOrigin();
-                    YAxis.SearchOrigin();
-                    Wait((int)(_recipeList.CommonRecipe.MotionOriginTimeout * 1000), () => XAxis.Status.IsHomeDone && YAxis.Status.IsHomeDone);
+                    Wait((int)(_recipeList.CommonRecipe.MotionOriginTimeout * 1000), () => XAxis.Status.IsHomeDone);
                     Step.OriginStep++;
                     break;
-                case ETransferProcessOriginStep.XY_Axis_Origin_Wait:
+                case ETransferProcessOriginStep.XAxis_Origin_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        if(XAxis.Status.IsHomeDone == false)
-                        {
-                            RaiseAlarm(EAlarm.TransferXAxis_OriginTimeout);
-                            break;
-                        }
-                        RaiseAlarm(EAlarm.TransferYAxis_OriginTimeout);
+                        RaiseAlarm(EAlarm.Transfer_XAxis_OriginFail);
                         break;
                     }
-                    Log.Debug("XY Axis Origin Done");
+
+                    Log.Debug("X Axis Origin Done");
                     Step.OriginStep++;
                     break;
                 case ETransferProcessOriginStep.End:

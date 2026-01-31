@@ -96,10 +96,13 @@
         </Grid.RowDefinitions>
         <Canvas Grid.Row="0">
             <ContentControl Content="{Binding Processes.TransferProcess}"
-                            Canvas.Left="20"
-                            Canvas.Top="550" />
-            <ContentControl Content="{Binding Processes.ShuttleProcess}"
+                            Canvas.Left="1000"
+                            Canvas.Top="200" />
+            <ContentControl Content="{Binding Processes.StageLeftProcess}"
                             Canvas.Left="200"
+                            Canvas.Top="550" />
+            <ContentControl Content="{Binding Processes.StageRightProcess}"
+                            Canvas.Left="500"
                             Canvas.Top="550" />
         </Canvas>
         <StackPanel Orientation="Horizontal"

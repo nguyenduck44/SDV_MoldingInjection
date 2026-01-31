@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SDV_DotDispenser.Defines
 {
-    public enum ETransferProcessOriginStep
+    public enum EDispenserProcessOriginStep
     {
         Start,
         ZAxis_Origin,
