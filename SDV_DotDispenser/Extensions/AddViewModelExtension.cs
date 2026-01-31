@@ -35,8 +35,8 @@ namespace SDV_DotDispenser.Extensions
                 services.AddViewModel<LoginViewModel>();
                 services.AddViewModel<DevViewModel>();
 
-                services.AddSingleton<ViewModelNavigationStore>();
-                services.AddTransient<ViewModelProvider>();
+                services.AddSingleton<NavigationStore>();
+                services.AddSingleton<ViewModelFactory>();
                 services.AddTransient<INavigationService, NavigationService>();
             });
 

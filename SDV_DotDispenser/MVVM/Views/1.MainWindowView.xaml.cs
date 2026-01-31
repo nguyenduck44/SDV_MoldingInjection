@@ -8,11 +8,11 @@ namespace SDV_DotDispenser.MVVM.Views
     public partial class MainWindowView : Window
     {
         private readonly INavigationService _navigationService;
-        private readonly ViewModelProvider _viewModelProvider;
+        private readonly ViewModelFactory _viewModelProvider;
         private readonly MachineStatus _machineStatus;
 
         public MainWindowView(INavigationService navigationService,
-            ViewModelProvider viewModelProvider,
+            ViewModelFactory viewModelProvider,
             MachineStatus machineStatus)
         {
             _navigationService = navigationService;
@@ -29,7 +29,7 @@ namespace SDV_DotDispenser.MVVM.Views
                 return;
             }
             _navigationService.NavigateTo<InitDeinitViewModel>();
-            _viewModelProvider.GetViewModel<InitDeinitViewModel>().Initialization();
+            _viewModelProvider.Create<InitDeinitViewModel>().Initialization();
 
         }
 
@@ -38,7 +38,7 @@ namespace SDV_DotDispenser.MVVM.Views
             if (Environment.ExitCode != 100)
             {
                 e.Cancel = true;
-                _viewModelProvider.GetViewModel<HeaderViewModel>().ApplicationCloseCommand.Execute(null);
+                _viewModelProvider.Create<HeaderViewModel>().ApplicationCloseCommand.Execute(null);
             }
         }
 

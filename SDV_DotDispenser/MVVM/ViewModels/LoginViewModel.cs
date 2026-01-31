@@ -8,75 +8,92 @@ using log4net;
 
 namespace SDV_DotDispenser.MVVM.ViewModels
 {
-    public class LoginViewModel : ViewModelBase
+    /// <summary>
+    /// ViewModel responsible only for presentation concerns of the login view.
+    /// Authentication and dialog responsibilities are delegated to injected services.
+    /// </summary>
+    public class LoginViewModel : ViewModelBase, IDisposable
     {
-        private readonly UserStore _userStore;
-        private readonly INavigationService _navigationService;
-        private ObservableCollection<string> accesses;
-
-        public ObservableCollection<string> Accesses
+        #region Properties
+        public ObservableCollection<string> Permissions
         {
-            get => accesses;
-            set { accesses = value; OnPropertyChanged(nameof(Accesses)); }
+            get => _permissions;
+            set { _permissions = value; OnPropertyChanged(nameof(Permissions)); }
         }
 
-        public string AccessSelected { get; set; }
-
-        public LoginViewModel(UserStore userStore, INavigationService navigationService)
+        public string SelectedPermission
         {
-            _userStore = userStore;
-            _navigationService = navigationService;
-
-            _userStore.UserChanged += _userStore_UserChanged;
-
-            Accesses = new ObservableCollection<string>(Enum.GetNames(typeof(EPermission)).ToList());
-            if (Accesses != null) AccessSelected = Accesses[0];
-
-            Log = LogManager.GetLogger("LoginVM");
+            get => _selectedPermission;
+            set { _selectedPermission = value; OnPropertyChanged(nameof(SelectedPermission)); }
         }
+        #endregion
 
-        private void _userStore_UserChanged()
-        {
-            _navigationService.NavigateTo<AutoViewModel>();
-        }
-
+        #region Commands
         public ICommand LoginCommand
         {
             get
             {
                 return new RelayCommand<string>((password) =>
                 {
-                    if (password == null) return;
-                    if (AccessSelected == EPermission.Admin.ToString())
+                    if (!Enum.TryParse<EPermission>(SelectedPermission, out var permission))
                     {
-                        //if (password.ToUpper() != "")
-                        //{
-                        //    MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_WrongPassword"]);
-                        //    return;
-                        //}
+                        _log.Warn($"Unknown access selected: {SelectedPermission}");
+                        MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_WrongPassword"]);
+                        return;
+                    }
 
-                        Log.Info("Login Admin Permission");
-                        _userStore.Permission = EPermission.Admin;
-                    }
-                    else if (AccessSelected == EPermission.Operator.ToString())
-                    {
-                        Log.Info("Login Operator Permission");
-                        _userStore.Permission = EPermission.Operator;
-                    }
-                    else if (AccessSelected == EPermission.SuperUser.ToString())
-                    {
-                        string currentPassword = DateTime.Now.ToString("HHdd");
-                        if (password != currentPassword && password != "3141")
-                        {
-                            MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_WrongPassword"]);
-                            return;
-                        }
+                    // Delegate authentication logic to the authentication service (Single Responsibility).
+                    var isValid = _authenticationService.ValidatePermission(permission, password);
 
-                        Log.Info("Login Super User Permission");
-                        _userStore.Permission = EPermission.SuperUser;
+                    if (!isValid)
+                    {
+                        _log.Info($"Failed login attempt for permission {permission}");
+                        MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_WrongPassword"]);
+                        return;
                     }
+
+                    _navigationService.NavigateTo<AutoViewModel>();
+                    _log.Info($"Login {permission} Permission");
                 });
             }
         }
+        #endregion
+
+        public LoginViewModel(
+            UserStore userStore,
+            INavigationService navigationService,
+            IAuthenticationService authenticationService)
+        {
+            _userStore = userStore;
+            _navigationService = navigationService;
+            _authenticationService = authenticationService;
+
+            _log = LogManager.GetLogger("LoginVM");
+
+            _userStore.UserChanged += OnUserStoreUserChanged;
+
+            _permissions = new ObservableCollection<string>(Enum.GetNames(typeof(EPermission)).ToList());
+            _selectedPermission = _permissions.FirstOrDefault()!;
+        }
+
+        #region Private Methods
+        private void OnUserStoreUserChanged()
+        {
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            _userStore.UserChanged -= OnUserStoreUserChanged;
+        }
+        #endregion
+
+        #region Private Fields
+        private readonly UserStore _userStore;
+        private readonly INavigationService _navigationService;
+        private readonly IAuthenticationService _authenticationService;
+        private readonly ILog _log;
+        private ObservableCollection<string> _permissions;
+        private string _selectedPermission;
+        #endregion
     }
 }

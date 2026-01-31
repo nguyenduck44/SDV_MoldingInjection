@@ -24,8 +24,8 @@
                       VerticalContentAlignment="Center"
                       HorizontalContentAlignment="Center"
                       Height="40"
-                      ItemsSource="{Binding Accesses, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                      SelectedValue="{Binding AccessSelected, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                      ItemsSource="{Binding Permissions, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                      SelectedValue="{Binding SelectedPermission, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
 
             <Label FontWeight="Bold"
                    Margin="0 10 0 0"

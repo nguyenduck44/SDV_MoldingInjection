@@ -105,7 +105,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    _viewModelProvider.GetViewModel<HeaderViewModel>().ApplicationCloseCommand.Execute(null);
+                    _viewModelProvider.Create<HeaderViewModel>().ApplicationCloseCommand.Execute(null);
                 });
             }
         }
@@ -119,7 +119,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
 
         public NavigateMenuViewModel(INavigationService navigationService,
             UserStore userStore,
-            ViewModelProvider viewModelProvider)
+            ViewModelFactory viewModelProvider)
         {
             _navigationService = navigationService;
             _userStore = userStore;
@@ -182,7 +182,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         #region Privates
         private readonly INavigationService _navigationService;
         private readonly UserStore _userStore;
-        private readonly ViewModelProvider _viewModelProvider;
+        private readonly ViewModelFactory _viewModelProvider;
         private string _currentUserLabel = string.Empty;
         #endregion
     }

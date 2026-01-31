@@ -7,13 +7,25 @@ using SDV_DotDispenser.Defines;
 
 namespace SDV_DotDispenser.Extensions
 {
+    public static class AddAuthenticationExtension
+    {
+        public static IHostBuilder AddAuthentications(this IHostBuilder hostBuilder)
+        {
+            hostBuilder.ConfigureServices((hostContext, services) =>
+            {
+                services.AddSingleton<UserStore>();
+                services.AddSingleton<IAuthenticationService, AuthenticationService>();
+            });
+            return hostBuilder;
+        }
+    }
+
     public static class AddStoreExtension
     {
         public static IHostBuilder AddStores(this IHostBuilder hostBuilder)
         {
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
-                services.AddSingleton<UserStore>();
                 services.AddSingleton<CellStatusToColorConverter>();
 
                 services.AddKeyedScoped<IAlertService, AlarmService<EAlarm>>("AlarmService");

@@ -23,7 +23,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
             Devices devices,
             RecipeSelector recipeSelector,
             UserStore userStore,
-            ViewModelNavigationStore navigationStore,
+            NavigationStore navigationStore,
             ILanguageService languageService)
         {
             MachineStatus = machineStatus;
@@ -253,7 +253,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         #region Privates
         private readonly INavigationService _navigationService;
         private readonly NEOSHSDIndicator _nEOSHSDIndicator;
-        private readonly ViewModelNavigationStore _navigationStore;
+        private readonly NavigationStore _navigationStore;
         private readonly ILanguageService _languageService;
         System.Timers.Timer statusUpdateTimer;
         #endregion
