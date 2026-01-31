@@ -106,7 +106,7 @@ namespace SDV_DotDispenser.MVVM.Views
             {
                 if (LogTreeView.SelectedItem is FileSystemNode selectedNode && !selectedNode.IsDirectory)
                 {
-                    currentLogEntries = viewModel.LoadErrorLogEntries(selectedNode.Path);
+                    currentLogEntries = viewModel.LoadLogEntries(selectedNode.Path);
                     LogDataGrid.ItemsSource = currentLogEntries;
                     InitializeFilterSourceComboBox();
 
