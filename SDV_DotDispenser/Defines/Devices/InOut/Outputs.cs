@@ -43,8 +43,8 @@ namespace SDV_DotDispenser.Defines
         public IDOutput Buzzer2On => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.BUZZER2_ON);
         public IDOutput Buzzer3On => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.BUZZER3_ON);
         public IDOutput Buzzer4On => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.BUZZER4_ON);
-        public IDOutput SwStartLeftLp => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.SW_START_LEFT_LP);
-        public IDOutput SwStartRightLp => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.SW_START_RIGHT_LP);
+        public IDOutput SwStartLeftLp => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.SW_START_LEFT_LAMP);
+        public IDOutput SwStartRightLp => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.SW_START_RIGHT_LAMP);
 
         public IDOutput EqpStop => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.EQP_STOP);
         public IDOutput LightCurtainLeftMuting1 => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.LIGHT_CURTAIN_LEFT_MUTING_1);

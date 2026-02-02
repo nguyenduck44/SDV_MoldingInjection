@@ -16,8 +16,8 @@
         BUZZER3_ON = 11,
         BUZZER4_ON = 12,
         SPARE_OUT13 = 13,
-        SW_START_LEFT_LP = 14,
-        SW_START_RIGHT_LP = 15,
+        SW_START_LEFT_LAMP = 14,
+        SW_START_RIGHT_LAMP = 15,
 
         EQP_STOP = 16,
         LIGHT_CURTAIN_LEFT_MUTING_1 = 17,

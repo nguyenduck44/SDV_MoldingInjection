@@ -2,8 +2,11 @@
 {
     public enum ECylinder
     {
-        InCV_StopperUpDown,
+        PlasmaCylBwFw,
 
-        OutCV_StopperUpDown,
+        TransferHand1UpDown,
+        TransferHand2UpDown,
+
+        UVCureBwFw,
     }
 }
