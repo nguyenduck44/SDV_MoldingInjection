@@ -142,6 +142,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
             if (_userStore.Permission != EPermission.Operator)
             {
                 buttons.Add(new NavigationButton { Label = "Teach", Command = TeachNavigate, ImageKey = "image_teach_selected", DisabledImageKey = "image_teach_normal" });
+                buttons.Add(new NavigationButton { Label = "Vision", Command = VisionNavigate, ImageKey = "image_camera_selected", DisabledImageKey = "image_camera_normal_dark" });
             }
 
             if (_userStore.Permission == EPermission.SuperUser)

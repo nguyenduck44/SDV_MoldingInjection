@@ -68,6 +68,9 @@
             <DataTemplate DataType="{x:Type vm:TeachViewModel}">
                 <views:TeachView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:VisionViewModel}">
+                <views:VisionView />
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:DevViewModel}">
                 <views:DevView />
             </DataTemplate>

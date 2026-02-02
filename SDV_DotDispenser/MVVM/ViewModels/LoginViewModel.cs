@@ -12,6 +12,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
     {
         private readonly UserStore _userStore;
         private readonly INavigationService _navigationService;
+        private readonly IAuthenticationService _authenticationService;
         private ObservableCollection<string> accesses;
 
         public ObservableCollection<string> Accesses
@@ -22,11 +23,13 @@ namespace SDV_DotDispenser.MVVM.ViewModels
 
         public string AccessSelected { get; set; }
 
-        public LoginViewModel(UserStore userStore, INavigationService navigationService)
+        public LoginViewModel(UserStore userStore,
+            INavigationService navigationService,
+            IAuthenticationService authenticationService)
         {
             _userStore = userStore;
             _navigationService = navigationService;
-
+            _authenticationService = authenticationService;
             _userStore.UserChanged += _userStore_UserChanged;
 
             Accesses = new ObservableCollection<string>(Enum.GetNames(typeof(EPermission)).ToList());
@@ -49,31 +52,33 @@ namespace SDV_DotDispenser.MVVM.ViewModels
                     if (password == null) return;
                     if (AccessSelected == EPermission.Admin.ToString())
                     {
-                        //if (password.ToUpper() != "")
-                        //{
-                        //    MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_WrongPassword"]);
-                        //    return;
-                        //}
+                        if (_authenticationService.ValidatePermission(EPermission.Admin, password) == false)
+                        {
+                            MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_WrongPassword"]);
+                            return;
+                        }
 
                         Log.Info("Login Admin Permission");
-                        //_userStore.Permission = EPermission.Admin;
                     }
                     else if (AccessSelected == EPermission.Operator.ToString())
                     {
+                        if (_authenticationService.ValidatePermission(EPermission.Operator, password) == false)
+                        {
+                            MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_WrongPassword"]);
+                            return;
+                        }
+
                         Log.Info("Login Operator Permission");
-                        //_userStore.Permission = EPermission.Operator;
                     }
                     else if (AccessSelected == EPermission.SuperUser.ToString())
                     {
-                        string currentPassword = DateTime.Now.ToString("HHdd");
-                        if (password != currentPassword && password != "3141")
+                        if (_authenticationService.ValidatePermission(EPermission.SuperUser, password) == false)
                         {
                             MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_WrongPassword"]);
                             return;
                         }
 
                         Log.Info("Login Super User Permission");
-                        //_userStore.Permission = EPermission.SuperUser;
                     }
                 });
             }

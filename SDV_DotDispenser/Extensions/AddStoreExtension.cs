@@ -4,6 +4,7 @@ using EQX.UI.Language;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SDV_DotDispenser.Defines;
+using SDV_DotDispenser.Services;
 using SDV_DotDispenser.Services.Factories;
 
 namespace SDV_DotDispenser.Extensions
@@ -15,6 +16,7 @@ namespace SDV_DotDispenser.Extensions
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
                 services.AddSingleton<UserStore>();
+                services.AddSingleton<IAuthenticationService,DotDispenserAuthenticationService>();
                 services.AddSingleton<CellStatusToColorConverter>();
 
                 services.AddSingleton<TeachingViewModelFactory>();
