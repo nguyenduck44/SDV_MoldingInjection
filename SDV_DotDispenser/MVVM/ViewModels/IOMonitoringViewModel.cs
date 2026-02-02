@@ -16,7 +16,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
     {
         public IOMonitoringViewModel(Inputs inputList, Outputs outputList,
             MachineStatus machineStatus,
-            ViewModelNavigationStore navigationStore)
+            NavigationStore navigationStore)
         {
             InputList = inputList;
             OutputList = outputList;
@@ -56,7 +56,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         public int SelectedInputBoardNumber => SelectedInputDeviceIndex + 1;
 
         private int _selectedOutputDeviceIndex;
-        private readonly ViewModelNavigationStore _navigationStore;
+        private readonly NavigationStore _navigationStore;
 
         public int SelectedOutputDeviceIndex
         {

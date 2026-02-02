@@ -54,7 +54,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         }
 
         public TeachViewModel(MachineStatus machineStatus,
-            ViewModelNavigationStore navigationStore,
+            NavigationStore navigationStore,
             TeachingViewModelFactory factory)
         {
             MachineStatus = machineStatus;
@@ -89,7 +89,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         }
 
         #region Privates
-        private readonly ViewModelNavigationStore _navigationStore;
+        private readonly NavigationStore _navigationStore;
         private System.Timers.Timer _inoutUpdateTimer;
         private UnitTeachingViewModel selectedTeachingUnit;
         #endregion

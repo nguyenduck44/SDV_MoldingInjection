@@ -18,7 +18,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
     {
         #region Privates
         private bool isConnecting = false;
-        private readonly ViewModelNavigationStore _navigationStore;
+        private readonly NavigationStore _navigationStore;
         private readonly ManualViewModelFactory _factory;
         private System.Timers.Timer _inoutUpdateTimer;
         private ManualUnitViewModel _currentManualUnitVM;
@@ -101,7 +101,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         #region Constructor
         public ManualViewModel(Devices devices,
             MachineStatus machineStatus,
-            ViewModelNavigationStore navigationStore,
+            NavigationStore navigationStore,
             ManualViewModelFactory factory)
         {
             Devices = devices;

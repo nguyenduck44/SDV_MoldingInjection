@@ -56,12 +56,12 @@ namespace SDV_DotDispenser.MVVM.ViewModels
                         //}
 
                         Log.Info("Login Admin Permission");
-                        _userStore.Permission = EPermission.Admin;
+                        //_userStore.Permission = EPermission.Admin;
                     }
                     else if (AccessSelected == EPermission.Operator.ToString())
                     {
                         Log.Info("Login Operator Permission");
-                        _userStore.Permission = EPermission.Operator;
+                        //_userStore.Permission = EPermission.Operator;
                     }
                     else if (AccessSelected == EPermission.SuperUser.ToString())
                     {
@@ -73,7 +73,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
                         }
 
                         Log.Info("Login Super User Permission");
-                        _userStore.Permission = EPermission.SuperUser;
+                        //_userStore.Permission = EPermission.SuperUser;
                     }
                 });
             }

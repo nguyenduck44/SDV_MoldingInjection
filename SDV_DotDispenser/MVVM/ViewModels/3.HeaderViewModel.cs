@@ -16,7 +16,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
     public class HeaderViewModel : ViewModelBase
     {
         private readonly INavigationService _navigationService;
-        private readonly ViewModelProvider _viewModelProvider;
+        private readonly IViewModelFactory _viewModelFactory;
 
         public Information Information { get; }
         public RecipeSelector RecipeSelector { get; }
@@ -35,19 +35,19 @@ namespace SDV_DotDispenser.MVVM.ViewModels
                     }
 
                     _navigationService.NavigateTo<InitDeinitViewModel>();
-                    _viewModelProvider.GetViewModel<InitDeinitViewModel>().Deinitialization();
+                    _viewModelFactory.Create<InitDeinitViewModel>().Deinitialization();
                 });
             }
         }
 
         public HeaderViewModel(Information information,
             INavigationService navigationService,
-            ViewModelProvider viewModelProvider,
+            IViewModelFactory viewModelFactory,
             RecipeSelector recipeSelector)
         {
             Information = information;
             _navigationService = navigationService;
-            _viewModelProvider = viewModelProvider;
+            _viewModelFactory = viewModelFactory;
             RecipeSelector = recipeSelector;
           
             System.Timers.Timer timer = new System.Timers.Timer(500);
