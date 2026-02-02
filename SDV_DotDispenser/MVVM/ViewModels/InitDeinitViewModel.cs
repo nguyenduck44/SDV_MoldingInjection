@@ -87,7 +87,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
             RecipeSelector recipeSelector,
             VirtualIO virtualIO,
             IConfiguration configuration,
-            [FromKeyedServices("AlignCamera")]ICamera alignCamera,
+            [FromKeyedServices("AlignCamera#1")]ICamera alignCamera1,
             IVisionFlowRepository visionFlowRepository)
         {
             _devices = devices;
@@ -96,7 +96,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
             _recipeSelector = recipeSelector;
             _virtualIO = virtualIO;
             _configuration = configuration;
-            _alignCamera = alignCamera;
+            _alignCamera1 = alignCamera1;
             _visionFlowRepository = visionFlowRepository;
             _task = new Task(() => { });
             ErrorMessages = new List<string>();
@@ -447,7 +447,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
                 if (alignFlow.VisionTools.FirstOrDefault(vt => vt.Name == "GrabTool") != null)
                 {
 
-                    (alignFlow.VisionTools.FirstOrDefault(vt => vt.Name == "GrabTool") as GrabTool)!.Camera = _alignCamera;
+                    (alignFlow.VisionTools.FirstOrDefault(vt => vt.Name == "GrabTool") as GrabTool)!.Camera = _alignCamera1;
                     (alignFlow.VisionTools.FirstOrDefault(vt => vt.Name == "GrabTool") as GrabTool)!.Camera.ContinuousImageGrabbed += (s, grabData) =>
                     {
                         (alignFlow.VisionTools.FirstOrDefault(vt => vt.Name == "GrabTool") as GrabTool)!.Outputs["ImageMat"] = grabData.ToMat();
@@ -469,7 +469,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         private readonly RecipeSelector _recipeSelector;
         private readonly VirtualIO _virtualIO;
         private readonly IConfiguration _configuration;
-        private readonly ICamera _alignCamera;
+        private readonly ICamera _alignCamera1;
         private readonly IVisionFlowRepository _visionFlowRepository;
         private readonly Devices _devices;
         private readonly Processes _processes;

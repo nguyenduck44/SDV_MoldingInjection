@@ -26,7 +26,7 @@ namespace SDV_DotDispenser.Converters
                     .OrderBy(i => i.Id)
                     .ToList();
 
-                var subList = ordered.Skip(index * 32).Take(32).ToList();
+                var subList = ordered.Skip(index * 16).Take(16).ToList();
                 IDInput[] newList = new IDInput[subList.Count];
                 int half = subList.Count / 2;
                 for (int i = 0; i < half; i++)
@@ -46,7 +46,7 @@ namespace SDV_DotDispenser.Converters
                     .OrderBy(o => o.Id)
                     .ToList();
 
-                var subList = ordered.Skip(index * 32).Take(32).ToList();
+                var subList = ordered.Skip(index * 16).Take(16).ToList();
                 IDOutput[] newList = new IDOutput[subList.Count];
                 int half = subList.Count / 2;
                 for (int i = 0; i < half; i++)
