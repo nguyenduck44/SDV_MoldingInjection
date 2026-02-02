@@ -27,6 +27,8 @@ namespace SDV_DotDispenser.Extensions
                 services.AddViewModel<InitDeinitViewModel>();
                 services.AddViewModel<OriginViewModel>();
                 services.AddViewModel<AutoViewModel>();
+                services.AddViewModel<ManualViewModel>();
+                services.AddViewModel<TeachViewModel>();
                 services.AddViewModel<DataViewModel>();
                 services.AddViewModel<VisionViewModel>();
                 services.AddViewModel<IOMonitoringViewModel>();
@@ -35,9 +37,7 @@ namespace SDV_DotDispenser.Extensions
                 services.AddViewModel<LoginViewModel>();
                 services.AddViewModel<DevViewModel>();
 
-                services.AddSingleton<NavigationStore>();
-                services.AddSingleton<ViewModelFactory>();
-                services.AddTransient<INavigationService, NavigationService>();
+                services.AddSingleton<IViewModelFactory, ViewModelFactory>();
             });
 
             return hostBuilder;

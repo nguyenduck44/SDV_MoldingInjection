@@ -19,7 +19,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         }
 
         public FooterViewModel(NavigationStore viewModelNavigationStore,
-            ViewModelFactory viewModelProvider)
+            IViewModelFactory viewModelProvider)
         {
             _viewModelNavigationStore = viewModelNavigationStore;
             _viewModelProvider = viewModelProvider;
@@ -35,6 +35,6 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         }
 
         private readonly NavigationStore _viewModelNavigationStore;
-        private readonly ViewModelFactory _viewModelProvider;
+        private readonly IViewModelFactory _viewModelProvider;
     }
 }

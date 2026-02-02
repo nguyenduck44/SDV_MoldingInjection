@@ -13,7 +13,7 @@ namespace SDV_DotDispenser.Extensions
         {
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
-                services.AddSingleton<UserStore>();
+                services.AddSingleton<IUserStore, UserStore>();
                 services.AddSingleton<IAuthenticationService, AuthenticationService>();
             });
             return hostBuilder;

@@ -60,7 +60,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         #endregion
 
         public LoginViewModel(
-            UserStore userStore,
+            IUserStore userStore,
             INavigationService navigationService,
             IAuthenticationService authenticationService)
         {
@@ -88,7 +88,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         #endregion
 
         #region Private Fields
-        private readonly UserStore _userStore;
+        private readonly IUserStore _userStore;
         private readonly INavigationService _navigationService;
         private readonly IAuthenticationService _authenticationService;
         private readonly ILog _log;

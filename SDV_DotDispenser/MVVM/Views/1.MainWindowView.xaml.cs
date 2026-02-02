@@ -8,11 +8,11 @@ namespace SDV_DotDispenser.MVVM.Views
     public partial class MainWindowView : Window
     {
         private readonly INavigationService _navigationService;
-        private readonly ViewModelFactory _viewModelProvider;
+        private readonly IViewModelFactory _viewModelProvider;
         private readonly MachineStatus _machineStatus;
 
         public MainWindowView(INavigationService navigationService,
-            ViewModelFactory viewModelProvider,
+            IViewModelFactory viewModelProvider,
             MachineStatus machineStatus)
         {
             _navigationService = navigationService;

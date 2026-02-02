@@ -18,8 +18,6 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         public string Name { get; private set; }
 
         public DevViewModel(
-            [FromKeyedServices("RobotLoad")] IRobot robotLoad,
-            [FromKeyedServices("RobotUnload")] IRobot robotUnload,
             Devices devices,
             MachineStatus machineStatus)
         {

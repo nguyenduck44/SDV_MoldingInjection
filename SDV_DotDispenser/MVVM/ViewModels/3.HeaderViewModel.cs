@@ -16,7 +16,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
     public class HeaderViewModel : ViewModelBase
     {
         private readonly INavigationService _navigationService;
-        private readonly ViewModelFactory _viewModelProvider;
+        private readonly IViewModelFactory _viewModelProvider;
 
         public Information Information { get; }
         public RecipeSelector RecipeSelector { get; }
@@ -42,7 +42,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
 
         public HeaderViewModel(Information information,
             INavigationService navigationService,
-            ViewModelFactory viewModelProvider,
+            IViewModelFactory viewModelProvider,
             RecipeSelector recipeSelector)
         {
             Information = information;

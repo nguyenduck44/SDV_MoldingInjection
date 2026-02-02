@@ -24,7 +24,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         #endregion
 
         public MainWindowViewModel(NavigationStore navigationStore,
-                                   ViewModelFactory viewModelProvider,
+                                   IViewModelFactory viewModelProvider,
                                    MachineStatus machineStatus,
                                    Devices devices)
         {
@@ -54,7 +54,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         private readonly ViewModelBase _maintenanceVM;
 
         private readonly NavigationStore _navigationStore;
-        private readonly ViewModelFactory _viewModelProvider;
+        private readonly IViewModelFactory _viewModelProvider;
         private readonly MachineStatus _machineStatus;
         #endregion
     }

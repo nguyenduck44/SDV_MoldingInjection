@@ -22,7 +22,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
             INavigationService navigationService,
             Devices devices,
             RecipeSelector recipeSelector,
-            UserStore userStore,
+            IUserStore userStore,
             NavigationStore navigationStore,
             ILanguageService languageService)
         {
@@ -77,7 +77,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         public MachineStatus MachineStatus { get; }
         public Devices Devices { get; }
         public RecipeSelector RecipeSelector { get; }
-        public UserStore UserStore { get; }
+        public IUserStore UserStore { get; }
 
         public string MachineRunModeDisplay => MachineStatus.MachineRunModeDisplay;
         public double Temperature => _nEOSHSDIndicator.Temperature;

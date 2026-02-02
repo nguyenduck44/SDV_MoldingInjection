@@ -33,15 +33,17 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <ItemsControl ItemsSource="{Binding NavigationButtons}">
+        <ItemsControl ItemsSource="{Binding LeftNavigationButtons}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <ui:ImageRadioButton
                         GroupName="VMNavigateButton"
                         Content="{Binding Label}"
-                        Command="{Binding Command}"
+                        Command="{Binding DataContext.NavigationButtonClickCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        CommandParameter="{Binding .}"
                         DisabledImage="{Binding DisabledImageKey, Converter={StaticResource ImageKeyToImageConverter}}"
-                        Image="{Binding ImageKey, Converter={StaticResource ImageKeyToImageConverter}}"/>
+                        Image="{Binding ImageKey, Converter={StaticResource ImageKeyToImageConverter}}">
+                    </ui:ImageRadioButton>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
             <ItemsControl.ItemsPanel>
@@ -55,24 +57,26 @@
         <StackPanel Orientation="Horizontal"
                 DockPanel.Dock="Right"
                 Grid.Column="2">
-            <ui:ImageRadioButton
-                GroupName="VMNavigateButton"
-                Content="{Binding CurrentUserLabel}"
-                Command="{Binding UserNavigate}"
-                DisabledImage="{StaticResource image_user_change_normal_dark}"
-                Image="{StaticResource image_user_change_selected}"/>
-            
-            <ui:ImageRadioButton
-                GroupName="VMNavigateButton"
-                Content="{DynamicResource str_Log}"
-                Command="{Binding LogNavigate}"
-                DisabledImage="{StaticResource image_log_normal}"
-                Image="{StaticResource image_log_selected}"/>
-            <ui:ImageRadioButton GroupName="VMNavigateButton"
-                                 Content="{DynamicResource str_Exit}"
-                                 Image="{StaticResource image_exit_normal}"
-                                 DisabledImage="{StaticResource image_exit_selected}"
-                                 Command="{Binding ApplicationCloseCommand}" />
+            <ItemsControl ItemsSource="{Binding RightNavigationButtons}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <ui:ImageRadioButton
+                            GroupName="VMNavigateButton"
+                            Content="{Binding Label}"
+                            Command="{Binding DataContext.NavigationButtonClickCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            CommandParameter="{Binding .}"
+                            DisabledImage="{Binding DisabledImageKey, Converter={StaticResource ImageKeyToImageConverter}}"
+                            Image="{Binding ImageKey, Converter={StaticResource ImageKeyToImageConverter}}">
+                        </ui:ImageRadioButton>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"
+                DockPanel.Dock="Left"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
         </StackPanel>
     </Grid>
 </UserControl>
