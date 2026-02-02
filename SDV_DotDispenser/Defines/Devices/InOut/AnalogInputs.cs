@@ -18,7 +18,6 @@ namespace SDV_DotDispenser.Defines.Devices
             Initialize();
         }
 
-        public IAInput Laser => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.LASER);
         public IAInput PlasmaVoltage => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.PLASMA_VOLTAGE);
         public IAInput PlasmaPower => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.PLASMA_POWER);
         public IAInput PlasmaN2FlowRate => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.PLASMA_N2_FLOW_RATE);

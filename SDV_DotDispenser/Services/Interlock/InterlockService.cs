@@ -17,7 +17,7 @@ namespace SDV_DotDispenser.Services.Interlock
 
         public bool InterlockCheck(string unitName, string positionDescription)
         {
-            if (_devices.Inputs.DoorSensor.Value == false)
+            if (_devices.Inputs.DoorClose == false)
             {
                 MessageBoxEx.ShowDialog($"Close the Door before Move to {positionDescription}");
                 return false;

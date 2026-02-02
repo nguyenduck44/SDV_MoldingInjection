@@ -303,8 +303,6 @@ namespace SDV_DotDispenser.MVVM.ViewModels
 
                         _devices.Outputs.Lamp_Stop();
 
-                        _devices.Outputs.DoorOpen.Value = true;
-
                         _devices.Motions.AjinMaster.Disconnect();
 
                         _devices.Motions.All.ForEach(m => m.Disconnect());
