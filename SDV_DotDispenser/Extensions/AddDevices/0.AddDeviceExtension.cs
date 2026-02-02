@@ -13,6 +13,7 @@ namespace SDV_DotDispenser.Extensions
             hostBuilder.AddMotionDevices();
             hostBuilder.AddIODevices();
             hostBuilder.AddCylinderDevices();
+            hostBuilder.AddCameraDevices();
 
             return hostBuilder;
         }
