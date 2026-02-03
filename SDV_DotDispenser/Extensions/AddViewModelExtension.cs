@@ -30,6 +30,7 @@ namespace SDV_DotDispenser.Extensions
                 services.AddViewModel<ManualViewModel>();
                 services.AddViewModel<TeachViewModel>();
                 services.AddViewModel<DataViewModel>();
+                services.AddViewModel<MonitorViewModel>();
                 services.AddViewModel<VisionViewModel>();
                 services.AddViewModel<IOMonitoringViewModel>();
 
