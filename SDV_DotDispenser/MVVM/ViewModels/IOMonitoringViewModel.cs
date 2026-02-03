@@ -32,7 +32,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         {
             if (_navigationStore.CurrentViewModel != this) return;
 
-            for (int i = SelectedInputDeviceIndex * 32; i < SelectedInputDeviceIndex * 32 + 32; i++)
+            for (int i = SelectedInputDeviceIndex * 16; i < SelectedInputDeviceIndex * 16 + 16; i++)
             {
                 InputList.All[i].RaiseValueUpdated();
             }
@@ -133,11 +133,11 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         public MachineStatus MachineStatus { get; }
 
         private int MaxInputDeviceIndex => InputList.All
-            .GroupBy(i => i.Id / 32)
+            .GroupBy(i => i.Id / 16)
             .Count() - 1;
 
         private int MaxOutputDeviceIndex => OutputList.All
-            .GroupBy(o => o.Id / 32)
+            .GroupBy(o => o.Id / 16)
             .Count() - 1;
     }
 }

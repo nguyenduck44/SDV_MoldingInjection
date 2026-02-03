@@ -60,35 +60,22 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         #endregion
 
         public LoginViewModel(
-            IUserStore userStore,
             INavigationService navigationService,
             IAuthenticationService authenticationService)
         {
-            _userStore = userStore;
             _navigationService = navigationService;
             _authenticationService = authenticationService;
 
             _log = LogManager.GetLogger("LoginVM");
-
-            _userStore.UserChanged += OnUserStoreUserChanged;
 
             _permissions = new ObservableCollection<string>(Enum.GetNames(typeof(EPermission)).ToList());
             _selectedPermission = _permissions.FirstOrDefault()!;
         }
 
         #region Private Methods
-        private void OnUserStoreUserChanged()
-        {
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            _userStore.UserChanged -= OnUserStoreUserChanged;
-        }
         #endregion
 
         #region Private Fields
-        private readonly IUserStore _userStore;
         private readonly INavigationService _navigationService;
         private readonly IAuthenticationService _authenticationService;
         private readonly ILog _log;

@@ -38,6 +38,7 @@
                 <DataTemplate>
                     <ui:ImageRadioButton
                         GroupName="VMNavigateButton"
+                        Width="105"
                         Content="{Binding Label}"
                         Command="{Binding DataContext.NavigationButtonClickCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                         CommandParameter="{Binding .}"
@@ -62,6 +63,7 @@
                     <DataTemplate>
                         <ui:ImageRadioButton
                             GroupName="VMNavigateButton"
+                            Width="105"
                             Content="{Binding Label}"
                             Command="{Binding DataContext.NavigationButtonClickCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                             CommandParameter="{Binding .}"

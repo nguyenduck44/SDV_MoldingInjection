@@ -17,11 +17,16 @@
         Motion_Limit_Detected,
         Motion_Alarm_Detected,
 
-        TransferZAxis_OriginTimeout = 100,
-        TransferXAxis_OriginTimeout,
-        TransferYAxis_OriginTimeout,
+        LeftStage_YAxis_OriginFail = 500,
 
+        RightStage_YAxis_OriginFail = 1000,
 
-        ShuttleXAxis_OriginTimeout = 500,
+        DispenserHead_XAxis_OriginFail = 3000,
+        DispenserHead_ZAxis_OriginFail,
+
+        VisionInspection_XAxis_OriginFail = 4000,
+
+        Transfer_XAxis_OriginFail = 6000,
+        Transfer_ZAxis_OriginFail,
     }
 }

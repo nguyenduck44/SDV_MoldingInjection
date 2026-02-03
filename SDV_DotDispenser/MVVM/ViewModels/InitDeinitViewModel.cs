@@ -3,10 +3,15 @@ using EQX.Core.Communication;
 using EQX.Core.Communication.Modbus;
 using EQX.Core.Robot;
 using EQX.Core.Units;
+using EQX.Core.Vision.Algorithms;
+using EQX.Core.Vision.Grabber;
 using EQX.UI.Controls;
+using EQX.Vision.Algorithms;
+using EQX.Vision.Grabber.Helpers;
 using log4net;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using SDV_DotDispenser.Defines;
 using SDV_DotDispenser.Defines.Devices;
 using SDV_DotDispenser.Process;
@@ -81,7 +86,9 @@ namespace SDV_DotDispenser.MVVM.ViewModels
             INavigationService navigationService,
             RecipeSelector recipeSelector,
             VirtualIO virtualIO,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            [FromKeyedServices("AlignCamera#1")]ICamera alignCamera1,
+            IVisionFlowRepository visionFlowRepository)
         {
             _devices = devices;
             _processes = processes;
@@ -89,6 +96,8 @@ namespace SDV_DotDispenser.MVVM.ViewModels
             _recipeSelector = recipeSelector;
             _virtualIO = virtualIO;
             _configuration = configuration;
+            _alignCamera1 = alignCamera1;
+            _visionFlowRepository = visionFlowRepository;
             _task = new Task(() => { });
             ErrorMessages = new List<string>();
 
@@ -205,6 +214,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
                             Log.Debug("Recipe Load Fail");
                         }
 
+                        _visionFlowRepository.Init(LoadVisionFlow());
                         Thread.Sleep(50);
                         _step++;
                         break;
@@ -292,8 +302,6 @@ namespace SDV_DotDispenser.MVVM.ViewModels
                         MessageText = "Disconnect Motion Devices";
 
                         _devices.Outputs.Lamp_Stop();
-
-                        _devices.Outputs.DoorOpen.Value = true;
 
                         _devices.Motions.AjinMaster.Disconnect();
 
@@ -423,11 +431,46 @@ namespace SDV_DotDispenser.MVVM.ViewModels
             }
         }
 
+        private List<IVisionFlow> LoadVisionFlow()
+        {
+            List<IVisionFlow> visionFlows = new List<IVisionFlow>();
+            try
+            {
+                var settings = new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.Auto
+                };
+                settings.Converters.Add(new MatConverter());
+                VisionFlow alignFlow = JsonConvert.DeserializeObject<VisionFlow>(File.ReadAllText($"{_configuration["Folders:RecipeFolder"]}\\{_recipeSelector.RecipeSetting.CurrentRecipe}\\VisionFlow.json"), settings)!;
+                alignFlow.FlowDescription = new VisionFlowDescription(alignFlow, alignFlow.FlowDescription.VisionToolDescriptions);
+
+                if (alignFlow.VisionTools.FirstOrDefault(vt => vt.Name == "GrabTool") != null)
+                {
+
+                    (alignFlow.VisionTools.FirstOrDefault(vt => vt.Name == "GrabTool") as GrabTool)!.Camera = _alignCamera1;
+                    (alignFlow.VisionTools.FirstOrDefault(vt => vt.Name == "GrabTool") as GrabTool)!.Camera.ContinuousImageGrabbed += (s, grabData) =>
+                    {
+                        (alignFlow.VisionTools.FirstOrDefault(vt => vt.Name == "GrabTool") as GrabTool)!.Outputs["ImageMat"] = grabData.ToMat();
+                    };
+                }
+
+                visionFlows.Add(alignFlow);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Failed to load Vision Flow.");
+            }
+            return visionFlows;
+        }
+
+
         #region Private fields
         private readonly INavigationService _navigationService;
         private readonly RecipeSelector _recipeSelector;
         private readonly VirtualIO _virtualIO;
         private readonly IConfiguration _configuration;
+        private readonly ICamera _alignCamera1;
+        private readonly IVisionFlowRepository _visionFlowRepository;
         private readonly Devices _devices;
         private readonly Processes _processes;
 

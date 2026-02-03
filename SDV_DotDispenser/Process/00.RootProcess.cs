@@ -25,16 +25,16 @@ namespace SDV_DotDispenser.Process
         private readonly IAlertService _warningService;
         private readonly object _lockAlarm = new object();
 
-        private bool DoorSensor
+        private bool DoorClose
         {
             get
             {
-                return _devices.Inputs.DoorSensor.Value;
+                return _devices.Inputs.DoorClose;
             }
         }
 
-        private bool IsMainAirSupplied => _devices.Inputs.MainAir.Value;
-        private bool IsPowerMCOn => _devices.Inputs.PowerMCOn.Value;
+        private bool IsMainAirSupplied => _devices.Inputs.MainCDACheck.Value;
+        private bool IsServoOn => _devices.Inputs.ServoOn.Value;
         #endregion
 
         #region Constructor
@@ -205,7 +205,7 @@ namespace SDV_DotDispenser.Process
             {
                 case ERootProcessToOriginStep.Start:
                     Log.Info("To Origin started");
-                    _devices.Outputs.TowerBuzzer.Value = false;
+                    _devices.Outputs.Buzzer1On.Value = false;
                     Step.OriginStep++;
                     break;
                 case ERootProcessToOriginStep.DoorSensorCheck:
@@ -267,7 +267,7 @@ namespace SDV_DotDispenser.Process
                 case ERootProcessToRunStep.Start:
                     Log.Debug("ToRun Start");
                     Step.ToRunStep++;
-                    _devices.Outputs.TowerBuzzer.Value = false;
+                    _devices.Outputs.Buzzer1On.Value = false;
                     break;
                 case ERootProcessToRunStep.DoorSensorCheck:
                     //if (_machineStatus.IsByPassMode)

@@ -24,16 +24,16 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         #endregion
 
         public MainWindowViewModel(NavigationStore navigationStore,
-                                   IViewModelFactory viewModelProvider,
+                                   IViewModelFactory viewModelFactory,
                                    MachineStatus machineStatus,
                                    Devices devices)
         {
             _navigationStore = navigationStore;
-            _viewModelProvider = viewModelProvider;
+            _viewModelFactory = viewModelFactory;
             _machineStatus = machineStatus;
             Devices = devices;
-            HeaderVM = _viewModelProvider.Create<HeaderViewModel>();
-            FooterVM = _viewModelProvider.Create<FooterViewModel>();
+            HeaderVM = _viewModelFactory.Create<HeaderViewModel>();
+            FooterVM = _viewModelFactory.Create<FooterViewModel>();
 
             _navigationStore.CurrentViewModelChanged += FrameNavigationStore_CurrentViewModelChanged;
         }
@@ -54,7 +54,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         private readonly ViewModelBase _maintenanceVM;
 
         private readonly NavigationStore _navigationStore;
-        private readonly IViewModelFactory _viewModelProvider;
+        private readonly IViewModelFactory _viewModelFactory;
         private readonly MachineStatus _machineStatus;
         #endregion
     }

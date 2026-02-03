@@ -326,46 +326,11 @@ namespace SDV_DotDispenser.MVVM.Views
 
         private async void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (RadioButtonWarning.IsChecked == true)
-            {
-                await LoadErrorAsync("WARN");
-            }
-
-            else if (RadioButtonAlarm.IsChecked == true)
-            {
-                await LoadErrorAsync("ERROR");
-            }
         }
 
-        private async void RadioButtonWarningChecked(object sender, RoutedEventArgs e)
+        private void ErrorListHistoryDataGrid_Sorting(object sender, DataGridSortingEventArgs e)
         {
-            await LoadErrorAsync("WARN");
-        }
 
-        private async void RadioButtonAlarmChecked(object sender, RoutedEventArgs e)
-        {
-            await LoadErrorAsync("ERROR");
-        }
-
-        private async Task LoadErrorAsync(string logType)
-        {
-            if (DataContext is not LogViewModel vm) return;
-            if (string.IsNullOrWhiteSpace(vm.SelectedDay)) return;
-
-            AlarmDataGrid.IsEnabled = false;
-
-            try
-            {
-                var data = await Task.Run(() =>
-                    vm.LoadErrorEntries(vm.SelectedDay, logType)
-                );
-
-                AlarmDataGrid.ItemsSource = data;
-            }
-            finally
-            {
-                AlarmDataGrid.IsEnabled = true;
-            }
         }
     }
 }

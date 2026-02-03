@@ -15,8 +15,8 @@ namespace SDV_DotDispenser.MVVM.ViewModels
     public class NavigateMenuViewModel : ViewModelBase
     {
         #region Command(s)
-        public ObservableCollection<NavigationButton> LeftNavigationButtons { get; set; }
-        public ObservableCollection<NavigationButton> RightNavigationButtons { get; set; }
+        public ObservableCollection<NavigationButton> LeftNavigationButtons => new ObservableCollection<NavigationButton>(_navigationButtonRepository.GetNavigationButtons("Left"));
+        public ObservableCollection<NavigationButton> RightNavigationButtons => new ObservableCollection<NavigationButton>(_navigationButtonRepository.GetNavigationButtons("Right"));
 
         public IRelayCommand NavigationButtonClickCommand
         {
@@ -38,7 +38,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    _viewModelProvider.Create<HeaderViewModel>().ApplicationCloseCommand.Execute(null);
+                    _viewModelFactory.Create<HeaderViewModel>().ApplicationCloseCommand.Execute(null);
                 });
             }
         }
@@ -51,14 +51,14 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         #endregion
 
         public NavigateMenuViewModel(INavigationService navigationService,
+            INavigationButtonRepository navigationButtonRepository,
             IUserStore userStore,
-            IViewModelFactory viewModelProvider,
-            INavigationButtonRepository navigationButtonRepository)
+            IViewModelFactory viewModelFactory)
         {
             _navigationService = navigationService;
-            _userStore = userStore;
-            _viewModelProvider = viewModelProvider;
             _navigationButtonRepository = navigationButtonRepository;
+            _userStore = userStore;
+            _viewModelFactory = viewModelFactory;
 
             // TODO: Remove this
 
@@ -69,8 +69,6 @@ namespace SDV_DotDispenser.MVVM.ViewModels
 
         private void UpdateNavigationButtons()
         {
-            LeftNavigationButtons = new ObservableCollection<NavigationButton>(_navigationButtonRepository.GetNavigationButtons("Left"));
-            RightNavigationButtons = new ObservableCollection<NavigationButton>(_navigationButtonRepository.GetNavigationButtons("Right"));
             OnPropertyChanged(nameof(LeftNavigationButtons));
             OnPropertyChanged(nameof(RightNavigationButtons));
         }
@@ -94,9 +92,9 @@ namespace SDV_DotDispenser.MVVM.ViewModels
 
         #region Privates
         private readonly INavigationService _navigationService;
-        private readonly IUserStore _userStore;
-        private readonly IViewModelFactory _viewModelProvider;
         private readonly INavigationButtonRepository _navigationButtonRepository;
+        private readonly IUserStore _userStore;
+        private readonly IViewModelFactory _viewModelFactory;
         private string _currentUserLabel = string.Empty;
         #endregion
     }

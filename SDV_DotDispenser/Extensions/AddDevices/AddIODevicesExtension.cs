@@ -27,7 +27,7 @@ namespace SDV_DotDispenser.Extensions
                     {
                         Id = 1,
                         Name = "InputDevice",
-                        MaxPin = 32,
+                        MaxPin = 100,
                     };
                 });
                 //services.AddKeyedScoped<IDInputDevice>("InputDevice#1", (services, obj) => { return new AjinInputDevice<EInput1> { Id = 1, Name = "InDevice1", MaxPin = 32 }; });
@@ -42,7 +42,7 @@ namespace SDV_DotDispenser.Extensions
                     {
                         Id = 1,
                         Name = "OutputDevice",
-                        MaxPin = 32,
+                        MaxPin = 100,
                     };
                 });
                 //services.AddKeyedScoped<IDOutputDevice>("OutputDevice#1", (services, obj) => { return new AjinOutputDevice<EOutput1> { Id = 1, Name = "OutDevice1", MaxPin = 32 }; });

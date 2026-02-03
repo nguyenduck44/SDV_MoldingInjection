@@ -4,6 +4,7 @@ using EQX.UI.Language;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SDV_DotDispenser.Defines;
+using SDV_DotDispenser.Services;
 
 namespace SDV_DotDispenser.Extensions
 {
@@ -14,7 +15,7 @@ namespace SDV_DotDispenser.Extensions
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
                 services.AddSingleton<IUserStore, UserStore>();
-                services.AddSingleton<IAuthenticationService, AuthenticationService>();
+                services.AddSingleton<IAuthenticationService, DotDispenserAuthenticationService>();
             });
             return hostBuilder;
         }

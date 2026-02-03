@@ -13,6 +13,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/EQX.UI;component/Resources/Themes/SamsungTheme.xaml" />
                 <ResourceDictionary Source="/EQX.UI;component/Generic.xaml" />
+                <ResourceDictionary Source="/EQX.VisionUI.WPF;component/Generic.xaml"/>
 
                 <ResourceDictionary Source="/EQX.UI;component/Resources/Language/KoreanLanguage.xaml" />
                 <ResourceDictionary Source="/EQX.UI;component/Resources/Language/VietnameseLanguage.xaml" />
@@ -66,6 +67,9 @@
             <DataTemplate DataType="{x:Type vm:TeachViewModel}">
                 <views:TeachView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:VisionViewModel}">
+                <views:VisionView />
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:DevViewModel}">
                 <views:DevView />
             </DataTemplate>
@@ -74,9 +78,6 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:LoginViewModel}">
                 <views:LoginView />
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:VisionViewModel}">
-                <views:VisionView />
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:MonitorViewModel}">
                 <views:MonitorView />

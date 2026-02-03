@@ -11,29 +11,35 @@ namespace SDV_DotDispenser.Defines.Devices.Cylinder
 {
     public class Cylinders
     {
-        // In CST
-        public ICylinder InCV_StopperCyl { get; }
-
-        // Out CST
-        public ICylinder OutCV_StopperCyl { get; }
-
+        public ICylinder PlasmaCoverCylBwFw { get; }
+        public ICylinder TransferHand1UpDown { get; }
+        public ICylinder TransferHand2UpDown { get; }
+        public ICylinder UVCureBwFw { get; }
         public Cylinders(ICylinderFactory cylinderFactory, Inputs inputs, Outputs outputs)
         {
             _cylinderFactory = cylinderFactory;
             _inputs = inputs;
             _outputs = outputs;
 
-            // In CST
-            InCV_StopperCyl = _cylinderFactory
-                .Create(_inputs.InCV_StopperUp, _inputs.InCV_StopperDown, _outputs.InCst_StopperUp, _outputs.InCst_StopperDown)
-                .SetIdentity((int)ECylinder.InCV_StopperUpDown, ECylinder.InCV_StopperUpDown.ToString());
-            InCV_StopperCyl.CylinderType = ECylinderType.UpDown;
+            PlasmaCoverCylBwFw = _cylinderFactory
+                .Create(_inputs.PlasmaCoverLeft, _inputs.PlasmaCoverRight, _outputs.PlasmaCylFw, _outputs.PlasmaCylBw)
+                .SetIdentity((int)ECylinder.PlasmaCylBwFw, ECylinder.PlasmaCylBwFw.ToString());
+            PlasmaCoverCylBwFw.CylinderType = ECylinderType.ForwardBackward;
 
-            // Out CST
-            OutCV_StopperCyl = _cylinderFactory
-                .Create(_inputs.OutCV_StopperUp, _inputs.OutCV_StopperDown, _outputs.OutCst_StopperUp, _outputs.OutCst_StopperDown)
-                .SetIdentity((int)ECylinder.OutCV_StopperUpDown, ECylinder.OutCV_StopperUpDown.ToString());
-            OutCV_StopperCyl.CylinderType = ECylinderType.UpDown;
+            TransferHand1UpDown = _cylinderFactory
+                .Create(_inputs.TransferHand1Down, _inputs.TransferHand1Up, _outputs.TransferHand1Down, _outputs.TransferHand1Up)
+                .SetIdentity((int)ECylinder.TransferHand1UpDown, ECylinder.TransferHand1UpDown.ToString());
+            TransferHand1UpDown.CylinderType = ECylinderType.UpDown;
+
+            TransferHand2UpDown = _cylinderFactory
+                .Create(_inputs.TransferHand2Down, _inputs.TransferHand2Up, _outputs.TransferHand2Down, _outputs.TransferHand2Up)
+                .SetIdentity((int)ECylinder.TransferHand2UpDown , ECylinder.TransferHand2UpDown.ToString());
+            TransferHand2UpDown.CylinderType = ECylinderType.UpDown;
+
+            UVCureBwFw = _cylinderFactory
+                .Create(_inputs.UvCureFw , _inputs.UvCureBw, _outputs.UvCureFw, _outputs.UvCureBw)
+                .SetIdentity((int)ECylinder.UVCureBwFw, ECylinder.UVCureBwFw.ToString());
+            UVCureBwFw.CylinderType = ECylinderType.ForwardBackward;
         }
 
         private readonly ICylinderFactory _cylinderFactory;

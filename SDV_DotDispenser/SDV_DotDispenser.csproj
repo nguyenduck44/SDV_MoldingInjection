@@ -45,8 +45,11 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.2" />
+	  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
+	  <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.2" />
+	  <PackageReference Include="OpenCvSharp4" Version="4.11.0.20250507" />
+	  <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.11.0.20250507" />
+	  <PackageReference Include="OpenCvSharp4.WpfExtensions" Version="4.11.0.20250507" />
   </ItemGroup>
 
   <ItemGroup>
@@ -57,6 +60,8 @@
     <ProjectReference Include="..\EQX.Process\EQX.Process\EQX.Process.csproj" />
     <ProjectReference Include="..\EQX.ThirdParty\EQX.ThirdParty\EQX.ThirdParty.csproj" />
     <ProjectReference Include="..\EQX.UI\EQX.UI\EQX.UI.csproj" />
+    <ProjectReference Include="..\EQX.VisionUI\EQX.VisionUI.WPF\EQX.VisionUI.WPF.csproj" />
+    <ProjectReference Include="..\EQX.Vision\EQX.Vision\EQX.Vision.csproj" />
   </ItemGroup>
 
   <ItemGroup>

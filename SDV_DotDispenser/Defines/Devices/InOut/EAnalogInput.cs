@@ -13,8 +13,8 @@ namespace SDV_DotDispenser.Defines.Devices
         PLASMA_N2_FLOW_RATE,
         PLASMA_CDA_FLOW_RATE,
         PLASMA_TEMPERATURE,
-        LASER,
         AI_SPARE1,
         AI_SPARE2,
+        AI_SPARE3,
     }
 }

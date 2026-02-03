@@ -56,7 +56,13 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         {
             if (_navigationStore.CurrentViewModel != this) return;
 
-            Devices.Inputs.DoorSensor.RaiseValueUpdated();
+            Devices.Inputs.DoorCloseFrontLeft.RaiseValueUpdated();
+            Devices.Inputs.DoorCloseFrontRight.RaiseValueUpdated();
+            Devices.Inputs.DoorCloseLeftFront.RaiseValueUpdated();
+            Devices.Inputs.DoorCloseLeftRear.RaiseValueUpdated();
+            Devices.Inputs.DoorCloseRearLeft.RaiseValueUpdated();
+            Devices.Inputs.DoorCloseRearRight.RaiseValueUpdated();
+
             Devices.Inputs.Emergency.RaiseValueUpdated();
         }
 
@@ -80,8 +86,6 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         public IUserStore UserStore { get; }
 
         public string MachineRunModeDisplay => MachineStatus.MachineRunModeDisplay;
-        public double Temperature => _nEOSHSDIndicator.Temperature;
-        public double Humidity => _nEOSHSDIndicator.Humidity;
         #endregion
 
         private void MachineStatusOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -232,8 +236,6 @@ namespace SDV_DotDispenser.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    bool currentValue = Devices.Outputs.DoorOpen.Value;
-                    Devices.Outputs.DoorOpen.Value = !currentValue;
                 });
             }
         }
@@ -244,7 +246,10 @@ namespace SDV_DotDispenser.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    Devices.Outputs.TowerBuzzer.Value = false;
+                    Devices.Outputs.Buzzer1On.Value = false;
+                    Devices.Outputs.Buzzer2On.Value = false;
+                    Devices.Outputs.Buzzer3On.Value = false;
+                    Devices.Outputs.Buzzer4On.Value = false;
                 });
             }
         }

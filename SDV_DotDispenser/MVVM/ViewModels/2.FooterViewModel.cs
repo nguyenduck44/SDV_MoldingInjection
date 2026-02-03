@@ -14,19 +14,19 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         {
             get
             {
-                return _viewModelNavigationStore?.CurrentViewModel?.GetType() != typeof(InitDeinitViewModel);
+                return _navigationStore?.CurrentViewModel?.GetType() != typeof(InitDeinitViewModel);
             }
         }
 
         public FooterViewModel(NavigationStore viewModelNavigationStore,
-            IViewModelFactory viewModelProvider)
+            IViewModelFactory viewModelFactory)
         {
-            _viewModelNavigationStore = viewModelNavigationStore;
-            _viewModelProvider = viewModelProvider;
+            _navigationStore = viewModelNavigationStore;
+            _viewModelFactory = viewModelFactory;
 
-            _viewModelNavigationStore.CurrentViewModelChanged += _viewModelNavigationStore_CurrentViewModelChanged;
+            _navigationStore.CurrentViewModelChanged += _viewModelNavigationStore_CurrentViewModelChanged;
 
-            NavigateVM = _viewModelProvider.Create<NavigateMenuViewModel>();
+            NavigateVM = _viewModelFactory.Create<NavigateMenuViewModel>();
         }
 
         private void _viewModelNavigationStore_CurrentViewModelChanged()
@@ -34,7 +34,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
             OnPropertyChanged(nameof(IsNavigationMenuHide));
         }
 
-        private readonly NavigationStore _viewModelNavigationStore;
-        private readonly IViewModelFactory _viewModelProvider;
+        private readonly NavigationStore _navigationStore;
+        private readonly IViewModelFactory _viewModelFactory;
     }
 }

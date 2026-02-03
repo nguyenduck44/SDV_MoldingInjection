@@ -26,6 +26,7 @@ namespace SDV_DotDispenser
                 .AddNavigations()
                 .AddAuthentications()
                 .AddStores()
+                .AddVision()
                 .AddLanguageService()
                 .AddMachineDescriptions()
                 .AddDevices()
