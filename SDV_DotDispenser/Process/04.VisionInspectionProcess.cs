@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SDV_DotDispenser.Process
 {
-    public class VisionInspectionProcess : ProcessBase<ESequence>
+    public class VisionInspectionProcess : DDProcess
     {
         private readonly Devices _devices;
         private readonly RecipeList _recipeList;

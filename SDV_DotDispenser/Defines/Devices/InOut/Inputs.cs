@@ -43,7 +43,7 @@ namespace SDV_DotDispenser.Defines
         public IDInput OPButtonReset => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.OP_BUTTON_RESET);
         public IDInput Emergency => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.OP_SWITCH_EMO);
         public IDInput OPSwitchAuto => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.OP_SWITCH_AUTO);
-        public IDInput OPSwitchTeach => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.OP_SWITCH_TEACH);
+        public IDInput OPSwitchTeach => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.OP_SWITCH_MANUAL);
         public IDInput MainPanelFanRun1 => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.MAIN_PANEL_FAN_RUN_1);
         public IDInput MainPanelFanRun2 => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.MAIN_PANEL_FAN_RUN_2);
         public IDInput SmokeDetectRun => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.SMOKE_DETECT_RUN);

@@ -19,31 +19,16 @@ namespace SDV_DotDispenser.Extensions
         {
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
-                services.AddKeyedScoped<IProcess<ESequence>, RootProcess<ESequence, ESemiSequence>>(EProcess.Root.ToString());
-                services.AddKeyedScoped<IProcess<ESequence>, StageProcess>(EProcess.StageLeft.ToString());
-                services.AddKeyedScoped<IProcess<ESequence>, StageProcess>(EProcess.StageRight.ToString());
-                services.AddKeyedScoped<IProcess<ESequence>, NozzleCleanProcess>(EProcess.NozzleClean.ToString());
-                services.AddKeyedScoped<IProcess<ESequence>, DispenserProcess>(EProcess.Dispenser.ToString());
-                services.AddKeyedScoped<IProcess<ESequence>, VisionInspectionProcess>(EProcess.VisionInspection.ToString());
-                services.AddKeyedScoped<IProcess<ESequence>, UVProcess>(EProcess.UV.ToString());
-                services.AddKeyedScoped<IProcess<ESequence>, TransferProcess>(EProcess.Transfer.ToString());
+                services.AddSingleton<IProcess<ESequence>, RootProcess<ESequence, ESemiSequence>>();
+                services.AddSingleton<IProcess<ESequence>, StageProcess>();
+                services.AddSingleton<IProcess<ESequence>, StageProcess>();
+                services.AddSingleton<IProcess<ESequence>, NozzleCleanProcess>();
+                services.AddSingleton<IProcess<ESequence>, DispenserHeadProcess>();
+                services.AddSingleton<IProcess<ESequence>, VisionInspectionProcess>();
+                services.AddSingleton<IProcess<ESequence>, UVProcess>();
+                services.AddSingleton<IProcess<ESequence>, TransferProcess>();
 
-                services.AddSingleton((ser) =>
-                {
-                    List<IProcess<ESequence>> processList = new List<IProcess<ESequence>>();
-
-                    foreach (EProcess process in Enum.GetValues(typeof(EProcess)))
-                    {
-                        var proc = ser.GetKeyedService<IProcess<ESequence>>(process.ToString());
-                        if (proc != null)
-                        {
-                            ((ProcessBase<ESequence>)proc).Name = process.ToString();
-                            processList.Add(proc);
-                        }
-                    }
-                    return new Processes(processList);
-                });
-
+                services.AddSingleton<Processes>();
             });
             return hostBuilder;
         }

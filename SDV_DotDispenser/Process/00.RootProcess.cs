@@ -74,6 +74,8 @@ namespace SDV_DotDispenser.Process
             }
 
             //2.CHECK USER OPERATION COMMAND(Origin / Ready / Start / Stop / Semiauto...)
+            if (_machineStatus.OPCommand == EOperationCommand.None) return base.PreProcess();
+
             EOperationCommand command = EOperationCommand.None;
             if (_machineStatus.IsRunningProcessMode)
             {
@@ -101,7 +103,7 @@ namespace SDV_DotDispenser.Process
                     ProcessMode != EProcessMode.Alarm && ProcessMode != EProcessMode.None)
                 {
                     if ((_machineStatus.OPCommand == EOperationCommand.Ready
-                        || _devices.Inputs.OPButtonReset.Value == true )
+                        || _devices.Inputs.OPButtonReset.Value == true)
                         && (_viewModelavigationStore.CurrentViewModel is AutoViewModel))
                     {
                         command = EOperationCommand.Ready;

@@ -7,15 +7,18 @@
              mc:Ignorable="d"
              x:Name="root"
              Loaded="root_Loaded"
+             xmlns:corePro="clr-namespace:EQX.Core.Process;assembly=EQX.Core"
              xmlns:ui="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
              xmlns:process="clr-namespace:EQX.Process;assembly=EQX.Process"
+             xmlns:localPro="clr-namespace:SDV_DotDispenser.Process"
              xmlns:vm="clr-namespace:SDV_DotDispenser.MVVM.ViewModels"
              d:DataContext="{d:DesignInstance Type={x:Type vm:OriginViewModel}}"
              d:DesignHeight="1080"
              d:DesignWidth="1920">
     <UserControl.Resources>
-        <DataTemplate x:Key="ProcessOriginStatusTemplate">
+        <DataTemplate DataType="{x:Type localPro:DDProcess}">
             <Border BorderBrush="Gray"
+                    Width="120"
                     IsEnabled="{Binding DataContext.MachineStatus.IsStandByProcessMode,ElementName=root}"
                     Cursor="Hand"
                     BorderThickness="1"
@@ -82,65 +85,76 @@
                 </Grid>
             </Border>
         </DataTemplate>
-        <Style TargetType="ContentControl">
+        <Style TargetType="{x:Type ui:ImageButton}"
+               BasedOn="{StaticResource {x:Type ui:ImageButton}}">
             <Style.Setters>
-                <Setter Property="ContentTemplate"
-                        Value="{StaticResource ProcessOriginStatusTemplate}" />
+                <Setter Property="FontSize" Value="22"/>
+                <Setter Property="Margin" Value="0 5"/>
             </Style.Setters>
         </Style>
     </UserControl.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="9*" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Canvas Grid.Row="0">
-            <ContentControl Content="{Binding Processes.TransferProcess}"
-                            Canvas.Left="1000"
-                            Canvas.Top="200" />
-            <ContentControl Content="{Binding Processes.StageLeftProcess}"
-                            Canvas.Left="200"
-                            Canvas.Top="550" />
-            <ContentControl Content="{Binding Processes.StageRightProcess}"
-                            Canvas.Left="500"
-                            Canvas.Top="550" />
+    <Grid Margin="0 0 -5 0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <Canvas Background="Wheat">
         </Canvas>
-        <StackPanel Orientation="Horizontal"
+
+        <Grid Grid.Column="1">
+            <Image Grid.Column="1"
+                Source="/SDV_DotDispenser;component/Resource/Images/DotDispenser_TopView.png"
+                Margin="120"/>
+        </Grid>
+        
+        <Canvas Grid.Column="1">
+            <ContentControl Content="{Binding Processes.All[1]}"
+                    Canvas.Left="300"
+                    Canvas.Top="650"/>
+            <ContentControl Content="{Binding Processes.All[2]}"
+                    Canvas.Left="450"
+                    Canvas.Top="650"/>
+            <ContentControl Content="{Binding Processes.All[3]}"
+                    Canvas.Left="150"
+                    Canvas.Top="480"/>
+            <ContentControl Content="{Binding Processes.All[4]}"
+                    Canvas.Left="375"
+                    Canvas.Top="480"/>
+            <ContentControl Content="{Binding Processes.All[5]}"
+                Canvas.Left="375"
+                Canvas.Top="330"/>
+            <ContentControl Content="{Binding Processes.All[6]}"
+                Canvas.Left="375"
+                Canvas.Top="580"/>
+            <ContentControl Content="{Binding Processes.All[7]}"
+                Canvas.Left="375"
+                Canvas.Top="180"/>
+        </Canvas>
+
+        <StackPanel Orientation="Vertical"
+                    VerticalAlignment="Bottom"
                     HorizontalAlignment="Center"
-                    Height="50"
-                    Grid.Row="1">
+                    Grid.Column="2">
             <ui:ImageButton Content="{DynamicResource str_Select_all}"
                             Image="/EQX.UI;component/Resources/Images/Components/Common/select_selected.png"
                             Command="{Binding SelectAllCommand}"
-                            IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
-                            FontSize="20"
-                            Margin="0 0 5 0"
-                            Width="200" />
+                            IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"/>
             <ui:ImageButton Content="{DynamicResource str_Unselect_all}"
                             Image="/EQX.UI;component/Resources/Images/Components/Common/unselect_all_selected.png"
                             Command="{Binding UnSelectAllCommand}"
-                            IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
-                            FontSize="20"
-                            Margin="0 0 5 0"
-                            Width="200" />
+                            IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"/>
             <ui:ImageButton Content="{DynamicResource str_Origin}"
                             Image="/EQX.UI;component/Resources/Images/Components/Common/return origin_selected.png"
                             Command="{Binding OriginCommand}"
-                            IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
-                            FontSize="20"
-                            Margin="0 0 5 0"
-                            Width="200" />
+                            IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"/>
             <ui:ImageButton Content="{DynamicResource str_Stop}"
                             Image="/EQX.UI;component/Resources/Images/Components/Common/stop_selected.png"
-                            Command="{Binding StopCommand}"
-                            FontSize="20"
-                            Margin="0 0 5 0"
-                            Width="200" />
+                            Command="{Binding StopCommand}"/>
             <ui:ImageButton Content="{DynamicResource str_Exit}"
                             Image="/EQX.UI;component/Resources/Images/Components/Common/exit_selected.png"
-                            Command="{Binding ExitCommand}"
-                            FontSize="20"
-                            Width="200" />
+                            Command="{Binding ExitCommand}"/>
         </StackPanel>
     </Grid>
 </UserControl>

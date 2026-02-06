@@ -7,7 +7,7 @@
         OP_BUTTON_RESET = 2,
         OP_SWITCH_EMO = 3,
         OP_SWITCH_AUTO = 4,
-        OP_SWITCH_TEACH = 5,
+        OP_SWITCH_MANUAL = 5,
         MAIN_PANEL_FAN_RUN_1 = 6,
         MAIN_PANEL_FAN_RUN_2 = 7,
         SMOKE_DETECT_RUN = 8,
@@ -86,6 +86,5 @@
         MAIN_N2_CDA_CHECK = 77,
         PLASMA_CDA_CHECK = 78,
         PLASMA_N2_CDA_CHECK = 79,
-
     }
 }

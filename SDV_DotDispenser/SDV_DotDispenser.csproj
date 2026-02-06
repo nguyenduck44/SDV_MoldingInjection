@@ -40,6 +40,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Resource\Images\DotDispenser_TopView.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resource\Images\DotDispenser_TopView.png" />
     <Resource Include="TopIcon.ico" />
   </ItemGroup>
 
@@ -86,10 +91,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Resource\Image\" />
   </ItemGroup>
 
 </Project>

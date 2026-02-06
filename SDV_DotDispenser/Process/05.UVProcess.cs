@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SDV_DotDispenser.Process
 {
-    public class UVProcess : ProcessBase<ESequence>
+    public class UVProcess : DDProcess
     {
         private readonly Devices _devices;
 

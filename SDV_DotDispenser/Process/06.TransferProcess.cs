@@ -8,7 +8,7 @@ using SDV_DotDispenser.Recipe;
 
 namespace SDV_DotDispenser.Process
 {
-    public class TransferProcess : ProcessBase<ESequence>
+    public class TransferProcess : DDProcess
     {
         #region Privates
         private readonly Devices _devices;

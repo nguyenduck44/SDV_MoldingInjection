@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SDV_DotDispenser.Process
 {
-    public class DispenserProcess : ProcessBase<ESequence>
+    public class DispenserHeadProcess : DDProcess
     {
         private readonly Devices _devices;
         private readonly RecipeList _recipeList;
@@ -20,7 +20,7 @@ namespace SDV_DotDispenser.Process
         private IMotion XAxis => _devices.Motions.DispenserHeadXAxis;
         private IMotion ZAxis => _devices.Motions.DispenserHeadZAxis;
 
-        public DispenserProcess(Devices devices,
+        public DispenserHeadProcess(Devices devices,
             RecipeList recipeList)
         {
             _devices = devices;

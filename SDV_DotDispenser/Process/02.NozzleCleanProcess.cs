@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SDV_DotDispenser.Process
 {
-    public class NozzleCleanProcess : ProcessBase<ESequence>
+    public class NozzleCleanProcess : DDProcess
     {
         private readonly Devices _devices;
 

@@ -32,17 +32,6 @@ namespace SDV_DotDispenser.MVVM.ViewModels
             }
         }
 
-        public ICommand ApplicationCloseCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    _viewModelFactory.Create<HeaderViewModel>().ApplicationCloseCommand.Execute(null);
-                });
-            }
-        }
-
         public string CurrentUserLabel
         {
             get => _currentUserLabel;

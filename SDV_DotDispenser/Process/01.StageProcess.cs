@@ -7,13 +7,19 @@ using SDV_DotDispenser.Recipe;
 
 namespace SDV_DotDispenser.Process
 {
-    public class StageProcess : ProcessBase<ESequence>
+    /// <summary>
+    /// SDV Dot Dispenser Process
+    /// </summary>
+    public class DDProcess : ProcessBase<ESequence> { }
+
+    public class StageProcess : DDProcess
     {
         private readonly Devices _devices;
         private readonly RecipeList _recipeList;
 
         private EPort port => Name == EProcess.StageLeft.ToString() ? EPort.Left : EPort.Right;
         private IMotion YAxis => port == EPort.Left ? _devices.Motions.StageY1Axis : _devices.Motions.StageY2Axis;
+
         public StageProcess(Devices devices, RecipeList recipeList)
         {
             _devices = devices;

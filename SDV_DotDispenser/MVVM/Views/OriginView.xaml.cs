@@ -30,6 +30,7 @@ namespace SDV_DotDispenser.MVVM.Views
         {
             InitializeComponent();
         }
+
         private void Border_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (DataContext is OriginViewModel originVM == false) return;

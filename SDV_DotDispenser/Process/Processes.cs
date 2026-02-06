@@ -1,42 +1,37 @@
 ﻿using EQX.Core.Process;
+using EQX.Process;
 using SDV_DotDispenser.Defines;
+using System.Diagnostics;
 
 namespace SDV_DotDispenser.Process
 {
     public class Processes
     {
-        private readonly List<IProcess<ESequence>> _processes;
+        public IEnumerable<IProcess<ESequence>> All { get; }
 
         #region Properties
-        public IProcess<ESequence> RootProcess => _processes.First(p => p.Name == EProcess.Root.ToString());
-        public IProcess<ESequence> StageLeftProcess => _processes.First(p => p.Name == EProcess.StageLeft.ToString());
-        public IProcess<ESequence> StageRightProcess => _processes.First(p => p.Name == EProcess.StageRight.ToString());
-        public IProcess<ESequence> NozzleCleanProcess => _processes.First(p => p.Name == EProcess.NozzleClean.ToString());
-        public IProcess<ESequence> DispenserProcess => _processes.First(p => p.Name == EProcess.Dispenser.ToString());
-        public IProcess<ESequence> VisionInspectionProcess => _processes.First(p => p.Name == EProcess.VisionInspection.ToString());
-        public IProcess<ESequence> UVProcess => _processes.First(p => p.Name == EProcess.UV.ToString());
-        public IProcess<ESequence> TransferProcess => _processes.First(p => p.Name == EProcess.Transfer.ToString());
+        public IProcess<ESequence> RootProcess { get; }
         #endregion
 
-        public Processes(List<IProcess<ESequence>> processes)
+        public Processes(IEnumerable<IProcess<ESequence>> processes)
         {
-            _processes = processes;
+            All = processes;
+            RootProcess = All.First(p => p.GetType() == typeof(RootProcess<ESequence, ESemiSequence>));
         }
 
         public void Initialize()
         {
             // Initialize the processes
-            RootProcess.AddChild(StageLeftProcess);
-            RootProcess.AddChild(StageRightProcess);
-            RootProcess.AddChild(NozzleCleanProcess);
-            RootProcess.AddChild(DispenserProcess);
-            RootProcess.AddChild(VisionInspectionProcess);
-            RootProcess.AddChild(UVProcess);
-            RootProcess.AddChild(TransferProcess);
-
-            // Set the process hierarchy
-            foreach (var process in RootProcess.Childs)
+            for (int i = 0; i < All.Count(); i++)
             {
+                var process = All.ToList()[i];
+
+                ((ProcessBase<ESequence>)process).Name = Enum.GetName(typeof(EProcess), i)!;
+
+                if (process == RootProcess) continue;
+
+                RootProcess.AddChild(process);
+
                 process.AlarmRaised += ((alarmId, alarmSource) =>
                 {
                     RootProcess.RaiseAlarm(alarmId, alarmSource);
@@ -61,8 +56,5 @@ namespace SDV_DotDispenser.Process
             RootProcess.Stop();
             RootProcess.Childs?.All(p => p.Stop());
         }
-        #region Privates
-        private readonly MachineStatus _machineStatus;
-        #endregion
     }
 }

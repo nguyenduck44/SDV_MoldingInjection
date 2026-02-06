@@ -14,63 +14,6 @@
              d:DesignHeight="1060"
              d:DesignWidth="1920">
     <UserControl.Resources>
-        <Style TargetType="GroupBox"
-               x:Key="TextBlockHeaderGroupBox">
-            <Setter Property="HeaderTemplate">
-                <Setter.Value>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding}"
-                                   FontWeight="Bold"
-                                   FontSize="14"
-                                   Foreground="Black"
-                                   VerticalAlignment="Center" />
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <!-- Signal Ellipse Style -->
-        <Style x:Key="SignalEllipseStyle"
-               TargetType="Ellipse">
-            <Setter Property="Width"
-                    Value="20" />
-            <Setter Property="Height"
-                    Value="20" />
-            <Setter Property="Fill"
-                    Value="Red" />
-            <Setter Property="Stroke"
-                    Value="White" />
-            <Setter Property="StrokeThickness"
-                    Value="2" />
-        </Style>
-
-        <Style x:Key="DoorIndicatorRectangleStyle"
-               TargetType="Rectangle">
-            <Setter Property="HorizontalAlignment"
-                    Value="Stretch" />
-            <Setter Property="VerticalAlignment"
-                    Value="Stretch" />
-            <Setter Property="RadiusX"
-                    Value="2" />
-            <Setter Property="RadiusY"
-                    Value="2" />
-            <Setter Property="Stroke"
-                    Value="Black" />
-            <Setter Property="StrokeThickness"
-                    Value="1" />
-            <Setter Property="Margin"
-                    Value="0" />
-        </Style>
-
-        <Style x:Key="EmergencyIndicatorImageStyle"
-               TargetType="Image">
-            <Setter Property="Width"
-                    Value="28" />
-            <Setter Property="Height"
-                    Value="28" />
-            <Setter Property="RenderOptions.BitmapScalingMode"
-                    Value="HighQuality" />
-        </Style>
-
         <Style TargetType="Border">
             <Setter Property="BorderThickness"
                     Value="2" />
@@ -89,21 +32,33 @@
             <Setter Property="FontSize"
                     Value="14" />
         </Style>
+        <Style
+            TargetType="{x:Type ui:ImageButton}"
+            BasedOn="{StaticResource {x:Type ui:ImageButton}}">
+            <Setter Property="FontSize" Value="22" />
+        </Style>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
+    
     <Grid Margin="10 0 0 0">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="6*" />
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="3*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Grid Grid.Column="1"
+
+        <!-- Machine Image -->
+        <Image Grid.Column="1"
+            Source="/SDV_DotDispenser;component/Resource/Images/DotDispenser_TopView.png"
+            Margin="120"/>
+
+        <Grid Grid.Column="2"
               Margin="5">
             <Grid.RowDefinitions>
-                <RowDefinition Height="1.2*" />
-                <RowDefinition Height="2*" />
-                <RowDefinition Height="2.2*" />
-                <RowDefinition Height="2*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
+            
             <UniformGrid Columns="1">
                 <Label Content="{DynamicResource str_Machine_Status}"
                        HorizontalContentAlignment="Center"
@@ -128,144 +83,45 @@
                           SelectedValue="{Binding RecipeSelector.CurrentRecipe.CommonRecipe.SelectedLanguage, Mode=TwoWay}" />
             </UniformGrid>
 
-            <UniformGrid Columns="1"
-                         Grid.Row="1">
-                <ui:ImageButton Image="/EQX.UI;component/Resources/Images/Components/Common/model_change_Selected.png"
-                                Content="{Binding MachineStatus.MachineRunModeDisplay}"
-                                Background="LightBlue"
-                                FontSize="18"
-                                Command="{Binding SelectRunModeCommand}"
-                                IsEnabled="{Binding MachineStatus.IsStandByProcessMode}" />
+            <UniformGrid
+                Columns="1" Grid.Row="1"
+                Height="500"
+                VerticalAlignment="Bottom">
+                <ui:ImageRadioButton
+                    Image="/EQX.UI;component/Resources/Images/Components/Common/auto_selected.png"
+                    DisabledImage="/EQX.UI;component/Resources/Images/Components/Common/auto_normal_light.png"
+                    Content="{DynamicResource str_AutoMode}"
+                    FontSize="22"/>
 
-                <ui:ImageButton Image="/EQX.UI;component/Resources/Images/Components/Common/IO_selected.png"
-                                Content="{DynamicResource str_IO_Monitoring}"
-                                FontSize="18"
-                                Command="{Binding IOMonitoringNavigate}"
-                                Background="LightBlue"
-                                IsEnabled="{Binding MachineStatus.IsStandByProcessMode}" />
+                <ui:ImageRadioButton
+                    Image="/EQX.UI;component/Resources/Images/Components/Common/manual_selected.png"
+                    DisabledImage="/EQX.UI;component/Resources/Images/Components/Common/manual_normal_light.png"
+                    Content="{DynamicResource str_ManualMode}"
+                    FontSize="22"/>
 
-                <ui:ImageButton Image="/EQX.UI;component/Resources/Images/Components/Common/idling_selected.png"
-                                Content="{DynamicResource str_Initialize}"
-                                FontSize="18"
-                                Background="LightBlue"
-                                Command="{Binding InitializeNavigate}"
-                                IsEnabled="{Binding MachineStatus.IsStandByProcessMode}" />
+                <ui:ImageButton
+                    Image="/EQX.UI;component/Resources/Images/Components/Common/model_change_Selected.png"
+                    Content="{DynamicResource str_AutoRun}"
+                    Command="{Binding StartCommand}"
+                    IsEnabled="{Binding MachineStatus.IsStandByProcessMode}" />
 
-                <ui:ImageButton Image="/EQX.UI;component/Resources/Images/Components/Common/return_origin_selected.png"
-                                Content="{DynamicResource str_Origin}"
-                                FontSize="18"
-                                Background="LightBlue"
-                                Command="{Binding OriginCommand}"
-                                IsEnabled="{Binding MachineStatus.IsStandByProcessMode}" />
+                <ui:ImageButton
+                    Image="/EQX.UI;component/Resources/Images/Components/Common/stop_selected.png"
+                    Content="{DynamicResource str_CycleStop}"
+                    Command="{Binding StopCommand}" />
+
+                <ui:ImageButton
+                    Image="/EQX.UI;component/Resources/Images/Components/Common/pause_selected.png"
+                    Content="{DynamicResource str_Pause}"
+                    Command="{Binding StopCommand}" />
+
+                <ui:ImageButton
+                    Image="/EQX.UI;component/Resources/Images/Components/Common/return_origin_selected.png"
+                    Content="{DynamicResource str_Origin}"
+                    Command="{Binding OriginCommand}"
+                    IsEnabled="{Binding MachineStatus.IsStandByProcessMode}" />
+
             </UniformGrid>
-
-            <!-- PRODUCT INFORMATION -->
-            <Border Grid.Row="2"
-                    Margin="1"
-                    Background="MintCream">
-            </Border>
-
-            <Grid Grid.Row="3">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1.5*" />
-                    <RowDefinition Height="1.5*" />
-                    <RowDefinition Height="1*" />
-                </Grid.RowDefinitions>
-
-                <UniformGrid Rows="1"
-                             Margin="2">
-                    <Button Content="Input Stop"
-                            Height="Auto"
-                            FontSize="18"
-                            Command="{Binding InputStopCommand}">
-                        <Button.Style>
-                            <Style TargetType="Button"
-                                   BasedOn="{StaticResource {x:Type Button}}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding DataContext.MachineStatus.IsInputStop,ElementName=root}"
-                                                 Value="True">
-                                        <Setter Property="Background"
-                                                Value="Tomato" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding DataContext.MachineStatus.IsInputStop,ElementName=root}"
-                                                 Value="False">
-                                        <Setter Property="Background"
-                                                Value="White" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                    <Button Content="Output Stop"
-                            Height="Auto"
-                            FontSize="18"
-                            Command="{Binding OutputStopCommand}">
-                        <Button.Style>
-                            <Style TargetType="Button"
-                                   BasedOn="{StaticResource {x:Type Button}}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding DataContext.MachineStatus.IsOutputStop,ElementName=root}"
-                                                 Value="True">
-                                        <Setter Property="Background"
-                                                Value="Tomato" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding DataContext.MachineStatus.IsOutputStop,ElementName=root}"
-                                                 Value="False">
-                                        <Setter Property="Background"
-                                                Value="White" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                </UniformGrid>
-
-                <ui:ImageButton Grid.Row="1"
-                                Margin="2"
-                                Image="/EQX.UI;component/Resources/Images/Components/Common/start_selected.png"
-                                Content="{DynamicResource str_Start}"
-                                FontSize="18"
-                                Command="{Binding StartCommand}" />
-
-                <ui:ImageButton Grid.Row="2"
-                                Margin="2"
-                                Image="/EQX.UI;component/Resources/Images/Components/Common/stop_selected.png"
-                                Content="{DynamicResource str_Stop}"
-                                FontSize="18"
-                                Command="{Binding StopCommand}" />
-
-                <UniformGrid Columns="2"
-                             Grid.Row="3"
-                             Margin="2">
-                    <ui:ImageButton Content="{DynamicResource str_Buzzer_Off}"
-                                    Image="/EQX.UI;component/Resources/Images/Components/Common/alarm_selected.png"
-                                    Command="{Binding BuzzerOffCommand}"
-                                    FontSize="18" />
-                    <ui:ImageButton Command="{Binding DoorOpenCommand}"
-                                    IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
-                                    Image="/EQX.UI;component/Resources/Images/Components/Common/lock_selected.png"
-                                    FontSize="18">
-                        <ui:ImageButton.Style>
-                            <Style TargetType="{x:Type ui:ImageButton}"
-                                   BasedOn="{StaticResource {x:Type ui:ImageButton}}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Devices.Outputs.DoorOpen.Value}"
-                                                 Value="True">
-                                        <Setter Property="Content"
-                                                Value="Door Close"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Devices.Outputs.DoorOpen.Value}"
-                                                 Value="False">
-                                        <Setter Property="Content"
-                                                Value="Door Open"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ui:ImageButton.Style>
-                    </ui:ImageButton>
-                </UniformGrid>
-            </Grid>
         </Grid>
     </Grid>
 </UserControl>
