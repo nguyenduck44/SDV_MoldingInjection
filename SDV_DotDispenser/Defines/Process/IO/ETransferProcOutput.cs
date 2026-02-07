@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace SDV_DotDispenser.Defines
 {
-    public enum ETransferProcessOutput
+    public enum ETransferProcOutput
     {
-        TRANSFER_LOAD_DONE
+        ZAxis_AtOrigin,
     }
 }

@@ -9,6 +9,9 @@ namespace SDV_DotDispenser.Defines
     public enum EStageProcessOriginStep
     {
         Start,
+
+        Wait_ZAxis_HomeDone,
+
         YAxis_Origin,
         YAxis_Origin_Wait,
         End

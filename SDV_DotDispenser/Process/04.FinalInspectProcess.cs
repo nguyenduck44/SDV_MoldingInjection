@@ -12,14 +12,14 @@ using System.Threading.Tasks;
 
 namespace SDV_DotDispenser.Process
 {
-    public class VisionInspectionProcess : DDProcess
+    public class FinalInspectProcess : DDProcess
     {
         private readonly Devices _devices;
         private readonly RecipeList _recipeList;
 
         private IMotion XAxis => _devices.Motions.InspectVisionXAxis;
 
-        public VisionInspectionProcess(Devices devices,
+        public FinalInspectProcess(Devices devices,
             RecipeList recipeList)
         {
             _devices = devices;

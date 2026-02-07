@@ -138,23 +138,28 @@
                     HorizontalAlignment="Center"
                     Grid.Column="2">
             <ui:ImageButton Content="{DynamicResource str_Select_all}"
+                            DisabledImage="/EQX.UI;component/Resources/Images/Components/Common/select_normal_dark.png"
                             Image="/EQX.UI;component/Resources/Images/Components/Common/select_selected.png"
                             Command="{Binding SelectAllCommand}"
                             IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"/>
             <ui:ImageButton Content="{DynamicResource str_Unselect_all}"
+                            DisabledImage="/EQX.UI;component/Resources/Images/Components/Common/unselect_all_normal_dark.png"
                             Image="/EQX.UI;component/Resources/Images/Components/Common/unselect_all_selected.png"
                             Command="{Binding UnSelectAllCommand}"
                             IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"/>
             <ui:ImageButton Content="{DynamicResource str_Origin}"
-                            Image="/EQX.UI;component/Resources/Images/Components/Common/return origin_selected.png"
+                            DisabledImage="/EQX.UI;component/Resources/Images/Components/Common/return_origin_normal.png"
+                            Image="/EQX.UI;component/Resources/Images/Components/Common/return_origin_selected.png"
                             Command="{Binding OriginCommand}"
                             IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"/>
             <ui:ImageButton Content="{DynamicResource str_Stop}"
                             Image="/EQX.UI;component/Resources/Images/Components/Common/stop_selected.png"
                             Command="{Binding StopCommand}"/>
             <ui:ImageButton Content="{DynamicResource str_Exit}"
+                            DisabledImage="/EQX.UI;component/Resources/Images/Components/Common/exit_normal_dark.png"
                             Image="/EQX.UI;component/Resources/Images/Components/Common/exit_selected.png"
-                            Command="{Binding ExitCommand}"/>
+                            Command="{Binding ExitCommand}"
+                            IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"/>
         </StackPanel>
     </Grid>
 </UserControl>

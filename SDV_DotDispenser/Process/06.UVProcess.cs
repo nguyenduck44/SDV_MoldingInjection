@@ -1,4 +1,6 @@
-﻿using EQX.Process;
+﻿using EQX.Core.InOut;
+using EQX.Core.Motion;
+using EQX.Process;
 using SDV_DotDispenser.Defines;
 using SDV_DotDispenser.Defines.Devices;
 using System;
@@ -9,11 +11,13 @@ using System.Threading.Tasks;
 
 namespace SDV_DotDispenser.Process
 {
-    public class NozzleCleanProcess : DDProcess
+    public class UVCureProcess : DDProcess
     {
         private readonly Devices _devices;
 
-        public NozzleCleanProcess(Devices devices)
+        private ICylinder UVCureCyl => _devices.Cylinders.UVCureCyl;
+
+        public UVCureProcess(Devices devices)
         {
             _devices = devices;
         }

@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace SDV_DotDispenser.Defines
 {
-    public enum ETransferProcessInput
+    public enum ETransferProcInput
     {
-        SHUTTLE_REQUEST_LOAD
     }
 }

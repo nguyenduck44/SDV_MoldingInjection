@@ -27,7 +27,6 @@ namespace SDV_DotDispenser.Defines
         public IMotion DispenserHeadXAxis => AjinMotions.All.First(m => m.Id == (int)EMotion.DispenserHeadXAxis);
         public IMotion DispenserHeadZAxis => AjinMotions.All.First(m => m.Id == (int)EMotion.DispenserHeadZAxis);
         public IMotion InspectVisionXAxis => AjinMotions.All.First(m => m.Id == (int)EMotion.InspectVisionXAxis);
-        public IMotion UVHeadXAxis => AjinMotions.All.First(m => m.Id == (int)EMotion.UVHeadXAxis);
         public IMotion TransferXAxis => AjinMotions.All.First(m => m.Id == (int)EMotion.TransferXAxis);
         public IMotion TransferZAxis => AjinMotions.All.First(m => m.Id == (int)EMotion.TransferZAxis);
     }

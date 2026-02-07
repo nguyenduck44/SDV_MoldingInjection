@@ -5,10 +5,11 @@
         Root,
         StageLeft,
         StageRight,
+        Plasma,
         NozzleClean,
         Dispenser,
         VisionInspection,
-        UV,
+        UVCure,
         Transfer,
     }
 }

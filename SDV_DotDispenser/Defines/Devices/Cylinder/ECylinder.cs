@@ -2,11 +2,11 @@
 {
     public enum ECylinder
     {
-        PlasmaCylBwFw,
+        PlasmaCover,
 
-        TransferHand1UpDown,
-        TransferHand2UpDown,
+        TransferHand1,
+        TransferHand2,
 
-        UVCureBwFw,
+        UVCure,
     }
 }

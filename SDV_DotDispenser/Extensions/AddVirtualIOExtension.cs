@@ -17,11 +17,28 @@ namespace SDV_DotDispenser.Extensions
         {
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
-                services.AddKeyedSingleton<IDInputDevice, MappableInputDevice<ETransferProcessInput>>("TransferProcessInput");
-                services.AddKeyedSingleton<IDOutputDevice, MappableOutputDevice<ETransferProcessOutput>>("TransferProcessOutput");
+                services.AddSingleton<IDInputDevice>(new MappableInputDevice<EStageProcInput> { Name = "LeftStageProcInput" });
+                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<EStageProcOutput> { Name = "LeftStageProcOutput" });
+
+                services.AddSingleton<IDInputDevice>(new MappableInputDevice<EStageProcInput> { Name = "RightStageProcInput" });
+                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<EStageProcOutput> { Name = "RightStageProcOutput" });
+
+                services.AddSingleton<IDInputDevice>(new MappableInputDevice<ECleanProcInput> { Name = "CleanProcInput" });
+                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<ECleanProcOutput> { Name = "CleanProcOutput" });
+
+                services.AddSingleton<IDInputDevice>(new MappableInputDevice<EDispenserProcInput> { Name = "DispenserProcInput" });
+                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<EDispenserProcOutput> { Name = "DispenserProcOutput" });
+
+                services.AddSingleton<IDInputDevice>(new MappableInputDevice<EFinalInspectProcInput> { Name = "FinalInspectProcInput" });
+                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<EFinalInspectProcOutput> { Name = "FinalInspectProcOutput" });
+
+                services.AddSingleton<IDInputDevice>(new MappableInputDevice<EUVProcInput> { Name = "UVProcInput" });
+                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<EUVProcOutput> { Name = "UVProcOutput" });
+
+                services.AddSingleton<IDInputDevice>(new MappableInputDevice<ETransferProcInput> { Name = "TransferProcessInput" });
+                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<ETransferProcOutput> { Name = "TransferProcessOutput" });
 
                 services.AddSingleton<VirtualIO>();
-
             });
 
             return hostBuilder;

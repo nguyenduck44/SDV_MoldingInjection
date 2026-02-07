@@ -1,27 +1,27 @@
 [submodule "EQX.Core"]
 	path = EQX.Core
-	url = https://github.com/TopEngineering/EQX.Core.git
+	url = http://192.168.0.39:7990/scm/el/eqx.core.git
 [submodule "EQX.Device"]
 	path = EQX.Device
-	url = https://github.com/TopEngineering/EQX.Device.git
+	url = http://192.168.0.39:7990/scm/el/eqx.device.git
 [submodule "EQX.Motion"]
 	path = EQX.Motion
-	url = https://github.com/TopEngineering/EQX.Motion.git
+	url = http://192.168.0.39:7990/scm/el/eqx.motion.git
 [submodule "EQX.InOut"]
 	path = EQX.InOut
-	url = https://github.com/TopEngineering/EQX.InOut.git
+	url = http://192.168.0.39:7990/scm/el/eqx.inout.git
 [submodule "EQX.UI"]
 	path = EQX.UI
-	url = https://github.com/TopEngineering/EQX.UI.git
+	url = http://192.168.0.39:7990/scm/el/eqx.UI.git
 [submodule "EQX.Process"]
 	path = EQX.Process
-	url = https://github.com/TopEngineering/EQX.Process.git
+	url = http://192.168.0.39:7990/scm/el/eqx.process.git
 [submodule "EQX.ThirdParty"]
 	path = EQX.ThirdParty
-	url = https://github.com/TopEngineering/EQX.ThirdParty.git
+	url = http://192.168.0.39:7990/scm/el/eqx.ThirdParty.git
 [submodule "EQX.Vision"]
 	path = EQX.Vision
-	url = https://github.com/TopEngineering/EQX.Vision.git
+	url = http://192.168.0.39:7990/scm/el/eqx.vision.git
 [submodule "EQX.VisionUI"]
 	path = EQX.VisionUI
-	url = https://github.com/TopEngineering/EQX.VisionUI.git
+	url = http://192.168.0.39:7990/scm/el/eqx.visionui.git

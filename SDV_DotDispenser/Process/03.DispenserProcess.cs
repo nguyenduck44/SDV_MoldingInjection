@@ -1,4 +1,5 @@
-﻿using EQX.Core.Motion;
+﻿using EQX.Core.InOut;
+using EQX.Core.Motion;
 using EQX.Core.Sequence;
 using EQX.Process;
 using SDV_DotDispenser.Defines;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SDV_DotDispenser.Process
 {
-    public class DispenserHeadProcess : DDProcess
+    public class DispenserProcess : DDProcess
     {
         private readonly Devices _devices;
         private readonly RecipeList _recipeList;
@@ -20,11 +21,41 @@ namespace SDV_DotDispenser.Process
         private IMotion XAxis => _devices.Motions.DispenserHeadXAxis;
         private IMotion ZAxis => _devices.Motions.DispenserHeadZAxis;
 
-        public DispenserHeadProcess(Devices devices,
-            RecipeList recipeList)
+        private IDInputDevice<EDispenserProcInput> procInputs;
+        private IDOutputDevice<EDispenserProcOutput> procOutputs;
+
+        public DispenserProcess(Devices devices,
+            RecipeList recipeList,
+            VirtualIO virtualIO)
         {
             _devices = devices;
             _recipeList = recipeList;
+
+            procInputs = virtualIO.DispenserProcInput;
+            procOutputs = virtualIO.DispenserProcOutput;
+        }
+
+        public override bool ProcessToRun()
+        {
+            switch ((EDispenserProcessToRunStep)Step.ToRunStep)
+            {
+                case EDispenserProcessToRunStep.Start:
+                    Log.Debug("ToRun Start");
+                    Step.ToRunStep++;
+                    break;
+                case EDispenserProcessToRunStep.Clear_ProcOutputs:
+                    Log.Debug($"{procOutputs.Name} ClearOutputs");
+                    procOutputs.ClearOutputs();
+                    Step.ToRunStep++;
+                    break;
+                case EDispenserProcessToRunStep.End:
+                    Log.Debug("ToRun End");
+                    Step.ToRunStep++;
+                    ProcessStatus = EProcessStatus.ToRunDone;
+                    break;
+            }
+
+            return true;
         }
 
         public override bool ProcessOrigin()
@@ -47,6 +78,8 @@ namespace SDV_DotDispenser.Process
                         RaiseAlarm(EAlarm.DispenserHead_ZAxis_OriginFail);
                         break;
                     }
+
+                    procOutputs[EDispenserProcOutput.ZAxis_AtOrigin].Value = true;
 
                     Log.Debug("Z Axis Origin Done");
                     Step.OriginStep++;

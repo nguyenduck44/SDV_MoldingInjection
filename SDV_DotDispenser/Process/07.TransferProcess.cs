@@ -19,23 +19,53 @@ namespace SDV_DotDispenser.Process
         private IMotion ZAxis => _devices.Motions.TransferZAxis;
         #endregion
 
-        #region Flags
-        private IDInputDevice VirtualInput => _virtualIO.TransferProcessInput;
-        private IDOutputDevice VirtualOutput => _virtualIO.TransferProcessOutput;
+        #region Cylinder
+        private ICylinder TransferHand1Cyl => _devices.Cylinders.TransferHand1Cyl;
+        private ICylinder TransferHand2Cyl => _devices.Cylinders.TransferHand2Cyl;
+        #endregion
+
+        #region Process IOs
+        private IDInputDevice<ETransferProcInput> procInputs;
+        private IDOutputDevice<ETransferProcOutput> procOutputs;
         #endregion
 
         #region Constructor
         public TransferProcess(Devices devices,
-            VirtualIO virtualIO,
-            RecipeList recipeList)
+            RecipeList recipeList,
+            VirtualIO virtualIO)
         {
             _devices = devices;
-            _virtualIO = virtualIO;
             _recipeList = recipeList;
+
+            procInputs = virtualIO.TransferProcInput;
+            procOutputs = virtualIO.TransferProcOutput;
         }
         #endregion
 
         #region Override Methods
+        public override bool ProcessToRun()
+        {
+            switch ((ETransferProcessToRunStep)Step.ToRunStep)
+            {
+                case ETransferProcessToRunStep.Start:
+                    Log.Debug("ToRun Start");
+                    Step.ToRunStep++;
+                    break;
+                case ETransferProcessToRunStep.Clear_ProcOutputs:
+                    Log.Debug($"{procOutputs.Name} ClearOutputs");
+                    procOutputs.ClearOutputs();
+                    Step.ToRunStep++;
+                    break;
+                case ETransferProcessToRunStep.End:
+                    Log.Debug("ToRun End");
+                    Step.ToRunStep++;
+                    ProcessStatus = EProcessStatus.ToRunDone;
+                    break;
+            }
+
+            return true;
+        }
+
         public override bool ProcessOrigin()
         {
             switch ((ETransferProcessOriginStep)Step.OriginStep)
@@ -47,15 +77,26 @@ namespace SDV_DotDispenser.Process
                 case ETransferProcessOriginStep.ZAxis_Origin:
                     Log.Debug("Z Axis Origin");
                     ZAxis.SearchOrigin();
-                    Wait((int)(_recipeList.CommonRecipe.MotionOriginTimeout * 1000), () => ZAxis.Status.IsHomeDone);
+                    TransferHand1Cyl.Backward();
+                    TransferHand2Cyl.Backward();
+
+                    Wait((int)(_recipeList.CommonRecipe.MotionOriginTimeout * 1000),
+                        () => ZAxis.Status.IsHomeDone && TransferHand1Cyl.IsBackward && TransferHand2Cyl.IsBackward);
+
                     Step.OriginStep++;
                     break;
                 case ETransferProcessOriginStep.ZAxis_Origin_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseAlarm(EAlarm.Transfer_ZAxis_OriginFail);
+                        if (ZAxis.Status.IsHomeDone == false) RaiseAlarm(EAlarm.Transfer_ZAxis_OriginFail);
+                        if (TransferHand1Cyl.IsBackward == false) RaiseAlarm(EAlarm.Transfer_Hand1Cyl_BackwardFail);
+                        if (TransferHand2Cyl.IsBackward == false) RaiseAlarm(EAlarm.Transfer_Hand2Cyl_BackwardFail);
                         break;
                     }
+
+                    Thread.Sleep(5000);
+
+                    procOutputs[ETransferProcOutput.ZAxis_AtOrigin].Value = true;
 
                     Log.Debug("Z Axis Origin Done");
                     Step.OriginStep++;
@@ -101,12 +142,6 @@ namespace SDV_DotDispenser.Process
                 case ESequence.Ready:
                     Sequence = ESequence.Stop;
                     break;
-                case ESequence.Load:
-                    Sequence_Load();
-                    break;
-                case ESequence.Unload:
-                    Sequence_Unload();
-                    break;
             }
             return true;
         }
@@ -115,7 +150,7 @@ namespace SDV_DotDispenser.Process
         #region Sequences
         private void Sequence_AutoRun()
         {
-            Sequence = ESequence.Load;
+            //Sequence = ESequence.Load;
         }
 
         private void Sequence_Load()
@@ -128,7 +163,7 @@ namespace SDV_DotDispenser.Process
                     break;
                 case ETransferProcessLoadStep.End:
                     Log.Debug("Load End");
-                    Sequence = ESequence.Unload;
+                    Sequence = ESequence.LeftUnload;
                     break;
             }
         }
@@ -161,7 +196,7 @@ namespace SDV_DotDispenser.Process
                     break;
                 case ETransferProcessUnloadStep.End:
                     Log.Debug("Unload End");
-                    Sequence = ESequence.Load;
+                    //Sequence = ESequence.Load;
                     break;
             }
         }

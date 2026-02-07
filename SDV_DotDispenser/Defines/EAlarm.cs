@@ -17,16 +17,20 @@
         Motion_Limit_Detected,
         Motion_Alarm_Detected,
 
-        LeftStage_YAxis_OriginFail = 500,
+        LeftStage_YAxis_OriginFail = 1000,
 
-        RightStage_YAxis_OriginFail = 1000,
+        RightStage_YAxis_OriginFail = 1500,
 
         DispenserHead_XAxis_OriginFail = 3000,
         DispenserHead_ZAxis_OriginFail,
 
         VisionInspection_XAxis_OriginFail = 4000,
 
-        Transfer_XAxis_OriginFail = 6000,
+        Transfer_XAxis_OriginFail = 7000,
         Transfer_ZAxis_OriginFail,
+        Transfer_Hand1Cyl_BackwardFail,
+        Transfer_Hand1Cyl_ForwardFail,
+        Transfer_Hand2Cyl_BackwardFail,
+        Transfer_Hand2Cyl_ForwardFail,
     }
 }

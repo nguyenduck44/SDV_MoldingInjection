@@ -1,5 +1,4 @@
-﻿using EQX.Core.Motion;
-using EQX.Process;
+﻿using EQX.Process;
 using SDV_DotDispenser.Defines;
 using SDV_DotDispenser.Defines.Devices;
 using System;
@@ -10,13 +9,11 @@ using System.Threading.Tasks;
 
 namespace SDV_DotDispenser.Process
 {
-    public class UVProcess : DDProcess
+    public class CleanProcess : DDProcess
     {
         private readonly Devices _devices;
 
-        private IMotion XAxis => _devices.Motions.UVHeadXAxis;
-
-        public UVProcess(Devices devices)
+        public CleanProcess(Devices devices)
         {
             _devices = devices;
         }

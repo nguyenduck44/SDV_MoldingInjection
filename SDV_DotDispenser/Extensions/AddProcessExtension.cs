@@ -22,10 +22,11 @@ namespace SDV_DotDispenser.Extensions
                 services.AddSingleton<IProcess<ESequence>, RootProcess<ESequence, ESemiSequence>>();
                 services.AddSingleton<IProcess<ESequence>, StageProcess>();
                 services.AddSingleton<IProcess<ESequence>, StageProcess>();
-                services.AddSingleton<IProcess<ESequence>, NozzleCleanProcess>();
-                services.AddSingleton<IProcess<ESequence>, DispenserHeadProcess>();
-                services.AddSingleton<IProcess<ESequence>, VisionInspectionProcess>();
-                services.AddSingleton<IProcess<ESequence>, UVProcess>();
+                services.AddSingleton<IProcess<ESequence>, PlasmaProcess>();
+                services.AddSingleton<IProcess<ESequence>, CleanProcess>();
+                services.AddSingleton<IProcess<ESequence>, DispenserProcess>();
+                services.AddSingleton<IProcess<ESequence>, FinalInspectProcess>();
+                services.AddSingleton<IProcess<ESequence>, UVCureProcess>();
                 services.AddSingleton<IProcess<ESequence>, TransferProcess>();
 
                 services.AddSingleton<Processes>();
