@@ -44,8 +44,8 @@ namespace SDV_DotDispenser.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "Motion Move Timeout", Unit = Unit.Second)]
-        public double MotionMoveTimeOut
+        [SingleRecipeDescription(Description = "Motion move timeout", Unit = Unit.Second)]
+        public double MotionMoveTimeout
         {
             get { return motionMoveTimeout; }
             set

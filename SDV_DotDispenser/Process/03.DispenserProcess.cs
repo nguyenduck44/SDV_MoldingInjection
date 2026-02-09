@@ -15,14 +15,21 @@ namespace SDV_DotDispenser.Process
 {
     public class DispenserProcess : DDProcess
     {
+        #region Privates
         private readonly Devices _devices;
         private readonly RecipeList _recipeList;
+        private readonly DispensingRecipe _dispensingRecipe;
+        #endregion
 
+        #region Motions
         private IMotion XAxis => _devices.Motions.DispenserHeadXAxis;
         private IMotion ZAxis => _devices.Motions.DispenserHeadZAxis;
+        #endregion
 
+        #region Process IOs
         private IDInputDevice<EDispenserProcInput> procInputs;
         private IDOutputDevice<EDispenserProcOutput> procOutputs;
+        #endregion
 
         public DispenserProcess(Devices devices,
             RecipeList recipeList,
@@ -31,16 +38,42 @@ namespace SDV_DotDispenser.Process
             _devices = devices;
             _recipeList = recipeList;
 
+            _dispensingRecipe = _recipeList.DispensingRecipe;
+
             procInputs = virtualIO.DispenserProcInput;
             procOutputs = virtualIO.DispenserProcOutput;
         }
 
+        #region Process Methods
         public override bool ProcessToRun()
         {
             switch ((EDispenserProcessToRunStep)Step.ToRunStep)
             {
                 case EDispenserProcessToRunStep.Start:
                     Log.Debug("ToRun Start");
+                    Step.ToRunStep++;
+                    break;
+                case EDispenserProcessToRunStep.ZAxis_Up:
+                    if (ZAxis.Status.ActualPosition >= _dispensingRecipe.ZAxis_ReadyPosition)
+                    {
+                        Step.ToRunStep = (int)EDispenserProcessToRunStep.Clear_ProcOutputs;
+                        break;
+                    }
+
+                    ZAxis.MoveAbs(_dispensingRecipe.ZAxis_ReadyPosition);
+                    Wait(_recipeList.CommonRecipe.MotionMoveTimeout,
+                        () => ZAxis.IsOnPosition(_dispensingRecipe.ZAxis_ReadyPosition));
+
+                    Log.Debug($"Move {ZAxis} to ReadyPosition [{_dispensingRecipe.ZAxis_ReadyPosition} mm]");
+                    Step.ToRunStep++;
+                    break;
+                case EDispenserProcessToRunStep.ZAxis_UpWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseWarning(EWarning.Dispenser_ZAxis_MoveReadyFail);
+                        break;
+                    }
+
                     Step.ToRunStep++;
                     break;
                 case EDispenserProcessToRunStep.Clear_ProcOutputs:
@@ -111,5 +144,12 @@ namespace SDV_DotDispenser.Process
             }
             return true;
         }
+        #endregion
+
+        #region Sequence Methods
+        #endregion
+
+        #region Private Methods
+        #endregion
     }
 }

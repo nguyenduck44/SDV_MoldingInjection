@@ -45,6 +45,10 @@ namespace SDV_DotDispenser.Defines
         LeftUnload,
         [Description("Sequence Right Stage Unload")]
         RightUnload,
+        [Description("Sequence Left Stage NG Unload")]
+        LeftNGUnload,
+        [Description("Sequence Right Stage NG Unload")]
+        RightNGUnload,
     }
 
     public enum ESemiSequence

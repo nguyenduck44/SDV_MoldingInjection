@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using EQX.Core.Recipe;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SDV_DotDispenser.Recipe;
 using System;
@@ -15,7 +16,16 @@ namespace SDV_DotDispenser.Extensions
         {
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
-                services.AddSingleton<CommonRecipe>();
+                services.AddSingleton<IRecipe>(new CommonRecipe { Name = "Common" });
+                services.AddSingleton<IRecipe>(new DispensingRecipe { Name = "Dispensing" });
+                services.AddSingleton<IRecipe>(new StageRecipe { Name = "StageLeft" });
+                services.AddSingleton<IRecipe>(new StageRecipe { Name = "StageRight" });
+                services.AddSingleton<IRecipe>(new PlasmaRecipe { Name = "Plasma" });
+                services.AddSingleton<IRecipe>(new CleanRecipe { Name = "Clean" });
+                services.AddSingleton<IRecipe>(new FinalInspectRecipe { Name = "FinalInspect" });
+                services.AddSingleton<IRecipe>(new UVCureRecipe { Name = "UVCure" });
+                services.AddSingleton<IRecipe>(new TransferRecipe { Name = "Transfer" });
+
                 services.AddSingleton<RecipeList>();
                 services.AddSingleton<RecipeSelector>();
             });

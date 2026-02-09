@@ -38,12 +38,12 @@ namespace SDV_DotDispenser.Defines
 
         public List<IDInput> All => _dInputDevice.Inputs;
 
-        public IDInput OPButtonStart => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.OP_BUTTON_START);
-        public IDInput OPButtonStop => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.OP_BUTTON_STOP);
-        public IDInput OPButtonReset => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.OP_BUTTON_RESET);
-        public IDInput Emergency => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.OP_SWITCH_EMO);
-        public IDInput OPSwitchAuto => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.OP_SWITCH_AUTO);
-        public IDInput OPSwitchTeach => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.OP_SWITCH_MANUAL);
+        public IDInput OPButtonStart => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.OP_SW_START);
+        public IDInput OPButtonStop => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.OP_SW_STOP);
+        public IDInput OPButtonReset => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.OP_SW_RESET);
+        public IDInput Emergency => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.OP_SW_EMO);
+        public IDInput OPSwitchAuto => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.OP_KEY_SW_AUTO);
+        public IDInput OPSwitchTeach => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.OP_KEY_SW_TEACH);
         public IDInput MainPanelFanRun1 => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.MAIN_PANEL_FAN_RUN_1);
         public IDInput MainPanelFanRun2 => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.MAIN_PANEL_FAN_RUN_2);
         public IDInput SmokeDetectRun => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.SMOKE_DETECT_RUN);
@@ -89,8 +89,8 @@ namespace SDV_DotDispenser.Defines
         public IDInput NozzleCleanerUp => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.NOZZLE_CLEANER_UP);
         public IDInput NozzleCleanerDown => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.NOZZLE_CLEANER_DOWN);
         public IDInput NozzleCleanerWipeCheck => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.NOZZLE_CLEANER_WIPE_CHECK);
-        public IDInput UvCureFw => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.UV_CURE_FW);
-        public IDInput UvCureBw => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.UV_CURE_BW);
+        public IDInput UvCureFw => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.UV_CURE_FWD);
+        public IDInput UvCureBw => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.UV_CURE_BWD);
         public IDInput TransferHand1Up => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.TRANSFER_HAND_1_UP);
         public IDInput TransferHand1Down => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.TRANSFER_HAND_1_DOWN);
         public IDInput TransferHand2Up => _dInputDevice.Inputs.First(i => i.Id == (int)EInput.TRANSFER_HAND_2_UP);

@@ -89,8 +89,8 @@ namespace SDV_DotDispenser.Process
                     if (WaitTimeOutOccurred)
                     {
                         if (ZAxis.Status.IsHomeDone == false) RaiseAlarm(EAlarm.Transfer_ZAxis_OriginFail);
-                        if (TransferHand1Cyl.IsBackward == false) RaiseAlarm(EAlarm.Transfer_Hand1Cyl_BackwardFail);
-                        if (TransferHand2Cyl.IsBackward == false) RaiseAlarm(EAlarm.Transfer_Hand2Cyl_BackwardFail);
+                        if (TransferHand1Cyl.IsBackward == false) RaiseAlarm(EWarning.Transfer_Hand1Cyl_BackwardFail);
+                        if (TransferHand2Cyl.IsBackward == false) RaiseAlarm(EWarning.Transfer_Hand2Cyl_BackwardFail);
                         break;
                     }
 

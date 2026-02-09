@@ -139,46 +139,6 @@ namespace SDV_DotDispenser.MVVM.ViewModels
             }
         }
 
-        public ICommand InputStopCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    if (MachineStatus.IsInputStop == false)
-                    {
-                        MachineStatus.IsInputStop = true;
-                        Log.Debug("ENABLE STOP INTPUT!");
-                    }
-                    else
-                    {
-                        MachineStatus.IsInputStop = false;
-                        Log.Debug("DISABLE STOP INTPUT!");
-                    }
-                });
-            }
-        }
-
-        public ICommand OutputStopCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    if (MachineStatus.IsOutputStop == false)
-                    {
-                        MachineStatus.IsOutputStop = true;
-                        Log.Debug("ENABLE STOP OUTPUT!");
-                    }
-                    else
-                    {
-                        MachineStatus.IsOutputStop = false;
-                        Log.Debug("DISABLE STOP OUTPUT!");
-                    }
-                });
-            }
-        }
-
         public ICommand OriginCommand
         {
             get

@@ -32,9 +32,9 @@ namespace SDV_DotDispenser.Defines
 
         public List<IDOutput> All => _dOutputDevice.Outputs;
 
-        public IDOutput OPButtonStartLamp => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.OP_START_LAMP);
-        public IDOutput OPButtonStopLamp => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.OP_STOP_LAMP);
-        public IDOutput OPButtonResetLamp => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.OP_RESET_LAMP);
+        public IDOutput OPButtonStartLamp => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.OP_SW_START_LAMP);
+        public IDOutput OPButtonStopLamp => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.OP_SW_STOP_LAMP);
+        public IDOutput OPButtonResetLamp => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.OP_SW_RESET_LAMP);
         public IDOutput OPKeySwLock => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.OP_KEY_SW_LOCK);
         public IDOutput TowerLampRed => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.TOWER_LAMP_RED);
         public IDOutput TowerLampYellow => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.TOWER_LAMP_YELLOW);
@@ -47,10 +47,10 @@ namespace SDV_DotDispenser.Defines
         public IDOutput SwStartRightLp => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.SW_START_RIGHT_LAMP);
 
         public IDOutput EqpStop => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.EQP_STOP);
-        public IDOutput LightCurtainLeftMuting1 => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.LIGHT_CURTAIN_LEFT_MUTING_1);
-        public IDOutput LightCurtainLeftMuting2 => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.LIGHT_CURTAIN_LEFT_MUTING_2);
-        public IDOutput LightCurtainRightMuting1 => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.LIGHT_CURTAIN_RIGHT_MUTING_1);
-        public IDOutput LightCurtainRightMuting2 => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.LIGHT_CURTAIN_RIGHT_MUTING_2);
+        public IDOutput LightCurtainLeftMuting1 => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.LIGHT_CURTAIN_LEFT_MUTING_0);
+        public IDOutput LightCurtainLeftMuting2 => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.LIGHT_CURTAIN_LEFT_MUTING_1);
+        public IDOutput LightCurtainRightMuting1 => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.LIGHT_CURTAIN_RIGHT_MUTING_0);
+        public IDOutput LightCurtainRightMuting2 => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.LIGHT_CURTAIN_RIGHT_MUTING_1);
         public IDOutput PlasmaRun => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.PLASMA_RUN);
         public IDOutput PlasmaRemote => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.PLASMA_REMOTE);
         public IDOutput PlasmaN2Sol => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.PLASMA_N2_SOL);
@@ -64,15 +64,15 @@ namespace SDV_DotDispenser.Defines
         public IDOutput NozzleCleanerRollCw => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.NOZZLE_CLEANER_ROLL_CW);
         public IDOutput NozzleCleanerRollCcw => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.NOZZLE_CLEANER_ROLL_CCW);
         public IDOutput UvCureLedOnOff => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.UV_CURE_LED_ON_OFF);
-        public IDOutput PlasmaCylFw => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.PLASMA_CYL_FW);
-        public IDOutput PlasmaCylBw => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.PLASMA_CYL_BW);
+        public IDOutput PlasmaCylFw => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.PLASMA_CYL_FWD);
+        public IDOutput PlasmaCylBw => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.PLASMA_CYL_BWD);
         public IDOutput TransferHand1Up => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.TRANSFER_HAND_1_UP);
         public IDOutput TransferHand1Down => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.TRANSFER_HAND_1_DOWN);
         public IDOutput TransferHand2Up => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.TRANSFER_HAND_2_UP);
         public IDOutput TransferHand2Down => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.TRANSFER_HAND_2_DOWN);
-        public IDOutput UvCureFw => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.UV_CURE_FW);
-        public IDOutput UvCureBw => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.UV_CURE_BW);
-        public IDOutput NozzleCleanerUp => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.NOZZLE_CLEANER_UP);
+        public IDOutput UvCureFw => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.UV_CURE_FWD);
+        public IDOutput UvCureBw => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.UV_CURE_BWD);
+        public IDOutput NozzleCleanerUp => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.NOZZLE_CLEANER_UPDOWN);
 
         public IDOutput StageLLeftVacOn => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.STAGE_L_LEFT_VAC_ON);
         public IDOutput StageLLeftPurge => _dOutputDevice.Outputs.First(i => i.Id == (int)EOutput.STAGE_L_LEFT_PURGE);

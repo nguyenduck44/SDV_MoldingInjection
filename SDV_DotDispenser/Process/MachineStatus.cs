@@ -5,6 +5,25 @@ using SDV_DotDispenser.Defines;
 
 namespace SDV_DotDispenser.Process
 {
+    public enum EPanelStatus
+    {
+        /// <summary>
+        /// Unknown or not started
+        /// </summary>
+        None = 0,
+        InPlasma,
+        PlasmaDone,
+        InVisionAlign,
+        VisionAlignDone,
+        InDispensing,
+        DispensingDone,
+        InCuring,
+        CuringDone,
+        InFinalInspection,
+        FinalInspectionDone_OK,
+        FinalInspectionDone_NG,
+    }
+
     public class MachineStatus : ObservableObject
     {
         #region Events
@@ -16,6 +35,7 @@ namespace SDV_DotDispenser.Process
 
         //public bool IsByPassMode => _machineRunMode == EMachineRunMode.ByPass;
         public bool IsDryRunMode => _machineRunMode == EMachineRunMode.DryRun;
+
         public EMachineRunMode MachineRunMode
         {
             get
@@ -36,6 +56,7 @@ namespace SDV_DotDispenser.Process
                 OnPropertyChanged(nameof(IsDryRunMode));
             }
         }
+
         public string MachineRunModeDisplay
         {
             get
@@ -98,18 +119,6 @@ namespace SDV_DotDispenser.Process
             set { _originDone = value; }
         }
 
-        public bool IsInputStop
-        {
-            get { return isInputStop; }
-            set { isInputStop = value; OnPropertyChanged(); }
-        }
-
-        public bool IsOutputStop
-        {
-            get { return isOutputStop; }
-            set { isOutputStop = value; OnPropertyChanged(); }
-        }
-
         public ESemiSequence SemiAutoSequence
         {
             get => (ESemiSequence)_SemiAutoSequence;
@@ -127,8 +136,6 @@ namespace SDV_DotDispenser.Process
         private int _SemiAutoSequence;
         private int _OPCommand;
         private bool _originDone;
-        private bool isInputStop;
-        private bool isOutputStop;
         #endregion
     }
 }

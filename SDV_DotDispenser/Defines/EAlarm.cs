@@ -8,7 +8,7 @@
         MainAirNotSupplied = 0,
         MainPowerDown = 1,
         MotionAlarmDetected = 2,
-        DoorOpen = 3,
+        //DoorOpen = 3,
         LightCurtainLeftDetected = 4,
         LightCurtainRightDetected = 5,
         EmergencyStopActivated = 6,
@@ -19,7 +19,7 @@
 
         LeftStage_YAxis_OriginFail = 1000,
 
-        RightStage_YAxis_OriginFail = 1500,
+        RightStage_YAxis_OriginFail = 1200,
 
         DispenserHead_XAxis_OriginFail = 3000,
         DispenserHead_ZAxis_OriginFail,
@@ -28,9 +28,5 @@
 
         Transfer_XAxis_OriginFail = 7000,
         Transfer_ZAxis_OriginFail,
-        Transfer_Hand1Cyl_BackwardFail,
-        Transfer_Hand1Cyl_ForwardFail,
-        Transfer_Hand2Cyl_BackwardFail,
-        Transfer_Hand2Cyl_ForwardFail,
     }
 }

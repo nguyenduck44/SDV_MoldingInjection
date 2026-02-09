@@ -1,26 +1,30 @@
 ﻿using EQX.Core.InOut;
 using EQX.Core.Motion;
 using EQX.Core.Sequence;
-using EQX.Process;
 using SDV_DotDispenser.Defines;
 using SDV_DotDispenser.Defines.Devices;
 using SDV_DotDispenser.Recipe;
 
 namespace SDV_DotDispenser.Process
 {
-    /// <summary>
-    /// SDV Dot Dispenser Process
-    /// </summary>
-    public class DDProcess : ProcessBase<ESequence> { }
-
     public class StageProcess : DDProcess
     {
         #region Properties
-
+        public EPanelStatus PanelStatus { get; set; }
         #endregion
 
         #region Motions
         private IMotion YAxis => port == EPort.Left ? _devices.Motions.StageY1Axis : _devices.Motions.StageY2Axis;
+        #endregion
+
+        #region ADIOs
+        private IDInput In_LeftVacuum => port == EPort.Left
+            ? _devices.Inputs.StageLLeftVacOn
+            : _devices.Inputs.StageRLeftVacOn;
+
+        private IDInput In_RightVacuum => port == EPort.Left
+           ? _devices.Inputs.StageLRightVacOn
+           : _devices.Inputs.StageRRightVacOn;
         #endregion
 
         #region Process IOs
@@ -183,9 +187,100 @@ namespace SDV_DotDispenser.Process
         }
         #endregion
 
+        public enum EStageAutoRunStep
+        {
+            Start,
+
+            Stage_VacCheck,
+
+            Panel_StatusCheck,
+
+            End
+        }
+
         #region Sequence Methods
         private void Sequence_AutoRun()
         {
+            switch ((EStageAutoRunStep)Step.RunStep)
+            {
+                case EStageAutoRunStep.Start:
+                    Log.Debug("AutoRun Start");
+                    Step.RunStep++;
+                    break;
+                case EStageAutoRunStep.Stage_VacCheck:
+                    EVacuumStatus vacuumStatus = VacCheck();
+                    if (vacuumStatus == EVacuumStatus.Fail)
+                    {
+                        RaiseWarning(port == EPort.Left
+                            ? EWarning.LeftStage_VacuumStatus_Fail
+                            : EWarning.RightStage_VacuumStatus_Fail);
+                        break;
+                    }
+
+                    if (vacuumStatus == EVacuumStatus.Off)
+                    {
+                        Log.Debug("Stage vacuum on detect");
+                        Sequence = port == EPort.Left
+                            ? ESequence.LeftLoad
+                            : ESequence.RightLoad;
+                        break;
+                    }
+
+                    Log.Debug("Stage vacuum off detect");
+                    Step.RunStep++;
+                    break;
+                case EStageAutoRunStep.Panel_StatusCheck:
+                    switch (PanelStatus)
+                    {
+                        case EPanelStatus.None:
+                        case EPanelStatus.InPlasma:
+                            Sequence = port == EPort.Left
+                                ? ESequence.LeftPlasma
+                                : ESequence.RightPlasma;
+                            break;
+                        case EPanelStatus.PlasmaDone:
+                        case EPanelStatus.InVisionAlign:
+                            Sequence = port == EPort.Left
+                                ? ESequence.LeftAlignVision
+                                : ESequence.RightAlignVision;
+                            break;
+                        case EPanelStatus.VisionAlignDone:
+                        case EPanelStatus.InDispensing:
+                            Sequence = port == EPort.Left
+                                ? ESequence.LeftDispensing
+                                : ESequence.RightDispensing;
+                            break;
+                        case EPanelStatus.DispensingDone:
+                        case EPanelStatus.InCuring:
+                            Sequence = port == EPort.Left
+                                ? ESequence.LeftUVCure
+                                : ESequence.RightUVCure;
+                            break;
+                        case EPanelStatus.CuringDone:
+                        case EPanelStatus.InFinalInspection:
+                            Sequence = port == EPort.Left
+                                ? ESequence.LeftFinalInspection
+                                : ESequence.RightFinalInspection;
+                            break;
+                        case EPanelStatus.FinalInspectionDone_OK:
+                            Sequence = port == EPort.Left
+                               ? ESequence.LeftUnload
+                               : ESequence.RightUnload;
+                            break;
+                        case EPanelStatus.FinalInspectionDone_NG:
+                            Sequence = port == EPort.Left
+                               ? ESequence.LeftNGUnload
+                               : ESequence.RightNGUnload;
+                            break;
+                    }
+
+                    Log.Info($"PanelStatus is {PanelStatus}, next Sequence set as {Sequence}");
+                    break;
+                case EStageAutoRunStep.End:
+                    Log.Debug("AutoRun End");
+                    Step.RunStep++;
+                    break;
+            }
         }
 
         private void Sequence_Ready()
@@ -221,7 +316,28 @@ namespace SDV_DotDispenser.Process
         }
         #endregion
 
-        #region Privates
+        #region Private Methods
+        private EVacuumStatus VacCheck()
+        {
+            bool leftVacOn = In_LeftVacuum.Value;
+            bool rightVacOn = In_RightVacuum.Value;
+
+            if (leftVacOn && rightVacOn)
+            {
+                return EVacuumStatus.On;
+            }
+            else if (!leftVacOn && !rightVacOn)
+            {
+                return EVacuumStatus.Off;
+            }
+            else
+            {
+                return EVacuumStatus.Fail;
+            }
+        }
+        #endregion
+
+        #region Private Fields
         private EPort port => Name == EProcess.StageLeft.ToString() ? EPort.Left : EPort.Right;
 
         private readonly Devices _devices;
