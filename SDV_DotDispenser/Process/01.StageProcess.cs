@@ -23,6 +23,12 @@ namespace SDV_DotDispenser.Process
 
         private double YAxisLoadPosition => port == EPort.Left ? _recipeList.StageLeftRecipe.YAxisLoadPosition :
                                                                  _recipeList.StageRightRecipe.YAxisLoadPosition;
+
+        private double YAxisPlasmaStartPosition => port == EPort.Left ? _recipeList.StageLeftRecipe.YAxisPlasmaStartPosition :
+                                                                        _recipeList.StageRightRecipe.YAxisPlasmaStartPosition;
+
+        private double YAxisPlasmaEndPosition => port == EPort.Left ? _recipeList.StageLeftRecipe.YAxisPlasmaEndPosition :
+                                                                      _recipeList.StageRightRecipe.YAxisPlasmaEndPosition;
         #endregion
 
         #region Motions
@@ -47,7 +53,7 @@ namespace SDV_DotDispenser.Process
         #endregion
 
         #region Constructors
-        public StageProcess(Devices devices, RecipeList recipeList, VirtualIO virtualIO)
+        public StageProcess(Devices devices, RecipeList recipeList, ProcessIO virtualIO)
         {
             _devices = devices;
             _recipeList = recipeList;
@@ -88,8 +94,8 @@ namespace SDV_DotDispenser.Process
                     Step.OriginStep++;
                     break;
                 case EStageProcessOriginStep.Wait_ZAxis_HomeDone:
-                    if ((procInputs[EStageProcInput.Dispenser_ZAxis_AtOrigin].Value &&
-                        procInputs[EStageProcInput.Transfer_ZAxis_AtOrigin].Value) == false)
+                    if ((procInputs[EStageProcInput.DISPENSER_Z_AT_ORIGIN].Value &&
+                        procInputs[EStageProcInput.TRANSFER_Z_AT_ORIGIN].Value) == false)
                     {
                         Wait(100);
                         break;
@@ -429,8 +435,7 @@ namespace SDV_DotDispenser.Process
 
         private readonly Devices _devices;
         private readonly RecipeList _recipeList;
-        private readonly VirtualIO _virtualIO;
+        private readonly ProcessIO _virtualIO;
         #endregion
-
     }
 }

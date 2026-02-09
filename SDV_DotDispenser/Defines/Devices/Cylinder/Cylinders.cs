@@ -15,6 +15,7 @@ namespace SDV_DotDispenser.Defines.Devices.Cylinder
         public ICylinder TransferHand1Cyl { get; }
         public ICylinder TransferHand2Cyl { get; }
         public ICylinder UVCureCyl { get; }
+        public ICylinder NozzleCleanCyl { get; }
         public Cylinders(ICylinderFactory cylinderFactory, Inputs inputs, Outputs outputs)
         {
             _cylinderFactory = cylinderFactory;
@@ -33,13 +34,18 @@ namespace SDV_DotDispenser.Defines.Devices.Cylinder
 
             TransferHand2Cyl = _cylinderFactory
                 .Create(_inputs.TransferHand2Down, _inputs.TransferHand2Up, _outputs.TransferHand2Down, _outputs.TransferHand2Up)
-                .SetIdentity((int)ECylinder.TransferHand2 , ECylinder.TransferHand2.ToString());
+                .SetIdentity((int)ECylinder.TransferHand2, ECylinder.TransferHand2.ToString());
             TransferHand2Cyl.CylinderType = ECylinderType.UpDown;
 
             UVCureCyl = _cylinderFactory
-                .Create(_inputs.UvCureFw , _inputs.UvCureBw, _outputs.UvCureFw, _outputs.UvCureBw)
+                .Create(_inputs.UvCureFw, _inputs.UvCureBw, _outputs.UvCureFw, _outputs.UvCureBw)
                 .SetIdentity((int)ECylinder.UVCure, ECylinder.UVCure.ToString());
             UVCureCyl.CylinderType = ECylinderType.ForwardBackward;
+
+            NozzleCleanCyl = _cylinderFactory
+                .Create(_inputs.NozzleCleanerUp, _inputs.NozzleCleanerDown, _outputs.NozzleCleanerUp, null)
+                .SetIdentity((int)ECylinder.NozzleClean, ECylinder.NozzleClean.ToString());
+            NozzleCleanCyl.CylinderType = ECylinderType.UpDownReverse;
         }
 
         private readonly ICylinderFactory _cylinderFactory;

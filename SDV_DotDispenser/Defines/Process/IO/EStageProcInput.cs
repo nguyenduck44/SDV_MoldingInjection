@@ -2,7 +2,13 @@
 {
     public enum EStageProcInput
     {
-        Dispenser_ZAxis_AtOrigin,
-        Transfer_ZAxis_AtOrigin,
+        DISPENSER_Z_AT_ORIGIN,
+        TRANSFER_Z_AT_ORIGIN,
+
+        PLASMA_COVER_MOVE_DONE,
+        DISPENSING_DONE,
+        UVCURE_DONE,
+        FINAL_INSPECT_DONE,
+        TRANSFER_DONE
     }
 }

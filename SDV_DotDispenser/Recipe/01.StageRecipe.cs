@@ -11,6 +11,7 @@ namespace SDV_DotDispenser.Recipe
         private double yAxisDispensingPosition;
         private double yAxisVisionInspectPosition;
         private double yAxisTransferPosition;
+        private double plasmaSpeed;
 
         public double YAxisLoadPosition
 		{
@@ -52,6 +53,12 @@ namespace SDV_DotDispenser.Recipe
 		{
 			get { return yAxisTransferPosition; }
 			set { yAxisTransferPosition = value; }
+		}
+
+		public double PlasmaSpeed
+		{
+			get { return plasmaSpeed; }
+			set { plasmaSpeed = value; }
 		}
 	}
 }

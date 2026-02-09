@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SDV_DotDispenser.Extensions
 {
-    public static class AddVirtualIOExtension 
+    public static class AddProcessIOExtension
     {
         public static IHostBuilder AddProcessIO(this IHostBuilder hostBuilder)
         {
@@ -22,6 +22,9 @@ namespace SDV_DotDispenser.Extensions
 
                 services.AddSingleton<IDInputDevice>(new MappableInputDevice<EStageProcInput> { Name = "RightStageProcInput" });
                 services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<EStageProcOutput> { Name = "RightStageProcOutput" });
+
+                services.AddSingleton<IDInputDevice>(new MappableInputDevice<EPlasmaProcInput> { Name = "PlasmaProcInput" });
+                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<EPlasmaProcOutput> { Name = "PlasmaProcOutput" });
 
                 services.AddSingleton<IDInputDevice>(new MappableInputDevice<ECleanProcInput> { Name = "CleanProcInput" });
                 services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<ECleanProcOutput> { Name = "CleanProcOutput" });
@@ -38,7 +41,7 @@ namespace SDV_DotDispenser.Extensions
                 services.AddSingleton<IDInputDevice>(new MappableInputDevice<ETransferProcInput> { Name = "TransferProcessInput" });
                 services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<ETransferProcOutput> { Name = "TransferProcessOutput" });
 
-                services.AddSingleton<VirtualIO>();
+                services.AddSingleton<ProcessIO>();
             });
 
             return hostBuilder;

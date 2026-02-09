@@ -80,7 +80,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
             Processes processes,
             INavigationService navigationService,
             RecipeSelector recipeSelector,
-            VirtualIO virtualIO,
+            ProcessIO processIO,
             IConfiguration configuration,
             [FromKeyedServices("AlignCamera#1")]ICamera alignCamera1,
             IVisionFlowRepository visionFlowRepository)
@@ -89,7 +89,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
             _processes = processes;
             _navigationService = navigationService;
             _recipeSelector = recipeSelector;
-            _virtualIO = virtualIO;
+            _processIO = processIO;
             _configuration = configuration;
             _alignCamera1 = alignCamera1;
             _visionFlowRepository = visionFlowRepository;
@@ -218,8 +218,8 @@ namespace SDV_DotDispenser.MVVM.ViewModels
 
                         _processes.Initialize();
 
-                        _virtualIO.Initialize();
-                        _virtualIO.Mappings();
+                        _processIO.Initialize();
+                        _processIO.Mappings();
 
                         Thread.Sleep(50);
                         _step++;
@@ -462,7 +462,7 @@ namespace SDV_DotDispenser.MVVM.ViewModels
         #region Private fields
         private readonly INavigationService _navigationService;
         private readonly RecipeSelector _recipeSelector;
-        private readonly VirtualIO _virtualIO;
+        private readonly ProcessIO _processIO;
         private readonly IConfiguration _configuration;
         private readonly ICamera _alignCamera1;
         private readonly IVisionFlowRepository _visionFlowRepository;

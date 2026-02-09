@@ -8,5 +8,7 @@
         TransferHand2,
 
         UVCure,
+
+        NozzleClean,
     }
 }

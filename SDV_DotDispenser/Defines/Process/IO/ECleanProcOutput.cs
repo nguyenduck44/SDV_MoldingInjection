@@ -2,5 +2,6 @@
 {
     public enum ECleanProcOutput
     {
+        CLEAN_PREPARE_DONE,
     }
 }

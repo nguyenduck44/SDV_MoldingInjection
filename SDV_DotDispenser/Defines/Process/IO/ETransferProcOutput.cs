@@ -8,6 +8,9 @@ namespace SDV_DotDispenser.Defines
 {
     public enum ETransferProcOutput
     {
-        ZAxis_AtOrigin,
+        TRANSFER_Z_AT_ORIGIN,
+
+        LEFT_STAGE_TRANSFER_DONE,
+        RIGHT_STAGE_TRANSFER_DONE,
     }
 }

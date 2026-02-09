@@ -33,7 +33,7 @@ namespace SDV_DotDispenser.Process
 
         public DispenserProcess(Devices devices,
             RecipeList recipeList,
-            VirtualIO virtualIO)
+            ProcessIO virtualIO)
         {
             _devices = devices;
             _recipeList = recipeList;
@@ -112,7 +112,7 @@ namespace SDV_DotDispenser.Process
                         break;
                     }
 
-                    procOutputs[EDispenserProcOutput.ZAxis_AtOrigin].Value = true;
+                    procOutputs[EDispenserProcOutput.DISPENSER_Z_AT_ORIGIN].Value = true;
 
                     Log.Debug("Z Axis Origin Done");
                     Step.OriginStep++;

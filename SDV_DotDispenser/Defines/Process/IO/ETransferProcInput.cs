@@ -8,5 +8,7 @@ namespace SDV_DotDispenser.Defines
 {
     public enum ETransferProcInput
     {
+        LEFT_STAGE_REQ_TRANSFER,
+        RIGHT_STAGE_REQ_TRANSFER,
     }
 }

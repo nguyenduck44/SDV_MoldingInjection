@@ -12,7 +12,7 @@ namespace SDV_DotDispenser.Process
     {
         #region Privates
         private readonly Devices _devices;
-        private readonly VirtualIO _virtualIO;
+        private readonly ProcessIO _virtualIO;
         private readonly RecipeList _recipeList;
 
         private IMotion XAxis => _devices.Motions.TransferXAxis;
@@ -32,7 +32,7 @@ namespace SDV_DotDispenser.Process
         #region Constructor
         public TransferProcess(Devices devices,
             RecipeList recipeList,
-            VirtualIO virtualIO)
+            ProcessIO virtualIO)
         {
             _devices = devices;
             _recipeList = recipeList;
@@ -96,7 +96,7 @@ namespace SDV_DotDispenser.Process
 
                     Thread.Sleep(5000);
 
-                    procOutputs[ETransferProcOutput.ZAxis_AtOrigin].Value = true;
+                    procOutputs[ETransferProcOutput.TRANSFER_Z_AT_ORIGIN].Value = true;
 
                     Log.Debug("Z Axis Origin Done");
                     Step.OriginStep++;
