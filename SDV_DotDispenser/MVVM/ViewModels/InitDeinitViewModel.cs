@@ -1,11 +1,6 @@
 ﻿using EQX.Core.Common;
-using EQX.Core.Communication;
-using EQX.Core.Communication.Modbus;
-using EQX.Core.Robot;
-using EQX.Core.Units;
 using EQX.Core.Vision.Algorithms;
 using EQX.Core.Vision.Grabber;
-using EQX.UI.Controls;
 using EQX.Vision.Algorithms;
 using EQX.Vision.Grabber.Helpers;
 using log4net;

@@ -11,6 +11,18 @@ namespace SDV_DotDispenser.Process
     {
         #region Properties
         public EPanelStatus PanelStatus { get; set; }
+
+        private bool IsSWStart => port == EPort.Left ? _devices.Inputs.SWStartLeft.Value
+                                                       : _devices.Inputs.SWStartRight.Value;
+
+        private IDOutput OutMuting1 => port == EPort.Left ? _devices.Outputs.LightCurtainLeftMuting1 :
+                                                            _devices.Outputs.LightCurtainRightMuting1;
+
+        private IDOutput OutMuting2 => port == EPort.Left ? _devices.Outputs.LightCurtainLeftMuting2 :
+                                                            _devices.Outputs.LightCurtainRightMuting2;
+
+        private double YAxisLoadPosition => port == EPort.Left ? _recipeList.StageLeftRecipe.YAxisLoadPosition :
+                                                                 _recipeList.StageRightRecipe.YAxisLoadPosition;
         #endregion
 
         #region Motions
@@ -80,6 +92,7 @@ namespace SDV_DotDispenser.Process
                         procInputs[EStageProcInput.Transfer_ZAxis_AtOrigin].Value) == false)
                     {
                         Wait(100);
+                        break;
                     }
 
                     Step.OriginStep++;
@@ -187,27 +200,16 @@ namespace SDV_DotDispenser.Process
         }
         #endregion
 
-        public enum EStageAutoRunStep
-        {
-            Start,
-
-            Stage_VacCheck,
-
-            Panel_StatusCheck,
-
-            End
-        }
-
         #region Sequence Methods
         private void Sequence_AutoRun()
         {
-            switch ((EStageAutoRunStep)Step.RunStep)
+            switch ((EStageProcessAutoRunStep)Step.RunStep)
             {
-                case EStageAutoRunStep.Start:
+                case EStageProcessAutoRunStep.Start:
                     Log.Debug("AutoRun Start");
                     Step.RunStep++;
                     break;
-                case EStageAutoRunStep.Stage_VacCheck:
+                case EStageProcessAutoRunStep.Stage_VacCheck:
                     EVacuumStatus vacuumStatus = VacCheck();
                     if (vacuumStatus == EVacuumStatus.Fail)
                     {
@@ -219,17 +221,17 @@ namespace SDV_DotDispenser.Process
 
                     if (vacuumStatus == EVacuumStatus.Off)
                     {
-                        Log.Debug("Stage vacuum on detect");
+                        Log.Debug("Stage vacuum not detect");
                         Sequence = port == EPort.Left
                             ? ESequence.LeftLoad
                             : ESequence.RightLoad;
                         break;
                     }
 
-                    Log.Debug("Stage vacuum off detect");
+                    Log.Debug("Stage vacuum on detect");
                     Step.RunStep++;
                     break;
-                case EStageAutoRunStep.Panel_StatusCheck:
+                case EStageProcessAutoRunStep.Panel_StatusCheck:
                     switch (PanelStatus)
                     {
                         case EPanelStatus.None:
@@ -276,7 +278,7 @@ namespace SDV_DotDispenser.Process
 
                     Log.Info($"PanelStatus is {PanelStatus}, next Sequence set as {Sequence}");
                     break;
-                case EStageAutoRunStep.End:
+                case EStageProcessAutoRunStep.End:
                     Log.Debug("AutoRun End");
                     Step.RunStep++;
                     break;
@@ -289,10 +291,80 @@ namespace SDV_DotDispenser.Process
 
         private void Sequence_Load()
         {
+            switch ((EStageProcessLoadStep)Step.RunStep)
+            {
+                case EStageProcessLoadStep.Start:
+                    Log.Debug("Load Start");
+                    Step.RunStep++;
+                    break;
+                case EStageProcessLoadStep.YAxis_MoveLoadPosition:
+                    Log.Debug("Y Axis Move Load Position");
+                    YAxis.MoveAbs(YAxisLoadPosition);
+                    Wait(_recipeList.CommonRecipe.MotionMoveTimeout, () => YAxis.IsOnPosition(YAxisLoadPosition));
+                    Step.RunStep++;
+                    break;
+                case EStageProcessLoadStep.YAxis_MoveLoadPosition_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseAlarm(port == EPort.Left ? EAlarm.LeftStage_YAxis_MoveLoadPositionFail
+                                                      : EAlarm.RightStage_YAxis_MoveLoadPositionFail);
+                        break;
+                    }
+
+                    Log.Debug("Y Axis Move Load Position Done");
+                    Step.RunStep++;
+                    break;
+                case EStageProcessLoadStep.MutingLightCurtain:
+                    Log.Debug("Muting Light Curtain");
+                    MutingLightCurtain(true);
+                    Step.RunStep++;
+                    break;
+                case EStageProcessLoadStep.Wait_SWStart:
+                    if (IsSWStart == false)
+                    {
+                        Wait(100);
+                        break;
+                    }
+
+                    Log.Debug("SW Start Detected");
+                    Step.RunStep++;
+                    break;
+                case EStageProcessLoadStep.EnableLightCurtain:
+                    Log.Debug("Enable Light Curtain");
+                    MutingLightCurtain(false);
+                    Step.RunStep++;
+                    break;
+                case EStageProcessLoadStep.VacuumStatus_Check:
+                    var vacuumStatus = VacCheck();
+
+                    if (vacuumStatus != EVacuumStatus.On)
+                    {
+                        RaiseWarning(port == EPort.Left
+                            ? EWarning.LeftStage_VacuumStatus_Fail
+                            : EWarning.RightStage_VacuumStatus_Fail);
+                        break;
+                    }
+
+                    Log.Debug("Vacuum On Detected");
+                    Step.RunStep++;
+                    break;
+                case EStageProcessLoadStep.End:
+                    Log.Debug($"{port} Load End");
+                    if (Parent?.Sequence != ESequence.AutoRun)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
+
+                    Log.Info("Sequence Plasma");
+                    Sequence = port == EPort.Left ? ESequence.LeftPlasma : ESequence.RightPlasma;
+                    break;
+            }
         }
 
         private void Sequence_Plasma()
         {
+
         }
 
         private void Sequence_AlignVision()
@@ -333,6 +405,21 @@ namespace SDV_DotDispenser.Process
             else
             {
                 return EVacuumStatus.Fail;
+            }
+        }
+
+        private void MutingLightCurtain(bool isMutingOn)
+        {
+            if (isMutingOn)
+            {
+                OutMuting1.Value = true;
+                Thread.Sleep(300);
+                OutMuting2.Value = true;
+            }
+            else
+            {
+                OutMuting2.Value = false;
+                OutMuting1.Value = false;
             }
         }
         #endregion

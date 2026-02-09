@@ -127,21 +127,6 @@ namespace SDV_DotDispenser.Recipe
             }
         }
 
-        [SingleRecipeDescription(
-            Description = "Skip Vinyl Clean",
-            Detail = "Check to skip Vinyl Clean")]
-        public bool SkipVinylClean
-        {
-            get { return skipVinylClean; }
-            set
-            {
-                if (skipVinylClean == value) return;
-
-                OnRecipeChanged(skipVinylClean, value);
-                skipVinylClean = value;
-            }
-        }
-        
         public ILanguageDefinition SelectedLanguage
         {
             get => selectLanguage;

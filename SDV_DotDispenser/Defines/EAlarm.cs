@@ -18,8 +18,10 @@
         Motion_Alarm_Detected,
 
         LeftStage_YAxis_OriginFail = 1000,
+        LeftStage_YAxis_MoveLoadPositionFail,
 
-        RightStage_YAxis_OriginFail = 1200,
+        RightStage_YAxis_OriginFail = 2000,
+        RightStage_YAxis_MoveLoadPositionFail,
 
         DispenserHead_XAxis_OriginFail = 3000,
         DispenserHead_ZAxis_OriginFail,
