@@ -13,7 +13,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/EQX.UI;component/Resources/Themes/SamsungTheme.xaml" />
                 <ResourceDictionary Source="/EQX.UI;component/Generic.xaml" />
-                <ResourceDictionary Source="/EQX.VisionUI.WPF;component/Generic.xaml"/>
 
                 <ResourceDictionary Source="/EQX.UI;component/Resources/Language/KoreanLanguage.xaml" />
                 <ResourceDictionary Source="/EQX.UI;component/Resources/Language/VietnameseLanguage.xaml" />

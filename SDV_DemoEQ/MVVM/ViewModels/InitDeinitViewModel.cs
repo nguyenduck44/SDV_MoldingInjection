@@ -79,9 +79,7 @@ namespace SDV_DemoEQ.MVVM.ViewModels
             INavigationService navigationService,
             RecipeSelector recipeSelector,
             ProcessIO processIO,
-            IConfiguration configuration,
-            [FromKeyedServices("AlignCamera#1")]ICamera alignCamera1,
-            IVisionFlowRepository visionFlowRepository)
+            IConfiguration configuration)
         {
             _devices = devices;
             _processes = processes;
@@ -89,8 +87,6 @@ namespace SDV_DemoEQ.MVVM.ViewModels
             _recipeSelector = recipeSelector;
             _processIO = processIO;
             _configuration = configuration;
-            _alignCamera1 = alignCamera1;
-            _visionFlowRepository = visionFlowRepository;
             _task = new Task(() => { });
             ErrorMessages = new List<string>();
 
