@@ -1,0 +1,59 @@
+﻿using EQX.Core.Common;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using SDV_DemoEQ.Defines;
+using SDV_DemoEQ.MVVM.ViewModels;
+using SDV_DemoEQ.MVVM.Views;
+
+namespace SDV_DemoEQ.Extensions
+{
+    public static class AddViewViewModelExtension
+    {
+        public static void AddViewModel<TViewModel>(this IServiceCollection services) where TViewModel : ViewModelBase
+        {
+            services.AddSingleton<TViewModel>();
+        }
+
+        public static IHostBuilder AddViewModels(this IHostBuilder hostBuilder)
+        {
+            hostBuilder.ConfigureServices((hostContext, services) =>
+            {
+                services.AddViewModel<MainWindowViewModel>();
+
+                services.AddViewModel<NavigateMenuViewModel>();
+                services.AddViewModel<HeaderViewModel>();
+                services.AddViewModel<FooterViewModel>();
+
+                services.AddViewModel<InitDeinitViewModel>();
+                services.AddViewModel<OriginViewModel>();
+                services.AddViewModel<AutoViewModel>();
+                services.AddViewModel<ManualViewModel>();
+                services.AddViewModel<TeachViewModel>();
+                services.AddViewModel<DataViewModel>();
+                services.AddViewModel<MonitorViewModel>();
+                services.AddViewModel<IOMonitoringViewModel>();
+
+                services.AddViewModel<LogViewModel>();
+                services.AddViewModel<LoginViewModel>();
+                services.AddViewModel<DevViewModel>();
+
+                services.AddViewModel<MonitorIOViewModel>();
+                services.AddViewModel<MonitorMotionViewModel>();
+
+                services.AddSingleton<IViewModelFactory, ViewModelFactory>();
+            });
+
+            return hostBuilder;
+        }
+
+        public static IHostBuilder AddViews(this IHostBuilder hostBuilder)
+        {
+            hostBuilder.ConfigureServices((hostContext, services) =>
+            {
+                services.AddSingleton<MainWindowView>();
+            });
+
+            return hostBuilder;
+        }
+    }
+}
