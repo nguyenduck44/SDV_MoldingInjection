@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using EQX.InOut.InputSimulation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SDV_MoldingInjection.Extensions;
 using SDV_MoldingInjection.MVVM.ViewModels;
@@ -13,8 +14,9 @@ namespace SDV_MoldingInjection
     public partial class App : Application
     {
         public static IHost? AppHost { get; private set; }
-
-        private const string AppGuid = "2341E081-7BFC-4738-85A4-CF782120EDCC";
+        
+        private const string AppGuid = "E9768A42-35E0-4EBB-8B76-EDF0497CC896";
+        private const string InputSimGuid = "0B996414-C1D0-4E6F-920D-2FEAC2CF89D5";
         private Mutex _mutex;
 
         public App()
@@ -38,10 +40,23 @@ namespace SDV_MoldingInjection
         protected override async void OnStartup(StartupEventArgs e)
         {
             bool isNewInstance = false;
+            bool isInputSimInstance = false;
+
+            if (e.Args.Length > 0 && e.Args[0] == "OpenInputSimWindow")
+            {
+                isInputSimInstance = true;
+            }
 
             try
             {
-                _mutex = new Mutex(true, AppGuid, out isNewInstance);
+                if (isInputSimInstance)
+                {
+                    _mutex = new Mutex(true, InputSimGuid, out isNewInstance);
+                }
+                else
+                {
+                    _mutex = new Mutex(true, AppGuid, out isNewInstance);
+                }
             }
             catch (Exception ex)
             {
@@ -64,6 +79,20 @@ namespace SDV_MoldingInjection
 
             await AppHost!.StartAsync();
 
+#if SIMULATION
+            if (isInputSimInstance)
+            {
+                Window inputSimWindow = new InputSimulationView();
+                inputSimWindow.DataContext = AppHost!.Services.GetRequiredService<IInputSimulationViewModel>();
+                inputSimWindow.Show();
+                return;
+            }
+            else
+            {
+                string exePath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+                System.Diagnostics.Process.Start(exePath, "OpenInputSimWindow");
+            }
+#endif
             Window window = AppHost.Services.GetRequiredService<MainWindowView>();
             var viewModel = AppHost.Services.GetRequiredService<MainWindowViewModel>();
             window.DataContext = viewModel;

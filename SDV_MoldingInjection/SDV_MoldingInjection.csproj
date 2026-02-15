@@ -60,6 +60,7 @@
   <ItemGroup>
     <ProjectReference Include="..\EQX.Core\EQX.Core\EQX.Core.csproj" />
     <ProjectReference Include="..\EQX.Device\EQX.Device\EQX.Device.csproj" />
+    <ProjectReference Include="..\EQX.InOut\EQX.InOut.InputSimulation\EQX.InOut.InputSimulation.csproj" />
     <ProjectReference Include="..\EQX.InOut\EQX.InOut\EQX.InOut.csproj" />
     <ProjectReference Include="..\EQX.Motion\EQX.Motion\EQX.Motion.csproj" />
     <ProjectReference Include="..\EQX.Process\EQX.Process\EQX.Process.csproj" />

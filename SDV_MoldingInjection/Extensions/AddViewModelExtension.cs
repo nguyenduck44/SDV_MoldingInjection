@@ -1,4 +1,5 @@
 ﻿using EQX.Core.Common;
+using EQX.InOut.InputSimulation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SDV_MoldingInjection.Defines;
@@ -42,6 +43,17 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddViewModel<MonitorMotionViewModel>();
 
                 services.AddSingleton<IViewModelFactory, ViewModelFactory>();
+
+                services.AddSingleton<IInputSimulationViewModel>(new MMFInputSimulationViewModel<EMachineInput>(
+                    new List<string>
+                    {
+                        EMachineInput.OP_SW_START.ToString(),
+                    },
+                    new List<string>
+                    {
+                        EMachineInput.OP_SW_STOP.ToString(),
+                    }
+                ));
             });
 
             return hostBuilder;
