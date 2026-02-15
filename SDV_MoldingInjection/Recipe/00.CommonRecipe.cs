@@ -97,36 +97,6 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(
-            Description = "Skip Left Port",
-            Detail = "Check to Skip Left Port")]
-        public bool DisableLeftPort
-        {
-            get { return disableLeftPort; }
-            set
-            {
-                if (disableLeftPort == value) return;
-
-                OnRecipeChanged(disableLeftPort, value);
-                disableLeftPort = value;
-            }
-        }
-
-        [SingleRecipeDescription(
-            Description = "Skip Right Port",
-            Detail = "Check to Skip Right Port")]
-        public bool DisableRightPort
-        {
-            get { return disableRightPort; }
-            set
-            {
-                if (disableRightPort == value) return;
-
-                OnRecipeChanged(DisableRightPort, value);
-                disableRightPort = value;
-            }
-        }
-
         public ILanguageDefinition SelectedLanguage
         {
             get => selectLanguage;
@@ -140,10 +110,8 @@ namespace SDV_MoldingInjection.Recipe
                 SelectedLanguageLoadAllRecipe?.Invoke();
             }
         }
+
         #region Privates
-        private bool disableLeftPort;
-        private bool disableRightPort;
-        private bool skipVinylClean;
         private ILanguageDefinition selectLanguage;
         #endregion
     }
