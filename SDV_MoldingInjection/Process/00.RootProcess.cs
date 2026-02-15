@@ -391,7 +391,9 @@ namespace SDV_MoldingInjection.Process
             }
             if (_devices.Motions.All.Count(motion => motion.Status.HwNegLimitDetect == true || motion.Status.HwPosLimitDetect == true) > 0
                 && ProcessMode != EProcessMode.Origin && ProcessMode != EProcessMode.ToOrigin
-                && ProcessMode != EProcessMode.ToWarning && ProcessMode != EProcessMode.Warning)
+                && ProcessMode != EProcessMode.ToWarning && ProcessMode != EProcessMode.Warning
+                && ProcessMode != EProcessMode.ToAlarm && ProcessMode != EProcessMode.Alarm
+                && ProcessMode != EProcessMode.None)
             {
                 _devices.Motions.All.Where(m => m.Status.HwNegLimitDetect == true).ToList().ForEach(motion =>
                 {
