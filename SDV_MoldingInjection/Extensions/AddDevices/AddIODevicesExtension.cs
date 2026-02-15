@@ -2,6 +2,7 @@
 using EQX.Core.Motion;
 using EQX.InOut;
 using EQX.InOut.InOut.Analog;
+using EQX.Motion;
 using EQX.Motion.ByVendor.Inovance;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -74,15 +75,15 @@ namespace SDV_MoldingInjection.Extensions
                 {
                     var index = i;
 
-                    services.AddSingleton<IDInputDevice>((services) =>
+                    services.AddSingleton<IDInputDevice>((ser) =>
                     {
                         return new PlusRInputDevice<EHeadInput>()
                         {
                             Id = index - 1,
                             Name = ((EInputDevice)index).ToString(),
                             MaxPin = 100,
-                            ComPort = 2,
-                            BaudRate = 115200
+                            MotionMaster = (MotionMasterEziPlusR)ser.GetRequiredKeyedService<IMotionMaster>("FastechPlusRMaster#1")
+
                         };
                     });
                 }
@@ -127,15 +128,14 @@ namespace SDV_MoldingInjection.Extensions
                 {
                     var index = i;
 
-                    services.AddSingleton<IDOutputDevice>((services) =>
+                    services.AddSingleton<IDOutputDevice>((ser) =>
                     {
                         return new PlusROutputDevice<EHeadOutput>()
                         {
                             Id = index - 1,
                             Name = ((EOutputDevice)index).ToString(),
                             MaxPin = 100,
-                            ComPort = 2,
-                            BaudRate = 115200
+                            MotionMaster = (MotionMasterEziPlusR)ser.GetRequiredKeyedService<IMotionMaster>("FastechPlusRMaster#1")
                         };
                     });
                 }
@@ -143,7 +143,7 @@ namespace SDV_MoldingInjection.Extensions
 #if SIMULATION
                 services.AddKeyedSingleton<IAInputDevice>("AnalogInputDevice#1", (services, obj) => { return new SimulationAnalogInputDevice<EAnalogInput>(); });
 #else
-                services.AddKeyedSingleton<IAInputDevice>("AnalogInputDevice#1", (services, obj) =>
+                services.AddKeyedSingleton<IAInputDevice>("AnalogInputDevice#1", (ser, obj) =>
                 {
                     return new AjinAnalogInputDevice<EAnalogInput>()
                     {

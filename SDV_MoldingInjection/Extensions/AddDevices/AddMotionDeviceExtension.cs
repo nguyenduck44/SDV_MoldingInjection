@@ -56,6 +56,7 @@ namespace SDV_MoldingInjection.Extensions
                 });
 #if SIMULATION
                 services.AddKeyedScoped<IMotionMaster, SimulationMotionMaster>("AjinMaster#1");
+                services.AddKeyedScoped<IMotionMaster, SimulationMotionMaster>("FastechPlusRMaster#1");
 
                 for (int i = 0; i < Enum.GetNames(typeof(EMachineMotion)).Length; i++)
                 {
@@ -90,6 +91,13 @@ namespace SDV_MoldingInjection.Extensions
                 {
                     return new MotionMasterAjin() { NumberOfDevices = Enum.GetNames(typeof(EMachineMotion)).Length };
                 });
+                services.AddKeyedScoped<IMotionMaster, MotionMasterEziPlusR>("FastechPlusRMaster#1", (ser, obj) =>
+                {
+                    return new MotionMasterEziPlusR(2, 115200)
+                    {
+                        NumberOfDevices = Enum.GetNames(typeof(EHeadMotion)).Length
+                    };
+                });
                 for (int i = 0; i < Enum.GetNames(typeof(EMachineMotion)).Length; i++)
                 {
                     var index = i;
@@ -116,8 +124,7 @@ namespace SDV_MoldingInjection.Extensions
                             ((EHeadMotion)index).ToString(),
                             (MotionParameter)(ser.GetRequiredKeyedService<List<IMotionParameter>>("MotionFastechParameter").First(p => p.Name == ((EHeadMotion)index).ToString())))
                         {
-                            Port = 2,
-                            Baudrate = 115200,
+                            MotionMaster = (MotionMasterEziPlusR)ser.GetRequiredKeyedService<IMotionMaster>("FastechPlusRMaster#1")
                         };
                     });
                 }
