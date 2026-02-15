@@ -119,13 +119,26 @@ namespace SDV_MoldingInjection.Extensions
 
                     services.AddSingleton<IMotion>((ser) =>
                     {
-                        return new MotionEziPlusR(
+                        if (index < (int)EHeadMotion.G1Axis)
+                        {
+                            return new MotionEziPlusRServo(
                             index,
                             ((EHeadMotion)index).ToString(),
                             (MotionParameter)(ser.GetRequiredKeyedService<List<IMotionParameter>>("MotionFastechParameter").First(p => p.Name == ((EHeadMotion)index).ToString())))
+                            {
+                                MotionMaster = (MotionMasterEziPlusR)ser.GetRequiredKeyedService<IMotionMaster>("FastechPlusRMaster#1")
+                            };
+                        }
+                        else
                         {
-                            MotionMaster = (MotionMasterEziPlusR)ser.GetRequiredKeyedService<IMotionMaster>("FastechPlusRMaster#1")
-                        };
+                            return new MotionEziPlusRStep(
+                            index,
+                            ((EHeadMotion)index).ToString(),
+                            (MotionParameter)(ser.GetRequiredKeyedService<List<IMotionParameter>>("MotionFastechParameter").First(p => p.Name == ((EHeadMotion)index).ToString())))
+                            {
+                                MotionMaster = (MotionMasterEziPlusR)ser.GetRequiredKeyedService<IMotionMaster>("FastechPlusRMaster#1")
+                            };
+                        }
                     });
                 }
 #endif
