@@ -18,8 +18,6 @@ namespace SDV_MoldingInjection.Extensions
             {
                 services.AddSingleton<IRecipe>(new CommonRecipe { Name = "Common" });
                 services.AddSingleton<IRecipe>(new DispensingRecipe { Name = "Dispensing" });
-                services.AddSingleton<IRecipe>(new StageRecipe { Name = "StageLeft" });
-                services.AddSingleton<IRecipe>(new StageRecipe { Name = "StageRight" });
                 services.AddSingleton<IRecipe>(new PlasmaRecipe { Name = "Plasma" });
                 services.AddSingleton<IRecipe>(new CleanRecipe { Name = "Clean" });
                 services.AddSingleton<IRecipe>(new FinalInspectRecipe { Name = "FinalInspect" });
