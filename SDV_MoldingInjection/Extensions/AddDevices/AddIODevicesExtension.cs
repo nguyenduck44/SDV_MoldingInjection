@@ -75,9 +75,11 @@ namespace SDV_MoldingInjection.Extensions
                     {
                         return new PlusRInputDevice<EHeadInput>()
                         {
-                            Id = index,
+                            Id = index - 1,
                             Name = ((EInputDevice)index).ToString(),
                             MaxPin = 100,
+                            ComPort = 2,
+                            BaudRate = 115200
                         };
                     });
                 }
@@ -106,9 +108,11 @@ namespace SDV_MoldingInjection.Extensions
                     {
                         return new PlusROutputDevice<EHeadOutput>()
                         {
-                            Id = index,
+                            Id = index - 1,
                             Name = ((EOutputDevice)index).ToString(),
                             MaxPin = 100,
+                            ComPort = 2,
+                            BaudRate = 115200
                         };
                     });
                 }

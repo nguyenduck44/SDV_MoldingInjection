@@ -36,9 +36,9 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         {
             if (_navigationStore.CurrentViewModel != this) return;
 
-            for (int i = SelectedInputDeviceIndex * 16; i < SelectedInputDeviceIndex * 16 + 16; i++)
+            foreach (IDInput input in CurrentInputList)
             {
-                _inputList.All[i].RaiseValueUpdated();
+                input.RaiseValueUpdated();
             }
         }
 

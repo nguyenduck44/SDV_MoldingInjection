@@ -28,29 +28,30 @@ namespace SDV_MoldingInjection.Defines
 
         public bool Initialize()
         {
-            return _dMachineInputDevice.Initialize()
-                && _dHead1InputDevice.Initialize()
-                && _dHead2InputDevice.Initialize()
-                && _dHead3InputDevice.Initialize()
-                && _dHead4InputDevice.Initialize();
+            bool ret = false;
+            ret &= _dMachineInputDevice.Initialize();
+            ret &= _dHead1InputDevice.Initialize();
+            ret &= _dHead2InputDevice.Initialize();
+            ret &= _dHead3InputDevice.Initialize();
+            ret &= _dHead4InputDevice.Initialize();
+            return ret;
         }
 
         public bool Connect()
         {
-            return _dMachineInputDevice.Connect()
-                && _dHead1InputDevice.Connect()
-                && _dHead2InputDevice.Connect()
-                && _dHead3InputDevice.Connect()
-                && _dHead4InputDevice.Connect();
+            bool ret = false;
+            ret &= _dMachineInputDevice.Connect();
+            ret &= _dHead1InputDevice.Connect();
+            ret &= _dHead2InputDevice.Connect();
+            ret &= _dHead3InputDevice.Connect();
+            ret &= _dHead4InputDevice.Connect();
+            return ret;
         }
 
         public bool Disconnect()
         {
             return _dMachineInputDevice.Disconnect()
-                && _dHead1InputDevice.Disconnect()
-                && _dHead2InputDevice.Disconnect()
-                && _dHead3InputDevice.Disconnect()
-                && _dHead4InputDevice.Disconnect();
+                && _dHead1InputDevice.Disconnect();
         }
 
         public List<IDInput> All => _dMachineInputDevice.Inputs
