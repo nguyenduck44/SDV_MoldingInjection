@@ -8,41 +8,11 @@ namespace SDV_MoldingInjection.Process
     public class SPDHeadProcess : MIProcess
     {
         #region Inputs
-        private IDInput In_CylUp => head switch
-        {
-            ESPDHead.SPDHead1 => devices.Inputs.H1_CylUp,
-            ESPDHead.SPDHead2 => devices.Inputs.H2_CylUp,
-            ESPDHead.SPDHead3 => devices.Inputs.H3_CylUp,
-            ESPDHead.SPDHead4 => devices.Inputs.H4_CylUp,
-            _ => throw new Exception($"Invalid head: {head}")
-        };
-        private IDInput In_CylDown => head switch
-        {
-            ESPDHead.SPDHead1 => devices.Inputs.H1_CylDown,
-            ESPDHead.SPDHead2 => devices.Inputs.H2_CylDown,
-            ESPDHead.SPDHead3 => devices.Inputs.H3_CylDown,
-            ESPDHead.SPDHead4 => devices.Inputs.H4_CylDown,
-            _ => throw new Exception($"Invalid head: {head}")
-        };
+        
         #endregion
 
         #region Outputs
-        private IDOutput Out_CylUp => head switch
-        {
-            ESPDHead.SPDHead1 => devices.Outputs.H1_CylUp,
-            ESPDHead.SPDHead2 => devices.Outputs.H2_CylUp,
-            ESPDHead.SPDHead3 => devices.Outputs.H3_CylUp,
-            ESPDHead.SPDHead4 => devices.Outputs.H4_CylUp,
-            _ => throw new Exception($"Invalid head: {head}")
-        };
-        private IDOutput Out_CylDown => head switch
-        {
-            ESPDHead.SPDHead1 => devices.Outputs.H1_CylDown,
-            ESPDHead.SPDHead2 => devices.Outputs.H2_CylDown,
-            ESPDHead.SPDHead3 => devices.Outputs.H3_CylDown,
-            ESPDHead.SPDHead4 => devices.Outputs.H4_CylDown,
-            _ => throw new Exception($"Invalid head: {head}")
-        };
+        
         #endregion
 
         #region Motions
