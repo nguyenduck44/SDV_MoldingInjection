@@ -70,7 +70,50 @@ namespace SDV_MoldingInjection.Defines
         public List<IDOutput> Head3 => _dHead3OutputDevice.Outputs;
         public List<IDOutput> Head4 => _dHead4OutputDevice.Outputs;
 
+        public IDOutput StartLamp => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.OP_SW_START_LP);
+        public IDOutput StopLamp => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.OP_SW_STOP_LP);
+        public IDOutput ResetLamp => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.OP_SW_RESET_LP);
+
+        public IDOutput SWKeyLock => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.OP_KEY_SW_LOCK);
+
+        public IDOutput TowerLampRed => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.TOWER_LAMP_RED);
+        public IDOutput TowerLampYellow => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.TOWER_LAMP_YELLOW);
+        public IDOutput TowerLampGreen => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.TOWER_LAMP_GREEN);
+
         public IDOutput Buzzer1On => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.BUZZER1_ON);
+        public IDOutput Buzzer2On => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.BUZZER1_ON);
+        public IDOutput Buzzer3On => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.BUZZER1_ON);
+        public IDOutput Buzzer4On => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.BUZZER1_ON);
+
+        public IDOutput EQPStop => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.EQP_STOP);
+
+        public IDOutput VacChamberPurgeOn => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.VAC_CHAMBER_PURGE_ON);
+
+        public IDOutput NozzleCleanH1H2 => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.NOZZLE_CLEAN_H1H2);
+        public IDOutput NozzleCleanH3H4 => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.NOZZLE_CLEAN_H3H4);
+
+        public IDOutput DryPumpRun => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.DRY_PUMP_RUN);
+        public IDOutput DryPumpAlarmReset => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.DRY_PUMP_ALARM_RESET);
+        public IDOutput ChamberVacOn => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.CHAMBER_VAC_ON);
+        public IDOutput BellowsUp => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.BELLOW_VALVE_UP);
+        public IDOutput BellowsDown => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.BELLOW_VALVE_DOWN);
+
+        public IDOutput VacChamberOpen => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.VAC_CHAMBER_OPEN);
+        public IDOutput VacChamberClose => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.VAC_CHAMBER_CLOSE);
+
+        #region SPD Head Outputs
+        public IDOutput H1_CylUp => _dHead1OutputDevice.Outputs.First(o => o.Id == (int)EHeadOutput.CYL_UP);
+        public IDOutput H1_CylDown => _dHead1OutputDevice.Outputs.First(o => o.Id == (int)EHeadOutput.CYL_DOWN);
+
+        public IDOutput H2_CylUp => _dHead2OutputDevice.Outputs.First(o => o.Id == (int)EHeadOutput.CYL_UP);
+        public IDOutput H2_CylDown => _dHead2OutputDevice.Outputs.First(o => o.Id == (int)EHeadOutput.CYL_DOWN);
+
+        public IDOutput H3_CylUp => _dHead3OutputDevice.Outputs.First(o => o.Id == (int)EHeadOutput.CYL_UP);
+        public IDOutput H3_CylDown => _dHead3OutputDevice.Outputs.First(o => o.Id == (int)EHeadOutput.CYL_DOWN);
+
+        public IDOutput H4_CylUp => _dHead4OutputDevice.Outputs.First(o => o.Id == (int)EHeadOutput.CYL_UP);
+        public IDOutput H4_CylDown => _dHead4OutputDevice.Outputs.First(o => o.Id == (int)EHeadOutput.CYL_DOWN);
+        #endregion
 
         public void Lamp_Run()
         {

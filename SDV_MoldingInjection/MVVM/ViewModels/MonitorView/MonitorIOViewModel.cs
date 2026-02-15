@@ -2,7 +2,6 @@
 using EQX.Core.Common;
 using EQX.Core.InOut;
 using SDV_MoldingInjection.Defines;
-using SDV_MoldingInjection.Process;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,9 +58,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         public int SelectedInputBoardNumber => SelectedInputDeviceIndex + 1;
 
-        private int _selectedOutputDeviceIndex;
-        private readonly NavigationStore _navigationStore;
-
         public int SelectedOutputDeviceIndex
         {
             get => _selectedOutputDeviceIndex;
@@ -91,6 +87,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 });
             }
         }
+
         public ICommand InputDeviceIndexIncrease
         {
             get
@@ -118,6 +115,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 });
             }
         }
+
         public ICommand OutputDeviceIndexIncrease
         {
             get
@@ -147,5 +145,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private int MaxOutputDeviceIndex => CurrentOutputList
             .GroupBy(o => o.Id / 16)
             .Count() - 1;
+
+        private int _selectedOutputDeviceIndex;
+        private readonly NavigationStore _navigationStore;
     }
 }

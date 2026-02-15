@@ -3,7 +3,6 @@ using EQX.Core.Motion;
 using EQX.Device.SpeedController;
 using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Defines.Devices.Cylinder;
-using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;
 using System.Collections.ObjectModel;
 

@@ -5,6 +5,7 @@ using EQX.Device.Indicator;
 using EQX.UI.Controls;
 using EQX.UI.Language;
 using log4net;
+using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;

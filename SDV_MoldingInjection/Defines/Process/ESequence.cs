@@ -15,49 +15,49 @@ namespace SDV_MoldingInjection.Defines
         /// </summary>
         Ready,
 
-        [Description("Sequence Left Stage Load")]
-        LeftLoad,
-        [Description("Sequence Right Stage Load")]
-        RightLoad,
-        [Description("Sequence Left Stage Plasma")]
-        LeftPlasma,
-        [Description("Sequence Right Stage Plasma")]
-        RightPlasma,
-        [Description("Sequence Nozzle Clean")]
-        Clean,
-        [Description("Sequence Left Stage Vision Align")]
-        LeftAlignVision,
-        [Description("Sequence Right Stage Vision Align")]
-        RightAlignVision,
-        [Description("Sequence Left Stage Dispensing")]
-        LeftDispensing,
-        [Description("Sequence Right Stage Dispensing")]
-        RightDispensing,
-        [Description("Sequence Left Stage Final Inspection")]
-        LeftFinalInspection,
-        [Description("Sequence Right Stage Final Inspection")]
-        RightFinalInspection,
-        [Description("Sequence Left Stage UV Cure")]
-        LeftUVCure,
-        [Description("Sequence Right Stage UV Cure")]
-        RightUVCure,
-        [Description("Sequence Left Stage Unload")]
-        LeftUnload,
-        [Description("Sequence Right Stage Unload")]
-        RightUnload,
-        [Description("Sequence Left Stage NG Unload")]
-        LeftNGUnload,
-        [Description("Sequence Right Stage NG Unload")]
-        RightNGUnload,
+        [Description("Jig LOADING sequence")]
+        Loading,
+        [Description("Resin INJECT sequence")]
+        ResinInject,
+        [Description("Jig UNLOADING sequence")]
+        Unloading,
+        [Description("Dummy shot sequence")]
+        DummyShot,
+        [Description("Needle cleaning sequence")]
+        NeedleCleaning,
+        [Description("Dot weighting sequence")]
+        DotWeighting,
+
+        [Description("Head ASSEMBLE sequence")]
+        HeadAssemble,
+        [Description("Head DISASSEMBLE sequence")]
+        HeadDisassemble,
+        [Description("Bubble remove sequence")]
+        BubbleRemove
     }
 
     public enum ESemiSequence
     {
         None,
 
-        [Description("Sequence Load")]
-        Load,
-        [Description("Sequence Unload")]
-        Unload,
+        [Description("Jig LOADING sequence")]
+        Loading,
+        [Description("Resin INJECT sequence")]
+        ResinInject,
+        [Description("Jig UNLOADING sequence")]
+        Unloading,
+        [Description("Dummy shot sequence")]
+        DummyShot,
+        [Description("Needle cleaning sequence")]
+        NeedleCleaning,
+        [Description("Dot weighting sequence")]
+        DotWeighting,
+
+        [Description("Head ASSEMBLE sequence")]
+        HeadAssemble,
+        [Description("Head DISASSEMBLE sequence")]
+        HeadDisassemble,
+        [Description("Bubble remove sequence")]
+        BubbleRemove
     }
 }

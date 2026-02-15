@@ -1,7 +1,7 @@
 ﻿using EQX.Core.Common;
 using System.Windows;
 using SDV_MoldingInjection.MVVM.ViewModels;
-using SDV_MoldingInjection.Process;
+using SDV_MoldingInjection.Defines;
 
 namespace SDV_MoldingInjection.MVVM.Views
 {

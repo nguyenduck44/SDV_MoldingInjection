@@ -15,7 +15,6 @@ using Newtonsoft.Json;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using log4net;
-using SDV_MoldingInjection.Process;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
@@ -195,11 +194,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 var existingAjinParams = JsonConvert.DeserializeObject<List<MotionAjinParameter>>(
                     File.ReadAllText(ajinConfigPath)) ?? new List<MotionAjinParameter>();
 
-                for (int i = 0; i < _motions.AjinMotions.All.Count && i < existingAjinParams.Count; i++)
+                for (int i = 0; i < _motions.AjinMotions.Count && i < existingAjinParams.Count; i++)
                 {
-                    existingAjinParams[i].Velocity = _motions.AjinMotions.All[i].Parameter.Velocity;
-                    existingAjinParams[i].Acceleration = _motions.AjinMotions.All[i].Parameter.Acceleration;
-                    existingAjinParams[i].Deceleration = _motions.AjinMotions.All[i].Parameter.Deceleration;
+                    existingAjinParams[i].Velocity = _motions.AjinMotions[i].Parameter.Velocity;
+                    existingAjinParams[i].Acceleration = _motions.AjinMotions[i].Parameter.Acceleration;
+                    existingAjinParams[i].Deceleration = _motions.AjinMotions[i].Parameter.Deceleration;
                 }
 
                 var ajinJson = JsonConvert.SerializeObject(existingAjinParams, Formatting.Indented);

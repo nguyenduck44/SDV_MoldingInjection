@@ -3,13 +3,10 @@
     public enum EProcess
     {
         Root,
-        StageLeft,
-        StageRight,
-        Plasma,
-        NozzleClean,
-        Dispenser,
-        VisionInspection,
-        UVCure,
-        Transfer,
+        Main,
+        SPDHead1,
+        SPDHead2,
+        SPDHead3,
+        SPDHead4,
     }
 }

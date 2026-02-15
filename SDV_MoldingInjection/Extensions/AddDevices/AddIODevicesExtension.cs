@@ -37,22 +37,25 @@ namespace SDV_MoldingInjection.Extensions
 #if SIMULATION
                 services.AddSingleton<IDInputDevice>((services) =>
                 {
-                    return new SimulationInputDevice_ClientMMF<EInput>()
+                    return new SimulationInputDevice_ClientMMF<EMachineInput>()
                     {
                         Id = (int)EInputDevice.MachineInput,
                         Name = EInputDevice.MachineInput.ToString(),
                         MaxPin = 100,
                     };
                 });
+                
                 for (int i = 1; i <= 4; i++)
                 {
+                    var index = i;
+
                     services.AddSingleton<IDInputDevice>((services) =>
                     {
-                        return new SimulationInputDevice_ClientMMF<EInput>()
+                        return new SimulationInputDevice_ClientMMF<EHeadInput>()
                         {
-                            Id = i,
-                            Name = ((EInputDevice)i).ToString(),
-                            MaxPin = 100,
+                            Id = index - 1,
+                            Name = ((EInputDevice)index).ToString(),
+                            MaxPin = 100
                         };
                     });
                 }
@@ -88,8 +91,27 @@ namespace SDV_MoldingInjection.Extensions
 #if SIMULATION
                 services.AddSingleton<IDOutputDevice>((services) =>
                 {
-                    return new SimulationOutputDevice<EOutput>() { Id = 1, Name = "OutDevice1", MaxPin = 500 };
+                    return new SimulationOutputDevice<EMachineOutput>()
+                    {
+                        Id = (int)EOutputDevice.MachineOutput,
+                        Name = EOutputDevice.MachineOutput.ToString(),
+                        MaxPin = 100,
+                    };
                 });
+                for (int i = 1; i <= 4; i++)
+                {
+                    var index = i;
+
+                    services.AddSingleton<IDOutputDevice>((services) =>
+                    {
+                        return new SimulationOutputDevice<EHeadOutput>()
+                        {
+                            Id = index - 1,
+                            Name = ((EOutputDevice)index).ToString(),
+                            MaxPin = 100,
+                        };
+                    });
+                }
 #else
                 services.AddSingleton<IDOutputDevice>((services) =>
                 {
@@ -100,6 +122,7 @@ namespace SDV_MoldingInjection.Extensions
                         MaxPin = 100,
                     };
                 });
+
                 for (int i = 1; i <= 4; i++)
                 {
                     var index = i;

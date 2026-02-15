@@ -7,6 +7,7 @@
              xmlns:uiCvt="clr-namespace:EQX.UI.Converters;assembly=EQX.UI"
              xmlns:inout="clr-namespace:EQX.InOut;assembly=EQX.InOut"
              xmlns:viewsLib="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
+             xmlns:uiMVVM="clr-namespace:EQX.UI.MVVM;assembly=EQX.UI"
              xmlns:local="clr-namespace:SDV_MoldingInjection">
     <Application.Resources>
         <ResourceDictionary>
@@ -62,6 +63,9 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:ManualViewModel}">
                 <views:ManualView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:AppManualUnitViewModel}">
+                <uiMVVM:ManualUnitView />
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:MonitorIOViewModel}">
                 <views:MonitorIOView />

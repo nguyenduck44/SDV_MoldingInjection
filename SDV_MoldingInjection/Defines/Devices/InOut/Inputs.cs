@@ -70,15 +70,103 @@ namespace SDV_MoldingInjection.Defines
         public List<IDInput> Head3 => _dHead3InputDevice.Inputs;
         public List<IDInput> Head4 => _dHead4InputDevice.Inputs;
 
-        public IDInput Emergency => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.OP_SW_EMO);
         public IDInput OPButtonStart => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.OP_SW_START);
         public IDInput OPButtonStop => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.OP_SW_STOP);
         public IDInput OPButtonReset => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.OP_SW_RESET);
-        public IDInput ServoOn => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SERVO_ON);
-        public IDInput MainCDACheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_CDA_CHECK);
-        public IDInput DoorCloseLeft => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_CLOSE_LEFT);
-        public IDInput DoorCloseRight => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_CLOSE_RIGHT);
+        public IDInput Emergency => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.OP_SW_EMO);
+        public IDInput AutoSW => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.OP_KEY_SW_AUTO);
+        public IDInput TeachSW => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.OP_KEY_SW_TEACH);
+        public IDInput Fan1Run => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_PANEL_FAN_RUN1);
+        public IDInput Fan2Run => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_PANEL_FAN_RUN2);
+        public IDInput SmokeDetectRun => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SMOKE_DETECT_RUN);
+        public IDInput SmokeDetectAlarm => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SMOKE_DETECT_DETECT_ALARM);
+        public IDInput TempHighAlarm => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SMOKE_DETECT_TEMP_HIGH_ALARM);
+        public IDInput TempHighWarning => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SMOKE_DETECT_TEMP_HIGH_WARNING);
 
-        public bool DoorClose => DoorCloseLeft.Value && DoorCloseRight.Value;
+        public IDInput ServoOn => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SERVO_ON);
+        public IDInput MainBreakerTrip => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_BREAKER_TRIP);
+        public IDInput MainCDACheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_CDA_CHECK);
+
+        public IDInput DoorCloseLeft => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_CLOSE_LEFT);
+        public IDInput DoorLockLeft => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_LOCK_LEFT);
+        public IDInput DoorCloseRight => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_CLOSE_RIGHT);
+        public IDInput DoorLockRight => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_LOCK_RIGHT);
+
+        //MAIN_BREAKER TRIP_EBOX
+        //MAIN_PANEL_FAN_RUN#1_EBOX
+        //MAIN_PANEL_FAN_RUN#2_EBOX
+        //MAIN_PANEL_FAN_RUN#3_EBOX
+        //MAIN_PANEL_FAN_RUN#4_EBOX
+        //SMOKE_DETECT_RUN_EBOX
+        //SMOKE_DETECT_DETECT_ALARM_EBOX
+        //SMOKE_DETECT_TEMP' HIGH_ALARM_EBOX
+        //SMOKE_DETECT_TEMP' HIGH_WARNING_EBOX
+
+        public IDInput Nozzle1Touch => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.NOZZLE1_TOUCH_DETECT);
+        public IDInput Nozzle2Touch => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.NOZZLE2_TOUCH_DETECT);
+        public IDInput Nozzle3Touch => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.NOZZLE3_TOUCH_DETECT);
+        public IDInput Nozzle4Touch => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.NOZZLE4_TOUCH_DETECT);
+        public IDInput Nozzle1Clean => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.NOZZLE1_CLEAN_CHECK);
+        public IDInput Nozzle2Clean => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.NOZZLE2_CLEAN_CHECK);
+        public IDInput Nozzle3Clean => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.NOZZLE3_CLEAN_CHECK);
+        public IDInput Nozzle4Clean => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.NOZZLE4_CLEAN_CHECK);
+
+        public IDInput Jig1Detect => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.JIG1_DETECT);
+        public IDInput Jig2Detect => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.JIG2_DETECT);
+        public IDInput Jig3Detect => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.JIG3_DETECT);
+        public IDInput Jig4Detect => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.JIG4_DETECT);
+
+        // Vacuum perform
+        public IDInput AngleValveOpen => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.ANGLE_VALVE_OPEN);
+        // Vacuum block
+        public IDInput AngleValveClose => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.ANGLE_VALVE_CLOSE);
+
+        public IDInput BelowsUp => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.BELLOWS_UP);
+        public IDInput BelowsDown => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.BELLOWS_DOWN);
+
+        public IDInput VacPumpRun => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.VAC_PUMP_RUN);
+        public IDInput VacPumpAlarm => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.VAC_PUMP_ALARM);
+        public IDInput VacChamberPurgeOn => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.VAC_CHAMBER_PURGE_ON);
+        public IDInput VacChamberOpen => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.VAC_CHAMBER_OPEN);
+        public IDInput VacChamberClose => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.VAC_CHAMBER_CLOSE);
+
+        public IDInput SyringeCDACheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SYLINGE_HEAD_CDA_CHECK);
+        public IDInput PumpCDACheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_CDA_CHECK);
+        public IDInput PumpVentCDACheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_VENT_CDA_CHECK);
+        public IDInput PumpFanRun1 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_FAN_RUN1);
+        public IDInput PumpFanRun2 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_FAN_RUN2);
+
+        #region SPD Head Inputs
+        public IDInput H1_CylUp => _dHead1InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.CYL_UP_POS);
+        public IDInput H1_CylDown => _dHead1InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.CYL_DONW_POS);
+        public IDInput H1_GateOpen => _dHead1InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.GATE_OPEN);
+        public IDInput H1_GateClose => _dHead1InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.GATE_CLOSE);
+        public IDInput H1_AssembleCheck => _dHead1InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.ASSEMBLE_CHECK);
+        public IDInput H1_SyringeAir => _dHead1InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.SYRINGE_AIR);
+
+        public IDInput H2_CylUp => _dHead2InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.CYL_UP_POS);
+        public IDInput H2_CylDown => _dHead2InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.CYL_DONW_POS);
+        public IDInput H2_GateOpen => _dHead2InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.GATE_OPEN);
+        public IDInput H2_GateClose => _dHead2InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.GATE_CLOSE);
+        public IDInput H2_AssembleCheck => _dHead2InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.ASSEMBLE_CHECK);
+        public IDInput H2_SyringeAir => _dHead2InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.SYRINGE_AIR);
+
+        public IDInput H3_CylUp => _dHead3InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.CYL_UP_POS);
+        public IDInput H3_CylDown => _dHead3InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.CYL_DONW_POS);
+        public IDInput H3_GateOpen => _dHead3InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.GATE_OPEN);
+        public IDInput H3_GateClose => _dHead3InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.GATE_CLOSE);
+        public IDInput H3_AssembleCheck => _dHead3InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.ASSEMBLE_CHECK);
+        public IDInput H3_SyringeAir => _dHead3InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.SYRINGE_AIR);
+
+        public IDInput H4_CylUp => _dHead4InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.CYL_UP_POS);
+        public IDInput H4_CylDown => _dHead4InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.CYL_DONW_POS);
+        public IDInput H4_GateOpen => _dHead4InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.GATE_OPEN);
+        public IDInput H4_GateClose => _dHead4InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.GATE_CLOSE);
+        public IDInput H4_AssembleCheck => _dHead4InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.ASSEMBLE_CHECK);
+        public IDInput H4_SyringeAir => _dHead4InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.SYRINGE_AIR);
+        #endregion
+
+        public bool DoorClose => DoorCloseLeft.Value && DoorLockLeft.Value
+            && DoorCloseRight.Value && DoorLockRight.Value;
     }
 }

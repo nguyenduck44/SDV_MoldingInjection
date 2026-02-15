@@ -4,7 +4,7 @@ using SDV_MoldingInjection.Defines;
 namespace SDV_MoldingInjection.Process
 {
     /// <summary>
-    /// SDV Dot Dispenser Process
+    /// SDV Molding Injection Process
     /// </summary>
-    public class DDProcess : ProcessBase<ESequence> { }
+    public class MIProcess : ProcessBase<ESequence> { }
 }

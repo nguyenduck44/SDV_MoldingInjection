@@ -1,7 +1,6 @@
 ﻿using EQX.Core.Common;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
-using SDV_MoldingInjection.Process;
 using System.Windows;
 using System.Windows.Threading;
 

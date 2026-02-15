@@ -30,7 +30,7 @@
 
                     <Button Content="←"
                     Command="{Binding InputDeviceIndexDecrease}" />
-                    <TextBlock Text="{Binding SelectedInputBoardNumber, StringFormat='{}Input Board #{0}'}"
+                    <TextBlock Text="{Binding CurrentInputList.Name}"
                        Grid.Column="1"
                        TextAlignment="Center"
                        FontWeight="Bold"

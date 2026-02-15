@@ -21,7 +21,7 @@
             <system:String x:Key="str_Machine_Status">Trạng Thái Máy</system:String>
             <system:String x:Key="str_IO_Monitoring">Theo Dõi IO</system:String>
             <system:String x:Key="str_Initialize">Khởi Tạo</system:String>
-            <system:String x:Key="str_Origin">Ban Đầu</system:String>
+            <system:String x:Key="str_Origin">Về gốc</system:String>
             <system:String x:Key="str_Start">Bắt Đầu</system:String>
             <system:String x:Key="str_Stop">Dừng</system:String>
             <system:String x:Key="str_Buzzer_Off">Tắt Chuông</system:String>

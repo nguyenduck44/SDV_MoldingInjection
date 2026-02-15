@@ -1,27 +1,18 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using EQX.Core.Common;
 using EQX.Core.Sequence;
-using SDV_MoldingInjection.Defines;
+using SDV_MoldingInjection.Process;
 
-namespace SDV_MoldingInjection.Process
+namespace SDV_MoldingInjection.Defines
 {
-    public enum EPanelStatus
+    public enum EJigStatus
     {
         /// <summary>
         /// Unknown or not started
         /// </summary>
         None = 0,
-        InPlasma,
-        PlasmaDone,
-        InVisionAlign,
-        VisionAlignDone,
-        InDispensing,
-        DispensingDone,
-        InCuring,
-        CuringDone,
-        InFinalInspection,
-        FinalInspectionDone_OK,
-        FinalInspectionDone_NG,
+        InMolding,
+        MoldingFinish
     }
 
     public class MachineStatus : ObservableObject

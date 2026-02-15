@@ -2,13 +2,20 @@
 {
     public enum ECylinder
     {
-        PlasmaCover,
+        NozzleClean_H1,
+        NozzleClean_H2,
+        NozzleClean_H3,
+        NozzleClean_H4,
 
-        TransferHand1,
-        TransferHand2,
+        BellowUpDown,
 
-        UVCure,
+        ChamberOpenClose,
 
-        NozzleClean,
+        AngleValve,
+
+        H1_UpDown,
+        H2_UpDown,
+        H3_UpDown,
+        H4_UpDown,
     }
 }

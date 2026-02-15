@@ -16,7 +16,7 @@
              d:DesignHeight="1080"
              d:DesignWidth="1920">
     <UserControl.Resources>
-        <DataTemplate DataType="{x:Type localPro:DDProcess}">
+        <DataTemplate DataType="{x:Type localPro:MIProcess}">
             <Border BorderBrush="Gray"
                     Width="120"
                     IsEnabled="{Binding DataContext.MachineStatus.IsStandByProcessMode,ElementName=root}"
