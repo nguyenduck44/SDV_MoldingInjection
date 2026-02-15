@@ -26,20 +26,26 @@ namespace SDV_MoldingInjection.Defines
 
         public bool Initialize()
         {
-            return _dMachineOutputDevice.Initialize()
-                && _dHead1OutputDevice.Initialize()
-                && _dHead2OutputDevice.Initialize()
-                && _dHead3OutputDevice.Initialize()
-                && _dHead4OutputDevice.Initialize();
+            bool ret = false;
+            ret &= _dMachineOutputDevice.Initialize();
+            ret &= _dHead1OutputDevice.Initialize();
+            ret &= _dHead2OutputDevice.Initialize();
+            ret &= _dHead3OutputDevice.Initialize();
+            ret &= _dHead4OutputDevice.Initialize();
+
+            return ret;
         }
 
         public bool Connect()
         {
-            return _dMachineOutputDevice.Connect()
-                && _dHead1OutputDevice.Connect()
-                && _dHead2OutputDevice.Connect()
-                && _dHead3OutputDevice.Connect()
-                && _dHead4OutputDevice.Connect();
+            bool ret = false;
+            ret &= _dMachineOutputDevice.Connect();
+            ret &= _dHead1OutputDevice.Connect();
+            ret &= _dHead2OutputDevice.Connect();
+            ret &= _dHead3OutputDevice.Connect();
+            ret &= _dHead4OutputDevice.Connect();
+
+            return ret;
         }
 
         public bool Disconnect()

@@ -51,7 +51,10 @@ namespace SDV_MoldingInjection.Defines
         public bool Disconnect()
         {
             return _dMachineInputDevice.Disconnect()
-                && _dHead1InputDevice.Disconnect();
+                && _dHead1InputDevice.Disconnect()
+                && _dHead2InputDevice.Disconnect()
+                && _dHead3InputDevice.Disconnect()
+                && _dHead4InputDevice.Disconnect();
         }
 
         public List<IDInput> All => _dMachineInputDevice.Inputs
