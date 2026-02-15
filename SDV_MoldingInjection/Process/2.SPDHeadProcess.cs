@@ -7,6 +7,9 @@ namespace SDV_MoldingInjection.Process
 {
     public class SPDHeadProcess : MIProcess
     {
+        #region Inputs / Ouputs
+        #endregion
+
         #region Motions
         private IMotion PAxis => Name switch
         {

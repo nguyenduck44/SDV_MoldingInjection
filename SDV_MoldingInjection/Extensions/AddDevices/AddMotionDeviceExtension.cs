@@ -116,6 +116,8 @@ namespace SDV_MoldingInjection.Extensions
                             ((EHeadMotion)index).ToString(),
                             (MotionParameter)(ser.GetRequiredKeyedService<List<IMotionParameter>>("MotionFastechParameter").First(p => p.Name == ((EHeadMotion)index).ToString())))
                         {
+                            Port = 2,
+                            Baudrate = 115200,
                         };
                     });
                 }
