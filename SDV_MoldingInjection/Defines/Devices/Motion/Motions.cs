@@ -12,12 +12,16 @@ namespace SDV_MoldingInjection.Defines
         public List<IMotion> FastechMotions { get; }
         public List<IMotion> All => AjinMotions.Concat(FastechMotions).ToList();
         public IMotionMaster AjinMaster { get; }
+        public IMotionMaster FastechPlusRMaster { get; }
         #endregion
 
         public Motions([FromKeyedServices("AjinMaster#1")] IMotionMaster ajinMaster,
+            [FromKeyedServices("FastechPlusRMaster#1")] IMotionMaster fastechPlusRMaster,
             IEnumerable<IMotion> motions)
         {
             AjinMaster = ajinMaster;
+            FastechPlusRMaster = fastechPlusRMaster;
+
             AjinMotions = motions.Where(m => Enum.IsDefined(typeof(EMachineMotion), m.Name)).ToList();
             FastechMotions = motions.Where(m => Enum.IsDefined(typeof(EHeadMotion), m.Name)).ToList();
         }

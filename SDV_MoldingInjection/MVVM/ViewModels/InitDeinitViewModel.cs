@@ -170,6 +170,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         MessageText = "Connect Motion Devices";
 
                         _devices.Motions.AjinMaster.Connect();
+                        _devices.Motions.FastechPlusRMaster.Connect();
 
                         _devices.Motions.All.ForEach(m => m.Initialization());
 
@@ -182,8 +183,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         MessageText = "Connect IO Devices";
                         _isSuccess = true;
 
-                        _isSuccess &= _devices.Inputs.Connect();
-                        _isSuccess &= _devices.Outputs.Connect();
                         _isSuccess &= _devices.AnalogInputs.Connect();
          
                         if (_isSuccess == false)
