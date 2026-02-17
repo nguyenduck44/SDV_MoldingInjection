@@ -6,13 +6,18 @@ using System.Threading.Tasks;
 
 namespace SDV_MoldingInjection.Defines
 {
-    public enum EDispenserProcessOriginStep
+    public enum EMoldProcessOriginStep
     {
         Start,
+
+        CheckIfChamberOpen,
+
         ZAxis_Origin,
-        ZAxis_Origin_Wait,
-        XAxis_Origin,
-        XAxis_Origin_Wait,
-        End
+        ZAxis_OriginWait,
+
+        XYAxis_Origin,
+        XYAxis_OriginWait,
+
+        End,
     }
 }

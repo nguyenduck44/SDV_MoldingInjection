@@ -4,7 +4,7 @@
     {
         Root,
         Mold,
-        Chamber,
+        DryPump,
         SPDHead1,
         SPDHead2,
         SPDHead3,

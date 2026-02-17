@@ -1,15 +1,8 @@
 ﻿namespace SDV_MoldingInjection.Defines
 {
-    public enum ESPDHead
-    {
-        SPDHead1 = 1,
-        SPDHead2 = 2,
-        SPDHead3 = 3,
-        SPDHead4 = 4,
-    }
-
     public enum EAlarm
     {
+        //--------- -1 -> 499 : Global Alarm ---------
         None = -1,
 
         // System Level Alarms
@@ -25,18 +18,16 @@
         Motion_Limit_Detected,
         Motion_Alarm_Detected,
 
-        LeftStage_YAxis_OriginFail = 1000,
-        LeftStage_YAxis_MoveLoadPositionFail,
+        //--------- 1500 -> 1499 : Mold Process Alarm ---------
 
-        RightStage_YAxis_OriginFail = 2000,
-        RightStage_YAxis_MoveLoadPositionFail,
+        //--------- 2000 -> 2499 : Dry Pump Process Alarm ---------
 
-        DispenserHead_XAxis_OriginFail = 3000,
-        DispenserHead_ZAxis_OriginFail,
+        //--------- 3000 -> 3499 : SPD Head #1 Process Alarm ---------
 
-        VisionInspection_XAxis_OriginFail = 4000,
+        //--------- 4000 -> 4499 : SPD Head #2 Process Alarm ---------
 
-        Transfer_XAxis_OriginFail = 7000,
-        Transfer_ZAxis_OriginFail,
+        //--------- 5000 -> 5499 : SPD Head #3 Process Alarm ---------
+
+        //--------- 6000 -> 6499 : SPD Head #3 Process Alarm ---------
     }
 }

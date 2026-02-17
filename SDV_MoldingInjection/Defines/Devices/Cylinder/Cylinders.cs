@@ -22,10 +22,10 @@ namespace SDV_MoldingInjection.Defines.Devices.Cylinder
 
         public ICylinder AngleValve { get; }
 
-        public ICylinder H1_UpDown { get; }
-        public ICylinder H2_UpDown { get; }
-        public ICylinder H3_UpDown { get; }
-        public ICylinder H4_UpDown { get; }
+        public ICylinder PistonCyl_H1 { get; }
+        public ICylinder PistonCyl_H2 { get; }
+        public ICylinder PistonCyl_H3 { get; }
+        public ICylinder PistonCyl_H4 { get; }
 
         public Cylinders(ICylinderFactory cylinderFactory, Inputs inputs, Outputs outputs)
         {
@@ -68,25 +68,25 @@ namespace SDV_MoldingInjection.Defines.Devices.Cylinder
               .SetIdentity((int)ECylinder.AngleValve, ECylinder.AngleValve.ToString());
             AngleValve.CylinderType = ECylinderType.ForwardBackward;
 
-            H1_UpDown = _cylinderFactory
+            PistonCyl_H1 = _cylinderFactory
               .Create(_inputs.H1_CylDown, _inputs.H1_CylUp, _outputs.H1_CylDown, _outputs.H1_CylUp)
-              .SetIdentity((int)ECylinder.H1_UpDown, ECylinder.H1_UpDown.ToString());
-            H1_UpDown.CylinderType = ECylinderType.UpDownReverse;
+              .SetIdentity((int)ECylinder.PistonCyl_H1, ECylinder.PistonCyl_H1.ToString());
+            PistonCyl_H1.CylinderType = ECylinderType.UpDownReverse;
 
-            H2_UpDown = _cylinderFactory
+            PistonCyl_H2 = _cylinderFactory
               .Create(_inputs.H2_CylDown, _inputs.H2_CylUp, _outputs.H2_CylDown, _outputs.H2_CylUp)
-              .SetIdentity((int)ECylinder.H2_UpDown, ECylinder.H2_UpDown.ToString());
-            H2_UpDown.CylinderType = ECylinderType.UpDownReverse;
+              .SetIdentity((int)ECylinder.PistonCyl_H2, ECylinder.PistonCyl_H2.ToString());
+            PistonCyl_H2.CylinderType = ECylinderType.UpDownReverse;
 
-            H3_UpDown = _cylinderFactory
+            PistonCyl_H3 = _cylinderFactory
               .Create(_inputs.H3_CylDown, _inputs.H3_CylUp, _outputs.H3_CylDown, _outputs.H3_CylUp)
-              .SetIdentity((int)ECylinder.H3_UpDown, ECylinder.H3_UpDown.ToString());
-            H3_UpDown.CylinderType = ECylinderType.UpDownReverse;
+              .SetIdentity((int)ECylinder.PistonCyl_H3, ECylinder.PistonCyl_H3.ToString());
+            PistonCyl_H3.CylinderType = ECylinderType.UpDownReverse;
 
-            H4_UpDown = _cylinderFactory
+            PistonCyl_H4 = _cylinderFactory
               .Create(_inputs.H4_CylDown, _inputs.H4_CylUp, _outputs.H4_CylDown, _outputs.H4_CylUp)
-              .SetIdentity((int)ECylinder.H4_UpDown, ECylinder.H4_UpDown.ToString());
-            H4_UpDown.CylinderType = ECylinderType.UpDownReverse;
+              .SetIdentity((int)ECylinder.PistonCyl_H4, ECylinder.PistonCyl_H4.ToString());
+            PistonCyl_H4.CylinderType = ECylinderType.UpDownReverse;
         }
 
         private readonly ICylinderFactory _cylinderFactory;

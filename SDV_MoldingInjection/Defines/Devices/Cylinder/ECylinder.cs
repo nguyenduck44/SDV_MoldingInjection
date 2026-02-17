@@ -13,9 +13,9 @@
 
         AngleValve,
 
-        H1_UpDown,
-        H2_UpDown,
-        H3_UpDown,
-        H4_UpDown,
+        PistonCyl_H1,
+        PistonCyl_H2,
+        PistonCyl_H3,
+        PistonCyl_H4,
     }
 }

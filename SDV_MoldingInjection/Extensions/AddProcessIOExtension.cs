@@ -17,29 +17,23 @@ namespace SDV_MoldingInjection.Extensions
         {
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
-                services.AddSingleton<IDInputDevice>(new MappableInputDevice<EStageProcInput> { Name = "LeftStageProcInput" });
-                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<EStageProcOutput> { Name = "LeftStageProcOutput" });
+                services.AddSingleton<IDInputDevice>(new MappableInputDevice<EMoldProcInput> { Name = "MoldProcInput" });
+                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<EMoldProcOutput> { Name = "MoldProcOutput" });
 
-                services.AddSingleton<IDInputDevice>(new MappableInputDevice<EStageProcInput> { Name = "RightStageProcInput" });
-                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<EStageProcOutput> { Name = "RightStageProcOutput" });
+                services.AddSingleton<IDInputDevice>(new MappableInputDevice<EDryPumpProcInput> { Name = "DryPumpProcInput" });
+                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<EDryPumpProcOutput> { Name = "DryPumpProcOutput" });
 
-                services.AddSingleton<IDInputDevice>(new MappableInputDevice<EPlasmaProcInput> { Name = "PlasmaProcInput" });
-                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<EPlasmaProcOutput> { Name = "PlasmaProcOutput" });
+                services.AddSingleton<IDInputDevice>(new MappableInputDevice<ESPDHeadProcInput> { Name = "SPDHead1_ProcInput" });
+                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<ESPDHeadProcOutput> { Name = "SPDHead1_ProcOutput" });
 
-                services.AddSingleton<IDInputDevice>(new MappableInputDevice<ECleanProcInput> { Name = "CleanProcInput" });
-                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<ECleanProcOutput> { Name = "CleanProcOutput" });
+                services.AddSingleton<IDInputDevice>(new MappableInputDevice<ESPDHeadProcInput> { Name = "SPDHead2_ProcInput" });
+                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<ESPDHeadProcOutput> { Name = "SPDHead2_ProcOutput" });
 
-                services.AddSingleton<IDInputDevice>(new MappableInputDevice<EDispenserProcInput> { Name = "DispenserProcInput" });
-                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<EDispenserProcOutput> { Name = "DispenserProcOutput" });
+                services.AddSingleton<IDInputDevice>(new MappableInputDevice<ESPDHeadProcInput> { Name = "SPDHead3_ProcInput" });
+                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<ESPDHeadProcOutput> { Name = "SPDHead3_ProcOutput" });
 
-                services.AddSingleton<IDInputDevice>(new MappableInputDevice<EFinalInspectProcInput> { Name = "FinalInspectProcInput" });
-                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<EFinalInspectProcOutput> { Name = "FinalInspectProcOutput" });
-
-                services.AddSingleton<IDInputDevice>(new MappableInputDevice<EUVProcInput> { Name = "UVProcInput" });
-                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<EUVProcOutput> { Name = "UVProcOutput" });
-
-                services.AddSingleton<IDInputDevice>(new MappableInputDevice<ETransferProcInput> { Name = "TransferProcessInput" });
-                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<ETransferProcOutput> { Name = "TransferProcessOutput" });
+                services.AddSingleton<IDInputDevice>(new MappableInputDevice<ESPDHeadProcInput> { Name = "SPDHead4_ProcInput" });
+                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<ESPDHeadProcOutput> { Name = "SPDHead4_ProcOutput" });
 
                 services.AddSingleton<ProcessIO>();
             });

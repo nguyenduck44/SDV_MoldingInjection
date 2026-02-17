@@ -2,7 +2,7 @@
 
 namespace SDV_MoldingInjection.Recipe
 {
-    public class TransferRecipe : RecipeBase
+    public class SPDHeadRecipe : RecipeBase
     {
     }
 }

@@ -15,7 +15,7 @@ namespace SDV_MoldingInjection.Extensions
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
                 services.AddSingleton<IUserStore, UserStore>();
-                services.AddSingleton<IAuthenticationService, DotDispenserAuthenticationService>();
+                services.AddSingleton<IAuthenticationService, SDVAuthenticationService>();
             });
             return hostBuilder;
         }

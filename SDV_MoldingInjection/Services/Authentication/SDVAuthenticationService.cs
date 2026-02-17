@@ -2,7 +2,7 @@
 
 namespace SDV_MoldingInjection.Services
 {
-    public class DotDispenserAuthenticationService(IUserStore userStore)
+    public class SDVAuthenticationService(IUserStore userStore)
         : AuthenticationService(userStore)
     {
         protected override bool ValidatePassword(EPermission permission, string password)

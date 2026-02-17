@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace SDV_MoldingInjection.Defines
 {
-    public class ProcessIO
+    public partial class ProcessIO
     {
         public ProcessIO(IEnumerable<IDInputDevice> processInputs,
                          IEnumerable<IDOutputDevice> processOutputs)
@@ -12,78 +12,60 @@ namespace SDV_MoldingInjection.Defines
             var procInList = processInputs.ToList();
             var procOutList = processOutputs.ToList();
 
-            LeftStageProcInput = (IDInputDevice<EStageProcInput>?)
-               procInList.First(pI => pI.Name == "LeftStageProcInput")!;
+            MoldProcInput = (IDInputDevice<EMoldProcInput>?)
+               procInList.First(pI => pI.Name == "MoldProcInput")!;
 
-            LeftStageProcOutput = (IDOutputDevice<EStageProcOutput>?)
-               procOutList.First(pI => pI.Name == "LeftStageProcOutput")!;
+            MoldProcOutput = (IDOutputDevice<EMoldProcOutput>?)
+               procOutList.First(pI => pI.Name == "MoldProcOutput")!;
 
-            RightStageProcInput = (IDInputDevice<EStageProcInput>?)
-               procInList.First(pI => pI.Name == "RightStageProcInput")!;
+            DryPumpProcInput = (IDInputDevice<EDryPumpProcInput>?)
+               procInList.First(pI => pI.Name == "DryPumpProcInput")!;
 
-            RightStageProcOutput = (IDOutputDevice<EStageProcOutput>?)
-               procOutList.First(pI => pI.Name == "RightStageProcOutput")!;
+            DryPumpProcOutput = (IDOutputDevice<EDryPumpProcOutput>?)
+               procOutList.First(pI => pI.Name == "DryPumpProcOutput")!;
 
-            PlasmaStageProcInput = (IDInputDevice<EPlasmaProcInput>?)
-               procInList.First(pI => pI.Name == "PlasmaProcInput")!;
+            SPDHead1_ProcInput = (IDInputDevice<ESPDHeadProcInput>?)
+               procInList.First(pI => pI.Name == "SPDHead1_ProcInput")!;
 
-            PlasmaStageProcOutput = (IDOutputDevice<EPlasmaProcOutput>?)
-               procOutList.First(pI => pI.Name == "PlasmaProcOutput")!;
+            SPDHead1_ProcOutput = (IDOutputDevice<ESPDHeadProcOutput>?)
+               procOutList.First(pI => pI.Name == "SPDHead1_ProcOutput")!;
 
-            CleanProcInput = (IDInputDevice<ECleanProcInput>?)
-               procInList.First(pI => pI.Name == "CleanProcInput")!;
+            SPDHead2_ProcInput = (IDInputDevice<ESPDHeadProcInput>?)
+               procInList.First(pI => pI.Name == "SPDHead2_ProcInput")!;
 
-            CleanProcOutput = (IDOutputDevice<ECleanProcOutput>?)
-               procOutList.First(pI => pI.Name == "CleanProcOutput")!;
+            SPDHead2_ProcOutput = (IDOutputDevice<ESPDHeadProcOutput>?)
+               procOutList.First(pI => pI.Name == "SPDHead2_ProcOutput")!;
 
-            DispenserProcInput = (IDInputDevice<EDispenserProcInput>?)
-              procInList.First(pI => pI.Name == "DispenserProcInput")!;
+            SPDHead3_ProcInput = (IDInputDevice<ESPDHeadProcInput>?)
+               procInList.First(pI => pI.Name == "SPDHead3_ProcInput")!;
 
-            DispenserProcOutput = (IDOutputDevice<EDispenserProcOutput>?)
-               procOutList.First(pI => pI.Name == "DispenserProcOutput")!;
+            SPDHead3_ProcOutput = (IDOutputDevice<ESPDHeadProcOutput>?)
+               procOutList.First(pI => pI.Name == "SPDHead3_ProcOutput")!;
 
-            FinalInspectProcInput = (IDInputDevice<EFinalInspectProcInput>?)
-              procInList.First(pI => pI.Name == "FinalInspectProcInput")!;
+            SPDHead4_ProcInput = (IDInputDevice<ESPDHeadProcInput>?)
+               procInList.First(pI => pI.Name == "SPDHead4_ProcInput")!;
 
-            FinalInspectProcOutput = (IDOutputDevice<EFinalInspectProcOutput>?)
-               procOutList.First(pI => pI.Name == "FinalInspectProcOutput")!;
-
-            UVProcInput = (IDInputDevice<EUVProcInput>?)
-              procInList.First(pI => pI.Name == "UVProcInput")!;
-
-            UVProcOutput = (IDOutputDevice<EUVProcOutput>?)
-               procOutList.First(pI => pI.Name == "UVProcOutput")!;
-
-            TransferProcInput = (IDInputDevice<ETransferProcInput>?)
-                procInList.First(pI => pI.Name == "TransferProcessInput")!;
-
-            TransferProcOutput = (IDOutputDevice<ETransferProcOutput>?)
-                procOutList.First(pO => pO.Name == "TransferProcessOutput")!;
+            SPDHead4_ProcOutput = (IDOutputDevice<ESPDHeadProcOutput>?)
+               procOutList.First(pI => pI.Name == "SPDHead4_ProcOutput")!;
         }
 
-        public IDInputDevice<EStageProcInput> LeftStageProcInput { get; }
-        public IDOutputDevice<EStageProcOutput> LeftStageProcOutput { get; }
+        public IDInputDevice<EMoldProcInput> MoldProcInput { get; }
+        public IDOutputDevice<EMoldProcOutput> MoldProcOutput { get; }
 
-        public IDInputDevice<EStageProcInput> RightStageProcInput { get; }
-        public IDOutputDevice<EStageProcOutput> RightStageProcOutput { get; }
+        public IDInputDevice<EDryPumpProcInput> DryPumpProcInput { get; }
+        public IDOutputDevice<EDryPumpProcOutput> DryPumpProcOutput { get; }
 
-        public IDInputDevice<EPlasmaProcInput> PlasmaStageProcInput { get; }
-        public IDOutputDevice<EPlasmaProcOutput> PlasmaStageProcOutput { get; }
+        public IDInputDevice<ESPDHeadProcInput> SPDHead1_ProcInput { get; }
+        public IDOutputDevice<ESPDHeadProcOutput> SPDHead1_ProcOutput { get; }
 
-        public IDInputDevice<ECleanProcInput> CleanProcInput { get; }
-        public IDOutputDevice<ECleanProcOutput> CleanProcOutput { get; }
+        public IDInputDevice<ESPDHeadProcInput> SPDHead2_ProcInput { get; }
+        public IDOutputDevice<ESPDHeadProcOutput> SPDHead2_ProcOutput { get; }
 
-        public IDInputDevice<EDispenserProcInput> DispenserProcInput { get; }
-        public IDOutputDevice<EDispenserProcOutput> DispenserProcOutput { get; }
+        public IDInputDevice<ESPDHeadProcInput> SPDHead3_ProcInput { get; }
+        public IDOutputDevice<ESPDHeadProcOutput> SPDHead3_ProcOutput { get; }
 
-        public IDInputDevice<EFinalInspectProcInput> FinalInspectProcInput { get; }
-        public IDOutputDevice<EFinalInspectProcOutput> FinalInspectProcOutput { get; }
-
-        public IDInputDevice<EUVProcInput> UVProcInput { get; }
-        public IDOutputDevice<EUVProcOutput> UVProcOutput { get; }
-
-        public IDInputDevice<ETransferProcInput> TransferProcInput { get; }
-        public IDOutputDevice<ETransferProcOutput> TransferProcOutput { get; }
+        public IDInputDevice<ESPDHeadProcInput> SPDHead4_ProcInput { get; }
+        public IDOutputDevice<ESPDHeadProcOutput> SPDHead4_ProcOutput { get; }
 
         public void Initialize()
         {
@@ -104,65 +86,7 @@ namespace SDV_MoldingInjection.Defines
 
         public void Mappings()
         {
-            LeftStageProcInput[EStageProcInput.DISPENSER_Z_AT_ORIGIN]
-                .MapTo(DispenserProcOutput[EDispenserProcOutput.DISPENSER_Z_AT_ORIGIN]);
-            LeftStageProcInput[EStageProcInput.TRANSFER_Z_AT_ORIGIN]
-                .MapTo(DispenserProcOutput[EDispenserProcOutput.DISPENSER_Z_AT_ORIGIN]);
-            LeftStageProcInput[EStageProcInput.PLASMA_COVER_MOVE_DONE]
-                .MapTo(PlasmaStageProcOutput[EPlasmaProcOutput.LEFT_PLASMA_COVER_MOVE_DONE]);
-            LeftStageProcInput[EStageProcInput.DISPENSING_DONE]
-                .MapTo(DispenserProcOutput[EDispenserProcOutput.LEFT_STAGE_DISPENSING_DONE]);
-            LeftStageProcInput[EStageProcInput.UVCURE_DONE]
-                .MapTo(UVProcOutput[EUVProcOutput.LEFT_STAGE_UVCURE_DONE]);
-            LeftStageProcInput[EStageProcInput.FINAL_INSPECT_DONE]
-                .MapTo(FinalInspectProcOutput[EFinalInspectProcOutput.LEFT_STAGE_FINAL_INSPECT_DONE]);
-            LeftStageProcInput[EStageProcInput.TRANSFER_DONE]
-                .MapTo(TransferProcOutput[ETransferProcOutput.LEFT_STAGE_TRANSFER_DONE]);
-
-            RightStageProcInput[EStageProcInput.DISPENSER_Z_AT_ORIGIN]
-                .MapTo(DispenserProcOutput[EDispenserProcOutput.DISPENSER_Z_AT_ORIGIN]);
-            RightStageProcInput[EStageProcInput.TRANSFER_Z_AT_ORIGIN]
-                .MapTo(DispenserProcOutput[EDispenserProcOutput.DISPENSER_Z_AT_ORIGIN]);
-            RightStageProcInput[EStageProcInput.PLASMA_COVER_MOVE_DONE]
-                .MapTo(PlasmaStageProcOutput[EPlasmaProcOutput.RIGHT_PLASMA_COVER_MOVE_DONE]);
-            RightStageProcInput[EStageProcInput.DISPENSING_DONE]
-                .MapTo(DispenserProcOutput[EDispenserProcOutput.RIGHT_STAGE_DISPENSING_DONE]);
-            RightStageProcInput[EStageProcInput.UVCURE_DONE]
-                .MapTo(UVProcOutput[EUVProcOutput.RIGHT_STAGE_UVCURE_DONE]);
-            RightStageProcInput[EStageProcInput.FINAL_INSPECT_DONE]
-                .MapTo(FinalInspectProcOutput[EFinalInspectProcOutput.RIGHT_STAGE_FINAL_INSPECT_DONE]);
-            RightStageProcInput[EStageProcInput.TRANSFER_DONE]
-                .MapTo(TransferProcOutput[ETransferProcOutput.RIGHT_STAGE_TRANSFER_DONE]);
-
-            PlasmaStageProcInput[EPlasmaProcInput.LEFT_STAGE_REQ_PLASMA]
-                .MapTo(LeftStageProcOutput[EStageProcOutput.STAGE_REQ_PLASMA]);
-            PlasmaStageProcInput[EPlasmaProcInput.RIGHT_STAGE_REQ_PLASMA]
-                .MapTo(RightStageProcOutput[EStageProcOutput.STAGE_REQ_PLASMA]);
-
-            DispenserProcInput[EDispenserProcInput.LEFT_STAGE_REQ_DISPENSING]
-                .MapTo(LeftStageProcOutput[EStageProcOutput.STAGE_REQ_DISPENSING]);
-            DispenserProcInput[EDispenserProcInput.RIGHT_STAGE_REQ_DISPENSING]
-                .MapTo(RightStageProcOutput[EStageProcOutput.STAGE_REQ_DISPENSING]);
-            DispenserProcInput[EDispenserProcInput.CLEAN_PREPARE_DONE]
-                .MapTo(CleanProcOutput[ECleanProcOutput.CLEAN_PREPARE_DONE]);
-
-            CleanProcInput[ECleanProcInput.DISPENSER_REQ_CLEAN]
-                .MapTo(DispenserProcOutput[EDispenserProcOutput.DISPENSER_REQ_CLEAN]);
-
-            UVProcInput[EUVProcInput.LEFT_STAGE_REQ_UVCURE]
-                .MapTo(LeftStageProcOutput[EStageProcOutput.STAGE_REQ_UVCURE]);
-            UVProcInput[EUVProcInput.RIGHT_STAGE_REQ_UVCURE]
-                .MapTo(RightStageProcOutput[EStageProcOutput.STAGE_REQ_UVCURE]);
-
-            FinalInspectProcInput[EFinalInspectProcInput.LEFT_STAGE_REQ_FINAL_INSPECT]
-                .MapTo(LeftStageProcOutput[EStageProcOutput.STAGE_REQ_FINAL_INSPECT]);
-            FinalInspectProcInput[EFinalInspectProcInput.RIGHT_STAGE_REQ_FINAL_INSPECT]
-                .MapTo(RightStageProcOutput[EStageProcOutput.STAGE_REQ_FINAL_INSPECT]);
-
-            TransferProcInput[ETransferProcInput.LEFT_STAGE_REQ_TRANSFER]
-                .MapTo(LeftStageProcOutput[EStageProcOutput.STAGE_REQ_TRANSFER]);
-            TransferProcInput[ETransferProcInput.RIGHT_STAGE_REQ_TRANSFER]
-                .MapTo(RightStageProcOutput[EStageProcOutput.STAGE_REQ_TRANSFER]);
+            
         }
     }
 }

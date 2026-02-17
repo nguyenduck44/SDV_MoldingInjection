@@ -7,20 +7,20 @@ namespace SDV_MoldingInjection.Recipe
     {
         [JsonConstructor]
         public RecipeList(CommonRecipe commonRecipe,
-                          DispensingRecipe dispensingRecipe,
-                          PlasmaRecipe plasmaRecipe,
-                          CleanRecipe cleanRecipe,
-                          FinalInspectRecipe finalInspectRecipe,
-                          UVCureRecipe uVCureRecipe,
-                          TransferRecipe transferRecipe)
+                          MoldRecipe moldRecipe,
+                          DryPumpRecipe dryPumpRecipe,
+                          SPDHeadRecipe sPDHead1_Recipe,
+                          SPDHeadRecipe sPDHead2_Recipe,
+                          SPDHeadRecipe sPDHead3_Recipe,
+                          SPDHeadRecipe sPDHead4_Recipe)
         {
             CommonRecipe = commonRecipe;
-            DispensingRecipe = dispensingRecipe;
-            PlasmaRecipe = plasmaRecipe;
-            CleanRecipe = cleanRecipe;
-            FinalInspectRecipe = finalInspectRecipe;
-            UVCureRecipe = uVCureRecipe;
-            TransferRecipe = transferRecipe;
+            MoldRecipe = moldRecipe;
+            DryPumpRecipe = dryPumpRecipe;
+            SPDHead1_Recipe = sPDHead1_Recipe;
+            SPDHead2_Recipe = sPDHead2_Recipe;
+            SPDHead3_Recipe = sPDHead3_Recipe;
+            SPDHead4_Recipe = sPDHead4_Recipe;
         }
         public RecipeList(IEnumerable<IRecipe> recipes)
         {
@@ -30,20 +30,21 @@ namespace SDV_MoldingInjection.Recipe
             }
 
             CommonRecipe = recipes.OfType<CommonRecipe>().FirstOrDefault()!;
-            DispensingRecipe = recipes.OfType<DispensingRecipe>().FirstOrDefault()!;
-            PlasmaRecipe = recipes.OfType<PlasmaRecipe>().FirstOrDefault()!;
-            CleanRecipe = recipes.OfType<CleanRecipe>().FirstOrDefault()!;
-            FinalInspectRecipe = recipes.OfType<FinalInspectRecipe>().FirstOrDefault()!;
-            UVCureRecipe = recipes.OfType<UVCureRecipe>().FirstOrDefault()!;
-            TransferRecipe = recipes.OfType<TransferRecipe>().FirstOrDefault()!;
+            MoldRecipe = recipes.OfType<MoldRecipe>().FirstOrDefault()!;
+            DryPumpRecipe = recipes.OfType<DryPumpRecipe>().FirstOrDefault()!;
+
+            SPDHead1_Recipe = recipes.OfType<SPDHeadRecipe>().First(r => r.Name == "SPDHead1_Recipe")!;
+            SPDHead2_Recipe = recipes.OfType<SPDHeadRecipe>().First(r => r.Name == "SPDHead2_Recipe")!;
+            SPDHead3_Recipe = recipes.OfType<SPDHeadRecipe>().First(r => r.Name == "SPDHead3_Recipe")!;
+            SPDHead2_Recipe = recipes.OfType<SPDHeadRecipe>().First(r => r.Name == "SPDHead4_Recipe")!;
         }
 
         public CommonRecipe CommonRecipe { get; }
-        public DispensingRecipe DispensingRecipe { get; }
-        public PlasmaRecipe PlasmaRecipe { get; }
-        public CleanRecipe CleanRecipe { get; }
-        public FinalInspectRecipe FinalInspectRecipe { get; }
-        public UVCureRecipe UVCureRecipe { get; }
-        public TransferRecipe TransferRecipe { get; }
+        public MoldRecipe MoldRecipe { get; }
+        public DryPumpRecipe DryPumpRecipe { get; }
+        public SPDHeadRecipe SPDHead1_Recipe { get; }
+        public SPDHeadRecipe SPDHead2_Recipe { get; }
+        public SPDHeadRecipe SPDHead3_Recipe { get; }
+        public SPDHeadRecipe SPDHead4_Recipe { get; }
     }
 }

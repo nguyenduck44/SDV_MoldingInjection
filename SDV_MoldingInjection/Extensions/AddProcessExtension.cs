@@ -21,7 +21,7 @@ namespace SDV_MoldingInjection.Extensions
             {
                 services.AddSingleton<IProcess<ESequence>, RootProcess<ESequence, ESemiSequence>>();
                 services.AddSingleton<IProcess<ESequence>, MoldProcess>();
-                services.AddSingleton<IProcess<ESequence>, ChamberProcess>();
+                services.AddSingleton<IProcess<ESequence>, DryPumpProcess>();
                 services.AddSingleton<IProcess<ESequence>, SPDHeadProcess>();
                 services.AddSingleton<IProcess<ESequence>, SPDHeadProcess>();
                 services.AddSingleton<IProcess<ESequence>, SPDHeadProcess>();

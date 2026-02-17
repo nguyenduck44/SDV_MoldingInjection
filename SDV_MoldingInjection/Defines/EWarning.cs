@@ -2,22 +2,40 @@
 {
     public enum EWarning
     {
-        Root = 0,
+        //--------- 500 -> 999 : Global Warning ---------
+        Root = 500,
         DoorOpen,
         DoorNotSafetyLock,
-        InitializeTimeout,
 
-        LeftStage_VacuumStatus_Fail = 1500,
+        //--------- 1500 -> 1999 : Mold Process Warning ---------
+        Mold_Chamber_OpenWarning = 1500,
+        XAxis_Origin_TimeOut,
+        YAxis_Origin_TimeOut,
+        Z1Axis_Origin_TimeOut,
+        Z2Axis_Origin_TimeOut,
+        Z3Axis_Origin_TimeOut,
+        Z4Axis_Origin_TimeOut,
 
-        RightStage_VacuumStatus_Fail = 1700,
+        //--------- 2500 -> 2999 : Dry Pump Process Warning ---------
 
-        Dispenser_ZAxis_MoveReadyFail = 3500,
+        //--------- 3500 -> 3999 : SPD Head #1 Process Warning ---------
+        P1Axis_Origin_TimeOut = 3500,
+        G1Axis_Origin_TimeOut,
+        H1_PistonCyl_UpFail,
 
-        Transfer_Hand1Cyl_BackwardFail = 7500,
-        Transfer_Hand1Cyl_ForwardFail,
-        Transfer_Hand2Cyl_BackwardFail,
-        Transfer_Hand2Cyl_ForwardFail,
+        //--------- 4500 -> 4999 : SPD Head #2 Process Warning ---------
+        P2Axis_Origin_TimeOut = 4500,
+        G2Axis_Origin_TimeOut,
+        H2_PistonCyl_UpFail,
 
+        //--------- 5500 -> 5999 : SPD Head #3 Process Warning ---------
+        P3Axis_Origin_TimeOut = 5500,
+        G3Axis_Origin_TimeOut,
+        H3_PistonCyl_UpFail,
 
+        //--------- 6500 -> 6999 : SPD Head #3 Process Warning ---------
+        P4Axis_Origin_TimeOut = 6500,
+        G4Axis_Origin_TimeOut,
+        H4_PistonCyl_UpFail,
     }
 }

@@ -2,33 +2,34 @@
 using EQX.Core.Motion;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
+using SDV_MoldingInjection.Recipe;
 
 namespace SDV_MoldingInjection.Process
 {
-    public class ChamberProcess : MIProcess
+    public class DryPumpProcess : MIProcess
     {
         #region Motions
-        private IMotion YAxis => _devices.Motions.StageYAxis;
         #endregion
 
         #region Cylinders
-        private ICylinder BellowUpDown => _devices.Cylinders.BellowUpDown;
-        private ICylinder ChamberOpenClose => _devices.Cylinders.ChamberOpenClose;
         private ICylinder AngleValve => _devices.Cylinders.AngleValve;
         #endregion
 
         #region Constructors
-        public ChamberProcess(Devices devices)
+        public DryPumpProcess(Devices devices, RecipeSelector recipeSelector)
         {
             _devices = devices;
+            _recipeSelector = recipeSelector;
         }
         #endregion
 
         #region Process Methods
+
         public override bool ProcessOrigin()
         {
-            return base.ProcessOrigin();
+            return true;
         }
+
         public override bool ProcessRun()
         {
             switch (Sequence)
@@ -64,6 +65,8 @@ namespace SDV_MoldingInjection.Process
 
         #region Privates
         private readonly Devices _devices;
+        private readonly RecipeSelector _recipeSelector;
+        private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
         #endregion
     }
 }
