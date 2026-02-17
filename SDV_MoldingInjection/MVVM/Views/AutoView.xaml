@@ -30,12 +30,12 @@
             <Setter Property="VerticalContentAlignment"
                     Value="Center" />
             <Setter Property="FontSize"
-                    Value="14" />
+                    Value="12" />
         </Style>
         <Style
             TargetType="{x:Type ui:ImageButton}"
             BasedOn="{StaticResource {x:Type ui:ImageButton}}">
-            <Setter Property="FontSize" Value="22" />
+            <Setter Property="FontSize" Value="16" />
         </Style>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
@@ -44,7 +44,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*" />
             <ColumnDefinition Width="3*" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="1.2*" />
         </Grid.ColumnDefinitions>
 
         <!-- Machine Image -->
@@ -63,20 +63,18 @@
                 <Label Content="{DynamicResource str_Machine_Status}"
                        HorizontalContentAlignment="Center"
                        VerticalContentAlignment="Center"
-                       FontSize="16"
-                       Margin="0 0 0 5"
+                       FontSize="14"
                        FontWeight="Bold"
                        Foreground="Wheat"
                        Background="{StaticResource SecondaryBackgroundColor}" />
                 <Label Content="{Binding MachineStatus.CurrentProcessMode}"
-                       FontSize="20"
+                       FontSize="14"
                        FontWeight="Bold"
                        HorizontalContentAlignment="Center"
                        VerticalContentAlignment="Center"
                        Typography.Capitals="AllPetiteCaps"
                        Background="AliceBlue" />
-                <ComboBox Margin="2 0"
-                          Tag="Language"
+                <ComboBox Tag="Language"
                           FontSize="16"
                           Height="40"
                           ItemsSource="{Binding Cultures}"
@@ -85,19 +83,18 @@
 
             <UniformGrid
                 Columns="1" Grid.Row="1"
-                Height="500"
                 VerticalAlignment="Bottom">
                 <ui:ImageRadioButton
                     Image="/EQX.UI;component/Resources/Images/Components/Common/auto_selected.png"
                     DisabledImage="/EQX.UI;component/Resources/Images/Components/Common/auto_normal_light.png"
                     Content="{DynamicResource str_AutoMode}"
-                    FontSize="22"/>
+                    FontSize="16"/>
 
                 <ui:ImageRadioButton
                     Image="/EQX.UI;component/Resources/Images/Components/Common/manual_selected.png"
                     DisabledImage="/EQX.UI;component/Resources/Images/Components/Common/manual_normal_light.png"
                     Content="{DynamicResource str_ManualMode}"
-                    FontSize="22"/>
+                    FontSize="16"/>
 
                 <ui:ImageButton
                     Image="/EQX.UI;component/Resources/Images/Components/Common/model_change_Selected.png"

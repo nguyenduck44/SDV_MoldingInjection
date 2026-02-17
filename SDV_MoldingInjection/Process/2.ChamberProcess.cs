@@ -5,34 +5,30 @@ using SDV_MoldingInjection.Defines.Devices;
 
 namespace SDV_MoldingInjection.Process
 {
-    public class MainProcess : MIProcess
+    public class ChamberProcess : MIProcess
     {
         #region Motions
-        private IMotion XAxis => _devices.Motions.XAxis;
         private IMotion YAxis => _devices.Motions.StageYAxis;
-        private IMotion Z1Axis => _devices.Motions.Z1Axis;
-        private IMotion Z2Axis => _devices.Motions.Z2Axis;
-        private IMotion Z3Axis => _devices.Motions.Z3Axis;
-        private IMotion Z4Axis => _devices.Motions.Z4Axis;
         #endregion
 
         #region Cylinders
-        private ICylinder BelowUpDown => _devices.Cylinders.BellowUpDown;
+        private ICylinder BellowUpDown => _devices.Cylinders.BellowUpDown;
         private ICylinder ChamberOpenClose => _devices.Cylinders.ChamberOpenClose;
         private ICylinder AngleValve => _devices.Cylinders.AngleValve;
-        private ICylinder NozzleClean_H1 => _devices.Cylinders.NozzleClean_H1;
-        private ICylinder NozzleClean_H2 => _devices.Cylinders.NozzleClean_H2;
-        private ICylinder NozzleClean_H3 => _devices.Cylinders.NozzleClean_H3;
-        private ICylinder NozzleClean_H4 => _devices.Cylinders.NozzleClean_H4;
         #endregion
 
         #region Constructors
-        public MainProcess(Devices devices)
+        public ChamberProcess(Devices devices)
         {
             _devices = devices;
         }
         #endregion
 
+        #region Process Methods
+        public override bool ProcessOrigin()
+        {
+            return base.ProcessOrigin();
+        }
         public override bool ProcessRun()
         {
             switch (Sequence)
@@ -62,9 +58,9 @@ namespace SDV_MoldingInjection.Process
                 case ESequence.BubbleRemove:
                     break;
             }
-
             return true;
         }
+        #endregion
 
         #region Privates
         private readonly Devices _devices;

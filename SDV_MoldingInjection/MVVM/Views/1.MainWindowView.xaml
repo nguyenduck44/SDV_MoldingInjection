@@ -8,14 +8,26 @@
         mc:Ignorable="d"
         WindowStyle="None"
         WindowState="Maximized"
+        MaxWidth="1080" MaxHeight="768"
         WindowStartupLocation="CenterScreen"
         ShowInTaskbar="True"
         Icon="/EQX.UI;component/Resources/Images/TopIcon.ico"
         AllowsTransparency="True"
         d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
+        xmlns:uiControls="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
         Loaded="Window_Loaded"
         Closing="Window_Closing"
         Title="MainWindowView">
+
+    <Window.Resources>
+        <Style TargetType="{x:Type uiControls:CylinderView}">
+            <Style.Setters>
+                <Setter Property="Height" Value="120"/>
+                <Setter Property="FontSize" Value="11"/>
+            </Style.Setters>
+        </Style>
+    </Window.Resources>
+    
     <Grid>
         <DockPanel Margin="7 0">
             <Grid Height="11.5"

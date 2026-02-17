@@ -55,13 +55,13 @@ namespace SDV_MoldingInjection.Defines.Devices.Cylinder
 
             BellowUpDown = _cylinderFactory
                .Create(_inputs.BelowsUp, _inputs.BelowsDown, _outputs.BellowsUp, _outputs.BellowsDown)
-               .SetIdentity((int)ECylinder.NozzleClean_H4, ECylinder.NozzleClean_H4.ToString());
+               .SetIdentity((int)ECylinder.BellowUpDown, ECylinder.BellowUpDown.ToString());
             BellowUpDown.CylinderType = ECylinderType.UpDown;
 
             ChamberOpenClose = _cylinderFactory
                .Create(_inputs.VacChamberOpen, _inputs.VacChamberClose, _outputs.VacChamberOpen, _outputs.VacChamberClose)
                .SetIdentity((int)ECylinder.ChamberOpenClose, ECylinder.ChamberOpenClose.ToString());
-            ChamberOpenClose.CylinderType = ECylinderType.ForwardBackward;
+            ChamberOpenClose.CylinderType = ECylinderType.OpenClose;
 
             AngleValve = _cylinderFactory
               .Create(_inputs.AngleValveOpen, _inputs.AngleValveClose, _outputs.ChamberVacOn, null)

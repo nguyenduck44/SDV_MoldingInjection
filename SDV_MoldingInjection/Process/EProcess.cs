@@ -3,7 +3,8 @@
     public enum EProcess
     {
         Root,
-        Main,
+        Mold,
+        Chamber,
         SPDHead1,
         SPDHead2,
         SPDHead3,

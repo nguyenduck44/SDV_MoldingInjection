@@ -65,7 +65,7 @@
                 <views:ManualView />
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:AppManualUnitViewModel}">
-                <uiMVVM:ManualUnitView />
+                <uiMVVM:ManualUnitSmallView />
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:MonitorIOViewModel}">
                 <views:MonitorIOView />

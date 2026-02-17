@@ -2,7 +2,7 @@
 
 namespace SDV_MoldingInjection.Recipe
 {
-    public class M : RecipeBase
+    public class MoldRecipe : RecipeBase
     {
 		private double yAxisLoadPosition;
         private double yAxisPlasmaStartPosition;
