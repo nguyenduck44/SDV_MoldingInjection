@@ -93,7 +93,7 @@ namespace SDV_MoldingInjection.Extensions
                 });
                 services.AddKeyedScoped<IMotionMaster, MotionMasterEziPlusR>("FastechPlusRMaster#1", (ser, obj) =>
                 {
-                    return new MotionMasterEziPlusR(2, 115200)
+                    return new MotionMasterEziPlusR(1, 115200)
                     {
                         NumberOfDevices = Enum.GetNames(typeof(EHeadMotion)).Length
                     };
