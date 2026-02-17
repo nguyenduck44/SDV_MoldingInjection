@@ -203,14 +203,14 @@ namespace SDV_MoldingInjection.Process
 
         public override bool ProcessToOrigin()
         {
-            switch ((ERootProcessToOriginStep)Step.OriginStep)
+            switch ((ERootProcToOriginStep)Step.OriginStep)
             {
-                case ERootProcessToOriginStep.Start:
+                case ERootProcToOriginStep.Start:
                     Log.Info("To Origin started");
                     _devices.Outputs.Buzzer1On.Value = false;
                     Step.OriginStep++;
                     break;
-                case ERootProcessToOriginStep.DoorSensorCheck:
+                case ERootProcToOriginStep.DoorSensorCheck:
                     //if (_machineStatus.IsByPassMode)
                     //{
                     //    Log.Warn("ByPass mode active - skipping door sensor check during origin.");
@@ -227,7 +227,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Doors closed.");
                     Step.OriginStep++;
                     break;
-                case ERootProcessToOriginStep.ChildsToOriginDone_Wait:
+                case ERootProcToOriginStep.ChildsToOriginDone_Wait:
                     if (Childs!.Count(child => child.ProcessStatus != EProcessStatus.ToOriginDone) != 0)
                     {
                         Wait(10);
@@ -235,7 +235,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     Step.OriginStep++;
                     break;
-                case ERootProcessToOriginStep.End:
+                case ERootProcToOriginStep.End:
                     Log.Info("To Origin done");
                     ProcessMode = EProcessMode.Origin;
                     Step.OriginStep = 0;
@@ -264,14 +264,14 @@ namespace SDV_MoldingInjection.Process
 
         public override bool ProcessToRun()
         {
-            switch ((ERootProcessToRunStep)Step.ToRunStep)
+            switch ((ERootProcToRunStep)Step.ToRunStep)
             {
-                case ERootProcessToRunStep.Start:
+                case ERootProcToRunStep.Start:
                     Log.Debug("ToRun Start");
                     Step.ToRunStep++;
                     _devices.Outputs.Buzzer1On.Value = false;
                     break;
-                case ERootProcessToRunStep.DoorSensorCheck:
+                case ERootProcToRunStep.DoorSensorCheck:
                     //if (_machineStatus.IsByPassMode)
                     //{
                     //    Log.Warn("ByPass mode active - skipping door sensor check during run.");
@@ -287,7 +287,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Doors closed.");
                     Step.ToRunStep++;
                     break;
-                case ERootProcessToRunStep.ChildsToRunDone_Wait:
+                case ERootProcToRunStep.ChildsToRunDone_Wait:
                     if (Childs!.Count(child => child.ProcessStatus != EProcessStatus.ToRunDone) != 0)
                     {
                         Wait(10);
@@ -295,7 +295,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     Step.ToRunStep++;
                     break;
-                case ERootProcessToRunStep.End:
+                case ERootProcToRunStep.End:
                     ProcessMode = EProcessMode.Run;
                     Log.Info("ToRun Done, Running");
                     break;

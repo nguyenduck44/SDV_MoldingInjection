@@ -19,12 +19,10 @@ namespace SDV_MoldingInjection.Recipe
         private readonly IConfiguration _configuration;
         private ObservableCollection<string> validRecipes;
 
-        //[Minh]
         private readonly IAlertService _alarmService;
         private readonly IAlertService _warningService;
         private readonly ILanguageService _languageService;
 
-        //--------------------------------------------
         private string recipeFolder => _configuration.GetValue<string>("Folders:RecipeFolder") ?? "";
         #endregion
 

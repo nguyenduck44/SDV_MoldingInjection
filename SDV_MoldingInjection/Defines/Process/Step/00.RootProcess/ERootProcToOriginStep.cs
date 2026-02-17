@@ -1,10 +1,10 @@
 ﻿namespace SDV_MoldingInjection.Defines
 {
-    public enum ERootProcessToRunStep
+    public enum ERootProcToOriginStep
     {
         Start,
         DoorSensorCheck,
-        ChildsToRunDone_Wait,
+        ChildsToOriginDone_Wait,
         End
     }
 }

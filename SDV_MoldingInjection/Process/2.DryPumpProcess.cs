@@ -27,6 +27,14 @@ namespace SDV_MoldingInjection.Process
 
         public override bool ProcessOrigin()
         {
+            switch ((ESPDDryPumpProcOriginStep)Step.OriginStep)
+            {
+                case ESPDDryPumpProcOriginStep.Start:
+                    break;
+                case ESPDDryPumpProcOriginStep.End:
+                    break;
+            }
+
             return true;
         }
 

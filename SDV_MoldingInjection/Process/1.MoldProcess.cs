@@ -48,13 +48,13 @@ namespace SDV_MoldingInjection.Process
         #region Process Methods
         public override bool ProcessToRun()
         {
-            switch ((EMoldProcessToRunStep)Step.ToRunStep)
+            switch ((EMoldProcToRunStep)Step.ToRunStep)
             {
-                case EMoldProcessToRunStep.Start:
+                case EMoldProcToRunStep.Start:
                     Log.Debug("ToRun start");
                     Step.ToRunStep++;
                     break;
-                case EMoldProcessToRunStep.CheckIfChamberOpen:
+                case EMoldProcToRunStep.CheckIfChamberOpen:
                     if (ChamberOpenClose.IsForward)
                     {
                         RaiseWarning(EWarning.Mold_Chamber_OpenWarning);
@@ -64,7 +64,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Chamber is closed");
                     Step.ToRunStep++;
                     break;
-                case EMoldProcessToRunStep.End:
+                case EMoldProcToRunStep.End:
                     Log.Debug("ToRun end");
                     Step.ToRunStep++;
 
@@ -110,13 +110,13 @@ namespace SDV_MoldingInjection.Process
 
         public override bool ProcessOrigin()
         {
-            switch ((EMoldProcessOriginStep)Step.OriginStep)
+            switch ((EMoldProcOriginStep)Step.OriginStep)
             {
-                case EMoldProcessOriginStep.Start:
+                case EMoldProcOriginStep.Start:
                     Log.Debug("Origin start");
                     Step.OriginStep++;
                     break;
-                case EMoldProcessOriginStep.CheckIfChamberOpen:
+                case EMoldProcOriginStep.CheckIfChamberOpen:
                     if (ChamberOpenClose.IsForward)
                     {
                         RaiseWarning(EWarning.Mold_Chamber_OpenWarning);
@@ -126,14 +126,14 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Chamber is closed");
                     Step.OriginStep++;
                     break;
-                case EMoldProcessOriginStep.ZAxis_Origin:
+                case EMoldProcOriginStep.ZAxis_Origin:
                     Log.Debug("Searching origin Z Axes");
                     ZAxisSearchOrigin();
 
                     Wait(_currentRecipe.CommonRecipe.MotionOriginTimeout, () => AllZAxisOriginCompleted());
                     Step.OriginStep++;
                     break;
-                case EMoldProcessOriginStep.ZAxis_OriginWait:
+                case EMoldProcOriginStep.ZAxis_OriginWait:
                     if (WaitTimeOutOccurred)
                     {
                         if (!Z1Axis.Status.IsHomeDone) RaiseWarning(EWarning.Z1Axis_Origin_TimeOut);
@@ -146,7 +146,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Z Axes origin search done");
                     Step.OriginStep++;
                     break;
-                case EMoldProcessOriginStep.XYAxis_Origin:
+                case EMoldProcOriginStep.XYAxis_Origin:
                     XAxis.SearchOrigin();
                     YAxis.SearchOrigin();
 
@@ -155,7 +155,7 @@ namespace SDV_MoldingInjection.Process
                         () => XAxis.Status.IsHomeDone && YAxis.Status.IsHomeDone);
                     Step.OriginStep++;
                     break;
-                case EMoldProcessOriginStep.XYAxis_OriginWait:
+                case EMoldProcOriginStep.XYAxis_OriginWait:
                     if (WaitTimeOutOccurred)
                     {
                         if (!XAxis.Status.IsHomeDone) RaiseWarning(EWarning.XAxis_Origin_TimeOut);
@@ -166,7 +166,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"{XAxis.Name} {YAxis.Name} origin search done");
                     Step.OriginStep++;
                     break;
-                case EMoldProcessOriginStep.End:
+                case EMoldProcOriginStep.End:
                     Log.Debug("Origin end");
                     Step.OriginStep++;
                     base.ProcessOrigin();

@@ -6,17 +6,9 @@ using System.Threading.Tasks;
 
 namespace SDV_MoldingInjection.Defines
 {
-    public enum EMoldProcessOriginStep
+    public enum ESPDDryPumpProcOriginStep
     {
         Start,
-
-        CheckIfChamberOpen,
-
-        ZAxis_Origin,
-        ZAxis_OriginWait,
-
-        XYAxis_Origin,
-        XYAxis_OriginWait,
 
         End,
     }

@@ -2,7 +2,6 @@
 using EQX.Core.Motion;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
-using SDV_MoldingInjection.Defines.Process.Step._3.SPDHeadProcess;
 using SDV_MoldingInjection.Recipe;
 
 namespace SDV_MoldingInjection.Process
@@ -57,13 +56,13 @@ namespace SDV_MoldingInjection.Process
         #region Process Methods
         public override bool ProcessOrigin()
         {
-            switch ((ESPDHeadProcessOriginStep)Step.OriginStep)
+            switch ((ESPDHeadProcOriginStep)Step.OriginStep)
             {
-                case ESPDHeadProcessOriginStep.Start:
+                case ESPDHeadProcOriginStep.Start:
                     Log.Debug("Origin start");
                     Step.OriginStep++;
                     break;
-                case ESPDHeadProcessOriginStep.GAxis_Origin:
+                case ESPDHeadProcOriginStep.GAxis_Origin:
                     Log.Debug($"Searching origin {GAxis.Name}");
                     GAxis.SearchOrigin();
 
@@ -72,7 +71,7 @@ namespace SDV_MoldingInjection.Process
 
                     Step.OriginStep++;
                     break;
-                case ESPDHeadProcessOriginStep.GAxis_OriginWait:
+                case ESPDHeadProcOriginStep.GAxis_OriginWait:
                     if (WaitTimeOutOccurred)
                     {
                         RaiseHeadWarning(EWarning.G1Axis_Origin_TimeOut);
@@ -82,18 +81,27 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"{GAxis.Name} origin search done");
                     Step.OriginStep++;
                     break;
-                case ESPDHeadProcessOriginStep.GAxis_ClosePosition_Move:
-
+                case ESPDHeadProcOriginStep.GAxis_ClosePosition_Move:
+                    Log.Debug($"{GAxis.Name} move to GateClosePos [{_spdHeadRecipe.GateClosePos}°]");
+                    GAxis.MoveAbs(_spdHeadRecipe.GateClosePos);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
+                        () => GAxis.IsOnPosition(_spdHeadRecipe.GateClosePos));
                     Step.OriginStep++;
                     break;
-                case ESPDHeadProcessOriginStep.GAxis_ClosePosition_MoveWait:
+                case ESPDHeadProcOriginStep.GAxis_ClosePosition_MoveWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseHeadAlarm(EAlarm.H1GAxis_MoveOpenPos_Timeout);
+                        break;
+                    }
 
+                    Log.Debug($"{GAxis.Name} moved to GateClosePos [{_spdHeadRecipe.GateClosePos}°] done");
                     Step.OriginStep++;
                     break;
-                case ESPDHeadProcessOriginStep.PistonCyl_Up:
+                case ESPDHeadProcOriginStep.PistonCyl_Up:
                     if (PistonCyl.IsBackward)
                     {
-                        Step.OriginStep = (int)ESPDHeadProcessOriginStep.PAxis_Origin;
+                        Step.OriginStep = (int)ESPDHeadProcOriginStep.PAxis_Origin;
                         break;
                     }
 
@@ -102,7 +110,7 @@ namespace SDV_MoldingInjection.Process
                     Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => PistonCyl.IsBackward);
                     Step.OriginStep++;
                     break;
-                case ESPDHeadProcessOriginStep.PistonCyl_UpWait:
+                case ESPDHeadProcOriginStep.PistonCyl_UpWait:
                     if (WaitTimeOutOccurred)
                     {
                         RaiseHeadWarning(EWarning.H1_PistonCyl_UpFail);
@@ -112,7 +120,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Move {PistonCyl} up done");
                     Step.OriginStep++;
                     break;
-                case ESPDHeadProcessOriginStep.PAxis_Origin:
+                case ESPDHeadProcOriginStep.PAxis_Origin:
                     Log.Debug($"Searching origin {PAxis.Name}");
                     PAxis.SearchOrigin();
 
@@ -121,7 +129,7 @@ namespace SDV_MoldingInjection.Process
 
                     Step.OriginStep++;
                     break;
-                case ESPDHeadProcessOriginStep.PAxis_OriginWait:
+                case ESPDHeadProcOriginStep.PAxis_OriginWait:
                     if (WaitTimeOutOccurred)
                     {
                         RaiseHeadWarning(EWarning.P1Axis_Origin_TimeOut);
@@ -131,7 +139,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"{PAxis.Name} origin search done");
                     Step.OriginStep++;
                     break;
-                case ESPDHeadProcessOriginStep.End:
+                case ESPDHeadProcOriginStep.End:
                     Log.Debug("Origin end");
                     Step.OriginStep++;
                     base.ProcessOrigin();
@@ -164,6 +172,14 @@ namespace SDV_MoldingInjection.Process
             "SPDHead2" => ESPDHead.SPDHead2,
             "SPDHead3" => ESPDHead.SPDHead3,
             "SPDHead4" => ESPDHead.SPDHead4,
+            _ => throw new Exception($"Invalid process name: {Name}")
+        };
+        private SPDHeadRecipe _spdHeadRecipe => Name switch
+        {
+            "SPDHead1" => _currentRecipe.SPDHead1_Recipe,
+            "SPDHead2" => _currentRecipe.SPDHead2_Recipe,
+            "SPDHead3" => _currentRecipe.SPDHead3_Recipe,
+            "SPDHead4" => _currentRecipe.SPDHead4_Recipe,
             _ => throw new Exception($"Invalid process name: {Name}")
         };
         #endregion

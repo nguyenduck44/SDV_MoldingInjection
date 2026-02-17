@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SDV_MoldingInjection.Defines.Process.Step._3.SPDHeadProcess
+namespace SDV_MoldingInjection.Defines
 {
-    public enum ESPDHeadProcessOriginStep
+    public enum ESPDHeadProcOriginStep
     {
         Start,
 

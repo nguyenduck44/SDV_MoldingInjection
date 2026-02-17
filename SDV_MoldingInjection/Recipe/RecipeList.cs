@@ -36,7 +36,7 @@ namespace SDV_MoldingInjection.Recipe
             SPDHead1_Recipe = recipes.OfType<SPDHeadRecipe>().First(r => r.Name == "SPDHead1_Recipe")!;
             SPDHead2_Recipe = recipes.OfType<SPDHeadRecipe>().First(r => r.Name == "SPDHead2_Recipe")!;
             SPDHead3_Recipe = recipes.OfType<SPDHeadRecipe>().First(r => r.Name == "SPDHead3_Recipe")!;
-            SPDHead2_Recipe = recipes.OfType<SPDHeadRecipe>().First(r => r.Name == "SPDHead4_Recipe")!;
+            SPDHead4_Recipe = recipes.OfType<SPDHeadRecipe>().First(r => r.Name == "SPDHead4_Recipe")!;
         }
 
         public CommonRecipe CommonRecipe { get; }
