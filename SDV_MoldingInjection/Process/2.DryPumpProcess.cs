@@ -30,8 +30,11 @@ namespace SDV_MoldingInjection.Process
             switch ((ESPDDryPumpProcOriginStep)Step.OriginStep)
             {
                 case ESPDDryPumpProcOriginStep.Start:
+                    Step.OriginStep++;
                     break;
                 case ESPDDryPumpProcOriginStep.End:
+                    Step.OriginStep++;
+                    base.ProcessOrigin();
                     break;
             }
 
