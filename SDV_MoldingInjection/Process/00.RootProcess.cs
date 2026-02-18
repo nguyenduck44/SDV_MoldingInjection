@@ -211,19 +211,13 @@ namespace SDV_MoldingInjection.Process
                     Step.OriginStep++;
                     break;
                 case ERootProcToOriginStep.DoorSensorCheck:
-                    //if (_machineStatus.IsByPassMode)
-                    //{
-                    //    Log.Warn("ByPass mode active - skipping door sensor check during origin.");
-                    //    Step.OriginStep++;
-                    //    break;
-                    //}
+                    if (_devices.Inputs.DoorClose == false)
+                    {
+                        //WARNING
+                        RaiseWarning((int)EWarning.DoorOpen);
+                        break;
+                    }
 
-                    //if (DoorSensor == false)
-                    //{
-                    //    //WARNING
-                    //    RaiseWarning((int)EWarning.DoorOpen);
-                    //    break;
-                    //}
                     Log.Debug("Doors closed.");
                     Step.OriginStep++;
                     break;
