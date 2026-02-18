@@ -74,7 +74,7 @@ namespace SDV_MoldingInjection.Process
             }
 
             //2.CHECK USER OPERATION COMMAND(Origin / Ready / Start / Stop / Semiauto...)
-            if (_machineStatus.OPCommand == EOperationCommand.None) return base.PreProcess();
+            //if (_machineStatus.OPCommand == EOperationCommand.None) return base.PreProcess();
 
             EOperationCommand command = EOperationCommand.None;
             if (_machineStatus.IsRunningProcessMode)
@@ -231,8 +231,8 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ERootProcToOriginStep.End:
                     Log.Info("To Origin done");
-                    ProcessMode = EProcessMode.Origin;
                     Step.OriginStep = 0;
+                    ProcessMode = EProcessMode.Origin;
                     break;
             }
             return true;

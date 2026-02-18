@@ -238,7 +238,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcOriginStep.Bellow_Down:
                     if (BellowUpDown.IsBackward)
                     {
-                        Step.ToRunStep = (int)EMoldProcOriginStep.XYAxis_Origin;
+                        Step.OriginStep = (int)EMoldProcOriginStep.XYAxis_Origin;
                         break;
                     }
 

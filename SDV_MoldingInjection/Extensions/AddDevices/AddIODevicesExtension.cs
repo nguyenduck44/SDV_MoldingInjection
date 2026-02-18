@@ -43,6 +43,7 @@ namespace SDV_MoldingInjection.Extensions
                         Id = (int)EInputDevice.MachineInput,
                         Name = EInputDevice.MachineInput.ToString(),
                         MaxPin = 100,
+                        SimulationOffset = 0,
                     };
                 });
                 
@@ -56,7 +57,8 @@ namespace SDV_MoldingInjection.Extensions
                         {
                             Id = index - 1,
                             Name = ((EInputDevice)index).ToString(),
-                            MaxPin = 100
+                            MaxPin = 16,
+                            SimulationOffset = 100 + 16 * (index - 1),
                         };
                     });
                 }

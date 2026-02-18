@@ -186,7 +186,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         _isSuccess = true;
 
                         _isSuccess &= _devices.AnalogInputs.Connect();
-         
+#if SIMULATION
+                        _isSuccess &= _devices.Inputs.Connect();
+#endif
+
                         if (_isSuccess == false)
                         {
                             ErrorMessages.Add("IO Devices init failed.");

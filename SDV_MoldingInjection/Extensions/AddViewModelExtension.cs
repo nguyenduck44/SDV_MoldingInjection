@@ -50,11 +50,17 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddSingleton<IInputSimulationViewModel>(new MMFInputSimulationViewModel<EMachineInput>(
                     new List<string>
                     {
-                        EMachineInput.OP_SW_START.ToString(),
+                        EMachineInput.DOOR_CLOSE_LEFT.ToString(),
+                        EMachineInput.DOOR_CLOSE_RIGHT.ToString(),
+                        EMachineInput.DOOR_LOCK_LEFT.ToString(),
+                        EMachineInput.DOOR_LOCK_RIGHT.ToString(),
                     },
                     new List<string>
                     {
-                        EMachineInput.OP_SW_STOP.ToString(),
+                        EMachineInput.DOOR_CLOSE_LEFT.ToString(),
+                        EMachineInput.DOOR_CLOSE_RIGHT.ToString(),
+                        EMachineInput.DOOR_LOCK_LEFT.ToString(),
+                        EMachineInput.DOOR_LOCK_RIGHT.ToString(),
                     }
                 ));
             });
