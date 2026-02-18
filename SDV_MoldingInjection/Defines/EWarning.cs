@@ -15,8 +15,19 @@
         Z2Axis_Origin_TimeOut,
         Z3Axis_Origin_TimeOut,
         Z4Axis_Origin_TimeOut,
+        Z1Axis_SafetyPos_MoveTimeOut,
+        Z2Axis_SafetyPos_MoveTimeOut,
+        Z3Axis_SafetyPos_MoveTimeOut,
+        Z4Axis_SafetyPos_MoveTimeOut,
+        XAxis_ReadyPos_MoveTimeOut,
+        YAxis_ReadyPos_MoveTimeOut,
+        Mold_Chamber_VacuumDetectWarning,
+        BellowUpDown_DownFail,
+
 
         //--------- 2500 -> 2999 : Dry Pump Process Warning ---------
+        AngleValve_CloseFail,
+        AngleValve_OpenFail,
 
         //--------- 3500 -> 3999 : SPD Head #1 Process Warning ---------
         P1Axis_Origin_TimeOut = 3500,

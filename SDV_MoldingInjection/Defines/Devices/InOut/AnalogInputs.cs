@@ -10,7 +10,16 @@ namespace SDV_MoldingInjection.Defines.Devices
 {
     public class AnalogInputs
     {
-        private readonly IAInputDevice _aInputDevice;
+        #region Properties
+        public IAInput FanSpeed => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.FAN_SPEED);
+        public IAInput VacuumGauge => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.VACUUM_GAUGE);
+
+        // mbar : 6.143
+        // Torr : 6.304
+        // Pa = 3.572
+        // kPa : 7.429
+        public double VacuumPressureInTorr => Math.Pow(10, (VacuumGauge.Volt - 6.304) /1.286);
+        #endregion
 
         public AnalogInputs([FromKeyedServices("AnalogInputDevice#1")] IAInputDevice aInputDevice)
         {
@@ -18,11 +27,6 @@ namespace SDV_MoldingInjection.Defines.Devices
             Initialize();
         }
 
-        public IAInput PlasmaVoltage => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.PLASMA_VOLTAGE);
-        public IAInput PlasmaPower => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.PLASMA_POWER);
-        public IAInput PlasmaN2FlowRate => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.PLASMA_N2_FLOW_RATE);
-        public IAInput PlasmaCDAFlowRate => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.PLASMA_CDA_FLOW_RATE);
-        public IAInput PlasmaTemperature => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.PLASMA_TEMPERATURE);
 
         public bool Initialize()
         {
@@ -38,5 +42,9 @@ namespace SDV_MoldingInjection.Defines.Devices
         {
             return _aInputDevice.Disconnect();
         }
+
+        #region Privates
+        private readonly IAInputDevice _aInputDevice;
+        #endregion
     }
 }

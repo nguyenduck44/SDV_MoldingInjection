@@ -4,13 +4,11 @@ namespace SDV_MoldingInjection.Recipe
 {
     public class DryPumpRecipe : RecipeBase
     {
-
 		public double MinVacuumPressure
 		{
 			get { return _minVacuumPressure; }
 			set { _minVacuumPressure = value; }
 		}
-
 
         public double MaxVacuumPressure
         {

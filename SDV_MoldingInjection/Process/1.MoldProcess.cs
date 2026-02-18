@@ -64,6 +64,84 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Chamber is closed");
                     Step.ToRunStep++;
                     break;
+                case EMoldProcToRunStep.Bellow_Down:
+                    if (BellowUpDown.IsBackward)
+                    {
+                        Step.ToRunStep = (int)EMoldProcToRunStep.ZAxis_SafetyPos_Move;
+                        break;
+                    }
+
+                    Log.Debug($"{BellowUpDown} moving down");
+                    BellowUpDown.Backward();
+                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout,
+                        () => BellowUpDown.IsBackward);
+                    Step.ToRunStep++;
+                    break;
+                case EMoldProcToRunStep.Bellow_DownWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseWarning(EWarning.BellowUpDown_DownFail);
+                        break;
+                    }
+
+                    Log.Debug($"Move {BellowUpDown} down done");
+                    Step.ToRunStep++;
+                    break;
+                case EMoldProcToRunStep.ZAxis_SafetyPos_Move:
+                    if (AllZAxisInSafetyPos())
+                    {
+                        Step.ToRunStep = (int)EMoldProcToRunStep.End;
+                        break;
+                    }
+
+                    Log.Debug($"Moving ZAxis safety position");
+                    ZAxisSafetyPosMove();
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, AllZAxisInSafetyPos);
+                    Step.ToRunStep++;
+                    break;
+                case EMoldProcToRunStep.ZAxis_SafetyPos_MoveWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        if (!Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos))
+                            RaiseWarning(EWarning.Z1Axis_SafetyPos_MoveTimeOut);
+                        if (!Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos))
+                            RaiseWarning(EWarning.Z2Axis_SafetyPos_MoveTimeOut);
+                        if (!Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos))
+                            RaiseWarning(EWarning.Z3Axis_SafetyPos_MoveTimeOut);
+                        if (!Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos))
+                            RaiseWarning(EWarning.Z4Axis_SafetyPos_MoveTimeOut);
+                        break;
+                    }
+
+                    Log.Debug($"ZAxis move safety position done");
+                    Step.ToRunStep++;
+                    break;
+                case EMoldProcToRunStep.XYAxis_SafetyPos_Move:
+                    if (XAxis.IsOnPosition(_currentRecipe.MoldRecipe.XAxisReadyPos)
+                        && YAxis.IsOnPosition(_currentRecipe.MoldRecipe.YAxisReadyPos))
+                    {
+                        Step.ToRunStep = (int)EMoldProcToRunStep.End;
+                        break;
+                    }
+
+                    Log.Debug($"Moving XAxis/YAxis to ready position");
+                    XAxis.MoveAbs(_currentRecipe.MoldRecipe.XAxisReadyPos);
+                    YAxis.MoveAbs(_currentRecipe.MoldRecipe.YAxisReadyPos);
+                    Step.ToRunStep++;
+                    break;
+                case EMoldProcToRunStep.XYAxis_SafetyPos_MoveWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        if (!XAxis.IsOnPosition(_currentRecipe.MoldRecipe.XAxisReadyPos))
+                            RaiseWarning(EWarning.XAxis_ReadyPos_MoveTimeOut);
+                        if (!YAxis.IsOnPosition(_currentRecipe.MoldRecipe.YAxisReadyPos))
+                            RaiseWarning(EWarning.YAxis_ReadyPos_MoveTimeOut);
+                        break;
+                    }
+
+                    Log.Debug($"XAxis/YAxis move to ready position done");
+                    Step.ToRunStep++;
+                    break;
                 case EMoldProcToRunStep.End:
                     Log.Debug("ToRun end");
                     Step.ToRunStep++;
@@ -81,28 +159,38 @@ namespace SDV_MoldingInjection.Process
             {
                 case ESequence.Stop:
                     break;
+                case ESequence.Ready:
+                    Sequence_Ready();
+                    break;
                 case ESequence.AutoRun:
                     Sequence_AutoRun();
                     break;
-                case ESequence.Ready:
-                    break;
                 case ESequence.Loading:
+                    Sequence_Loading();
                     break;
                 case ESequence.ResinInject:
+                    Sequence_ResinInject();
                     break;
                 case ESequence.Unloading:
+                    Sequence_Unloading();
                     break;
                 case ESequence.DummyShot:
+                    Sequence_DummyShot();
                     break;
                 case ESequence.NeedleCleaning:
+                    Sequence_NeedleCleaning();
                     break;
                 case ESequence.DotWeighting:
+                    Sequence_DotWeighting();
                     break;
                 case ESequence.HeadAssemble:
+                    Sequence_HeadAssemble();
                     break;
                 case ESequence.HeadDisassemble:
+                    Sequence_HeadDisassemble();
                     break;
                 case ESequence.BubbleRemove:
+                    Sequence_BubbleRemove();
                     break;
             }
 
@@ -147,6 +235,29 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Z Axes origin search done");
                     Step.OriginStep++;
                     break;
+                case EMoldProcOriginStep.Bellow_Down:
+                    if (BellowUpDown.IsBackward)
+                    {
+                        Step.ToRunStep = (int)EMoldProcOriginStep.XYAxis_Origin;
+                        break;
+                    }
+
+                    Log.Debug($"{BellowUpDown} moving down");
+                    BellowUpDown.Backward();
+                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout,
+                        () => BellowUpDown.IsBackward);
+                    Step.OriginStep++;
+                    break;
+                case EMoldProcOriginStep.Bellow_DownWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseWarning(EWarning.BellowUpDown_DownFail);
+                        break;
+                    }
+
+                    Log.Debug($"Move {BellowUpDown} down done");
+                    Step.OriginStep++;
+                    break;
                 case EMoldProcOriginStep.XYAxis_Origin:
                     XAxis.SearchOrigin();
                     YAxis.SearchOrigin();
@@ -179,7 +290,48 @@ namespace SDV_MoldingInjection.Process
         #endregion
 
         #region Sequence Methods
+        private void Sequence_Ready()
+        {
+            Sequence = ESequence.Stop;
+        }
+
         private void Sequence_AutoRun()
+        {
+        }
+
+        private void Sequence_BubbleRemove()
+        {
+        }
+
+        private void Sequence_HeadDisassemble()
+        {
+        }
+
+        private void Sequence_HeadAssemble()
+        {
+        }
+
+        private void Sequence_DotWeighting()
+        {
+        }
+
+        private void Sequence_NeedleCleaning()
+        {
+        }
+
+        private void Sequence_DummyShot()
+        {
+        }
+
+        private void Sequence_Unloading()
+        {
+        }
+
+        private void Sequence_ResinInject()
+        {
+        }
+
+        private void Sequence_Loading()
         {
         }
         #endregion
@@ -199,6 +351,23 @@ namespace SDV_MoldingInjection.Process
                 && Z2Axis.Status.IsHomeDone
                 && Z3Axis.Status.IsHomeDone
                 && Z4Axis.Status.IsHomeDone;
+        }
+
+        private void ZAxisSafetyPosMove()
+        {
+            Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos);
+            Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos);
+            Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos);
+            Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos);
+        }
+
+        private bool AllZAxisInSafetyPos()
+        {
+            return
+                Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos &&
+                Z2Axis.Status.ActualPosition >= _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos &&
+                Z3Axis.Status.ActualPosition >= _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos &&
+                Z4Axis.Status.ActualPosition >= _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos;
         }
         #endregion
 

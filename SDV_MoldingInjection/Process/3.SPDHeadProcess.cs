@@ -54,6 +54,68 @@ namespace SDV_MoldingInjection.Process
         }
 
         #region Process Methods
+        public override bool ProcessToRun()
+        {
+            switch ((ESPDHeadProcToRunStep)Step.ToRunStep)
+            {
+                case ESPDHeadProcToRunStep.Start:
+                    Log.Debug("ToRun start");
+                    Step.ToRunStep++;
+                    break;
+                case ESPDHeadProcToRunStep.GAxis_ClosePosition_Move:
+                    if (GAxis.IsOnPosition(_spdHeadRecipe.GateClosePos))
+                    {
+                        Step.ToRunStep = (int)ESPDHeadProcToRunStep.PistonCyl_Up;
+                        break;
+                    }
+
+                    Log.Debug($"{GAxis.Name} move to GateClosePos [{_spdHeadRecipe.GateClosePos}°]");
+                    GAxis.MoveAbs(_spdHeadRecipe.GateClosePos);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
+                        () => GAxis.IsOnPosition(_spdHeadRecipe.GateClosePos));
+                    Step.ToRunStep++;
+                    break;
+                case ESPDHeadProcToRunStep.GAxis_ClosePosition_MoveWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseHeadAlarm(EAlarm.H1GAxis_MoveOpenPos_Timeout);
+                        break;
+                    }
+
+                    Log.Debug($"{GAxis.Name} moved to GateClosePos [{_spdHeadRecipe.GateClosePos}°] done");
+                    Step.ToRunStep++;
+                    break;
+                case ESPDHeadProcToRunStep.PistonCyl_Up:
+                    if (PistonCyl.IsBackward)
+                    {
+                        Step.ToRunStep = (int)ESPDHeadProcToRunStep.End;
+                        break;
+                    }
+
+                    Log.Debug($"{PistonCyl} moving up");
+                    PistonCyl.Backward();
+                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => PistonCyl.IsBackward);
+                    Step.ToRunStep++;
+                    break;
+                case ESPDHeadProcToRunStep.PistonCyl_UpWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseHeadWarning(EWarning.H1_PistonCyl_UpFail);
+                        break;
+                    }
+
+                    Log.Debug($"Move {PistonCyl} up done");
+                    Step.ToRunStep++;
+                    break;
+                case ESPDHeadProcToRunStep.End:
+                    Log.Debug("ToRun end");
+                    Step.ToRunStep++;
+                    base.ProcessToRun();
+                    break;
+            }
+            return true;
+        }
+
         public override bool ProcessOrigin()
         {
             switch ((ESPDHeadProcOriginStep)Step.OriginStep)
@@ -159,6 +221,7 @@ namespace SDV_MoldingInjection.Process
                     Sequence_AutoRun();
                     break;
                 case ESequence.Ready:
+                    Sequence_Ready();
                     break;
                 case ESequence.Loading:
                     break;
@@ -185,6 +248,11 @@ namespace SDV_MoldingInjection.Process
         #endregion
 
         #region Sequence Methods
+        private void Sequence_Ready()
+        {
+            Sequence = ESequence.Stop;
+        }
+
         private void Sequence_AutoRun()
         {
         }

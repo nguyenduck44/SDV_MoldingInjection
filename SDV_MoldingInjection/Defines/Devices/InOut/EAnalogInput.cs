@@ -8,13 +8,7 @@ namespace SDV_MoldingInjection.Defines.Devices
 {
     public enum EAnalogInput
     {
-        PLASMA_VOLTAGE = 0,
-        PLASMA_POWER,
-        PLASMA_N2_FLOW_RATE,
-        PLASMA_CDA_FLOW_RATE,
-        PLASMA_TEMPERATURE,
-        AI_SPARE1,
-        AI_SPARE2,
-        AI_SPARE3,
+        FAN_SPEED = 0,
+        VACUUM_GAUGE,
     }
 }

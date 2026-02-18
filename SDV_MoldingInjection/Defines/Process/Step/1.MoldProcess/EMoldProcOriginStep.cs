@@ -15,6 +15,9 @@ namespace SDV_MoldingInjection.Defines
         ZAxis_Origin,
         ZAxis_OriginWait,
 
+        Bellow_Down,
+        Bellow_DownWait,
+
         XYAxis_Origin,
         XYAxis_OriginWait,
 

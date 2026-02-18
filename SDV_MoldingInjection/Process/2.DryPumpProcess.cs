@@ -24,6 +24,47 @@ namespace SDV_MoldingInjection.Process
         #endregion
 
         #region Process Methods
+
+        public override bool ProcessToRun()
+        {
+            switch ((EDryPumpProcToRunStep)Step.ToRunStep)
+            {
+                case EDryPumpProcToRunStep.Start:
+                    Log.Debug("ToRun start");
+                    Step.ToRunStep++;
+                    break;
+                case EDryPumpProcToRunStep.AngleValve_Close:
+                    if (AngleValve.IsForward)
+                    {
+                        Step.ToRunStep = (int)EDryPumpProcToRunStep.End;
+                        break;
+                    }
+
+                    Log.Debug($"Closing {AngleValve.Name}");
+                    AngleValve.Forward();
+                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout,
+                        () => AngleValve.IsForward);
+                    Step.ToRunStep++;
+                    break;
+                case EDryPumpProcToRunStep.AngleValve_CloseWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseWarning(EWarning.AngleValve_CloseFail);
+                        break;
+                    }
+
+                    Log.Debug($"{AngleValve.Name} closed");
+                    Step.ToRunStep++;
+                    break;
+                case EDryPumpProcToRunStep.End:
+                    Log.Debug("ToRun end");
+                    Step.ToRunStep++;
+                    base.ProcessToRun();
+                    break;
+            }
+            return true;
+        }
+
         public override bool ProcessOrigin()
         {
             switch ((EDryPumpProcOriginStep)Step.OriginStep)
@@ -47,11 +88,13 @@ namespace SDV_MoldingInjection.Process
                 case ESequence.Stop:
                     break;
                 case ESequence.Ready:
+                    Sequence_Ready();
                     break;
                 case ESequence.AutoRun:
                     Sequence_AutoRun();
                     break;
                 case ESequence.ResinInject:
+                    Sequence_ResinInject();
                     break;
             }
             return true;
@@ -59,7 +102,17 @@ namespace SDV_MoldingInjection.Process
         #endregion
 
         #region Sequence Methods
+        private void Sequence_Ready()
+        {
+            Sequence = ESequence.Stop;
+        }
+
         private void Sequence_AutoRun()
+        {
+
+        }
+
+        private void Sequence_ResinInject()
         {
 
         }

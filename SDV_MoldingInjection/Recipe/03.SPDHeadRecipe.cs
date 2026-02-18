@@ -5,6 +5,20 @@ namespace SDV_MoldingInjection.Recipe
 {
     public class SPDHeadRecipe : RecipeBase
     {
+        [SingleRecipeDescription(Description = "ZAxis safety position (ready position)", Unit = Unit.mm)]
+        public double ZAxisSafetyPos
+        {
+            get { return _zAxisSafetyPos; }
+            set
+            {
+                if (_zAxisSafetyPos == value) return;
+
+                OnRecipeChanged(_zAxisSafetyPos, value);
+                _zAxisSafetyPos = value;
+                OnPropertyChanged();
+            }
+        }
+
         [SingleRecipeDescription(Description = "Gate open position (Nozzle <----> SPD)", Unit = Unit.Degree)]
         public double GateOpenPos
         {
@@ -37,6 +51,7 @@ namespace SDV_MoldingInjection.Recipe
         #region Privates
         private double _gateClosePos;
         private double _gateOpenPos;
+        private double _zAxisSafetyPos;
         #endregion
     }
 }
