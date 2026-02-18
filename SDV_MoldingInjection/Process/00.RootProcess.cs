@@ -494,12 +494,12 @@ namespace SDV_MoldingInjection.Process
                         return;
                     }
 
-                    if (_machineStatus.MachineReadyDone == false)
-                    {
-                        MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_MachineNeedToBeReadyBeforeRun"]);
-                        _machineStatus.OPCommand = EOperationCommand.None;
-                        return;
-                    }
+                    //if (_machineStatus.MachineReadyDone == false)
+                    //{
+                    //    MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_MachineNeedToBeReadyBeforeRun"]);
+                    //    _machineStatus.OPCommand = EOperationCommand.None;
+                    //    return;
+                    //}
 
                     //if (Childs!.Any(p => p.IsAlarm))
                     //{
