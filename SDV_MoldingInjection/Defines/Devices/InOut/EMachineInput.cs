@@ -9,7 +9,7 @@
         ASSEMBLE_CHECK = 4,
         SYRINGE_CHECK = 5,
         SPARE_IN_6 = 6,
-        SPARE_IN_7 = 7,
+        SYRINGGE_AIR = 7,
         SYRINGE_AIR = 8,
         SPARE_IN_9 = 9,
     }
@@ -28,7 +28,7 @@
         SMOKE_DETECT_DETECT_ALARM = 9,
         SMOKE_DETECT_TEMP_HIGH_ALARM = 10,
         SMOKE_DETECT_TEMP_HIGH_WARNING = 11,
-        SPARE_IN_12 = 12,
+        PANEL_CLOSE_CHECK = 12,
         SERVO_ON = 13,
         MAIN_BREAKER_TRIP = 14,
         MAIN_CDA_CHECK = 15,
@@ -47,7 +47,7 @@
         SMOKE_DETECT_DETECT_ALARM_EBOX = 27,
         SMOKE_DETECT_TEMP_HIGH_ALARM_EBOX = 28,
         SMOKE_DETECT_TEMP_HIGH_WARNING_EBOX = 29,
-        SPARE_IN_30 = 30,
+        MAIN_PANEL_CLOSE_CHECK = 30,
         SPARE_IN_31 = 31,
 
         NOZZLE1_TOUCH_DETECT = 32,
