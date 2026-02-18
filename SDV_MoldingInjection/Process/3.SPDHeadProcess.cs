@@ -298,8 +298,58 @@ namespace SDV_MoldingInjection.Process
             Sequence = ESequence.Stop;
         }
 
+        public enum ESPDHeadProcAutoRunStep
+        {
+            Start,
+
+            Gate_OpenMove,
+            Gate_OpenMoveWait,
+            Gate_CloseMove,
+            Gate_CloseMoveWait,
+
+            End
+        }
+
         private void Sequence_AutoRun()
         {
+            switch ((ESPDHeadProcAutoRunStep)Step.RunStep)
+            {
+                case ESPDHeadProcAutoRunStep.Start:
+                    Log.Debug("AutoRun start");
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcAutoRunStep.Gate_OpenMove:
+                    GAxis.MoveAbs(_spdHeadRecipe.GateOpenPos);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
+                        () => GAxis.IsOnPosition(_spdHeadRecipe.GateOpenPos));
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcAutoRunStep.Gate_OpenMoveWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseHeadAlarm(EAlarm.H1GAxis_MoveOpenPos_Timeout);
+                        break;
+                    }
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcAutoRunStep.Gate_CloseMove:
+                    GAxis.MoveAbs(_spdHeadRecipe.GateClosePos);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
+                        () => GAxis.IsOnPosition(_spdHeadRecipe.GateClosePos));
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcAutoRunStep.Gate_CloseMoveWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseHeadAlarm(EAlarm.H1GAxis_MoveClosePos_Timeout);
+                        break;
+                    }
+                    Step.RunStep = (int)ESPDHeadProcAutoRunStep.Gate_OpenMove;
+                    break;
+                case ESPDHeadProcAutoRunStep.End:
+                    Log.Debug("AutoRun end");
+                    break;
+            }
         }
         #endregion
 
