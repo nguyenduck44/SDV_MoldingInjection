@@ -180,7 +180,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Wait(100);
+                    Wait(5000);
 
                     Log.Debug($"{GAxis.Name} origin search done");
                     Step.OriginStep++;
