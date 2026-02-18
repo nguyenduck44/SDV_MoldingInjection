@@ -144,6 +144,7 @@ namespace SDV_MoldingInjection.Defines
         public IDInput H1_GateOpen => _dHead1InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.GATE_OPEN);
         public IDInput H1_GateClose => _dHead1InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.GATE_CLOSE);
         public IDInput H1_AssembleCheck => _dHead1InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.ASSEMBLE_CHECK);
+        public IDInput H1_SyringeCheck => _dHead1InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.SYRINGE_CHECK);
         public IDInput H1_SyringeAir => _dHead1InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.SYRINGE_AIR);
 
         public IDInput H2_CylUp => _dHead2InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.CYL_UP_POS);
@@ -151,6 +152,7 @@ namespace SDV_MoldingInjection.Defines
         public IDInput H2_GateOpen => _dHead2InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.GATE_OPEN);
         public IDInput H2_GateClose => _dHead2InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.GATE_CLOSE);
         public IDInput H2_AssembleCheck => _dHead2InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.ASSEMBLE_CHECK);
+        public IDInput H2_SyringeCheck => _dHead2InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.SYRINGE_CHECK);
         public IDInput H2_SyringeAir => _dHead2InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.SYRINGE_AIR);
 
         public IDInput H3_CylUp => _dHead3InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.CYL_UP_POS);
@@ -158,6 +160,7 @@ namespace SDV_MoldingInjection.Defines
         public IDInput H3_GateOpen => _dHead3InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.GATE_OPEN);
         public IDInput H3_GateClose => _dHead3InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.GATE_CLOSE);
         public IDInput H3_AssembleCheck => _dHead3InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.ASSEMBLE_CHECK);
+        public IDInput H3_SyringeCheck => _dHead3InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.SYRINGE_CHECK);
         public IDInput H3_SyringeAir => _dHead3InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.SYRINGE_AIR);
 
         public IDInput H4_CylUp => _dHead4InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.CYL_UP_POS);
@@ -165,6 +168,7 @@ namespace SDV_MoldingInjection.Defines
         public IDInput H4_GateOpen => _dHead4InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.GATE_OPEN);
         public IDInput H4_GateClose => _dHead4InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.GATE_CLOSE);
         public IDInput H4_AssembleCheck => _dHead4InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.ASSEMBLE_CHECK);
+        public IDInput H4_SyringeCheck => _dHead4InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.SYRINGE_CHECK);
         public IDInput H4_SyringeAir => _dHead4InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.SYRINGE_AIR);
         #endregion
 

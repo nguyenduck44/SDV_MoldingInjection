@@ -11,6 +11,46 @@ namespace SDV_MoldingInjection.Process
     public class SPDHeadProcess : MIProcess
     {
         #region Inputs
+        private IDInput In_GateOpen => Name switch
+        {
+            "SPDHead1" => _devices.Inputs.H1_GateOpen,
+            "SPDHead2" => _devices.Inputs.H2_GateOpen,
+            "SPDHead3" => _devices.Inputs.H3_GateOpen,
+            "SPDHead4" => _devices.Inputs.H4_GateOpen,
+            _ => throw new Exception($"Invalid process name: {Name}")
+        };
+        private IDInput In_GateClose => Name switch
+        {
+            "SPDHead1" => _devices.Inputs.H1_GateClose,
+            "SPDHead2" => _devices.Inputs.H2_GateClose,
+            "SPDHead3" => _devices.Inputs.H3_GateClose,
+            "SPDHead4" => _devices.Inputs.H4_GateClose,
+            _ => throw new Exception($"Invalid process name: {Name}")
+        };
+        private IDInput In_AssembleCheck => Name switch
+        {
+            "SPDHead1" => _devices.Inputs.H1_AssembleCheck,
+            "SPDHead2" => _devices.Inputs.H2_AssembleCheck,
+            "SPDHead3" => _devices.Inputs.H3_AssembleCheck,
+            "SPDHead4" => _devices.Inputs.H4_AssembleCheck,
+            _ => throw new Exception($"Invalid process name: {Name}")
+        };
+        private IDInput In_SyringeCheck => Name switch
+        {
+            "SPDHead1" => _devices.Inputs.H1_SyringeCheck,
+            "SPDHead2" => _devices.Inputs.H2_SyringeCheck,
+            "SPDHead3" => _devices.Inputs.H3_SyringeCheck,
+            "SPDHead4" => _devices.Inputs.H4_SyringeCheck,
+            _ => throw new Exception($"Invalid process name: {Name}")
+        };
+        private IDInput In_SyringeAir => Name switch
+        {
+            "SPDHead1" => _devices.Inputs.H1_SyringeAir,
+            "SPDHead2" => _devices.Inputs.H2_SyringeAir,
+            "SPDHead3" => _devices.Inputs.H3_SyringeAir,
+            "SPDHead4" => _devices.Inputs.H4_SyringeAir,
+            _ => throw new Exception($"Invalid process name: {Name}")
+        };
         #endregion
 
         #region Outputs
