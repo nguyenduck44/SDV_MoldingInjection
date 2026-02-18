@@ -170,6 +170,8 @@ namespace SDV_MoldingInjection.Process
                     Step.ToRunStep++;
                     break;
                 case ESPDHeadProcToRunStep.End:
+                    procOutputs.ClearOutputs();
+
                     Log.Debug("ToRun end");
                     Step.ToRunStep++;
                     base.ProcessToRun();
@@ -359,7 +361,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"{PAxis.Name} moving to ChargePos [{_currentSPDHeadRecipe.PAxisChargePos}mm]");
-                    GAxis.MoveAbs(_currentSPDHeadRecipe.PAxisChargePos);
+                    PAxis.MoveAbs(_currentSPDHeadRecipe.PAxisChargePos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
                         () => PAxis.IsOnPosition(_currentSPDHeadRecipe.PAxisChargePos));
                     Step.RunStep++;
@@ -403,7 +405,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESPDHeadProcResinInjectStep.PAxis_InjectPos_Move:
                     Log.Debug($"{PAxis.Name} moving to ChargePos [{_currentSPDHeadRecipe.PAxisInjectPos}mm]");
-                    GAxis.MoveAbs(_currentSPDHeadRecipe.PAxisInjectPos);
+                    PAxis.MoveAbs(_currentSPDHeadRecipe.PAxisInjectPos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
                         () => PAxis.IsOnPosition(_currentSPDHeadRecipe.PAxisInjectPos));
                     Step.RunStep++;

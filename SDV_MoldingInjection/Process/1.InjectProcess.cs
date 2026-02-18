@@ -166,6 +166,7 @@ namespace SDV_MoldingInjection.Process
                     Step.ToRunStep++;
                     break;
                 case EMoldProcToRunStep.End:
+                    procOutputs.ClearOutputs();
                     Log.Debug("ToRun end");
                     Step.ToRunStep++;
 
@@ -657,7 +658,7 @@ namespace SDV_MoldingInjection.Process
                     else Log.Info($"Request transfer to UNLOAD");
 
                     // Dryrun
-                    Wait(5000);
+                    Wait(3000);
 
                     Step.RunStep++;
                     break;
@@ -670,7 +671,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.MCR_Read:
                     if (isLoading == false)
                     {
-                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Chamber_CoverClose;
+                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
                         break;
                     }
 

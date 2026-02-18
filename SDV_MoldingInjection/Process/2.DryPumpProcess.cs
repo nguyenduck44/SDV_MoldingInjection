@@ -91,6 +91,8 @@ namespace SDV_MoldingInjection.Process
                     Step.ToRunStep++;
                     break;
                 case EDryPumpProcToRunStep.End:
+                    procOutputs.ClearOutputs();
+
                     Log.Debug("ToRun end");
                     Step.ToRunStep++;
                     base.ProcessToRun();
@@ -237,10 +239,11 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_PurgeAndWait:
                     Out_ChamberPurgeOn.Value = true;
-                    Wait(5000);
+                    Wait(3000);
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_PurgeDone_Send:
+                    Out_ChamberPurgeOn.Value = false;
                     procOutputs[EDryPumpProcOutput.ChamberPurgeSuccess].Value = true;
                     Step.RunStep++;
                     break;
