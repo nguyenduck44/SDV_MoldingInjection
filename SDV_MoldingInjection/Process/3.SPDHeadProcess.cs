@@ -118,7 +118,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcToRunStep.GAxis_ClosePosition_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadAlarm(EAlarm.H1GAxis_MoveOpenPos_Timeout);
+                        RaiseHeadAlarm(EAlarm.H1GAxis_MoveClosePos_Timeout);
                         break;
                     }
 
@@ -180,6 +180,8 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    Wait(100);
+
                     Log.Debug($"{GAxis.Name} origin search done");
                     Step.OriginStep++;
                     break;
@@ -193,7 +195,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcOriginStep.GAxis_ClosePosition_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadAlarm(EAlarm.H1GAxis_MoveOpenPos_Timeout);
+                        RaiseHeadAlarm(EAlarm.H1GAxis_MoveClosePos_Timeout);
                         break;
                     }
 
@@ -223,6 +225,9 @@ namespace SDV_MoldingInjection.Process
                     Step.OriginStep++;
                     break;
                 case ESPDHeadProcOriginStep.PAxis_Origin:
+                    Step.OriginStep = (int)ESPDHeadProcOriginStep.End;
+                    break;
+
                     Log.Debug($"Searching origin {PAxis.Name}");
                     PAxis.SearchOrigin();
 

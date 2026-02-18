@@ -26,7 +26,7 @@
 
 
         //--------- 2500 -> 2999 : Dry Pump Process Warning ---------
-        AngleValve_CloseFail,
+        AngleValve_CloseFail = 2500,
         AngleValve_OpenFail,
 
         //--------- 3500 -> 3999 : SPD Head #1 Process Warning ---------
