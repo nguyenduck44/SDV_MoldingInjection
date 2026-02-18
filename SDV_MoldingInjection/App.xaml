@@ -58,9 +58,14 @@
             <DataTemplate DataType="{x:Type vm:AutoViewModel}">
                 <views:AutoView />
             </DataTemplate>
+            
             <DataTemplate DataType="{x:Type vm:DataViewModel}">
                 <views:DataView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:RecipeViewModel}">
+                <views:RecipeView />
+            </DataTemplate>
+            
             <DataTemplate DataType="{x:Type vm:ManualViewModel}">
                 <views:ManualView />
             </DataTemplate>

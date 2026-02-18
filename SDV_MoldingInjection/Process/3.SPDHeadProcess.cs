@@ -148,6 +148,46 @@ namespace SDV_MoldingInjection.Process
 
             return true;
         }
+
+        public override bool ProcessRun()
+        {
+            switch (Sequence)
+            {
+                case ESequence.Stop:
+                    break;
+                case ESequence.AutoRun:
+                    Sequence_AutoRun();
+                    break;
+                case ESequence.Ready:
+                    break;
+                case ESequence.Loading:
+                    break;
+                case ESequence.ResinInject:
+                    break;
+                case ESequence.Unloading:
+                    break;
+                case ESequence.DummyShot:
+                    break;
+                case ESequence.NeedleCleaning:
+                    break;
+                case ESequence.DotWeighting:
+                    break;
+                case ESequence.HeadAssemble:
+                    break;
+                case ESequence.HeadDisassemble:
+                    break;
+                case ESequence.BubbleRemove:
+                    break;
+            }
+
+            return true;
+        }
+        #endregion
+
+        #region Sequence Methods
+        private void Sequence_AutoRun()
+        {
+        }
         #endregion
 
         #region Private Methods

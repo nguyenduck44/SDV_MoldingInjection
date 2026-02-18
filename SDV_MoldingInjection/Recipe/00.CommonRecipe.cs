@@ -18,6 +18,7 @@ namespace SDV_MoldingInjection.Recipe
         private int logSaveDay = 30;
         public event Action<ILanguageDefinition> SelectedLanguageEvent;
         public event Action SelectedLanguageLoadAllRecipe;
+
         [SingleRecipeDescription(Description = "Cylinder Move Timeout", Unit = Unit.Second)]
         public double CylinderMoveTimeout
         {

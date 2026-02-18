@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SDV_MoldingInjection.Defines
 {
-    public enum ESPDDryPumpProcOriginStep
+    public enum EDryPumpProcOriginStep
     {
         Start,
 

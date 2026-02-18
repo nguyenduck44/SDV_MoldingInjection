@@ -2,49 +2,42 @@
 using EQX.Core.Common;
 using EQX.Core.Motion;
 using EQX.Core.Recipe;
-using EQX.Motion;
-using EQX.Motion.ByVendor.Inovance;
 using EQX.UI.Controls;
+using EQX.UI.Language;
+using log4net;
+using Microsoft.Extensions.Configuration;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Recipe;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
-using Newtonsoft.Json;
-using System.IO;
-using Microsoft.Extensions.Configuration;
-using log4net;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
-    public class DataViewModel : ViewModelBase
+    public class RecipeViewModel : ViewModelBase
     {
         private string selectedModel;
         private RecipeBase _selectedRecipe;
         private readonly Motions _motions;
+        private readonly ILanguageService _languageService;
         private readonly IConfiguration _configuration;
-        public DataViewModel(RecipeSelector recipeSelector,
+        public RecipeViewModel(RecipeSelector recipeSelector,
             Motions motions,
+            ILanguageService languageService,
             IConfiguration configuration,
             MachineStatus machineStatus)
         {
             RecipeSelector = recipeSelector;
             _motions = motions;
+            _languageService = languageService;
             _configuration = configuration;
             MachineStatus = machineStatus;
             Log = LogManager.GetLogger("Data");
-
-            RecipeSelector.CurrentRecipe.CommonRecipe.RecipeChanged += RecipeChanged_Handler;
         }
 
-        public ObservableCollection<string> Cultures
-        {
-            get
-            {
-                return new ObservableCollection<string>(new string[] { "English", "Vietnamese" });
-            }
-        }
+        public ObservableCollection<ILanguageDefinition> Cultures => new ObservableCollection<ILanguageDefinition>(_languageService.AvailableLanguages);
+
         public ObservableCollection<IMotion> AllMotions
         {
             get
@@ -74,15 +67,12 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         {
             get
             {
-                var recipeProps = RecipeSelector.CurrentRecipe.GetType()
-                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p => typeof(RecipeBase).IsAssignableFrom(p.PropertyType))
-                .ToList();
-
-                var recipeObjects = recipeProps
-                .Select(p => p.GetValue(RecipeSelector.CurrentRecipe) as RecipeBase)
-                .Where(r => r != null)
-                .ToList();
+                var recipeObjects = RecipeSelector.CurrentRecipe.GetType()
+                                    .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                                    .Where(p => typeof(RecipeBase).IsAssignableFrom(p.PropertyType))
+                                    .Select(p => p.GetValue(RecipeSelector.CurrentRecipe))
+                                    .OfType<RecipeBase>()
+                                    .ToList();
 
                 return new ObservableCollection<RecipeBase>(recipeObjects);
             }
@@ -161,54 +151,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     }
                 });
             }
-        }
-
-        public ICommand SaveMotionConfigCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    try
-                    {
-                        var result = MessageBoxEx.ShowDialog("Do you want to save the motion configurations?", true, "Confirm Save");
-
-                        if (result == true)
-                        {
-                            SaveMotionConfigurations();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBoxEx.ShowDialog($"Error saving motion configurations: {ex.Message}");
-                    }
-                });
-            }
-        }
-
-        private void SaveMotionConfigurations()
-        {
-            var ajinConfigPath = _configuration["Files:MotionAjinParaConfigFile"];
-            if (!string.IsNullOrEmpty(ajinConfigPath))
-            {
-                var existingAjinParams = JsonConvert.DeserializeObject<List<MotionAjinParameter>>(
-                    File.ReadAllText(ajinConfigPath)) ?? new List<MotionAjinParameter>();
-
-                for (int i = 0; i < _motions.AjinMotions.Count && i < existingAjinParams.Count; i++)
-                {
-                    existingAjinParams[i].Velocity = _motions.AjinMotions[i].Parameter.Velocity;
-                    existingAjinParams[i].Acceleration = _motions.AjinMotions[i].Parameter.Acceleration;
-                    existingAjinParams[i].Deceleration = _motions.AjinMotions[i].Parameter.Deceleration;
-                }
-
-                var ajinJson = JsonConvert.SerializeObject(existingAjinParams, Formatting.Indented);
-                File.WriteAllText(ajinConfigPath, ajinJson);
-            }
-        }
-
-        private void RecipeChanged_Handler(object oldValue, object newValue, string? propertyName = null)
-        {
-            Log.Info($"{propertyName} value updated : {oldValue} -> {newValue}");
         }
     }
 }

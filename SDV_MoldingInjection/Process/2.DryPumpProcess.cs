@@ -24,15 +24,14 @@ namespace SDV_MoldingInjection.Process
         #endregion
 
         #region Process Methods
-
         public override bool ProcessOrigin()
         {
-            switch ((ESPDDryPumpProcOriginStep)Step.OriginStep)
+            switch ((EDryPumpProcOriginStep)Step.OriginStep)
             {
-                case ESPDDryPumpProcOriginStep.Start:
+                case EDryPumpProcOriginStep.Start:
                     Step.OriginStep++;
                     break;
-                case ESPDDryPumpProcOriginStep.End:
+                case EDryPumpProcOriginStep.End:
                     Step.OriginStep++;
                     base.ProcessOrigin();
                     break;
@@ -47,30 +46,22 @@ namespace SDV_MoldingInjection.Process
             {
                 case ESequence.Stop:
                     break;
-                case ESequence.AutoRun:
-                    break;
                 case ESequence.Ready:
                     break;
-                case ESequence.Loading:
+                case ESequence.AutoRun:
+                    Sequence_AutoRun();
                     break;
                 case ESequence.ResinInject:
                     break;
-                case ESequence.Unloading:
-                    break;
-                case ESequence.DummyShot:
-                    break;
-                case ESequence.NeedleCleaning:
-                    break;
-                case ESequence.DotWeighting:
-                    break;
-                case ESequence.HeadAssemble:
-                    break;
-                case ESequence.HeadDisassemble:
-                    break;
-                case ESequence.BubbleRemove:
-                    break;
             }
             return true;
+        }
+        #endregion
+
+        #region Sequence Methods
+        private void Sequence_AutoRun()
+        {
+
         }
         #endregion
 

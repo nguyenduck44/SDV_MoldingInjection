@@ -31,7 +31,10 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddViewModel<ManualViewModel>();
                 services.AddViewModel<AppManualUnitViewModel>();
                 services.AddViewModel<TeachViewModel>();
+
                 services.AddViewModel<DataViewModel>();
+                services.AddViewModel<RecipeViewModel>();
+
                 services.AddViewModel<MonitorViewModel>();
                 services.AddViewModel<MonitorIOViewModel>();
 

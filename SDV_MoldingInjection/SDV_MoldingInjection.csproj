@@ -40,11 +40,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Resource\Images\DotDispenser_TopView.png" />
+    <None Remove="Resource\Images\MoldInjection_TopView.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resource\Images\DotDispenser_TopView.png" />
+    <Resource Include="Resource\Images\MoldInjection_TopView.png" />
     <Resource Include="TopIcon.ico" />
   </ItemGroup>
 

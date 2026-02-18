@@ -1,34 +1,19 @@
-﻿using EQX.Core.Motion;
-using EQX.Core.Recipe;
+﻿using EQX.Core.Recipe;
 using EQX.UI.Controls;
-using OpenCvSharp.Flann;
 using SDV_MoldingInjection.MVVM.ViewModels;
-using SDV_MoldingInjection.Recipe;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Markup;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace SDV_MoldingInjection.MVVM.Views
 {
     /// <summary>
-    /// Interaction logic for DataView.xaml
+    /// Interaction logic for RecipeView.xaml
     /// </summary>
-    public partial class DataView : UserControl
+    public partial class RecipeView : UserControl
     {
-        public DataView()
+        public RecipeView()
         {
             InitializeComponent();
         }
@@ -37,7 +22,7 @@ namespace SDV_MoldingInjection.MVVM.Views
         {
             if (MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_ReloadAllData"]) == true)
             {
-                if (this.DataContext is DataViewModel dataContext)
+                if (this.DataContext is RecipeViewModel dataContext)
                 {
                     dataContext.RecipeSelector.Load();
                     LoadRecipe(dataContext.CurrentRecipe);
@@ -49,7 +34,7 @@ namespace SDV_MoldingInjection.MVVM.Views
         {
             if (MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_ChangeModel"]) == true)
             {
-                if (this.DataContext is DataViewModel dataContext)
+                if (this.DataContext is RecipeViewModel dataContext)
                 {
                     dataContext.RecipeSelector.SetCurrentModel(dataContext.SelectedModel);
                     LoadRecipe(dataContext.CurrentRecipe);
@@ -106,7 +91,7 @@ namespace SDV_MoldingInjection.MVVM.Views
                     CurrentRecipe_StackPanel.Children.Add(new SingleRecipe(dataAttr, null));
                     continue;
                 }
-                
+
                 // 5. Extract DataMinMaxAtrribute
                 SingleRecipeMinMaxAttribute minMaxAttribute = null;
                 if (attrs.FirstOrDefault(att => att is SingleRecipeMinMaxAttribute) != null)
@@ -129,6 +114,7 @@ namespace SDV_MoldingInjection.MVVM.Views
 
                     SingleRecipe singleRecipe = new SingleRecipe(dataAttr, minMaxAttribute);
                     singleRecipe.SetBinding(SingleRecipe.ValueProperty, binding);
+                    singleRecipe.FontSize = 13;
                     CurrentRecipe_StackPanel.Children.Add(singleRecipe);
                 }
                 else if (prop.PropertyType.Name == nameof(Boolean))
@@ -150,18 +136,14 @@ namespace SDV_MoldingInjection.MVVM.Views
 
                     OptionsRecipe_StackPanel.Children.Add(checkBox);
 
-                    
-
                     continue;
                 }
             }
         }
 
-
         private void DataView_Loaded(object sender, RoutedEventArgs e)
         {
-
-            if (this.DataContext is not DataViewModel viewModel) return;
+            if (this.DataContext is not RecipeViewModel viewModel) return;
 
             viewModel.LoadRecipeEvent += () =>
             {
@@ -174,11 +156,9 @@ namespace SDV_MoldingInjection.MVVM.Views
 
         private void ListBox_Loaded(object sender, RoutedEventArgs e)
         {
-
             if (sender is not ListBox listBox) return;
-            if (this.DataContext is not DataViewModel viewModel) return;
+            if (this.DataContext is not RecipeViewModel viewModel) return;
 
-            // Set selected recipe based on binding
             if (viewModel.SelectedRecipe != null)
             {
                 listBox.SelectedItem = viewModel.SelectedRecipe;
@@ -188,7 +168,6 @@ namespace SDV_MoldingInjection.MVVM.Views
                 listBox.SelectedIndex = 0;
             }
 
-            // Focus on selected item
             if (listBox.SelectedItem != null)
             {
                 var item = listBox.ItemContainerGenerator.ContainerFromItem(listBox.SelectedItem) as ListBoxItem;
@@ -202,9 +181,8 @@ namespace SDV_MoldingInjection.MVVM.Views
         private void ModelsListBox_Loaded(object sender, RoutedEventArgs e)
         {
             if (sender is not ListBox listBox) return;
-            if (this.DataContext is not DataViewModel viewModel) return;
+            if (this.DataContext is not RecipeViewModel viewModel) return;
 
-            // Load from current recipe and set back to SelectedModel
             if (viewModel.RecipeSelector?.RecipeSetting?.CurrentRecipe != null)
             {
                 string currentRecipeName = viewModel.RecipeSelector.RecipeSetting.CurrentRecipe;
@@ -216,7 +194,6 @@ namespace SDV_MoldingInjection.MVVM.Views
                 listBox.SelectedIndex = 0;
             }
 
-            // Focus on selected item
             if (listBox.SelectedItem != null)
             {
                 var item = listBox.ItemContainerGenerator.ContainerFromItem(listBox.SelectedItem) as ListBoxItem;

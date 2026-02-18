@@ -30,7 +30,7 @@
                     </Grid.RowDefinitions>
                     <Label Content="{Binding Name}"
                            FontWeight="Bold"
-                           FontSize="14"
+                           FontSize="12"
                            HorizontalContentAlignment="Center"
                            Foreground="White">
                         <Label.Style>
@@ -95,8 +95,8 @@
     </UserControl.Resources>
     <Grid Margin="0 0 -5 0">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*" />
-            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="4*" />
             <ColumnDefinition Width="1.2*" />
         </Grid.ColumnDefinitions>
         
@@ -105,29 +105,29 @@
 
         <Grid Grid.Column="1">
             <Image Grid.Column="1"
-                Source="/SDV_MoldingInjection;component/Resource/Images/DotDispenser_TopView.png"
+                Source="/SDV_MoldingInjection;component/Resource/Images/MoldInjection_TopView.png"
                 />
         </Grid>
         
         <Canvas Grid.Column="1">
             <ContentControl Content="{Binding Processes.All[1]}"
-                    Canvas.Left="100"
-                    Canvas.Top="200"/>
+                    Canvas.Left="350"
+                    Canvas.Top="150"/>
             <ContentControl Content="{Binding Processes.All[2]}"
-                    Canvas.Left="100"
-                    Canvas.Top="200"/>
+                    Canvas.Left="40"
+                    Canvas.Top="250"/>
             <ContentControl Content="{Binding Processes.All[3]}"
-                    Canvas.Left="100"
-                    Canvas.Top="200"/>
+                    Canvas.Left="210"
+                    Canvas.Top="320"/>
             <ContentControl Content="{Binding Processes.All[4]}"
-                    Canvas.Left="100"
-                    Canvas.Top="200"/>
+                    Canvas.Left="270"
+                    Canvas.Top="250"/>
             <ContentControl Content="{Binding Processes.All[5]}"
-                    Canvas.Left="100"
-                    Canvas.Top="200"/>
+                    Canvas.Left="350"
+                    Canvas.Top="320"/>
             <ContentControl Content="{Binding Processes.All[6]}"
-                    Canvas.Left="100"
-                    Canvas.Top="200"/>
+                    Canvas.Left="410"
+                    Canvas.Top="250"/>
         </Canvas>
 
         <StackPanel Orientation="Vertical"

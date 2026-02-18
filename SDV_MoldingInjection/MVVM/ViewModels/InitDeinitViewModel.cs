@@ -77,6 +77,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public InitDeinitViewModel(Devices devices,
             Processes processes,
             INavigationService navigationService,
+            IAuthenticationService authenticationService,
             RecipeSelector recipeSelector,
             ProcessIO processIO,
             IConfiguration configuration)
@@ -84,6 +85,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _devices = devices;
             _processes = processes;
             _navigationService = navigationService;
+            _authenticationService = authenticationService;
             _recipeSelector = recipeSelector;
             _processIO = processIO;
             _configuration = configuration;
@@ -251,6 +253,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         break;
                     case EHandleStep.Navigate:
                         MessageText = "Navigating...";
+
+                        // TODO: Remove this on Production
+                        _authenticationService.ValidatePermission(EPermission.SuperUser, "3141");
+                        
                         _navigationService.NavigateTo<AutoViewModel>();
                         _step++;
                         break;
@@ -420,6 +426,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         #region Private fields
         private readonly INavigationService _navigationService;
+        private readonly IAuthenticationService _authenticationService;
         private readonly RecipeSelector _recipeSelector;
         private readonly ProcessIO _processIO;
         private readonly IConfiguration _configuration;

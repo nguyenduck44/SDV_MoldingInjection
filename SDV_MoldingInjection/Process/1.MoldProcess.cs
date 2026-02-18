@@ -82,6 +82,7 @@ namespace SDV_MoldingInjection.Process
                 case ESequence.Stop:
                     break;
                 case ESequence.AutoRun:
+                    Sequence_AutoRun();
                     break;
                 case ESequence.Ready:
                     break;
@@ -174,6 +175,12 @@ namespace SDV_MoldingInjection.Process
             }
 
             return true;
+        }
+        #endregion
+
+        #region Sequence Methods
+        private void Sequence_AutoRun()
+        {
         }
         #endregion
 
