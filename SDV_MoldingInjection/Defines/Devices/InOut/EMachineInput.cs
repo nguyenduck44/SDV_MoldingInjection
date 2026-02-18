@@ -9,8 +9,8 @@
         ASSEMBLE_CHECK = 4,
         SYRINGE_CHECK = 5,
         SPARE_IN_6 = 6,
-        SPARE_IN_7 = 7,
-        SYRINGE_AIR = 8,
+        SYRINGE_AIR = 7,
+        SPARE_IN_8 = 8,
         SPARE_IN_9 = 9,
     }
 
@@ -28,7 +28,7 @@
         SMOKE_DETECT_DETECT_ALARM = 9,
         SMOKE_DETECT_TEMP_HIGH_ALARM = 10,
         SMOKE_DETECT_TEMP_HIGH_WARNING = 11,
-        SPARE_IN_12 = 12,
+        PANEL_CLOSE_CHECK = 12,
         SERVO_ON = 13,
         MAIN_BREAKER_TRIP = 14,
         MAIN_CDA_CHECK = 15,
@@ -37,7 +37,7 @@
         DOOR_LOCK_LEFT = 17,
         DOOR_CLOSE_RIGHT = 18,
         DOOR_LOCK_RIGHT = 19,
-        SPARE_IN_20 = 20,
+        MAIN_PANEL_CLOSE_CHECK = 20,
         MAIN_BREAKER_TRIP_EBOX = 21,
         MAIN_PANEL_FAN_RUN1_EBOX = 22,
         MAIN_PANEL_FAN_RUN2_EBOX = 23,
