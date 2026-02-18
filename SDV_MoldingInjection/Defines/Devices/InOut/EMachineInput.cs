@@ -9,8 +9,8 @@
         ASSEMBLE_CHECK = 4,
         SYRINGE_CHECK = 5,
         SPARE_IN_6 = 6,
-        SYRINGGE_AIR = 7,
-        SYRINGE_AIR = 8,
+        SYRINGE_AIR = 7,
+        SPARE_IN_8 = 8,
         SPARE_IN_9 = 9,
     }
 
