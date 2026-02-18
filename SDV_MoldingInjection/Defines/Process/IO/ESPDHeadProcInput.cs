@@ -2,5 +2,6 @@
 {
     public enum ESPDHeadProcInput
     {
+        WorkRequest,
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace SDV_MoldingInjection.Defines
 {
-    public enum EMoldProcLoadingStep
+    public enum EMoldProcLoadingUnloadingStep
     {
         Start,
 

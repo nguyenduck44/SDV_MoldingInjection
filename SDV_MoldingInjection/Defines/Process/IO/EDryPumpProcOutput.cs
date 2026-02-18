@@ -2,5 +2,7 @@
 {
     public enum EDryPumpProcOutput
     {
+        ChamberVacuumSuccess,
+        ChamberPurgeSuccess,
     }
 }

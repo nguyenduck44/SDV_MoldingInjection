@@ -2,5 +2,6 @@
 {
     public enum ESPDHeadProcOutput
     {
+        InjectFinish,
     }
 }

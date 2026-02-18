@@ -5,7 +5,20 @@ namespace SDV_MoldingInjection.Recipe
 {
     public class SPDHeadRecipe : RecipeBase
     {
-        [SingleRecipeDescription(Description = "ZAxis safety position (ready position)", Unit = Unit.mm)]
+        public bool HeadSkip
+        {
+            get { return _headSkip; }
+            set
+            {
+                if (_headSkip == value) return;
+
+                OnRecipeChanged(_headSkip, value);
+                _headSkip = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "ZAxis SAFETY position (ready position)", Unit = Unit.mm)]
         public double ZAxisSafetyPos
         {
             get { return _zAxisSafetyPos; }
@@ -15,6 +28,20 @@ namespace SDV_MoldingInjection.Recipe
 
                 OnRecipeChanged(_zAxisSafetyPos, value);
                 _zAxisSafetyPos = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "ZAxis INJECT position (down position)", Unit = Unit.mm)]
+        public double ZAxisInjectPos
+        {
+            get { return _zAxisInjectPos; }
+            set
+            {
+                if (_zAxisInjectPos == value) return;
+
+                OnRecipeChanged(_zAxisInjectPos, value);
+                _zAxisInjectPos = value;
                 OnPropertyChanged();
             }
         }
@@ -48,10 +75,45 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        [SingleRecipeDescription(Description = "PAxis CHARGING position", Unit = Unit.Degree)]
+        public double PAxisChargePos
+        {
+            get { return _pAxisChargePos; }
+            set
+            {
+                if (_pAxisChargePos == value) return;
+
+                OnRecipeChanged(_pAxisChargePos, value);
+                _pAxisChargePos = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "PAxis INJECT position", Unit = Unit.Degree)]
+        public double PAxisInjectPos
+        {
+            get { return _pAxisInjectPos; }
+            set
+            {
+                if (_pAxisInjectPos == value) return;
+
+                OnRecipeChanged(_pAxisInjectPos, value);
+                _pAxisInjectPos = value;
+                OnPropertyChanged();
+            }
+        }
+
         #region Privates
+        private bool _headSkip;
+
+        private double _zAxisSafetyPos;
+        private double _zAxisInjectPos;
+
         private double _gateClosePos;
         private double _gateOpenPos;
-        private double _zAxisSafetyPos;
+
+        private double _pAxisChargePos;
+        private double _pAxisInjectPos;
         #endregion
     }
 }

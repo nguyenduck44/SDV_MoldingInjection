@@ -7,7 +7,7 @@
         NozzleClean_H3,
         NozzleClean_H4,
 
-        BellowUpDown,
+        BellowCyl,
 
         ChamberOpenClose,
 

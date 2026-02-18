@@ -19,6 +19,20 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        [SingleRecipeDescription(Description = "XAxis work (inject) position", Unit = Unit.mm)]
+        public double XAxisInjectPos
+        {
+            get { return _xAxisInjectPos; }
+            set
+            {
+                if (_xAxisInjectPos == value) return;
+
+                OnRecipeChanged(_xAxisInjectPos, value);
+                _xAxisInjectPos = value;
+                OnPropertyChanged();
+            }
+        }
+
         [SingleRecipeDescription(Description = "YAxis ready position", Unit = Unit.mm)]
         public double YAxisReadyPos
         {
@@ -33,9 +47,26 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        [SingleRecipeDescription(Description = "YAxis work position (inject, chamber vacuum...)", Unit = Unit.mm)]
+        public double YAxisInjectPos
+        {
+            get { return _yAxisInjectPos; }
+            set
+            {
+                if (_yAxisInjectPos == value) return;
+
+                OnRecipeChanged(_yAxisInjectPos, value);
+                _yAxisInjectPos = value;
+                OnPropertyChanged();
+            }
+        }
+
         #region Privates
         private double _xAxisReadyPos;
+        private double _xAxisInjectPos;
+
         private double _yAxisReadyPos;
+        private double _yAxisInjectPos;
         #endregion
     }
 }

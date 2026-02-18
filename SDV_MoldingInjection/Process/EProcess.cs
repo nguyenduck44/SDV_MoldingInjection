@@ -3,7 +3,7 @@
     public enum EProcess
     {
         Root,
-        Mold,
+        Inject,
         DryPump,
         SPDHead1,
         SPDHead2,

@@ -16,7 +16,7 @@ namespace SDV_MoldingInjection.Defines.Devices.Cylinder
         public ICylinder NozzleClean_H3 { get; }
         public ICylinder NozzleClean_H4 { get; }
 
-        public ICylinder BellowUpDown { get; }
+        public ICylinder BellowCyl { get; }
 
         public ICylinder ChamberOpenClose { get; }
 
@@ -53,13 +53,13 @@ namespace SDV_MoldingInjection.Defines.Devices.Cylinder
                 .SetIdentity((int)ECylinder.NozzleClean_H4, ECylinder.NozzleClean_H4.ToString());
             NozzleClean_H4.CylinderType = ECylinderType.ForwardBackward;
 
-            BellowUpDown = _cylinderFactory
+            BellowCyl = _cylinderFactory
                .Create(_inputs.BelowsUp, _inputs.BelowsDown, _outputs.BellowsUp, _outputs.BellowsDown)
-               .SetIdentity((int)ECylinder.BellowUpDown, ECylinder.BellowUpDown.ToString());
-            BellowUpDown.CylinderType = ECylinderType.UpDown;
+               .SetIdentity((int)ECylinder.BellowCyl, ECylinder.BellowCyl.ToString());
+            BellowCyl.CylinderType = ECylinderType.UpDown;
 
             ChamberOpenClose = _cylinderFactory
-               .Create(_inputs.VacChamberOpen, _inputs.VacChamberClose, _outputs.VacChamberOpen, _outputs.VacChamberClose)
+               .Create(_inputs.ChamberOpen, _inputs.ChamberClose, _outputs.VacChamberOpen, _outputs.VacChamberClose)
                .SetIdentity((int)ECylinder.ChamberOpenClose, ECylinder.ChamberOpenClose.ToString());
             ChamberOpenClose.CylinderType = ECylinderType.OpenClose;
 

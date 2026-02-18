@@ -33,7 +33,7 @@
                         Command="{Binding RecipeDataNavigateCommand}" />
 
                 <Button Content="Run Mode"
-                        Command="{Binding RecipeDataNavigateCommand}" />
+                        Command="{Binding RunModeChangeCommand}" />
             </StackPanel>
         </GroupBox>
 

@@ -20,7 +20,7 @@ namespace SDV_MoldingInjection.Extensions
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
                 services.AddSingleton<IProcess<ESequence>, RootProcess<ESequence, ESemiSequence>>();
-                services.AddSingleton<IProcess<ESequence>, MoldProcess>();
+                services.AddSingleton<IProcess<ESequence>, InjectProcess>();
                 services.AddSingleton<IProcess<ESequence>, DryPumpProcess>();
                 services.AddSingleton<IProcess<ESequence>, SPDHeadProcess>();
                 services.AddSingleton<IProcess<ESequence>, SPDHeadProcess>();

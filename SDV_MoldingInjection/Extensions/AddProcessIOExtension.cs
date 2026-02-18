@@ -17,8 +17,8 @@ namespace SDV_MoldingInjection.Extensions
         {
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
-                services.AddSingleton<IDInputDevice>(new MappableInputDevice<EMoldProcInput> { Name = "MoldProcInput" });
-                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<EMoldProcOutput> { Name = "MoldProcOutput" });
+                services.AddSingleton<IDInputDevice>(new MappableInputDevice<EInjectProcInput> { Name = "MoldProcInput" });
+                services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<EInjectProcOutput> { Name = "MoldProcOutput" });
 
                 services.AddSingleton<IDInputDevice>(new MappableInputDevice<EDryPumpProcInput> { Name = "DryPumpProcInput" });
                 services.AddSingleton<IDOutputDevice>(new MappableOutputDevice<EDryPumpProcOutput> { Name = "DryPumpProcOutput" });

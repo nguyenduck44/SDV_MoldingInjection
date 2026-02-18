@@ -126,11 +126,11 @@ namespace SDV_MoldingInjection.Defines
         public IDInput BelowsUp => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.BELLOWS_UP);
         public IDInput BelowsDown => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.BELLOWS_DOWN);
 
-        public IDInput VacPumpRun => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.VAC_PUMP_RUN);
-        public IDInput VacPumpAlarm => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.VAC_PUMP_ALARM);
-        public IDInput VacChamberPurgeOn => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.VAC_CHAMBER_PURGE_ON);
-        public IDInput VacChamberOpen => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.VAC_CHAMBER_OPEN);
-        public IDInput VacChamberClose => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.VAC_CHAMBER_CLOSE);
+        public IDInput DryPumpRun => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DRY_PUMP_RUN);
+        public IDInput DryPumpAlarm => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DRY_PUMP_ALARM);
+        public IDInput ChamberPurgeOn => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.CHAMBER_PURGE_ON);
+        public IDInput ChamberOpen => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.CHAMBER_OPEN);
+        public IDInput ChamberClose => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.CHAMBER_CLOSE);
 
         public IDInput SyringeCDACheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SYLINGE_HEAD_CDA_CHECK);
         public IDInput PumpCDACheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_CDA_CHECK);

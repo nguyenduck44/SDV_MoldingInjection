@@ -87,7 +87,7 @@ namespace SDV_MoldingInjection.Defines
 
         public IDOutput EQPStop => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.EQP_STOP);
 
-        public IDOutput VacChamberPurgeOn => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.VAC_CHAMBER_PURGE_ON);
+        public IDOutput ChamberPurgeOn => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.VAC_CHAMBER_PURGE_ON);
 
         public IDOutput NozzleCleanH1H2 => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.NOZZLE_CLEAN_H1H2);
         public IDOutput NozzleCleanH3H4 => _dMachineOutputDevice.Outputs.First(o => o.Id == (int)EMachineOutput.NOZZLE_CLEAN_H3H4);

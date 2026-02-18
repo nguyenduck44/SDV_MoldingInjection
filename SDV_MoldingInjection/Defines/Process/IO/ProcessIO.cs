@@ -12,10 +12,10 @@ namespace SDV_MoldingInjection.Defines
             var procInList = processInputs.ToList();
             var procOutList = processOutputs.ToList();
 
-            MoldProcInput = (IDInputDevice<EMoldProcInput>?)
+            InjectProcInput = (IDInputDevice<EInjectProcInput>?)
                procInList.First(pI => pI.Name == "MoldProcInput")!;
 
-            MoldProcOutput = (IDOutputDevice<EMoldProcOutput>?)
+            InjectProcOutput = (IDOutputDevice<EInjectProcOutput>?)
                procOutList.First(pI => pI.Name == "MoldProcOutput")!;
 
             DryPumpProcInput = (IDInputDevice<EDryPumpProcInput>?)
@@ -49,8 +49,8 @@ namespace SDV_MoldingInjection.Defines
                procOutList.First(pI => pI.Name == "SPDHead4_ProcOutput")!;
         }
 
-        public IDInputDevice<EMoldProcInput> MoldProcInput { get; }
-        public IDOutputDevice<EMoldProcOutput> MoldProcOutput { get; }
+        public IDInputDevice<EInjectProcInput> InjectProcInput { get; }
+        public IDOutputDevice<EInjectProcOutput> InjectProcOutput { get; }
 
         public IDInputDevice<EDryPumpProcInput> DryPumpProcInput { get; }
         public IDOutputDevice<EDryPumpProcOutput> DryPumpProcOutput { get; }
@@ -86,7 +86,32 @@ namespace SDV_MoldingInjection.Defines
 
         public void Mappings()
         {
-            
+            InjectProcInput[EInjectProcInput.DryPump_VacuumDone]
+                .MapTo(DryPumpProcOutput[EDryPumpProcOutput.ChamberVacuumSuccess]);
+            InjectProcInput[EInjectProcInput.DryPump_PurgeDone]
+                .MapTo(DryPumpProcOutput[EDryPumpProcOutput.ChamberPurgeSuccess]);
+            InjectProcInput[EInjectProcInput.SPDHead1_WorkDone]
+                .MapTo(SPDHead1_ProcOutput[ESPDHeadProcOutput.InjectFinish]);
+            InjectProcInput[EInjectProcInput.SPDHead2_WorkDone]
+                .MapTo(SPDHead2_ProcOutput[ESPDHeadProcOutput.InjectFinish]);
+            InjectProcInput[EInjectProcInput.SPDHead3_WorkDone]
+                .MapTo(SPDHead3_ProcOutput[ESPDHeadProcOutput.InjectFinish]);
+            InjectProcInput[EInjectProcInput.SPDHead4_WorkDone]
+                .MapTo(SPDHead4_ProcOutput[ESPDHeadProcOutput.InjectFinish]);
+
+            DryPumpProcInput[EDryPumpProcInput.Vacuum_WorkRequest]
+                .MapTo(InjectProcOutput[EInjectProcOutput.DryPump_VacuumRequest]);
+            DryPumpProcInput[EDryPumpProcInput.Purge_WorkRequest]
+                .MapTo(InjectProcOutput[EInjectProcOutput.DryPump_PurgeRequest]);
+
+            SPDHead1_ProcInput[ESPDHeadProcInput.WorkRequest]
+               .MapTo(InjectProcOutput[EInjectProcOutput.SPDHeadWorkRequest]);
+            SPDHead2_ProcInput[ESPDHeadProcInput.WorkRequest]
+               .MapTo(InjectProcOutput[EInjectProcOutput.SPDHeadWorkRequest]);
+            SPDHead3_ProcInput[ESPDHeadProcInput.WorkRequest]
+               .MapTo(InjectProcOutput[EInjectProcOutput.SPDHeadWorkRequest]);
+            SPDHead4_ProcInput[ESPDHeadProcInput.WorkRequest]
+               .MapTo(InjectProcOutput[EInjectProcOutput.SPDHeadWorkRequest]);
         }
     }
 }

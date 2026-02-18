@@ -7,6 +7,8 @@
         AngleValve_Close,
         AngleValve_CloseWait,
 
+        DryPump_Run,
+
         End,
     }
 }

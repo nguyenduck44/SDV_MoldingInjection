@@ -11,6 +11,7 @@ namespace SDV_MoldingInjection.Defines
         /// Unknown or not started
         /// </summary>
         None = 0,
+        Ready,
         InMolding,
         MoldingFinish
     }
