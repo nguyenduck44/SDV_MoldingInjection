@@ -2,6 +2,7 @@
 using EQX.Core.Common;
 using EQX.Core.Sequence;
 using EQX.Device.Indicator;
+using EQX.InOut;
 using EQX.UI.Controls;
 using EQX.UI.Language;
 using log4net;
@@ -18,6 +19,30 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 {
     public class AutoViewModel : ViewModelBase
     {
+        #region Properties
+        public ObservableCollection<ILanguageDefinition> Cultures
+        {
+            get
+            {
+                ObservableCollection<ILanguageDefinition> availableLanguages = new ObservableCollection<ILanguageDefinition>();
+                foreach (var item in _languageService.AvailableLanguages)
+                {
+                    availableLanguages.Add(item);
+                }
+                return availableLanguages;
+            }
+        }
+
+        public double Pressure => Devices.AnalogInputs.VacuumPressureInTorr;
+
+        public MachineStatus MachineStatus { get; }
+        public Devices Devices { get; }
+        public RecipeSelector RecipeSelector { get; }
+        public IUserStore UserStore { get; }
+
+        public string MachineRunModeDisplay => MachineStatus.MachineRunModeDisplay;
+        #endregion
+
         #region Constructor
         public AutoViewModel(MachineStatus machineStatus,
             INavigationService navigationService,
@@ -56,29 +81,9 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private void StatusUpdateTimerHandler(object? sender, System.Timers.ElapsedEventArgs e)
         {
             if (_navigationStore.CurrentViewModel != this) return;
+
+            OnPropertyChanged(nameof(Pressure));
         }
-
-        #region Properties
-        public ObservableCollection<ILanguageDefinition> Cultures
-        {
-            get
-            {
-                ObservableCollection<ILanguageDefinition> availableLanguages = new ObservableCollection<ILanguageDefinition>();
-                foreach (var item in _languageService.AvailableLanguages)
-                {
-                    availableLanguages.Add(item);
-                }
-                return availableLanguages;
-            }
-        }
-
-        public MachineStatus MachineStatus { get; }
-        public Devices Devices { get; }
-        public RecipeSelector RecipeSelector { get; }
-        public IUserStore UserStore { get; }
-
-        public string MachineRunModeDisplay => MachineStatus.MachineRunModeDisplay;
-        #endregion
 
         private void MachineStatusOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -89,6 +94,28 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         }
 
         #region Commands
+        public ICommand ChamberCloseCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    Devices.Cylinders.ChamberOpenClose.Close();
+                });
+            }
+        }
+
+        public ICommand ChamberOpenCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    Devices.Cylinders.ChamberOpenClose.Open();
+                });
+            }
+        }
+
         public ICommand SelectRunModeCommand
         {
             get

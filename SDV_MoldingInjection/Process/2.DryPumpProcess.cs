@@ -57,16 +57,16 @@ namespace SDV_MoldingInjection.Process
                     Step.ToRunStep++;
                     break;
                 case EDryPumpProcToRunStep.AngleValve_Close:
-                    if (AngleValve.IsForward)
+                    if (AngleValve.IsClose())
                     {
                         Step.ToRunStep = (int)EDryPumpProcToRunStep.End;
                         break;
                     }
 
                     Log.Debug($"Closing {AngleValve.Name}");
-                    AngleValve.Forward();
+                    AngleValve.Close();
                     Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout,
-                        () => AngleValve.IsForward);
+                        () => AngleValve.IsClose());
                     Step.ToRunStep++;
                     break;
                 case EDryPumpProcToRunStep.AngleValve_CloseWait:

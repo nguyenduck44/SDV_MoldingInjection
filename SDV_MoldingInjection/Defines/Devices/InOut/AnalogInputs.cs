@@ -18,7 +18,22 @@ namespace SDV_MoldingInjection.Defines.Devices
         // Torr : 6.304
         // Pa = 3.572
         // kPa : 7.429
-        public double VacuumPressureInTorr => Math.Pow(10, (VacuumGauge.Volt - 6.304) /1.286);
+
+        // mbar : 6.000
+        // Torr : 6.125
+        // Pascals : 4.000
+        public double VacuumPressureInTorr
+        {
+            get
+            {
+                double volt = VacuumGauge.Volt;
+
+                if (volt < 2.7 || volt > 9.0)
+                    return -1;
+
+                return Math.Pow(10, (volt - 6.125) / 1.0);
+            }
+        }
         #endregion
 
         public AnalogInputs([FromKeyedServices("AnalogInputDevice#1")] IAInputDevice aInputDevice)
