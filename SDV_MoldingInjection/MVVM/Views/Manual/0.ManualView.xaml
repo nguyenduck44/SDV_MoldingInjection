@@ -9,16 +9,17 @@
              d:DataContext="{d:DesignInstance Type=vm:ManualViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <ItemsControl ItemsSource="{Binding ProcessList}"
+        <ItemsControl ItemsSource="{Binding MaintenanceViewModels}"
                       Margin="20">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <RadioButton Content="{Binding Name}"
-                                 FontSize="30"
-                                    Command="{Binding DataContext.ManualUnitSelectCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                    CommandParameter="{Binding Name}"
-                                    GroupName="MANUAL_UNIT_RADIOBUTTON"
-                                    Style="{StaticResource ButtonLikeRadioButtonStyle}">
+                    <RadioButton
+                        Content="{Binding Name}"
+                        FontSize="30"
+                        Command="{Binding DataContext.ManualUnitSelectCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        CommandParameter="{Binding Name}"
+                        GroupName="MANUAL_UNIT_RADIOBUTTON"
+                        Style="{StaticResource ButtonLikeRadioButtonStyle}">
                     </RadioButton>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

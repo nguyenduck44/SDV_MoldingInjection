@@ -36,22 +36,22 @@ namespace SDV_MoldingInjection.Defines.Devices.Cylinder
             NozzleClean_H1 = _cylinderFactory
                 .Create(_inputs.Nozzle1Clean, null, _outputs.NozzleCleanH1H2, null)
                 .SetIdentity((int)ECylinder.NozzleClean_H1, ECylinder.NozzleClean_H1.ToString());
-            NozzleClean_H1.CylinderType = ECylinderType.ForwardBackward;
+            NozzleClean_H1.CylinderType = ECylinderType.GripUngrip;
 
             NozzleClean_H2 = _cylinderFactory
                 .Create(_inputs.Nozzle2Clean, null, _outputs.NozzleCleanH1H2, null)
                 .SetIdentity((int)ECylinder.NozzleClean_H2, ECylinder.NozzleClean_H2.ToString());
-            NozzleClean_H2.CylinderType = ECylinderType.ForwardBackward;
+            NozzleClean_H2.CylinderType = ECylinderType.GripUngrip;
 
             NozzleClean_H3 = _cylinderFactory
                .Create(_inputs.Nozzle3Clean, null, _outputs.NozzleCleanH3H4, null)
                .SetIdentity((int)ECylinder.NozzleClean_H3, ECylinder.NozzleClean_H3.ToString());
-            NozzleClean_H3.CylinderType = ECylinderType.ForwardBackward;
+            NozzleClean_H3.CylinderType = ECylinderType.GripUngrip;
 
             NozzleClean_H4 = _cylinderFactory
                 .Create(_inputs.Nozzle4Clean, null, _outputs.NozzleCleanH3H4, null)
                 .SetIdentity((int)ECylinder.NozzleClean_H4, ECylinder.NozzleClean_H4.ToString());
-            NozzleClean_H4.CylinderType = ECylinderType.ForwardBackward;
+            NozzleClean_H4.CylinderType = ECylinderType.GripUngrip;
 
             BellowCyl = _cylinderFactory
                .Create(_inputs.BelowsUp, _inputs.BelowsDown, _outputs.BellowsUp, _outputs.BellowsDown)

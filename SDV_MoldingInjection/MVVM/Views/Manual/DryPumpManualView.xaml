@@ -1,0 +1,194 @@
+﻿<UserControl x:Class="SDV_MoldingInjection.MVVM.Views.DryPumpManualView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
+             xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
+             xmlns:uiControls="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type={x:Type vm:DryPumpMaintenanceViewModel}}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    
+    <UserControl.Resources>
+        <Style TargetType="{x:Type uiControls:CylinderSimpleView}">
+            <Setter Property="MinWidth" Value="180"/>
+            <Setter Property="Height" Value="70"/>
+        </Style>
+    </UserControl.Resources>
+    
+    <DockPanel>
+        <!--UNIT STATUS-->
+        <GroupBox Header="UNIT STATUS"
+          DockPanel.Dock="Top">
+            <ItemsControl Margin="3"
+            ItemsSource="{Binding RelatedViewModel}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Content="{Binding .}"
+                        Height="40" Width="120"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </GroupBox>
+
+        <!--CURRENT UNIT MANUAL VIEW-->
+        <GroupBox Header="{Binding Name}"
+          Margin="0 5 0 0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="220"/>
+                </Grid.RowDefinitions>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="212"/>
+                        <ColumnDefinition Width="212"/>
+                    </Grid.ColumnDefinitions>
+                    <!--CYLINDERS VIEW-->
+                    <GroupBox
+                        Style="{StaticResource TextBlockHeaderGroupBox}"
+                        FontSize="14" FontWeight="Bold"
+                        Header="Cylinders">
+                        <ItemsControl ItemsSource="{Binding Cylinders}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </GroupBox>
+
+                    <!--INPUTS VIEW-->
+                    <GroupBox
+                        Grid.Column="1"
+                        Header="Inputs"
+                        Style="{StaticResource TextBlockHeaderGroupBox}"
+                        >
+                        <ItemsControl ItemsSource="{Binding Inputs}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Vertical"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </GroupBox>
+
+                    <!--OUTPUTS VIEW-->
+                    <GroupBox
+                        Grid.Column="2"
+                        Header="Outputs"
+                        Style="{StaticResource TextBlockHeaderGroupBox}"
+                        >
+                        <ItemsControl ItemsSource="{Binding Outputs}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Vertical"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </GroupBox>
+                </Grid>
+
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="250"/>
+                    </Grid.ColumnDefinitions>
+
+                    <GroupBox
+                        Style="{StaticResource TextBlockHeaderGroupBox}"
+                        Header="Leak Test">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                FontSize="10"
+                                TextWrapping="WrapWithOverflow"
+                                Text="Keep Pump run and AngleValve close -> close and move chamber to work position -> move bellow up then press 'Start Test'. Press 'Stop Test' only if needed."/>
+                            <UniformGrid Columns="1" Grid.Row="1"
+                                    Grid.IsSharedSizeScope="True">
+                                <TextBox
+                                    IsReadOnly="True"
+                                    FontSize="13"
+                                    FontWeight="Bold"
+                                    Text="{Binding PressureSpec, Mode=OneWay, StringFormat='{}{0:F2} Torr'}"
+                                    Style="{StaticResource TextBoxWithDescriptionStyle}"
+                                    Tag="Pressure Spec."/>
+                                <TextBox
+                                    IsReadOnly="True"
+                                    FontSize="13"
+                                    FontWeight="Bold"
+                                    Text="{Binding CurrentPressure, Mode=OneWay, StringFormat='{}{0:F2} Torr'}"
+                                    Style="{StaticResource TextBoxWithDescriptionStyle}"
+                                    Tag="Current Pressure"/>
+                                <TextBox
+                                    IsReadOnly="True"
+                                    FontSize="13"
+                                    FontWeight="Bold"
+                                    Text="{Binding TimeInSecond, Mode=OneWay, StringFormat='{}{0:F1} s'}"
+                                    Style="{StaticResource TextBoxWithDescriptionStyle}"
+                                    Tag="Time"/>
+                                <UniformGrid Columns="2">
+                                    <Button
+                                        Margin="0 1 1 1"
+                                        FontSize="14"
+                                        Background="LightGreen"
+                                        Content="Start Test"
+                                        Command="{Binding LeakTestStartCommand}"/>
+                                    <Button
+                                        Margin="1 1 0 1"
+                                        FontSize="14"
+                                        Background="LightGray"
+                                        Content="Stop Test"
+                                        Command="{Binding LeakTestStopCommand}"/>
+                                </UniformGrid>
+                                <Button
+                                    Margin="0 1"
+                                    FontSize="14"
+                                    Content="Show Result"
+                                    Command="{Binding ShowResultCommand}"/>
+                            </UniformGrid>
+                        </Grid>
+                    </GroupBox>
+                    
+                    <!--UNIT IMAGE-->
+                    <Image
+                        Grid.Column="1"
+                        Margin="5"
+                        Source="/SDV_MoldingInjection;component/Resource/Images/DryPump_IsoView.png"
+                        />
+
+                    <!--SEMI SEQUENCES VIEW-->
+                    <GroupBox Grid.Column="2"
+                        Style="{StaticResource TextBlockHeaderGroupBox}"
+                        FontSize="14" FontWeight="Bold"
+                        Header="Semi Sequences">
+                        <ItemsControl ItemsSource="{Binding Sequences}"
+                                  DisplayMemberPath="">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </GroupBox>
+                </Grid>
+            </Grid>
+        </GroupBox>
+    </DockPanel>
+</UserControl>

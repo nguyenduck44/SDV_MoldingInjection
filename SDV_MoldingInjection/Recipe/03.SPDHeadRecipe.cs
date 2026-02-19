@@ -19,6 +19,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "ZAxis SAFETY position (ready position)", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "ZAxis")]
         public double ZAxisSafetyPos
         {
             get { return _zAxisSafetyPos; }
@@ -33,6 +34,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "ZAxis INJECT position (down position)", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "ZAxis")]
         public double ZAxisInjectPos
         {
             get { return _zAxisInjectPos; }

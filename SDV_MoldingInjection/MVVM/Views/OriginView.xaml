@@ -97,7 +97,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="4*" />
-            <ColumnDefinition Width="1.2*" />
+            <ColumnDefinition Width="180" />
         </Grid.ColumnDefinitions>
         
         <Canvas Background="Wheat">

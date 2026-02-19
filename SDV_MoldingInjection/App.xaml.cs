@@ -25,6 +25,7 @@ namespace SDV_MoldingInjection
                 .AddConfigs()
                 .AddViews()
                 .AddViewModels()
+                .AddMaintenanceViewModels()
                 .AddNavigations()
                 .AddAuthentications()
                 .AddStores()

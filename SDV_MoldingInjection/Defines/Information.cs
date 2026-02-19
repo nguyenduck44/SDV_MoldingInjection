@@ -10,7 +10,7 @@ namespace SDV_MoldingInjection.Defines
     public class Information
     {
         public string Customer => "SDV";
-        public string MachineName => "Dot Dispenser";
+        public string MachineName => "Resin Mold Inject";
         public string SoftwareVersion => "1.0.0.1";
 
         public Information()

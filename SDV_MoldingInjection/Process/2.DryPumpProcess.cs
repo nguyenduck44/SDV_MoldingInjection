@@ -47,7 +47,6 @@ namespace SDV_MoldingInjection.Process
         #endregion
 
         #region Process Methods
-
         public override bool ProcessToRun()
         {
             switch ((EDryPumpProcToRunStep)Step.ToRunStep)
@@ -197,7 +196,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.VacuumGauge_SpecIn_Wait:
-                    if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureSpec_Upper &&
+                    if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureSpec &&
                         _machineStatus.IsDryRunMode == false)
                     {
                         Wait(50);

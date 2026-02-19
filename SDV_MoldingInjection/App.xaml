@@ -35,6 +35,7 @@
                     <uiCvt:CylinderButtonBrushConverter x:Key="CylinderButtonBrushConverter"/>
                     <cvt:UserPermissionToVisibilityConverter x:Key="UserPermissionToVisibilityConverter"/>
                     <uiCvt:CylinderTypeToButtonNameConverter x:Key="CylinderTypeToButtonNameConverter"/>
+                    <cvt:ObjectSelectedConverter x:Key="ObjectSelectedConverter"/>
                 </ResourceDictionary>
 
                 <ResourceDictionary Source="/Resource/Template/CylinderControlDataTemplate.xaml" />
@@ -46,9 +47,13 @@
             <DataTemplate DataType="{x:Type vm:HeaderViewModel}">
                 <views:HeaderView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:RightPanelViewModel}">
+                <views:RightPanelView />
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:NavigateMenuViewModel}">
                 <views:NavigateMenuView />
             </DataTemplate>
+            
             <DataTemplate DataType="{x:Type vm:InitDeinitViewModel}">
                 <views:InitDeinitView />
             </DataTemplate>
@@ -72,15 +77,30 @@
             <DataTemplate DataType="{x:Type vm:AppManualUnitViewModel}">
                 <uiMVVM:ManualUnitSmallView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:InjectMaintenanceViewModel}">
+                <views:InjectManualView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:DryPumpMaintenanceViewModel}">
+                <views:DryPumpManualView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:SPDHeadMaintenanceViewModel}">
+                <views:SPDHeadManualViewModel/>
+            </DataTemplate>
+
             <DataTemplate DataType="{x:Type vm:MonitorIOViewModel}">
                 <views:MonitorIOView />
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:MonitorMotionViewModel}">
                 <views:MonitorMotionView />
             </DataTemplate>
+            
             <DataTemplate DataType="{x:Type vm:TeachViewModel}">
                 <views:TeachView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:AppTeachPositionUnitViewModel}">
+                <uiMVVM:TeachPositionUnitView />
+            </DataTemplate>
+            
             <DataTemplate DataType="{x:Type vm:DevViewModel}">
                 <views:DevView />
             </DataTemplate>
@@ -95,7 +115,7 @@
             </DataTemplate>
             
             <DataTemplate DataType="{x:Type inout:CylinderBase}">
-                <viewsLib:CylinderView/>
+                <viewsLib:CylinderSimpleView/>
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>

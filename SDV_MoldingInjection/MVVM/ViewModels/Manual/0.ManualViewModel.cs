@@ -1,34 +1,31 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
-using EQX.Core.Process;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Process;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
     public class ManualViewModel : ViewModelBase
     {
-        private readonly Processes _processes;
         private readonly INavigationService _navigationService;
 
-        public ManualViewModel(Processes processes,
-            INavigationService navigationService,
-            IViewModelFactory viewModelFactory)
+        public ManualViewModel(IEnumerable<MaintenanceViewModel<ESequence>> maintenanceViewModels,
+            INavigationService navigationService)
         {
-            _processes = processes;
+            MaintenanceViewModels = maintenanceViewModels;
             _navigationService = navigationService;
-            ManualUnitVM = viewModelFactory.Create<AppManualUnitViewModel>();
+
+            for (int i = 0; i < MaintenanceViewModels.Count(); i++)
+            {
+                MaintenanceViewModels.ToList()[i].Name = Enum.GetName(typeof(EProcess), EProcess.Root + 1 + i);
+            }
+            
+            foreach (var vm in MaintenanceViewModels)
+            {
+                vm.Init();
+            }
         }
-
-        public List<IProcess<ESequence>> ProcessList => _processes.RootProcess.Childs!.ToList();
-
-        private AppManualUnitViewModel ManualUnitVM { get; }
 
         public ICommand ManualUnitSelectCommand
         {
@@ -36,12 +33,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand<string>((name) =>
                 {
-                    ManualUnitVM.DependenceProcessList = new List<IProcess<ESequence>> { ProcessList.First(p => p.Name == name)!, ProcessList[2], ProcessList[4] };
-                    ManualUnitVM.CurrentProcess = ProcessList.First(p => p.Name == name)!;
-
-                    _navigationService.NavigateTo<AppManualUnitViewModel>();
+                    _navigationService.NavigateTo(MaintenanceViewModels.First(vm => vm.Name == name));
                 });
             }
         }
+
+        public IEnumerable<MaintenanceViewModel<ESequence>> MaintenanceViewModels { get; }
     }
 }

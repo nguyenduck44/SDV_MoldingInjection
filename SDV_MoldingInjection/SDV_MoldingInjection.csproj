@@ -40,11 +40,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Resource\Images\DryPump_IsoView.png" />
+    <None Remove="Resource\Images\Inject_IsoView.png" />
     <None Remove="Resource\Images\MoldInjection_TopView.png" />
+    <None Remove="Resource\Images\SPDHead_IsoView.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resource\Images\DryPump_IsoView.png" />
+    <Resource Include="Resource\Images\Inject_IsoView.png" />
     <Resource Include="Resource\Images\MoldInjection_TopView.png" />
+    <Resource Include="Resource\Images\SPDHead_IsoView.png" />
     <Resource Include="TopIcon.ico" />
   </ItemGroup>
 

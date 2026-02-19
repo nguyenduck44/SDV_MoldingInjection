@@ -21,16 +21,19 @@ namespace SDV_MoldingInjection.Extensions
             {
                 services.AddViewModel<MainWindowViewModel>();
 
-                services.AddViewModel<NavigateMenuViewModel>();
                 services.AddViewModel<HeaderViewModel>();
                 services.AddViewModel<FooterViewModel>();
+                services.AddViewModel<RightPanelViewModel>();
+                services.AddViewModel<NavigateMenuViewModel>();
 
                 services.AddViewModel<InitDeinitViewModel>();
                 services.AddViewModel<OriginViewModel>();
                 services.AddViewModel<AutoViewModel>();
                 services.AddViewModel<ManualViewModel>();
                 services.AddViewModel<AppManualUnitViewModel>();
+
                 services.AddViewModel<TeachViewModel>();
+                services.AddViewModel<AppTeachPositionUnitViewModel>();
 
                 services.AddViewModel<DataViewModel>();
                 services.AddViewModel<RecipeViewModel>();
@@ -63,6 +66,21 @@ namespace SDV_MoldingInjection.Extensions
                         EMachineInput.DOOR_LOCK_RIGHT.ToString(),
                     }
                 ));
+            });
+
+            return hostBuilder;
+        }
+
+        public static IHostBuilder AddMaintenanceViewModels(this IHostBuilder hostBuilder)
+        {
+            hostBuilder.ConfigureServices((hostContext, services) =>
+            {
+                services.AddSingleton<MaintenanceViewModel<ESequence>, InjectMaintenanceViewModel>();
+                services.AddSingleton<MaintenanceViewModel<ESequence>, DryPumpMaintenanceViewModel>();
+                services.AddSingleton<MaintenanceViewModel<ESequence>, SPDHeadMaintenanceViewModel>();
+                services.AddSingleton<MaintenanceViewModel<ESequence>, SPDHeadMaintenanceViewModel>();
+                services.AddSingleton<MaintenanceViewModel<ESequence>, SPDHeadMaintenanceViewModel>();
+                services.AddSingleton<MaintenanceViewModel<ESequence>, SPDHeadMaintenanceViewModel>();
             });
 
             return hostBuilder;

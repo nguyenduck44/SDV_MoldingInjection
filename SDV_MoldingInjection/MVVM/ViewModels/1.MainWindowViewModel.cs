@@ -12,6 +12,17 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public ViewModelBase HeaderVM { get; }
         public ViewModelBase FooterVM { get; }
 
+        public ViewModelBase RightPanelVM { get; }
+        public bool ShowRightPanelVM
+        {
+            get
+            {
+                return _navigationStore.CurrentViewModel is AutoViewModel ||
+                    _navigationStore.CurrentViewModel is ManualViewModel ||
+                    _navigationStore.CurrentViewModel is MaintenanceViewModel<ESequence>;
+            }
+        }
+
         public ViewModelBase CurrentFrameVM
         {
             get
@@ -33,6 +44,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             Devices = devices;
             HeaderVM = _viewModelFactory.Create<HeaderViewModel>();
             FooterVM = _viewModelFactory.Create<FooterViewModel>();
+            RightPanelVM = _viewModelFactory.Create<RightPanelViewModel>();
 
             _navigationStore.CurrentViewModelChanged += FrameNavigationStore_CurrentViewModelChanged;
         }
@@ -44,6 +56,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
                 OnPropertyChanged(nameof(CurrentFrameVM));
+                OnPropertyChanged(nameof(ShowRightPanelVM));
             }), DispatcherPriority.DataBind);
         }
 

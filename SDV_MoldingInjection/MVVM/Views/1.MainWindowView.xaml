@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         WindowStyle="None"
         WindowState="Maximized"
-        MaxWidth="1080" MaxHeight="768"
+        MaxWidth="1024" MaxHeight="768"
         WindowStartupLocation="CenterScreen"
         ShowInTaskbar="True"
         Icon="/EQX.UI;component/Resources/Images/TopIcon.ico"
@@ -19,28 +19,26 @@
         Closing="Window_Closing"
         Title="MainWindowView">
 
-    <Window.Resources>
-        <Style TargetType="{x:Type uiControls:CylinderView}">
-            <Style.Setters>
-                <Setter Property="Height" Value="120"/>
-                <Setter Property="FontSize" Value="11"/>
-            </Style.Setters>
-        </Style>
-    </Window.Resources>
-    
-    <Grid>
-        <DockPanel Margin="7 0">
-            <Grid Height="11.5"
-                  DockPanel.Dock="Bottom"
-                  Background="{StaticResource PrimaryBackgroundColor}" />
-            <ContentControl Content="{Binding HeaderVM}"
-                            DockPanel.Dock="Top"
-                            Height="Auto" />
-            <ContentControl Content="{Binding FooterVM}"
-                            DockPanel.Dock="Bottom" />
+    <DockPanel Margin="7 0 0 0">
+        <Grid Height="11.5"
+                DockPanel.Dock="Bottom"
+                Background="{StaticResource PrimaryBackgroundColor}" />
+        <ContentControl Content="{Binding HeaderVM}"
+                        DockPanel.Dock="Top"
+                        Height="Auto" />
+        <ContentControl Content="{Binding FooterVM}"
+                        DockPanel.Dock="Bottom" />
 
-            <ContentControl Content="{Binding CurrentFrameVM}" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="6*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
             
-        </DockPanel>
-    </Grid>
+            <ContentControl Content="{Binding CurrentFrameVM}" />
+            <ContentControl Grid.Column="1" Width="180"
+                Content="{Binding RightPanelVM}"
+                Visibility="{Binding ShowRightPanelVM, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        </Grid>
+    </DockPanel>
 </Window>
