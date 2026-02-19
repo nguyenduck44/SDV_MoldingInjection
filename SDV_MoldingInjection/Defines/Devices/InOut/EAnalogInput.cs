@@ -9,6 +9,6 @@ namespace SDV_MoldingInjection.Defines.Devices
     public enum EAnalogInput
     {
         FAN_SPEED = 0,
-        VACUUM_GAUGE,
+        VACUUM_GAUGE = 4,
     }
 }

@@ -22,14 +22,16 @@ namespace SDV_MoldingInjection.Defines.Devices
         // mbar : 6.000
         // Torr : 6.125
         // Pascals : 4.000
+
+        // 1 pa =  1/ strVacuumPressureUnit torr
         public double VacuumPressureInTorr
         {
             get
             {
                 double volt = VacuumGauge.Volt;
 
-                if (volt < 2.7 || volt > 9.0)
-                    return -1;
+                //if (volt < 2.0 || volt > 9.0)
+                //    return -1;
 
                 return Math.Pow(10, (volt - 6.125) / 1.0);
             }
