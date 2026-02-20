@@ -7,7 +7,7 @@ namespace SDV_MoldingInjection.Recipe
     {
         [JsonConstructor]
         public RecipeList(CommonRecipe commonRecipe,
-                          InjectRecipe moldRecipe,
+                          InjectRecipe injectRecipe,
                           DryPumpRecipe dryPumpRecipe,
                           SPDHeadRecipe sPDHead1_Recipe,
                           SPDHeadRecipe sPDHead2_Recipe,
@@ -15,7 +15,7 @@ namespace SDV_MoldingInjection.Recipe
                           SPDHeadRecipe sPDHead4_Recipe)
         {
             CommonRecipe = commonRecipe;
-            InjectRecipe = moldRecipe;
+            InjectRecipe = injectRecipe;
             DryPumpRecipe = dryPumpRecipe;
             SPDHead1_Recipe = sPDHead1_Recipe;
             SPDHead2_Recipe = sPDHead2_Recipe;

@@ -146,7 +146,7 @@
                                         Height="50"
                                         FontSize="12"
                                         Content="{Binding ., Converter={StaticResource EnumDescriptionConverter}}"
-                                        Command="{Binding SemiSequenceButtonCommand}"
+                                        Command="{Binding DataContext.SemiSequenceButtonCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                                         CommandParameter="{Binding .}"
                                         />
                                 </DataTemplate>

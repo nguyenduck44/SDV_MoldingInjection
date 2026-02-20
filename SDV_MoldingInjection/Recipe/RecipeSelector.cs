@@ -120,7 +120,18 @@ namespace SDV_MoldingInjection.Recipe
                 {
                     try
                     {
-                        ((IRecipe)property.GetValue(CurrentRecipe, null)).Clone((IRecipe)property.GetValue(backupRecipe, null));
+                        var currentValue = property.GetValue(CurrentRecipe, null) as IRecipe;
+                        var backupValue = property.GetValue(backupRecipe, null) as IRecipe;
+
+                        if (currentValue != null && backupValue != null)
+                        {
+                            currentValue.Clone(backupValue);
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Property '{property.Name}' is null in either CurrentRecipe or backupRecipe.");
+                            return false;
+                        }
                     }
                     catch (Exception ex)
                     {
