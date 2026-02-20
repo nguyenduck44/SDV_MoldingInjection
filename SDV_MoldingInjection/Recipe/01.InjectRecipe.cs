@@ -3,7 +3,7 @@ using EQX.Core.Units;
 
 namespace SDV_MoldingInjection.Recipe
 {
-    public class MoldRecipe : RecipeBase
+    public class InjectRecipe : RecipeBase
     {
         [SingleRecipeDescription(Description = "XAxis ready position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]

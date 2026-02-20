@@ -17,7 +17,7 @@ namespace SDV_MoldingInjection.Extensions
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
                 services.AddSingleton<IRecipe>(new CommonRecipe { Name = "Common" });
-                services.AddSingleton<IRecipe>(new MoldRecipe { Name = "MoldRecipe" });
+                services.AddSingleton<IRecipe>(new InjectRecipe { Name = "MoldRecipe" });
                 services.AddSingleton<IRecipe>(new DryPumpRecipe { Name = "DryPumpRecipe" });
                 services.AddSingleton<IRecipe>(new SPDHeadRecipe { Name = "SPDHead1_Recipe" });
                 services.AddSingleton<IRecipe>(new SPDHeadRecipe { Name = "SPDHead2_Recipe" });

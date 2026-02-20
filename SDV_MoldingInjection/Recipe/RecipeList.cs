@@ -7,7 +7,7 @@ namespace SDV_MoldingInjection.Recipe
     {
         [JsonConstructor]
         public RecipeList(CommonRecipe commonRecipe,
-                          MoldRecipe moldRecipe,
+                          InjectRecipe moldRecipe,
                           DryPumpRecipe dryPumpRecipe,
                           SPDHeadRecipe sPDHead1_Recipe,
                           SPDHeadRecipe sPDHead2_Recipe,
@@ -15,7 +15,7 @@ namespace SDV_MoldingInjection.Recipe
                           SPDHeadRecipe sPDHead4_Recipe)
         {
             CommonRecipe = commonRecipe;
-            MoldRecipe = moldRecipe;
+            InjectRecipe = moldRecipe;
             DryPumpRecipe = dryPumpRecipe;
             SPDHead1_Recipe = sPDHead1_Recipe;
             SPDHead2_Recipe = sPDHead2_Recipe;
@@ -30,7 +30,7 @@ namespace SDV_MoldingInjection.Recipe
             }
 
             CommonRecipe = recipes.OfType<CommonRecipe>().FirstOrDefault()!;
-            MoldRecipe = recipes.OfType<MoldRecipe>().FirstOrDefault()!;
+            InjectRecipe = recipes.OfType<InjectRecipe>().FirstOrDefault()!;
             DryPumpRecipe = recipes.OfType<DryPumpRecipe>().FirstOrDefault()!;
 
             SPDHead1_Recipe = recipes.OfType<SPDHeadRecipe>().First(r => r.Name == "SPDHead1_Recipe")!;
@@ -40,7 +40,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         public CommonRecipe CommonRecipe { get; }
-        public MoldRecipe MoldRecipe { get; }
+        public InjectRecipe InjectRecipe { get; }
         public DryPumpRecipe DryPumpRecipe { get; }
         public SPDHeadRecipe SPDHead1_Recipe { get; }
         public SPDHeadRecipe SPDHead2_Recipe { get; }

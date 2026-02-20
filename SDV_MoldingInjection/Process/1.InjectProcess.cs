@@ -115,7 +115,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcToRunStep.ZAxis_SafetyPos_Move:
                     if (AllZAxisInSafetyPos())
                     {
-                        Step.ToRunStep = (int)EMoldProcToRunStep.End;
+                        Step.ToRunStep = (int)EMoldProcToRunStep.XYAxis_SafetyPos_Move;
                         break;
                     }
 
@@ -141,24 +141,24 @@ namespace SDV_MoldingInjection.Process
                     Step.ToRunStep++;
                     break;
                 case EMoldProcToRunStep.XYAxis_SafetyPos_Move:
-                    if (XAxis.IsOnPosition(_currentRecipe.MoldRecipe.XAxisReadyPos)
-                        && YAxis.IsOnPosition(_currentRecipe.MoldRecipe.YAxisReadyPos))
+                    if (XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisReadyPos)
+                        && YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisReadyPos))
                     {
                         Step.ToRunStep = (int)EMoldProcToRunStep.End;
                         break;
                     }
 
                     Log.Debug($"Moving XAxis/YAxis to ready position");
-                    XAxis.MoveAbs(_currentRecipe.MoldRecipe.XAxisReadyPos);
-                    YAxis.MoveAbs(_currentRecipe.MoldRecipe.YAxisReadyPos);
+                    XAxis.MoveAbs(_currentRecipe.InjectRecipe.XAxisReadyPos);
+                    YAxis.MoveAbs(_currentRecipe.InjectRecipe.YAxisReadyPos);
                     Step.ToRunStep++;
                     break;
                 case EMoldProcToRunStep.XYAxis_SafetyPos_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        if (!XAxis.IsOnPosition(_currentRecipe.MoldRecipe.XAxisReadyPos))
+                        if (!XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisReadyPos))
                             RaiseWarning(EWarning.XAxis_ReadyPos_MoveTimeOut);
-                        if (!YAxis.IsOnPosition(_currentRecipe.MoldRecipe.YAxisReadyPos))
+                        if (!YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisReadyPos))
                             RaiseWarning(EWarning.YAxis_ReadyPos_MoveTimeOut);
                         break;
                     }
@@ -385,16 +385,16 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingStep.YAxis_ReadyPos_Move:
-                    if (YAxis.IsOnPosition(_currentRecipe.MoldRecipe.YAxisReadyPos))
+                    if (YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisReadyPos))
                     {
                         Step.RunStep = (int)EMoldProcLoadingStep.Chamber_CoverOpen;
                         break;
                     }
 
-                    Log.Info($"Move {YAxis.Name} to ready pos [{_currentRecipe.MoldRecipe.YAxisReadyPos}mm]");
-                    YAxis.MoveAbs(_currentRecipe.MoldRecipe.YAxisReadyPos);
+                    Log.Info($"Move {YAxis.Name} to ready pos [{_currentRecipe.InjectRecipe.YAxisReadyPos}mm]");
+                    YAxis.MoveAbs(_currentRecipe.InjectRecipe.YAxisReadyPos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
-                        () => YAxis.IsOnPosition(_currentRecipe.MoldRecipe.YAxisReadyPos));
+                        () => YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisReadyPos));
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingStep.YAxis_ReadyPos_Wait:
@@ -432,6 +432,8 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcLoadingStep.Transfer_Load_Wait:
                     Log.Info($"Transfer load done");
+
+                    UpdateBothJigStatus(EJigStatus.Ready);
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingStep.MCR_Read:
@@ -476,17 +478,17 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.XYAxis_InjectPos_Move:
-                    XAxis.MoveAbs(_currentRecipe.MoldRecipe.XAxisInjectPos);
-                    YAxis.MoveAbs(_currentRecipe.MoldRecipe.YAxisInjectPos);
+                    XAxis.MoveAbs(_currentRecipe.InjectRecipe.XAxisInjectPos);
+                    YAxis.MoveAbs(_currentRecipe.InjectRecipe.YAxisInjectPos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
-                        () => XAxis.IsOnPosition(_currentRecipe.MoldRecipe.XAxisInjectPos) &&
-                              YAxis.IsOnPosition(_currentRecipe.MoldRecipe.YAxisInjectPos));
+                        () => XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisInjectPos) &&
+                              YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisInjectPos));
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.XYAxis_InjectPos_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        if (!XAxis.IsOnPosition(_currentRecipe.MoldRecipe.XAxisInjectPos))
+                        if (!XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisInjectPos))
                             RaiseWarning(EWarning.XAxis_InjectPos_MoveTimeOut);
                         else
                             RaiseWarning(EWarning.YAxis_InjectPos_MoveTimeOut);
@@ -540,6 +542,9 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcResinInjectStep.SDPHead_Work_Request:
                     Log.Info($"Set Output {EInjectProcOutput.SPDHeadWorkRequest}");
+
+                    UpdateBothJigStatus(EJigStatus.InMolding);
+
                     procOutputs[EInjectProcOutput.SPDHeadWorkRequest].Value = true;
                     Step.RunStep++;
                     break;
@@ -552,6 +557,8 @@ namespace SDV_MoldingInjection.Process
                         Wait(100);
                         break;
                     }
+
+                    UpdateBothJigStatus(EJigStatus.MoldingFinish);
 
                     procOutputs[EInjectProcOutput.SPDHeadWorkRequest].Value = false;
                     Log.Info($"Input detect EInjectProcInput.SPDHead(1~4)_WorkDone");
@@ -621,16 +628,16 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.YAxis_ReadyPos_Move:
-                    if (YAxis.IsOnPosition(_currentRecipe.MoldRecipe.YAxisReadyPos))
+                    if (YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisReadyPos))
                     {
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Chamber_CoverOpen;
                         break;
                     }
 
-                    Log.Info($"Move {YAxis.Name} to ready pos [{_currentRecipe.MoldRecipe.YAxisReadyPos}mm]");
-                    YAxis.MoveAbs(_currentRecipe.MoldRecipe.YAxisReadyPos);
+                    Log.Info($"Move {YAxis.Name} to ready pos [{_currentRecipe.InjectRecipe.YAxisReadyPos}mm]");
+                    YAxis.MoveAbs(_currentRecipe.InjectRecipe.YAxisReadyPos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
-                        () => YAxis.IsOnPosition(_currentRecipe.MoldRecipe.YAxisReadyPos));
+                        () => YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisReadyPos));
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.YAxis_ReadyPos_Wait:
@@ -670,7 +677,9 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.Transfer_Load_Wait:
                     if (isLoading) Log.Info($"Transfer LOAD done");
                     else Log.Info($"Transfer UNLOAD done");
-                    
+
+                    UpdateBothJigStatus(EJigStatus.None);
+
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.MCR_Read:
@@ -848,6 +857,12 @@ namespace SDV_MoldingInjection.Process
                 ESPDHead.SPDHead4 => procInputs[EInjectProcInput.SPDHead4_WorkDone].Value || _currentRecipe.SPDHead4_Recipe.HeadSkip,
                 _ => throw new Exception($"Invalid head: {head}")
             };
+        }
+
+        private void UpdateBothJigStatus(EJigStatus status)
+        {
+            JigStatuses[(int)EJig.JigLeft] = status;
+            JigStatuses[(int)EJig.JigRight] = status;
         }
         #endregion
 

@@ -80,7 +80,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             IAuthenticationService authenticationService,
             RecipeSelector recipeSelector,
             ProcessIO processIO,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            InterlockService interlockService)
         {
             _devices = devices;
             _processes = processes;
@@ -89,6 +90,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _recipeSelector = recipeSelector;
             _processIO = processIO;
             _configuration = configuration;
+            _interlockService = interlockService;
+
             _task = new Task(() => { });
             ErrorMessages = new List<string>();
 
@@ -189,6 +192,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 #if SIMULATION
                         _isSuccess &= _devices.Inputs.Connect();
 #endif
+
+                        _interlockService.Config();
 
                         if (_isSuccess == false)
                         {
@@ -433,6 +438,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly RecipeSelector _recipeSelector;
         private readonly ProcessIO _processIO;
         private readonly IConfiguration _configuration;
+        private readonly InterlockService _interlockService;
         private readonly ICamera _alignCamera1;
         private readonly IVisionFlowRepository _visionFlowRepository;
         private readonly Devices _devices;
