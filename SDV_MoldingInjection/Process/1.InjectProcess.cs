@@ -1,5 +1,6 @@
 ﻿using EQX.Core.InOut;
 using EQX.Core.Motion;
+using EQX.InOut;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Recipe;
@@ -89,16 +90,16 @@ namespace SDV_MoldingInjection.Process
                     Step.ToRunStep++;
                     break;
                 case EMoldProcToRunStep.Bellow_Down:
-                    if (BellowCyl.IsBackward)
+                    if (BellowCyl.IsDown())
                     {
                         Step.ToRunStep = (int)EMoldProcToRunStep.ZAxis_SafetyPos_Move;
                         break;
                     }
 
                     Log.Debug($"{BellowCyl} moving down");
-                    BellowCyl.Backward();
+                    BellowCyl.Down();
                     Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout,
-                        () => BellowCyl.IsBackward);
+                        () => BellowCyl.IsDown());
                     Step.ToRunStep++;
                     break;
                 case EMoldProcToRunStep.Bellow_DownWait:
@@ -260,16 +261,16 @@ namespace SDV_MoldingInjection.Process
                     Step.OriginStep++;
                     break;
                 case EMoldProcOriginStep.Bellow_Down:
-                    if (BellowCyl.IsBackward)
+                    if (BellowCyl.IsDown())
                     {
                         Step.OriginStep = (int)EMoldProcOriginStep.XYAxis_Origin;
                         break;
                     }
 
                     Log.Debug($"{BellowCyl} moving down");
-                    BellowCyl.Backward();
+                    BellowCyl.Down();
                     Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout,
-                        () => BellowCyl.IsBackward);
+                        () => BellowCyl.IsDown());
                     Step.OriginStep++;
                     break;
                 case EMoldProcOriginStep.Bellow_DownWait:
@@ -497,16 +498,16 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcResinInjectStep.ZAxisBellowCyl_InjectPos_Move:
                     ZAxisInjectPosMove();
-                    BellowCyl.Forward();
+                    BellowCyl.Up();
 
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
-                        () => AllZAxisInInjectPos() && BellowCyl.IsForward);
+                        () => AllZAxisInInjectPos() && BellowCyl.IsUp());
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.ZAxisBellowCyl_InjectPos_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        if (!BellowCyl.IsForward)
+                        if (!BellowCyl.IsUp())
                             RaiseWarning(EWarning.BellowCyl_UpFail);
                         if (!Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisInjectPos))
                             RaiseWarning(EWarning.Z1Axis_InjectPos_MoveTimeOut);
@@ -573,8 +574,10 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcResinInjectStep.ZAxis_SafetyPos_Move:
                     ZAxisSafetyPosMove();
+                    BellowCyl.Down();
 
-                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, AllZAxisInSafetyPos);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
+                        () => AllZAxisInSafetyPos() && BellowCyl.IsDown());
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.ZAxis_SafetyPos_MoveWait:
@@ -586,7 +589,9 @@ namespace SDV_MoldingInjection.Process
                             RaiseWarning(EWarning.Z2Axis_SafetyPos_MoveTimeOut);
                         if (!Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos))
                             RaiseWarning(EWarning.Z3Axis_SafetyPos_MoveTimeOut);
-                        else RaiseWarning(EWarning.Z4Axis_SafetyPos_MoveTimeOut);
+                        if (!Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos))
+                            RaiseWarning(EWarning.Z4Axis_SafetyPos_MoveTimeOut);
+                        else RaiseWarning(EWarning.BellowCyl_DownFail);
                         break;
                     }
 

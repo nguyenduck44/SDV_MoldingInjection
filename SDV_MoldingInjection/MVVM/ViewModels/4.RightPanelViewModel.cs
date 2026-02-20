@@ -50,7 +50,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         private void StatusUpdateTimerHandler(object? sender, System.Timers.ElapsedEventArgs e)
         {
-            if (_navigationStore.CurrentViewModel != this) return;
+            if (_navigationStore.CurrentViewModel is not AutoViewModel &&
+                _navigationStore.CurrentViewModel is not ManualViewModel &&
+                _navigationStore.CurrentViewModel is not MaintenanceViewModel<ESequence>)
+                return;
 
             OnPropertyChanged(nameof(Pressure));
         }

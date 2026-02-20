@@ -30,7 +30,9 @@ namespace SDV_MoldingInjection.Defines.Devices
             {
                 double volt = VacuumGauge.Volt;
 
-                //if (volt < 2.0 || volt > 9.0)
+                if (volt > 9.0) volt = 9.0;
+                if (volt < 2.7) volt = 2.7;
+                //if (volt < 2.7 || volt > 9.0)
                 //    return -1;
 
                 return Math.Pow(10, (volt - 6.125) / 1.0);
