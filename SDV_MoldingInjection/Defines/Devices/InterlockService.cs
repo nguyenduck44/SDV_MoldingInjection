@@ -1,4 +1,5 @@
-﻿using SDV_MoldingInjection.Recipe;
+﻿using EQX.InOut;
+using SDV_MoldingInjection.Recipe;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,7 @@ namespace SDV_MoldingInjection.Defines.Devices
 
         public void Config()
         {
+            MotionInterlock();
             CylinderInterlock();
         }
 
@@ -36,6 +38,42 @@ namespace SDV_MoldingInjection.Defines.Devices
             _devices.Outputs.VacChamberOpen.OutputEnableInterlocks = new Dictionary<string, Func<bool>>
             {
                 { "YAxis not in Ready Pos", () => _devices.Motions.StageYAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisReadyPos) },
+            };
+        }
+
+        private void MotionInterlock()
+        {
+            _devices.Motions.StageYAxis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>
+            {
+                { "Chamber is not CLOSE", () => _devices.Cylinders.ChamberOpenClose.IsClose() },
+                { "Chamber is not DOWN", () => _devices.Cylinders.BellowCyl.IsDown() },
+                { "Z1Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos },
+                { "Z2Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos },
+                { "Z3Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos },
+                { "Z4Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos },
+            };
+            _devices.Motions.StageYAxis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>
+            {
+                { "Chamber is not CLOSE", () => _devices.Cylinders.ChamberOpenClose.IsClose() },
+                { "Bellow is not DOWN", () => _devices.Cylinders.BellowCyl.IsDown() },
+                { "Z1Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos },
+                { "Z2Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos },
+                { "Z3Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos },
+                { "Z4Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos },
+            };
+            _devices.Motions.XAxis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>
+            {
+                { "Z1Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos },
+                { "Z2Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos },
+                { "Z3Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos },
+                { "Z4Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos },
+            };
+            _devices.Motions.XAxis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>
+            {
+                { "Z1Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos },
+                { "Z2Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos },
+                { "Z3Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos },
+                { "Z4Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos },
             };
         }
 
