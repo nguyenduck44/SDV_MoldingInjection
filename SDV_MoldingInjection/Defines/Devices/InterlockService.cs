@@ -33,11 +33,11 @@ namespace SDV_MoldingInjection.Defines.Devices
         {
             _devices.Cylinders.ChamberOpenClose.ForwardInterlocks = new Dictionary<string, Func<bool>>
             {
-                { "YAxis not in Ready Pos", () => _devices.Motions.StageYAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisReadyPos) },
+                { "YAxis not in Ready Pos", () => _devices.Motions.StageYAxis.Status.ActualPosition <= _currentRecipe.InjectRecipe.YAxisReadyPos },
             };
             _devices.Outputs.VacChamberOpen.OutputEnableInterlocks = new Dictionary<string, Func<bool>>
             {
-                { "YAxis not in Ready Pos", () => _devices.Motions.StageYAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisReadyPos) },
+                { "YAxis not in Ready Pos", () => _devices.Motions.StageYAxis.Status.ActualPosition <= _currentRecipe.InjectRecipe.YAxisReadyPos },
             };
         }
 

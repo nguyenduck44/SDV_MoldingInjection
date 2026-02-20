@@ -41,6 +41,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
+                    _devices.Cylinders.AngleValve.Close();
+
                     enableExternalTimerAction = false;
                 });
             }
