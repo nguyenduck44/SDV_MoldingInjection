@@ -19,7 +19,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return _navigationStore.CurrentViewModel is AutoViewModel ||
                     _navigationStore.CurrentViewModel is ManualViewModel ||
-                    _navigationStore.CurrentViewModel is MaintenanceViewModel<ESequence>;
+                    _navigationStore.CurrentViewModel is MaintenanceViewModel<ESemiSequence>;
             }
         }
 

@@ -75,12 +75,12 @@ namespace SDV_MoldingInjection.Extensions
         {
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
-                services.AddSingleton<MaintenanceViewModel<ESequence>, InjectMaintenanceViewModel>();
-                services.AddSingleton<MaintenanceViewModel<ESequence>, DryPumpMaintenanceViewModel>();
-                services.AddSingleton<MaintenanceViewModel<ESequence>, SPDHeadMaintenanceViewModel>();
-                services.AddSingleton<MaintenanceViewModel<ESequence>, SPDHeadMaintenanceViewModel>();
-                services.AddSingleton<MaintenanceViewModel<ESequence>, SPDHeadMaintenanceViewModel>();
-                services.AddSingleton<MaintenanceViewModel<ESequence>, SPDHeadMaintenanceViewModel>();
+                services.AddSingleton<MaintenanceViewModel<ESemiSequence>, InjectMaintenanceViewModel>();
+                services.AddSingleton<MaintenanceViewModel<ESemiSequence>, DryPumpMaintenanceViewModel>();
+                services.AddSingleton<MaintenanceViewModel<ESemiSequence>, SPDHeadMaintenanceViewModel>();
+                services.AddSingleton<MaintenanceViewModel<ESemiSequence>, SPDHeadMaintenanceViewModel>();
+                services.AddSingleton<MaintenanceViewModel<ESemiSequence>, SPDHeadMaintenanceViewModel>();
+                services.AddSingleton<MaintenanceViewModel<ESemiSequence>, SPDHeadMaintenanceViewModel>();
             });
 
             return hostBuilder;

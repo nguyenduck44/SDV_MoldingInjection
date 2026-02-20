@@ -142,6 +142,11 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
+                                    <Button
+                                        Content="{Binding ., Converter={StaticResource EnumDescriptionConverter}}"
+                                        Command="{Binding SemiSequenceButtonCommand}"
+                                        CommandParameter="{Binding .}"
+                                        />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

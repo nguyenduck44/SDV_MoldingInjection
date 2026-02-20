@@ -13,26 +13,27 @@ namespace SDV_MoldingInjection.Defines
         /// <summary>
         /// Move Units to non-collision positions before starting Auto Run
         /// </summary>
+        [Description("Ready")]
         Ready,
 
-        [Description("Jig LOADING sequence")]
+        [Description("Jig LOADING")]
         Loading,
-        [Description("Resin INJECT sequence")]
+        [Description("Resin INJECT")]
         ResinInject,
-        [Description("Jig UNLOADING sequence")]
+        [Description("Jig UNLOADING")]
         Unloading,
-        [Description("Dummy shot sequence")]
+        [Description("Dummy shot")]
         DummyShot,
-        [Description("Needle cleaning sequence")]
+        [Description("Needle cleaning")]
         NeedleCleaning,
-        [Description("Dot weighting sequence")]
+        [Description("Dot weighting")]
         DotWeighting,
 
-        [Description("Head ASSEMBLE sequence")]
+        [Description("Head ASSEMBLE")]
         HeadAssemble,
-        [Description("Head DISASSEMBLE sequence")]
+        [Description("Head DISASSEMBLE")]
         HeadDisassemble,
-        [Description("Bubble remove sequence")]
+        [Description("Bubble remove")]
         BubbleRemove
     }
 
@@ -40,24 +41,29 @@ namespace SDV_MoldingInjection.Defines
     {
         None,
 
-        [Description("Jig LOADING sequence")]
+        /// <summary>
+        /// Move Units to non-collision positions before starting Auto Run
+        /// </summary>
+        [Description("Ready")]
+        Ready,
+        [Description("Jig LOADING")]
         Loading,
-        [Description("Resin INJECT sequence")]
+        [Description("Resin INJECT")]
         ResinInject,
-        [Description("Jig UNLOADING sequence")]
+        [Description("Jig UNLOADING")]
         Unloading,
-        [Description("Dummy shot sequence")]
+        [Description("Dummy shot")]
         DummyShot,
-        [Description("Needle cleaning sequence")]
+        [Description("Needle cleaning")]
         NeedleCleaning,
-        [Description("Dot weighting sequence")]
+        [Description("Dot weighting")]
         DotWeighting,
 
-        [Description("Head ASSEMBLE sequence")]
+        [Description("Head ASSEMBLE")]
         HeadAssemble,
-        [Description("Head DISASSEMBLE sequence")]
+        [Description("Head DISASSEMBLE")]
         HeadDisassemble,
-        [Description("Bubble remove sequence")]
+        [Description("Bubble remove")]
         BubbleRemove
     }
 }

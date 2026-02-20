@@ -23,7 +23,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public MachineStatus MachineStatus { get; }
         public Devices Devices { get; }
 
-        public string MachineRunModeDisplay => MachineStatus.MachineRunModeDisplay;
+        public string MachineRunModeDisplay => MachineStatus.MachineRunMode.ToString();
         #endregion
 
         #region Constructor
@@ -52,7 +52,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         {
             if (_navigationStore.CurrentViewModel is not AutoViewModel &&
                 _navigationStore.CurrentViewModel is not ManualViewModel &&
-                _navigationStore.CurrentViewModel is not MaintenanceViewModel<ESequence>)
+                _navigationStore.CurrentViewModel is not MaintenanceViewModel<ESemiSequence>)
                 return;
 
             OnPropertyChanged(nameof(Pressure));

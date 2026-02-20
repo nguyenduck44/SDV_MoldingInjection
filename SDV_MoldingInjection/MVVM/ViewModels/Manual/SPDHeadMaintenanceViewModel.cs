@@ -8,10 +8,10 @@ using System.Collections.ObjectModel;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
-    public class SPDHeadMaintenanceViewModel : MaintenanceViewModel<ESequence>
+    public class SPDHeadMaintenanceViewModel : MaintenanceViewModel<ESemiSequence>
     {
-        public SPDHeadMaintenanceViewModel(Devices devices, NavigationStore navigationStore)
-            : base(navigationStore)
+        public SPDHeadMaintenanceViewModel(Devices devices, NavigationStore navigationStore, MachineStatus machineStatus)
+            : base(navigationStore, machineStatus)
         {
             _devices = devices;
 
@@ -34,15 +34,16 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 PistonCyl
             };
-            Sequences = new ObservableCollection<ESequence>
+            Sequences = new ObservableCollection<ESemiSequence>
             {
-                ESequence.ResinInject,
-                ESequence.DummyShot,
-                ESequence.NeedleCleaning,
-                ESequence.BubbleRemove,
-                ESequence.DotWeighting,
-                ESequence.HeadAssemble,
-                ESequence.HeadDisassemble,
+                ESemiSequence.Ready,
+                ESemiSequence.ResinInject,
+                ESemiSequence.DummyShot,
+                ESemiSequence.NeedleCleaning,
+                ESemiSequence.BubbleRemove,
+                ESemiSequence.DotWeighting,
+                ESemiSequence.HeadAssemble,
+                ESemiSequence.HeadDisassemble,
             };
             if (Name == EProcess.SPDHead1.ToString())
             {

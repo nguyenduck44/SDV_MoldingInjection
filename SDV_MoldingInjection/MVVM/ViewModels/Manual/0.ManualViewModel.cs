@@ -10,7 +10,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
     {
         private readonly INavigationService _navigationService;
 
-        public ManualViewModel(IEnumerable<MaintenanceViewModel<ESequence>> maintenanceViewModels,
+        public ManualViewModel(IEnumerable<MaintenanceViewModel<ESemiSequence>> maintenanceViewModels,
             INavigationService navigationService)
         {
             MaintenanceViewModels = maintenanceViewModels;
@@ -38,6 +38,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
         }
 
-        public IEnumerable<MaintenanceViewModel<ESequence>> MaintenanceViewModels { get; }
+        public IEnumerable<MaintenanceViewModel<ESemiSequence>> MaintenanceViewModels { get; }
     }
 }

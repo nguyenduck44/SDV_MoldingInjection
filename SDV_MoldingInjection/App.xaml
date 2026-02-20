@@ -36,6 +36,7 @@
                     <cvt:UserPermissionToVisibilityConverter x:Key="UserPermissionToVisibilityConverter"/>
                     <uiCvt:CylinderTypeToButtonNameConverter x:Key="CylinderTypeToButtonNameConverter"/>
                     <cvt:ObjectSelectedConverter x:Key="ObjectSelectedConverter"/>
+                    <uiCvt:EnumDescriptionConverter x:Key="EnumDescriptionConverter"/>
                 </ResourceDictionary>
 
                 <ResourceDictionary Source="/Resource/Template/CylinderControlDataTemplate.xaml" />

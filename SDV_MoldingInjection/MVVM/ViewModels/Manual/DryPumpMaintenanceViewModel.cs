@@ -12,7 +12,7 @@ using System.Windows.Input;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
-    public class DryPumpMaintenanceViewModel : MaintenanceViewModel<ESequence>
+    public class DryPumpMaintenanceViewModel : MaintenanceViewModel<ESemiSequence>
     {
         #region Properties
         public double PressureSpec => _recipeSelector.CurrentRecipe.DryPumpRecipe.VacuumPressureSpec;
@@ -60,8 +60,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         #endregion
 
         public DryPumpMaintenanceViewModel(NavigationStore navigationStore,
-            Devices devices, RecipeSelector recipeSelector)
-            : base(navigationStore)
+            Devices devices, RecipeSelector recipeSelector, MachineStatus machineStatus)
+            : base(navigationStore, machineStatus)
         {
             _devices = devices;
             _recipeSelector = recipeSelector;
@@ -79,9 +79,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 _devices.Cylinders.BellowCyl,
                 _devices.Cylinders.AngleValve,
             };
-            Sequences = new ObservableCollection<ESequence>
+            Sequences = new ObservableCollection<ESemiSequence>
             {
-                ESequence.ResinInject,
+                ESemiSequence.Ready,
+                ESemiSequence.ResinInject,
             };
             Inputs = new ObservableCollection<IDInput>
             {

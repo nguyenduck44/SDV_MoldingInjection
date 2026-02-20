@@ -8,10 +8,10 @@ using System.Collections.ObjectModel;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
-    public class InjectMaintenanceViewModel : MaintenanceViewModel<ESequence>
+    public class InjectMaintenanceViewModel : MaintenanceViewModel<ESemiSequence>
     {
-        public InjectMaintenanceViewModel(NavigationStore navigationStore, Devices devices)
-            : base(navigationStore)
+        public InjectMaintenanceViewModel(NavigationStore navigationStore, Devices devices, MachineStatus machineStatus)
+            : base(navigationStore, machineStatus)
         {
             _devices = devices;
         }

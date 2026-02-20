@@ -136,11 +136,19 @@
                                       DisplayMemberPath="">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <WrapPanel/>
+                                    <UniformGrid Columns="2"/>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
+                                    <Button
+                                        Margin="3"
+                                        Height="50"
+                                        FontSize="12"
+                                        Content="{Binding ., Converter={StaticResource EnumDescriptionConverter}}"
+                                        Command="{Binding SemiSequenceButtonCommand}"
+                                        CommandParameter="{Binding .}"
+                                        />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
