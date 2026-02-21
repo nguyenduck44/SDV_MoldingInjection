@@ -1,4 +1,4 @@
-﻿using EQX.Core.InOut;
+﻿﻿using EQX.Core.InOut;
 using EQX.Core.Motion;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
@@ -291,19 +291,24 @@ namespace SDV_MoldingInjection.Process
                     Sequence_AutoRun();
                     break;
                 case ESequence.ResinInject:
-                    Sequence_ResinInject();
+                    if (_currentSPDHeadRecipe.HeadSkip) Sequence = ESequence.Stop;
+                    Sequence_SPDHeadCommon(ESequence.ResinInject);
                     break;
                 case ESequence.DummyShot:
-                    break;
-                case ESequence.NeedleCleaning:
+                    if (_currentSPDHeadRecipe.HeadSkip) Sequence = ESequence.Stop;
+                    Sequence_SPDHeadCommon(ESequence.DummyShot);
                     break;
                 case ESequence.DotWeighting:
+                    if (_currentSPDHeadRecipe.HeadSkip) Sequence = ESequence.Stop;
+                    Sequence_SPDHeadCommon(ESequence.DotWeighting);
+                    break;
+                case ESequence.BubbleRemove:
+                    if (_currentSPDHeadRecipe.HeadSkip) Sequence = ESequence.Stop;
+                    Sequence_SPDHeadCommon(ESequence.BubbleRemove);
                     break;
                 case ESequence.HeadAssemble:
                     break;
                 case ESequence.HeadDisassemble:
-                    break;
-                case ESequence.BubbleRemove:
                     break;
             }
 
@@ -322,61 +327,77 @@ namespace SDV_MoldingInjection.Process
             Sequence = ESequence.ResinInject;
         }
 
-        private void Sequence_ResinInject()
+        private void Sequence_SPDHeadCommon(ESequence sequence)
         {
-            switch ((ESPDHeadProcResinInjectStep)Step.RunStep)
+            switch ((ESPDHeadProcCommonStep)Step.RunStep)
             {
-                case ESPDHeadProcResinInjectStep.Start:
-                    Log.Info("ResinInject start");
+                case ESPDHeadProcCommonStep.Start:
+                    Log.Info($"{sequence} start");
                     Step.RunStep++;
                     break;
-                case ESPDHeadProcResinInjectStep.Gate_Close:
+                case ESPDHeadProcCommonStep.Gate_Close:
                     if (IsGateOnClosePos)
                     {
-                        Step.RunStep = (int)ESPDHeadProcResinInjectStep.PAxis_ChargePos_Move;
+                        Step.RunStep = (int)ESPDHeadProcCommonStep.PAxis_ChargePos_Move;
                         break;
                     }
-
                     Log.Info($"{GAxis.Name} moving to ClosePos [{_currentSPDHeadRecipe.GateClosePos}°]");
                     GAxis.MoveAbs(_currentSPDHeadRecipe.GateClosePos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
                         () => IsGateOnClosePos);
                     Step.RunStep++;
                     break;
-                case ESPDHeadProcResinInjectStep.Gate_CloseWait:
+                case ESPDHeadProcCommonStep.Gate_CloseWait:
                     if (WaitTimeOutOccurred)
                     {
                         RaiseHeadAlarm(EAlarm.H1GAxis_MoveClosePos_Timeout);
                         break;
                     }
 
-                    Log.Info($"{GAxis.Name} moving to ClosePos Done");
+                    Log.Info($"{GAxis.Name} moving to ClosePos done");
                     Step.RunStep++;
                     break;
-                case ESPDHeadProcResinInjectStep.PAxis_ChargePos_Move:
+                case ESPDHeadProcCommonStep.Charge_PosVel_Calculte:
+                    switch (sequence)
+                    {
+                        case ESequence.ResinInject:
+                            _pAxisCharge_Pos = _currentSPDHeadRecipe.PAxisChargePos;
+                            _pAxisCharge_Vel = PAxis.Parameter.Velocity;
+                            break;
+                        case ESequence.DummyShot:
+                            break;
+                        case ESequence.DotWeighting:
+                            break;
+                        case ESequence.BubbleRemove:
+                            break;
+                        default: throw new NotImplementedException();
+                    }
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcCommonStep.PAxis_ChargePos_Move:
                     if (PAxis.IsOnPosition(_currentSPDHeadRecipe.PAxisChargePos))
                     {
-                        Step.RunStep = (int)ESPDHeadProcResinInjectStep.WorkRequest_Wait;
+                        Step.RunStep = (int)ESPDHeadProcCommonStep.WorkRequest_Wait;
                         break;
                     }
 
-                    Log.Debug($"{PAxis.Name} moving to ChargePos [{_currentSPDHeadRecipe.PAxisChargePos}mm]");
-                    PAxis.MoveAbs(_currentSPDHeadRecipe.PAxisChargePos);
+                    Log.Debug($"{PAxis.Name} moving to ChargePos [{_pAxisCharge_Pos}mm]");
+                    PAxis.MoveAbs(_pAxisCharge_Pos, _pAxisCharge_Vel);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
-                        () => PAxis.IsOnPosition(_currentSPDHeadRecipe.PAxisChargePos));
+                        () => PAxis.IsOnPosition(_pAxisCharge_Pos));
                     Step.RunStep++;
                     break;
-                case ESPDHeadProcResinInjectStep.PAxis_ChargePos_MoveWait:
+                case ESPDHeadProcCommonStep.PAxis_ChargePos_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
                         RaiseHeadAlarm(EAlarm.H1PAxis_MoveChargePos_Timeout);
                         break;
                     }
 
-                    Log.Debug($"{PAxis.Name} moving to ChargePos Done");
+                    Log.Debug($"{PAxis.Name} moving to ChargePos done");
                     Step.RunStep++;
                     break;
-                case ESPDHeadProcResinInjectStep.WorkRequest_Wait:
+                case ESPDHeadProcCommonStep.WorkRequest_Wait:
                     if (procInputs[ESPDHeadProcInput.WorkRequest].Value == false)
                     {
                         Wait(50);
@@ -386,46 +407,63 @@ namespace SDV_MoldingInjection.Process
                     Log.Info($"Input detect {ESPDHeadProcInput.WorkRequest}");
                     Step.RunStep++;
                     break;
-                case ESPDHeadProcResinInjectStep.Gate_Open:
+                case ESPDHeadProcCommonStep.Gate_Open:
                     Log.Info($"{GAxis.Name} moving to OpenPos [{_currentSPDHeadRecipe.GateOpenPos}°]");
                     GAxis.MoveAbs(_currentSPDHeadRecipe.GateOpenPos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
                         () => IsGateOnOpenPos);
                     Step.RunStep++;
                     break;
-                case ESPDHeadProcResinInjectStep.Gate_OpenWait:
+                case ESPDHeadProcCommonStep.Gate_OpenWait:
                     if (WaitTimeOutOccurred)
                     {
                         RaiseHeadAlarm(EAlarm.H1GAxis_MoveOpenPos_Timeout);
                         break;
                     }
 
-                    Log.Info($"{GAxis.Name} moving to OpenPos Done");
+                    Log.Info($"{GAxis.Name} moving to OpenPos done");
                     Step.RunStep++;
                     break;
-                case ESPDHeadProcResinInjectStep.PAxis_InjectPos_Move:
-                    Log.Debug($"{PAxis.Name} moving to ChargePos [{_currentSPDHeadRecipe.PAxisInjectPos}mm]");
-                    PAxis.MoveAbs(_currentSPDHeadRecipe.PAxisInjectPos);
+                case ESPDHeadProcCommonStep.Inject_PosVel_Calculte:
+                    switch (sequence)
+                    {
+                        case ESequence.ResinInject:
+                            _pAxisInject_Pos = _currentSPDHeadRecipe.PAxisInjectPos;
+                            _pAxisInject_Vel = PAxis.Parameter.Velocity;
+                            break;
+                        case ESequence.DummyShot:
+                            break;
+                        case ESequence.DotWeighting:
+                            break;
+                        case ESequence.BubbleRemove:
+                            break;
+                        default: throw new NotImplementedException();
+                    }
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcCommonStep.PAxis_InjectPos_Move:
+                    Log.Debug($"{PAxis.Name} moving to InjectPos [{_pAxisInject_Pos}mm]");
+                    PAxis.MoveAbs(_pAxisInject_Pos, _pAxisInject_Vel);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
-                        () => PAxis.IsOnPosition(_currentSPDHeadRecipe.PAxisInjectPos));
+                        () => PAxis.IsOnPosition(_pAxisInject_Pos));
                     Step.RunStep++;
                     break;
-                case ESPDHeadProcResinInjectStep.PAxis_InjectPos_MoveWait:
+                case ESPDHeadProcCommonStep.PAxis_InjectPos_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
                         RaiseHeadAlarm(EAlarm.H1PAxis_MoveInjectPos_Timeout);
                         break;
                     }
 
-                    Log.Debug($"{PAxis.Name} moving to ChargePos Done");
+                    Log.Debug($"{PAxis.Name} moving to InjectPos done");
                     Step.RunStep++;
                     break;
-                case ESPDHeadProcResinInjectStep.WorkDone_Send:
+                case ESPDHeadProcCommonStep.WorkDone_Send:
                     Log.Info($"Set output {ESPDHeadProcOutput.InjectFinish}");
                     procOutputs[ESPDHeadProcOutput.InjectFinish].Value = true;
                     Step.RunStep++;
                     break;
-                case ESPDHeadProcResinInjectStep.WorkDone_Clear:
+                case ESPDHeadProcCommonStep.WorkDone_Clear:
                     if (procInputs[ESPDHeadProcInput.WorkRequest].Value == true)
                     {
                         Wait(10);
@@ -435,7 +473,7 @@ namespace SDV_MoldingInjection.Process
                     procOutputs[ESPDHeadProcOutput.InjectFinish].Value = false;
                     Step.RunStep++;
                     break;
-                case ESPDHeadProcResinInjectStep.End:
+                case ESPDHeadProcCommonStep.End:
                     if (Parent?.Sequence != ESequence.AutoRun)
                     {
                         Sequence = ESequence.Stop;
@@ -443,8 +481,8 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     // TODO: Implement this later
-                    Log.Info("ResinInject end, starting new cycle");
-                    Step.RunStep = (int)ESPDHeadProcResinInjectStep.Gate_Close;
+                    Log.Info($"{sequence} end, starting new cycle");
+                    Step.RunStep = (int)ESPDHeadProcCommonStep.Gate_Close;
                     break;
             }
         }
@@ -465,7 +503,6 @@ namespace SDV_MoldingInjection.Process
         private readonly Devices _devices;
         private readonly RecipeSelector _recipeSelector;
         private readonly ProcessIO _processIO;
-        private readonly MachineStatus _machineStatus;
 
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
 
@@ -501,6 +538,11 @@ namespace SDV_MoldingInjection.Process
             "SPDHead4" => _currentRecipe.SPDHead4_Recipe,
             _ => throw new Exception($"Invalid process name: {Name}")
         };
+
+        private double _pAxisCharge_Pos;
+        private double _pAxisCharge_Vel;
+        private double _pAxisInject_Pos;
+        private double _pAxisInject_Vel;
         #endregion
     }
 }

@@ -64,9 +64,9 @@ namespace SDV_MoldingInjection.Defines.Devices.Cylinder
             ChamberOpenClose.CylinderType = ECylinderType.OpenClose;
 
             AngleValve = _cylinderFactory
-              .Create(_inputs.AngleValveOpen, _inputs.AngleValveClose, _outputs.ChamberVacOn, null)
+              .Create(_inputs.AngleValveClose, _inputs.AngleValveOpen, null, _outputs.ChamberVacOn)
               .SetIdentity((int)ECylinder.AngleValve, ECylinder.AngleValve.ToString());
-            AngleValve.CylinderType = ECylinderType.OpenClose;
+            AngleValve.CylinderType = ECylinderType.OpenCloseReverse;
 
             PistonCyl_H1 = _cylinderFactory
               .Create(_inputs.H1_CylDown, _inputs.H1_CylUp, _outputs.H1_CylDown, _outputs.H1_CylUp)

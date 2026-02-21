@@ -1,4 +1,4 @@
-﻿namespace SDV_MoldingInjection.Defines
+﻿﻿namespace SDV_MoldingInjection.Defines
 {
     public enum EWarning
     {
@@ -16,10 +16,12 @@
         XAxis_Origin_TimeOut,
         XAxis_ReadyPos_MoveTimeOut,
         XAxis_InjectPos_MoveTimeOut,
+        XAxis_DummyPos_MoveTimeOut,
 
         YAxis_Origin_TimeOut,
         YAxis_ReadyPos_MoveTimeOut,
         YAxis_InjectPos_MoveTimeOut,
+        YAxis_DummyPos_MoveTimeOut,
 
         Z1Axis_Origin_TimeOut,
         Z1Axis_SafetyPos_MoveTimeOut,

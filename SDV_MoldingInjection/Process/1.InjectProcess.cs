@@ -123,7 +123,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Debug($"Moving ZAxis safety position");
+                    Log.Debug($"Moving Z-Axes to safety position");
                     ZAxisSafetyPosMove();
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, AllZAxisInSafetyPos);
                     Step.ToRunStep++;
@@ -141,7 +141,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Debug($"ZAxis move safety position done");
+                    Log.Debug($"Z-Axes move to safety position done");
                     Step.ToRunStep++;
                     break;
                 case EMoldProcToRunStep.XYAxis_SafetyPos_Move:
@@ -249,7 +249,7 @@ namespace SDV_MoldingInjection.Process
                     Step.OriginStep++;
                     break;
                 case EMoldProcOriginStep.ZAxis_Origin:
-                    Log.Debug("Searching origin Z Axes");
+                    Log.Debug("Searching origin for Z-Axes");
                     ZAxisSearchOrigin();
 
                     Wait(_currentRecipe.CommonRecipe.MotionOriginTimeout, () => AllZAxisOriginCompleted());
@@ -265,7 +265,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Debug("Z Axes origin search done");
+                    Log.Debug("Z-Axes origin search done");
                     Step.OriginStep++;
                     break;
                 case EMoldProcOriginStep.Bellow_Down:
@@ -354,7 +354,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Debug("Both jig detect");
+                    Log.Debug("Both jigs detected");
                     Step.RunStep++;
                     break;
                 case EMoldProcAutoRunStep.JigStatus_Check:
@@ -610,7 +610,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Debug($"ZAxis move to safety pos done");
+                    Log.Debug($"Z-Axes move to safety pos done");
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.End:
@@ -742,8 +742,95 @@ namespace SDV_MoldingInjection.Process
             switch ((EMoldProcDummyShotStep)Step.RunStep)
             {
                 case EMoldProcDummyShotStep.Start:
+                    Log.Info("DummyShot start");
+                    Step.RunStep++;
                     break;
+
+                case EMoldProcDummyShotStep.XYAxis_H13DummyPos_Move:
+                    Log.Info($"Moving XY to dummy shot position for Head 1, 3: X={_currentRecipe.InjectRecipe.XAxisH13DummyPos}, Y={_currentRecipe.InjectRecipe.YAxisH13DummyPos}");
+                    XAxis.MoveAbs(_currentRecipe.InjectRecipe.XAxisH13DummyPos);
+                    YAxis.MoveAbs(_currentRecipe.InjectRecipe.YAxisH13DummyPos);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () =>
+                        XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisH13DummyPos) &&
+                        YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisH13DummyPos));
+                    Step.RunStep++;
+                    break;
+                case EMoldProcDummyShotStep.XYAxis_H13DummyPos_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        if (!XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisH13DummyPos))
+                            RaiseWarning(EWarning.XAxis_DummyPos_MoveTimeOut);
+                        if (!YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisH13DummyPos))
+                            RaiseWarning(EWarning.YAxis_DummyPos_MoveTimeOut);
+                        break;
+                    }
+                    Log.Info("Reached dummy shot position for Head 1, 3.");
+                    Step.RunStep++;
+                    break;
+
+                case EMoldProcDummyShotStep.Head13_DummyShot_Request:
+                    Log.Info("Sending dummy shot request for Head 1, 3.");
+                    procOutputs[EInjectProcOutput.SPDHead1_DummyShotRequest].Value = true;
+                    procOutputs[EInjectProcOutput.SPDHead3_DummyShotRequest].Value = true;
+                    Step.RunStep++;
+                    break;
+
+                case EMoldProcDummyShotStep.Head13_DummyShot_DoneWait:
+                    if (!procInputs[EInjectProcInput.SPDHead1_DummyShotDone].Value || !procInputs[EInjectProcInput.SPDHead3_DummyShotDone].Value)
+                    {
+                        Wait(50);
+                        break;
+                    }
+                    Log.Info("Head 1, 3 dummy shot done.");
+                    procOutputs[EInjectProcOutput.SPDHead1_DummyShotRequest].Value = false;
+                    procOutputs[EInjectProcOutput.SPDHead3_DummyShotRequest].Value = false;
+                    Step.RunStep++;
+                    break;
+
+                case EMoldProcDummyShotStep.XYAxis_H24DummyPos_Move:
+                    Log.Info($"Moving XY to dummy shot position for Head 2, 4: X={_currentRecipe.InjectRecipe.XAxisH24DummyPos}, Y={_currentRecipe.InjectRecipe.YAxisH24DummyPos}");
+                    XAxis.MoveAbs(_currentRecipe.InjectRecipe.XAxisH24DummyPos);
+                    YAxis.MoveAbs(_currentRecipe.InjectRecipe.YAxisH24DummyPos);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () =>
+                        XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisH24DummyPos) &&
+                        YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisH24DummyPos));
+                    Step.RunStep++;
+                    break;
+                case EMoldProcDummyShotStep.XYAxis_H24DummyPos_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        if (!XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisH24DummyPos))
+                            RaiseWarning(EWarning.XAxis_DummyPos_MoveTimeOut);
+                        if (!YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisH24DummyPos))
+                            RaiseWarning(EWarning.YAxis_DummyPos_MoveTimeOut);
+                        break;
+                    }
+                    Log.Info("Reached dummy shot position for Head 2, 4.");
+                    Step.RunStep++;
+                    break;
+
+                case EMoldProcDummyShotStep.Head24_DummyShot_Request:
+                    Log.Info("Sending dummy shot request for Head 2, 4.");
+                    procOutputs[EInjectProcOutput.SPDHead2_DummyShotRequest].Value = true;
+                    procOutputs[EInjectProcOutput.SPDHead4_DummyShotRequest].Value = true;
+                    Step.RunStep++;
+                    break;
+
+                case EMoldProcDummyShotStep.Head24_DummyShot_DoneWait:
+                    if (!procInputs[EInjectProcInput.SPDHead2_DummyShotDone].Value || !procInputs[EInjectProcInput.SPDHead4_DummyShotDone].Value)
+                    {
+                        Wait(50);
+                        break;
+                    }
+                    Log.Info("Head 2, 4 dummy shot done.");
+                    procOutputs[EInjectProcOutput.SPDHead2_DummyShotRequest].Value = false;
+                    procOutputs[EInjectProcOutput.SPDHead4_DummyShotRequest].Value = false;
+                    Step.RunStep++;
+                    break;
+
                 case EMoldProcDummyShotStep.End:
+                    Log.Info("DummyShot end");
+                    Sequence = ESequence.Stop; // End of sequence
                     break;
             }
         }

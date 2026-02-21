@@ -9,5 +9,10 @@
         SPDHead2_WorkDone,
         SPDHead3_WorkDone,
         SPDHead4_WorkDone,
+
+        SPDHead1_DummyShotDone,
+        SPDHead2_DummyShotDone,
+        SPDHead3_DummyShotDone,
+        SPDHead4_DummyShotDone,
     }
 }

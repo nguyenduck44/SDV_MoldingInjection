@@ -1,4 +1,4 @@
-﻿using EQX.Core.LogHistory;
+﻿﻿using EQX.Core.LogHistory;
 using SDV_MoldingInjection.MVVM.ViewModels;
 using SDV_MoldingInjection.Process;
 using System;
@@ -142,18 +142,13 @@ namespace SDV_MoldingInjection.MVVM.Views
 
         private void FilterSourceCheckBox_Changed(object sender, RoutedEventArgs e)
         {
-            if (FilterSourceComboBox?.ItemsSource is not List<SourceItem> sourceItems) return;
-
-            // Tìm ScrollViewer nếu chưa có hoặc ComboBox đang mở
-            if (scrollViewer == null || !FilterSourceComboBox.IsDropDownOpen)
-            {
-                scrollViewer = FindScrollViewer(FilterSourceComboBox);
-            }
-
             var checkbox = sender as CheckBox;
             var sourceItem = checkbox?.DataContext as SourceItem;
+            if (sourceItem == null || FilterSourceComboBox?.ItemsSource is not List<SourceItem> sourceItems)
+            {
+                return;
+            }
 
-            if (sourceItem == null) return;
 
             // Xử lý logic chọn/bỏ chọn
             ProcessSelectionLogic(sourceItem, sourceItems);
@@ -162,7 +157,7 @@ namespace SDV_MoldingInjection.MVVM.Views
             HandleSpecialCase(sourceItems);
 
             // Refresh UI và cập nhật hiển thị
-            RefreshUI(sourceItems);
+            UpdateComboBoxDisplay(sourceItems);
             ApplyFilter();
         }
 
@@ -198,12 +193,6 @@ namespace SDV_MoldingInjection.MVVM.Views
                 allItem.IsSelected = false;
         }
 
-        private void RefreshUI(List<SourceItem> sourceItems)
-        {
-            // Chỉ cập nhật hiển thị ComboBox, không refresh ItemsSource
-            UpdateComboBoxDisplay(sourceItems);
-        }
-
         private FilterState GetFilterState(List<SourceItem> sourceItems)
         {
             var selectedSources = sourceItems.Where(s => s.IsSelected).ToList();
@@ -222,46 +211,29 @@ namespace SDV_MoldingInjection.MVVM.Views
         {
             var filterState = GetFilterState(sourceItems);
 
-            // Lưu vị trí scroll hiện tại
-            double scrollOffset = 0;
-            if (scrollViewer != null)
-            {
-                scrollOffset = scrollViewer.VerticalOffset;
-            }
+            // Tạm thời ngắt sự kiện SelectionChanged để tránh vòng lặp vô hạn
+            FilterSourceComboBox.SelectionChanged -= FilterSourceComboBox_SelectionChanged;
 
             // Cập nhật hiển thị ComboBox - không hiển thị Multi và None
             switch (filterState)
             {
                 case FilterState.AllSelected:
-                    FilterSourceComboBox.SelectedItem = sourceItems.First(s => s.Value == "All");
+                case FilterState.NoneSelected: // Nếu không chọn gì, mặc định là All
+                    FilterSourceComboBox.SelectedItem = sourceItems.FirstOrDefault(s => s.Value == "All");
                     break;
 
                 case FilterState.MultipleSelected:
                     // Hiển thị item đầu tiên được chọn thay vì "Multi"
-                    FilterSourceComboBox.SelectedItem = sourceItems.First(s => s.IsSelected && s.Value != "All");
+                    FilterSourceComboBox.SelectedItem = sourceItems.FirstOrDefault(s => s.IsSelected && s.Value != "All");
                     break;
 
                 case FilterState.SingleSelected:
-                    FilterSourceComboBox.SelectedItem = sourceItems.First(s => s.IsSelected);
-                    break;
-
-                case FilterState.NoneSelected:
-                    // Hiển thị "All" khi không có item nào được chọn
-                    FilterSourceComboBox.SelectedItem = sourceItems.First(s => s.Value == "All");
+                    FilterSourceComboBox.SelectedItem = sourceItems.FirstOrDefault(s => s.IsSelected);
                     break;
             }
-
-            // Khôi phục vị trí scroll sau khi cập nhật SelectedItem
-            if (scrollViewer != null && scrollOffset > 0)
-            {
-                Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    if (scrollViewer != null)
-                    {
-                        scrollViewer.ScrollToVerticalOffset(scrollOffset);
-                    }
-                }), DispatcherPriority.Background);
-            }
+            
+            // Gắn lại sự kiện
+            FilterSourceComboBox.SelectionChanged += FilterSourceComboBox_SelectionChanged;
         }
 
         private void ApplyFilter()
