@@ -29,6 +29,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
+                    if (enableExternalTimerAction) return;
+
                     _devices.Cylinders.AngleValve.Open();
 
                     logFileName = $"D:\\MoldInjection\\Log\\PressureLog\\{DateTime.Now:yyyymmdd_hhmmss}.txt";
@@ -36,23 +38,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
                     tickCount = Environment.TickCount;
                     enableExternalTimerAction = true;
-                });
-            }
-        }
-
-        public ICommand LeakTestStopCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    _devices.Cylinders.AngleValve.Close();
-
-                    PressureLog(CurrentPressure, "Valve Close");
-                    // Disable saving log
-                    logFileName = string.Empty;
-
-                    enableExternalTimerAction = false;
+                    specReached = false;
                 });
             }
         }
@@ -114,18 +100,30 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         protected override void ExternalTimerElapsedAction()
         {
+            double pressure = CurrentPressure;
             OnPropertyChanged(nameof(CurrentPressure));
-
-            PressureLog(CurrentPressure);
 
             if (enableExternalTimerAction == false) return;
 
-            if (CurrentPressure < PressureSpec)
-                LeakTestStopCommand.Execute(null);
-
             TimeInSecond = 1.0 * (Environment.TickCount - tickCount) / 1000.0;
-
             OnPropertyChanged(nameof(TimeInSecond));
+
+            if (pressure < PressureSpec && specReached == false)
+            {
+                specReached = true;
+                _devices.Cylinders.AngleValve.Close();
+                PressureLog(pressure, "Valve Close");
+                return;
+            }
+
+            if (pressure > 1.0 && specReached)
+            {
+                enableExternalTimerAction = false;
+                PressureLog(pressure, "Reach 1.0 Torr");
+                return;
+            }
+
+            PressureLog(pressure);
         }
 
         private void PressureLog(double pressure, string action = "")
@@ -152,6 +150,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         private int tickCount;
         private bool enableExternalTimerAction;
+        private bool specReached;
         #endregion
     }
 }

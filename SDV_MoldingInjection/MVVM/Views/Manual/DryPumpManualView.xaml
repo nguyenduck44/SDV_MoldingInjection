@@ -139,20 +139,12 @@
                                     Text="{Binding TimeInSecond, Mode=OneWay, StringFormat='{}{0:F1} s'}"
                                     Style="{StaticResource TextBoxWithDescriptionStyle}"
                                     Tag="Time"/>
-                                <UniformGrid Columns="2">
-                                    <Button
-                                        Margin="0 1 1 1"
-                                        FontSize="14"
-                                        Background="LightGreen"
-                                        Content="Start Test"
-                                        Command="{Binding LeakTestStartCommand}"/>
-                                    <Button
-                                        Margin="1 1 0 1"
-                                        FontSize="14"
-                                        Background="LightGray"
-                                        Content="Stop Test"
-                                        Command="{Binding LeakTestStopCommand}"/>
-                                </UniformGrid>
+                                <Button
+                                    Margin="0 1 1 1"
+                                    FontSize="14"
+                                    Background="LightGreen"
+                                    Content="Start Test"
+                                    Command="{Binding LeakTestStartCommand}"/>
                                 <Button
                                     Margin="0 1"
                                     FontSize="14"
