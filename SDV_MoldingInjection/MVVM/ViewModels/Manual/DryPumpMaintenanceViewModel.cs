@@ -7,7 +7,9 @@ using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;
+using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows.Input;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
@@ -29,6 +31,9 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 {
                     _devices.Cylinders.AngleValve.Open();
 
+                    logFileName = $"D:\\MoldInjection\\Log\\PressureLog\\{DateTime.Now:yyyymmdd_hhmmss}.txt";
+                    PressureLog(CurrentPressure, "Valve Open");
+
                     tickCount = Environment.TickCount;
                     enableExternalTimerAction = true;
                 });
@@ -42,6 +47,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 return new RelayCommand(() =>
                 {
                     _devices.Cylinders.AngleValve.Close();
+
+                    PressureLog(CurrentPressure, "Valve Close");
+                    // Disable saving log
+                    logFileName = string.Empty;
 
                     enableExternalTimerAction = false;
                 });
@@ -106,6 +115,9 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         protected override void ExternalTimerElapsedAction()
         {
             OnPropertyChanged(nameof(CurrentPressure));
+
+            PressureLog(CurrentPressure);
+
             if (enableExternalTimerAction == false) return;
 
             if (CurrentPressure < PressureSpec)
@@ -116,7 +128,25 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             OnPropertyChanged(nameof(TimeInSecond));
         }
 
+        private void PressureLog(double pressure, string action = "")
+        {
+            if (string.IsNullOrEmpty(logFileName)) return;
+
+            string message = $"{DateTime.Now:yyyy/mm/dd hh:mm:ss:ff},{pressure}";
+            if (action != string.Empty)
+                message += $",{action}";
+            message += "\r\n";
+
+            lock (_fileLock)
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(logFileName));
+                File.AppendAllText(logFileName, message);
+            }
+        }
+
         #region Privates
+        private readonly object _fileLock = new object();
+        private string logFileName = "";
         private readonly Devices _devices;
         private readonly RecipeSelector _recipeSelector;
 

@@ -522,8 +522,6 @@ namespace SDV_MoldingInjection.Process
                     _machineStatus.SemiAutoSequence = ESemiSequence.None;
                     break;
                 case EOperationCommand.Stop:
-
-
                     _machineStatus.MachineReadyDone = false;
 
                     ProcessMode = EProcessMode.ToStop;

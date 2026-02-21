@@ -76,7 +76,9 @@ namespace SDV_MoldingInjection.Process
             switch ((EMoldProcToRunStep)Step.ToRunStep)
             {
                 case EMoldProcToRunStep.Start:
-                    Log.Debug("ToRun start");
+                    Log.Info("ToRun start");
+                    Log.Debug($"{procOutputs.Name} ClearOutputs");
+                    procOutputs.ClearOutputs();
                     Step.ToRunStep++;
                     break;
                 case EMoldProcToRunStep.CheckIfChamberOpen:
@@ -92,6 +94,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcToRunStep.Bellow_Down:
                     if (BellowCyl.IsDown())
                     {
+                        Log.Debug($"{BellowCyl} is down already");
                         Step.ToRunStep = (int)EMoldProcToRunStep.ZAxis_SafetyPos_Move;
                         break;
                     }
@@ -115,6 +118,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcToRunStep.ZAxis_SafetyPos_Move:
                     if (AllZAxisInSafetyPos())
                     {
+                        Log.Debug($"ZAxis is on safety position already");
                         Step.ToRunStep = (int)EMoldProcToRunStep.XYAxis_SafetyPos_Move;
                         break;
                     }
@@ -144,6 +148,7 @@ namespace SDV_MoldingInjection.Process
                     if (XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisReadyPos)
                         && YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisReadyPos))
                     {
+                        Log.Debug($"XAxis/YAxis is on ready position already");
                         Step.ToRunStep = (int)EMoldProcToRunStep.End;
                         break;
                     }
@@ -151,6 +156,10 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Moving XAxis/YAxis to ready position");
                     XAxis.MoveAbs(_currentRecipe.InjectRecipe.XAxisReadyPos);
                     YAxis.MoveAbs(_currentRecipe.InjectRecipe.YAxisReadyPos);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () =>
+                        XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisReadyPos) &&
+                        YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisReadyPos)
+                    );
                     Step.ToRunStep++;
                     break;
                 case EMoldProcToRunStep.XYAxis_SafetyPos_MoveWait:
@@ -167,8 +176,7 @@ namespace SDV_MoldingInjection.Process
                     Step.ToRunStep++;
                     break;
                 case EMoldProcToRunStep.End:
-                    procOutputs.ClearOutputs();
-                    Log.Debug("ToRun end");
+                    Log.Info("ToRun end");
                     Step.ToRunStep++;
 
                     base.ProcessToRun();
