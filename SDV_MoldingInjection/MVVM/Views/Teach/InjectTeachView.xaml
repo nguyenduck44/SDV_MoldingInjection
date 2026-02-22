@@ -1,0 +1,122 @@
+﻿<UserControl x:Class="SDV_MoldingInjection.MVVM.Views.InjectTeachView"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
+	xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
+	xmlns:uiControls="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
+    mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance {x:Type vm:InjectMaintenanceViewModel}}"
+    d:DesignHeight="450" d:DesignWidth="800">
+    <DockPanel>
+        <!--UNIT STATUS-->
+        <GroupBox
+            Header="Unit"
+            Margin="0 5 0 0"
+            DockPanel.Dock="Right">
+            <ItemsControl Margin="3"
+                ItemsSource="{Binding RelatedViewModel}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Content="{Binding .}"
+                            Height="40" Width="130"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid
+                        Columns="1"
+                        VerticalAlignment="Top"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </GroupBox>
+        
+        <!--CURRENT UNIT TEACH VIEW-->
+        <GroupBox
+            Header="{Binding Name}"
+            Margin="0 5 5 0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.8*"/>
+                    <ColumnDefinition Width="1.8*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="2*"/>
+                </Grid.RowDefinitions>
+                <!-- POSITION TABLE -->
+                <GroupBox
+                    Grid.ColumnSpan="2"
+                    Header="{Binding SelectedGroupedPosition.Name}"
+                    Style="{x:Null}"
+                    FontWeight="Bold"
+                    >
+                    <uiControls:PositionPointGridView ItemsSource="{Binding SelectedGroupedPosition.Points}"/>
+                </GroupBox>
+                <!-- POSITION SELECTION -->
+                <GroupBox
+                    Grid.Row="1"
+                    FontWeight="Bold"
+                    Header="Teaching Position"
+                    Style="{x:Null}"
+                    >
+                    <ItemsControl
+                        ItemsSource="{Binding GroupedPositions}"
+                        >
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button
+                                    Margin="3"
+                                    Height="50"
+                                    Content="{Binding Name}"
+                                    Command="{Binding DataContext.TeachingPositionButtonCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                    CommandParameter="{Binding .}"
+                                    />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </GroupBox>
+
+                <GroupBox
+                    Grid.Row="1" Grid.Column="1"
+                    FontWeight="Bold"
+                    Header="Motion Moving"
+                    Style="{x:Null}"
+                    >
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <UniformGrid
+                            Columns="2" Margin="0 5 0 0"
+                            Height="40"
+                            VerticalAlignment="Top"
+                            >
+                            <Button Content="Move to Target" Margin="2"/>
+                            <Button Content="Current -> Target" Margin="2"/>
+                        </UniformGrid>
+
+                        <uiControls:JogControlView
+                            Grid.Row="1"
+                            ItemsSource="{Binding SelectedGroupedPosition.Points}"
+                            JogSpeedItemsSource="{Binding JogSpeedLevels}"
+                            SelectedJogSpeed="{Binding SelectedJogSpeed}"
+                            />
+
+                        <UniformGrid
+                            Grid.Row="2" Columns="2" Margin="0 5 0 0"
+                            >
+                            <Button Content="Save" Margin="2"/>
+                            <Button Content="Manual" Margin="2"/>
+                        </UniformGrid>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+        </GroupBox>
+    </DockPanel>
+</UserControl>

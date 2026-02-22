@@ -1,17 +1,23 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
+using EQX.Core.Process;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
-    public class ManualViewModel : ViewModelBase
+    public class TeachViewModel : ViewModelBase
     {
         private readonly INavigationService _navigationService;
 
-        public ManualViewModel(IEnumerable<MaintenanceViewModel<ESemiSequence, RecipeList>> maintenanceViewModels,
+        public TeachViewModel(IEnumerable<MaintenanceViewModel<ESemiSequence, RecipeList>> maintenanceViewModels,
             INavigationService navigationService)
         {
             MaintenanceViewModels = maintenanceViewModels;
@@ -21,20 +27,20 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 MaintenanceViewModels.ToList()[i].Name = Enum.GetName(typeof(EProcess), EProcess.Root + 1 + i);
             }
-            
+
             foreach (var vm in MaintenanceViewModels)
             {
                 vm.Init();
             }
         }
 
-        public ICommand ManualUnitSelectCommand
+        public ICommand TeachUnitSelectCommand
         {
             get
             {
                 return new RelayCommand<string>((name) =>
                 {
-                    MaintenanceViewModels.First(vm => vm.Name == name).MaintenanceView = EMaintenanceView.Manual;
+                    MaintenanceViewModels.First(vm => vm.Name == name).MaintenanceView = EMaintenanceView.Teach;
                     _navigationService.NavigateTo(MaintenanceViewModels.First(vm => vm.Name == name));
                 });
             }

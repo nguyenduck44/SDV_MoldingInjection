@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDV_MoldingInjection", "SDV
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EQX.InOut.InputSimulation", "EQX.InOut\EQX.InOut.InputSimulation\EQX.InOut.InputSimulation.csproj", "{769153DB-1BBE-C465-1CA5-BF1997A8CE5E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDV_MoldingInjection.Test", "SDV_MoldingInjection.Test\SDV_MoldingInjection.Test.csproj", "{39501646-4238-4E93-81BA-0C3024F7FA1E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,6 +84,12 @@ Global
 		{769153DB-1BBE-C465-1CA5-BF1997A8CE5E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{769153DB-1BBE-C465-1CA5-BF1997A8CE5E}.Simulation|Any CPU.ActiveCfg = Simulation|Any CPU
 		{769153DB-1BBE-C465-1CA5-BF1997A8CE5E}.Simulation|Any CPU.Build.0 = Simulation|Any CPU
+		{39501646-4238-4E93-81BA-0C3024F7FA1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39501646-4238-4E93-81BA-0C3024F7FA1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39501646-4238-4E93-81BA-0C3024F7FA1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39501646-4238-4E93-81BA-0C3024F7FA1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39501646-4238-4E93-81BA-0C3024F7FA1E}.Simulation|Any CPU.ActiveCfg = Release|Any CPU
+		{39501646-4238-4E93-81BA-0C3024F7FA1E}.Simulation|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

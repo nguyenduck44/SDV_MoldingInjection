@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace SDV_MoldingInjection.MVVM.Views
 {
     /// <summary>
-    /// Interaction logic for SPDHeadManualViewModel.xaml
+    /// Interaction logic for SPDHeadTeachView.xaml
     /// </summary>
-    public partial class SPDHeadManualViewModel : UserControl
+    public partial class SPDHeadTeachView : UserControl
     {
-        public SPDHeadManualViewModel()
+        public SPDHeadTeachView()
         {
             InitializeComponent();
         }

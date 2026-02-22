@@ -20,13 +20,13 @@
     <DockPanel>
         <!--UNIT STATUS-->
         <GroupBox Header="UNIT STATUS"
-          DockPanel.Dock="Top">
+            DockPanel.Dock="Top">
             <ItemsControl Margin="3"
-            ItemsSource="{Binding RelatedViewModel}">
+                ItemsSource="{Binding RelatedViewModel}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Button Content="{Binding .}"
-                        Height="40" Width="120"/>
+                            Height="40" Width="120"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ItemsPanel>
@@ -39,7 +39,7 @@
 
         <!--CURRENT UNIT MANUAL VIEW-->
         <GroupBox Header="{Binding Name}"
-          Margin="0 5 0 0">
+            Margin="0 5 0 0">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>

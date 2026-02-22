@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.MVVM.ViewModels;
 using SDV_MoldingInjection.MVVM.Views;
+using SDV_MoldingInjection.Recipe;
 
 namespace SDV_MoldingInjection.Extensions
 {
@@ -30,10 +31,8 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddViewModel<OriginViewModel>();
                 services.AddViewModel<AutoViewModel>();
                 services.AddViewModel<ManualViewModel>();
-                services.AddViewModel<AppManualUnitViewModel>();
 
                 services.AddViewModel<TeachViewModel>();
-                services.AddViewModel<AppTeachPositionUnitViewModel>();
 
                 services.AddViewModel<DataViewModel>();
                 services.AddViewModel<RecipeViewModel>();
@@ -75,12 +74,12 @@ namespace SDV_MoldingInjection.Extensions
         {
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
-                services.AddSingleton<MaintenanceViewModel<ESemiSequence>, InjectMaintenanceViewModel>();
-                services.AddSingleton<MaintenanceViewModel<ESemiSequence>, DryPumpMaintenanceViewModel>();
-                services.AddSingleton<MaintenanceViewModel<ESemiSequence>, SPDHeadMaintenanceViewModel>();
-                services.AddSingleton<MaintenanceViewModel<ESemiSequence>, SPDHeadMaintenanceViewModel>();
-                services.AddSingleton<MaintenanceViewModel<ESemiSequence>, SPDHeadMaintenanceViewModel>();
-                services.AddSingleton<MaintenanceViewModel<ESemiSequence>, SPDHeadMaintenanceViewModel>();
+                services.AddSingleton<MaintenanceViewModel<ESemiSequence, RecipeList>, InjectMaintenanceViewModel>();
+                services.AddSingleton<MaintenanceViewModel<ESemiSequence, RecipeList>, DryPumpMaintenanceViewModel>();
+                services.AddSingleton<MaintenanceViewModel<ESemiSequence, RecipeList>, SPDHeadMaintenanceViewModel>();
+                services.AddSingleton<MaintenanceViewModel<ESemiSequence, RecipeList>, SPDHeadMaintenanceViewModel>();
+                services.AddSingleton<MaintenanceViewModel<ESemiSequence, RecipeList>, SPDHeadMaintenanceViewModel>();
+                services.AddSingleton<MaintenanceViewModel<ESemiSequence, RecipeList>, SPDHeadMaintenanceViewModel>();
             });
 
             return hostBuilder;

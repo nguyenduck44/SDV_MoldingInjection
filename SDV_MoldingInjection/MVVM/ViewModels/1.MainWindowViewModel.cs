@@ -1,6 +1,7 @@
 ﻿using EQX.Core.Common;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
+using SDV_MoldingInjection.Recipe;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -19,7 +20,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return _navigationStore.CurrentViewModel is AutoViewModel ||
                     _navigationStore.CurrentViewModel is ManualViewModel ||
-                    _navigationStore.CurrentViewModel is MaintenanceViewModel<ESemiSequence>;
+                    (_navigationStore.CurrentViewModel is MaintenanceViewModel<ESemiSequence, RecipeList> maintenanceViewModel && maintenanceViewModel.MaintenanceView == EMaintenanceView.Manual);
             }
         }
 

@@ -2,6 +2,7 @@
 using EQX.Core.Common;
 using EQX.Core.InOut;
 using EQX.Core.Motion;
+using EQX.Core.Recipe;
 using EQX.InOut;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
@@ -14,7 +15,7 @@ using System.Windows.Input;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
-    public class DryPumpMaintenanceViewModel : MaintenanceViewModel<ESemiSequence>
+    public class DryPumpMaintenanceViewModel : MaintenanceViewModel<ESemiSequence, RecipeList>
     {
         #region Properties
         public double PressureSpec => _recipeSelector.CurrentRecipe.DryPumpRecipe.VacuumPressureSpec;
@@ -60,9 +61,16 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         {
             _devices = devices;
             _recipeSelector = recipeSelector;
+
+            _positionManager = UpdatePositionManager();
+
+            if (GroupedPositions != null && GroupedPositions.Count > 0)
+            {
+                SelectedGroupedPosition = GroupedPositions.FirstOrDefault()!;
+            }
         }
 
-        public override void Init()
+        protected override void ActualInit()
         {
             RelatedViewModel = new List<string>
             {
@@ -96,6 +104,29 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 _devices.Outputs.VacChamberClose,
                 _devices.Outputs.DryPumpAlarmReset,
             };
+        }
+
+        protected override RecipePositionManagerBase<RecipeList> UpdatePositionManager()
+        {
+            var positionManager = new RecipePositionManager(_recipeSelector.CurrentRecipe, _devices.Motions.All);
+
+            var readyGroup = new MultiPointPosition
+            {
+                Name = "Ready Pos",
+                Points = new ObservableCollection<PositionPoint>
+                {
+                    positionManager.CreatePositionPoint(_currentRecipe => _currentRecipe.InjectRecipe.XAxisReadyPos, _devices.Motions.XAxis),
+                    positionManager.CreatePositionPoint(_currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
+                    positionManager.CreatePositionPoint(_currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
+                    positionManager.CreatePositionPoint(_currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
+                    positionManager.CreatePositionPoint(_currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
+                    positionManager.CreatePositionPoint(_currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
+                }
+            };
+
+            positionManager.GroupedPositions.Add(readyGroup);
+
+            return positionManager;
         }
 
         protected override void ExternalTimerElapsedAction()

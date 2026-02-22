@@ -9,46 +9,25 @@
              xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-
-        <ItemsControl ItemsSource="{Binding ProcessList}">
+        <ItemsControl ItemsSource="{Binding MaintenanceViewModels}"
+                      Margin="20">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <RadioButton Content="{Binding Name}"
-                             FontSize="20"
-                             Command="{Binding DataContext.TeachUnitSelectCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                             CommandParameter="{Binding Name}"
-                             GroupName="TEACH_UNIT_RADIOBUTTON"
-                             Style="{StaticResource ButtonLikeRadioButtonStyle}">
-                        <RadioButton.IsChecked>
-                            <MultiBinding Converter="{StaticResource ObjectSelectedConverter}"
-                                      Mode="OneWay">
-                                <Binding Path="DataContext.TeachPositionUnitVM.CurrentProcess"
-                                     RelativeSource="{RelativeSource AncestorType=UserControl}" />
-                                <Binding />
-
-                            </MultiBinding>
-                        </RadioButton.IsChecked>
+                    <RadioButton
+                        Content="{Binding Name}"
+                        FontSize="30"
+                        Command="{Binding DataContext.TeachUnitSelectCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        CommandParameter="{Binding Name}"
+                        GroupName="MANUAL_UNIT_RADIOBUTTON"
+                        Style="{StaticResource ButtonLikeRadioButtonStyle}">
                     </RadioButton>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <UniformGrid Columns="1" />
+                    <UniformGrid Columns="4" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>
-
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <ContentControl Content="{Binding TeachPositionUnitVM}"
-                        Grid.Column="1" />
-        </Grid>
     </Grid>
 </UserControl>

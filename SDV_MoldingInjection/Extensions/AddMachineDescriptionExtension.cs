@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SDV_MoldingInjection.Defines;
-using SDV_MoldingInjection.Services.Interlock;
 
 namespace SDV_MoldingInjection.Extensions
 {
@@ -13,7 +12,6 @@ namespace SDV_MoldingInjection.Extensions
             {
                 services.AddSingleton<Information>();
                 services.AddSingleton<MachineStatus>();
-                services.AddSingleton<InterlockService>();
             });
 
             return hostBuilder;

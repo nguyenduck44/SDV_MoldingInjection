@@ -9,6 +9,7 @@ using log4net;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Process;
+using SDV_MoldingInjection.Recipe;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
@@ -52,7 +53,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         {
             if (_navigationStore.CurrentViewModel is not AutoViewModel &&
                 _navigationStore.CurrentViewModel is not ManualViewModel &&
-                _navigationStore.CurrentViewModel is not MaintenanceViewModel<ESemiSequence>)
+                _navigationStore.CurrentViewModel is not MaintenanceViewModel<ESemiSequence, RecipeList>)
                 return;
 
             OnPropertyChanged(nameof(Pressure));

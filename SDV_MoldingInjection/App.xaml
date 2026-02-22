@@ -8,7 +8,8 @@
              xmlns:inout="clr-namespace:EQX.InOut;assembly=EQX.InOut"
              xmlns:viewsLib="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
              xmlns:uiMVVM="clr-namespace:EQX.UI.MVVM;assembly=EQX.UI"
-             xmlns:local="clr-namespace:SDV_MoldingInjection">
+             xmlns:local="clr-namespace:SDV_MoldingInjection"
+             xmlns:services="clr-namespace:SDV_MoldingInjection.Services">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -70,34 +71,67 @@
                 <views:RecipeView />
             </DataTemplate>
             
-            <DataTemplate DataType="{x:Type vm:ManualViewModel}">
-                <views:ManualView />
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:AppManualUnitViewModel}">
-                <uiMVVM:ManualUnitSmallView />
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:InjectMaintenanceViewModel}">
+            <!-- MAINTENANCE DATATEMPLATE -->
+            <DataTemplate x:Key="InjectManualView">
                 <views:InjectManualView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:DryPumpMaintenanceViewModel}">
+            <DataTemplate x:Key="DryPumpManualView">
                 <views:DryPumpManualView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:SPDHeadMaintenanceViewModel}">
-                <views:SPDHeadManualViewModel/>
+            <DataTemplate x:Key="SPDHeadManualView">
+                <views:SPDHeadManualView/>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type vm:MonitorIOViewModel}">
-                <views:MonitorIOView />
+            <DataTemplate x:Key="InjectTeachView">
+                <views:InjectTeachView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:MonitorMotionViewModel}">
-                <views:MonitorMotionView />
+            <DataTemplate x:Key="DryPumpTeachView">
+                <views:DryPumpTeachView/>
+            </DataTemplate>
+            <DataTemplate x:Key="SPDHeadTeachView">
+                <views:SPDHeadTeachView/>
+            </DataTemplate>
+
+            <services:MaintenaceViewSelector
+                x:Key="InjectMaintenanceViewSelector"
+                ManualViewTemplate="{StaticResource InjectManualView}"
+                TeachViewTemplate="{StaticResource InjectTeachView}"
+                />
+            <services:MaintenaceViewSelector
+                x:Key="DryPumpMaintenanceViewSelector"
+                ManualViewTemplate="{StaticResource DryPumpManualView}"
+                TeachViewTemplate="{StaticResource DryPumpTeachView}"
+                />
+            <services:MaintenaceViewSelector
+                x:Key="SPDHeadMaintenanceViewSelector"
+                ManualViewTemplate="{StaticResource SPDHeadManualView}"
+                TeachViewTemplate="{StaticResource SPDHeadTeachView}"
+                />
+
+            <DataTemplate DataType="{x:Type vm:ManualViewModel}">
+                <views:ManualView />
             </DataTemplate>
             
             <DataTemplate DataType="{x:Type vm:TeachViewModel}">
                 <views:TeachView />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:AppTeachPositionUnitViewModel}">
-                <uiMVVM:TeachPositionUnitView />
+
+            <DataTemplate DataType="{x:Type vm:DryPumpMaintenanceViewModel}">
+                <ContentControl Content="{Binding .}" ContentTemplateSelector="{StaticResource DryPumpMaintenanceViewSelector}"/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:InjectMaintenanceViewModel}">
+                <ContentControl Content="{Binding .}" ContentTemplateSelector="{StaticResource InjectMaintenanceViewSelector}"/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:SPDHeadMaintenanceViewModel}">
+                <ContentControl Content="{Binding .}" ContentTemplateSelector="{StaticResource SPDHeadMaintenanceViewSelector}"/>
+            </DataTemplate>
+
+            <!-- MONITOR DATATEMPLATE -->
+            <DataTemplate DataType="{x:Type vm:MonitorIOViewModel}">
+                <views:MonitorIOView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:MonitorMotionViewModel}">
+                <views:MonitorMotionView />
             </DataTemplate>
             
             <DataTemplate DataType="{x:Type vm:DevViewModel}">

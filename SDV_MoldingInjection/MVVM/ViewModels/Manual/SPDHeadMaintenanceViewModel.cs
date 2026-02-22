@@ -1,24 +1,33 @@
 ﻿using EQX.Core.Common;
 using EQX.Core.InOut;
 using EQX.Core.Motion;
+using EQX.Core.Recipe;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Process;
+using SDV_MoldingInjection.Recipe;
 using System.Collections.ObjectModel;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
-    public class SPDHeadMaintenanceViewModel : MaintenanceViewModel<ESemiSequence>
+    public class SPDHeadMaintenanceViewModel : MaintenanceViewModel<ESemiSequence, RecipeList>
     {
-        public SPDHeadMaintenanceViewModel(Devices devices, NavigationStore navigationStore, MachineStatus machineStatus)
+        public SPDHeadMaintenanceViewModel(Devices devices, NavigationStore navigationStore,
+            MachineStatus machineStatus, RecipeSelector recipeSelector)
             : base(navigationStore, machineStatus)
         {
             _devices = devices;
+            _recipeSelector = recipeSelector;
 
             Motions = new ObservableCollection<IMotion>();
+            _positionManager = UpdatePositionManager();
+            if (GroupedPositions != null && GroupedPositions.Count > 0)
+            {
+                SelectedGroupedPosition = GroupedPositions.FirstOrDefault()!;
+            }
         }
 
-        override public void Init()
+        protected override void ActualInit()
         {
             RelatedViewModel = new List<string>
             {
@@ -113,8 +122,32 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
         }
 
+        protected override RecipePositionManagerBase<RecipeList> UpdatePositionManager()
+        {
+            var positionManager = new RecipePositionManager(_recipeSelector.CurrentRecipe, _devices.Motions.All);
+
+            var readyGroup = new MultiPointPosition
+            {
+                Name = "Ready Pos",
+                Points = new ObservableCollection<PositionPoint>
+                {
+                    positionManager.CreatePositionPoint(_currentRecipe => _currentRecipe.InjectRecipe.XAxisReadyPos, _devices.Motions.XAxis),
+                    positionManager.CreatePositionPoint(_currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
+                    positionManager.CreatePositionPoint(_currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
+                    positionManager.CreatePositionPoint(_currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
+                    positionManager.CreatePositionPoint(_currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
+                    positionManager.CreatePositionPoint(_currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
+                }
+            };
+
+            positionManager.GroupedPositions.Add(readyGroup);
+
+            return positionManager;
+        }
+
         #region Privates
         private readonly Devices _devices;
+        private readonly RecipeSelector _recipeSelector;
 
         private IMotion ZAxis => Name switch
         {

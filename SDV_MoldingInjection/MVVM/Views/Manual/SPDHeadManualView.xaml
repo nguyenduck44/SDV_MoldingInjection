@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="SDV_MoldingInjection.MVVM.Views.SPDHeadManualViewModel"
+﻿<UserControl x:Class="SDV_MoldingInjection.MVVM.Views.SPDHeadManualView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -144,7 +144,6 @@
                                     <Button
                                         Margin="3"
                                         Height="50"
-                                        FontSize="12"
                                         Content="{Binding ., Converter={StaticResource EnumDescriptionConverter}}"
                                         Command="{Binding DataContext.SemiSequenceButtonCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                                         CommandParameter="{Binding .}"
