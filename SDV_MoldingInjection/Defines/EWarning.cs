@@ -45,6 +45,9 @@
         Chamber_LeftJig_InjectNotFinished,
         Chamber_RightJig_InjectNotFinished,
 
+        Nozzle_CleanCyl_GripFail,
+        Nozzle_CleanCyl_UnGripFail,
+
         //--------- 2500 -> 2999 : Dry Pump Process Warning ---------
         AngleValve_CloseFail = 2500,
         AngleValve_OpenFail,
