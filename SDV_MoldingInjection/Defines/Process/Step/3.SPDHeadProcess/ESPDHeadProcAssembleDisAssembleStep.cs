@@ -10,6 +10,9 @@
         PAxis_AssemblePos_Move,
         PAxis_AssemblePos_Move_Wait,
 
+        AssembleCheck,
+        AssembleCheckWait,
+
         PistonCyl_Up,
         PistonCyl_UpWait,
 
