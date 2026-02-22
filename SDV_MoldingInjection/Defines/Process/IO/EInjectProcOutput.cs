@@ -2,6 +2,8 @@
 {
     public enum EInjectProcOutput
     {
+        XYAxisMoveDummyPosFinish,
+
         DryPump_VacuumRequest,
         DryPump_PurgeRequest,
         SPDHeadWorkRequest,

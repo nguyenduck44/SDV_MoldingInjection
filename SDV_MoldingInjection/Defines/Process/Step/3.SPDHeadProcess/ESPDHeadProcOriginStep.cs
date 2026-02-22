@@ -16,11 +16,16 @@ namespace SDV_MoldingInjection.Defines
         GAxis_ClosePosition_Move,
         GAxis_ClosePosition_MoveWait,
 
+        WaitXYAxisMoveDummyPos,
+
         PistonCyl_Up,
         PistonCyl_UpWait,
 
         PAxis_Origin,
         PAxis_OriginWait,
+        
+        SetFlag_SPDHeadOriginDone,
+        ClearFlag_SPDHeadOriginDone,
 
         End,
     }

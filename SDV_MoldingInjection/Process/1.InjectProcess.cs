@@ -199,7 +199,7 @@ namespace SDV_MoldingInjection.Process
                     Sequence_AutoRun();
                     break;
                 case ESequence.Loading:
-                    Sequence_LoadingUnloading(isLoading : true);
+                    Sequence_LoadingUnloading(isLoading: true);
                     break;
                 case ESequence.ResinInject:
                     Sequence_ResinInject();
@@ -309,6 +309,46 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"{XAxis.Name} {YAxis.Name} origin search done");
+                    Step.OriginStep++;
+                    break;
+                case EMoldProcOriginStep.XYAxis_MoveDummyPos:
+                    Log.Debug($"Move {XAxis.Name} {YAxis.Name} to dummy position");
+                    XAxis.MoveAbs(_currentRecipe.InjectRecipe.XAxisH13DummyPos);
+                    YAxis.MoveAbs(_currentRecipe.InjectRecipe.YAxisH13DummyPos);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
+                        () => XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisH13DummyPos) &&
+                              YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisH13DummyPos));
+                    Step.OriginStep++;
+                    break;
+                case EMoldProcOriginStep.XYAxis_MoveDummyPosWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        if (!XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisH13DummyPos))
+                            RaiseWarning(EWarning.XAxis_DummyPos_MoveTimeOut);
+                        if (!YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisH13DummyPos))
+                            RaiseWarning(EWarning.YAxis_DummyPos_MoveTimeOut);
+                        break;
+                    }
+                    Log.Debug($"Move {XAxis.Name} {YAxis.Name} to dummy position done");
+                    Step.OriginStep++;
+                    break;
+                case EMoldProcOriginStep.SetFlag_MoveDummyPosDone:
+                    Log.Debug("Set flag move dummy pos done");
+                    procOutputs[EInjectProcOutput.XYAxisMoveDummyPosFinish].Value = true;
+                    Step.OriginStep++;
+                    break;
+                case EMoldProcOriginStep.ClearFlag_MoveDummyPosDone:
+                    if (procInputs[EInjectProcInput.SPDHead1_OriginDone].Value == false ||
+                        procInputs[EInjectProcInput.SPDHead2_OriginDone].Value == false ||
+                        procInputs[EInjectProcInput.SPDHead3_OriginDone].Value == false ||
+                        procInputs[EInjectProcInput.SPDHead4_OriginDone].Value == false )
+                    {
+                        Wait(20);
+                        break;
+                    }
+
+                    Log.Debug("Clear flag move dummy pos done");
+                    procOutputs[EInjectProcOutput.XYAxisMoveDummyPosFinish].Value = false;
                     Step.OriginStep++;
                     break;
                 case EMoldProcOriginStep.End:

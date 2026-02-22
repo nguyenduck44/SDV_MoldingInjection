@@ -2,6 +2,11 @@
 {
     public enum EInjectProcInput
     {
+        SPDHead1_OriginDone,
+        SPDHead2_OriginDone,
+        SPDHead3_OriginDone,
+        SPDHead4_OriginDone,
+
         DryPump_VacuumDone,
         DryPump_PurgeDone,
 

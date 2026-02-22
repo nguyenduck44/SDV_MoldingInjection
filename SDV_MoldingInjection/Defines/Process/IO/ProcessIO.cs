@@ -99,6 +99,16 @@ namespace SDV_MoldingInjection.Defines
             InjectProcInput[EInjectProcInput.SPDHead4_WorkDone]
                 .MapTo(SPDHead4_ProcOutput[ESPDHeadProcOutput.InjectFinish]);
 
+            InjectProcInput[EInjectProcInput.SPDHead1_OriginDone]
+                .MapTo(SPDHead1_ProcOutput[ESPDHeadProcOutput.OriginDone]);
+            InjectProcInput[EInjectProcInput.SPDHead2_OriginDone]
+                .MapTo(SPDHead2_ProcOutput[ESPDHeadProcOutput.OriginDone]);
+            InjectProcInput[EInjectProcInput.SPDHead3_OriginDone]
+                .MapTo(SPDHead3_ProcOutput[ESPDHeadProcOutput.OriginDone]);
+            InjectProcInput[EInjectProcInput.SPDHead4_OriginDone]
+                .MapTo(SPDHead4_ProcOutput[ESPDHeadProcOutput.OriginDone]);
+
+
             DryPumpProcInput[EDryPumpProcInput.Vacuum_WorkRequest]
                 .MapTo(InjectProcOutput[EInjectProcOutput.DryPump_VacuumRequest]);
             DryPumpProcInput[EDryPumpProcInput.Purge_WorkRequest]
@@ -112,6 +122,15 @@ namespace SDV_MoldingInjection.Defines
                .MapTo(InjectProcOutput[EInjectProcOutput.SPDHeadWorkRequest]);
             SPDHead4_ProcInput[ESPDHeadProcInput.WorkRequest]
                .MapTo(InjectProcOutput[EInjectProcOutput.SPDHeadWorkRequest]);
+
+            SPDHead1_ProcInput[ESPDHeadProcInput.XYAxisMoveDummyPosFinish]
+               .MapTo(InjectProcOutput[EInjectProcOutput.XYAxisMoveDummyPosFinish]);
+            SPDHead2_ProcInput[ESPDHeadProcInput.XYAxisMoveDummyPosFinish]
+               .MapTo(InjectProcOutput[EInjectProcOutput.XYAxisMoveDummyPosFinish]);
+            SPDHead3_ProcInput[ESPDHeadProcInput.XYAxisMoveDummyPosFinish]
+               .MapTo(InjectProcOutput[EInjectProcOutput.XYAxisMoveDummyPosFinish]);
+            SPDHead4_ProcInput[ESPDHeadProcInput.XYAxisMoveDummyPosFinish]
+               .MapTo(InjectProcOutput[EInjectProcOutput.XYAxisMoveDummyPosFinish]);
         }
     }
 }

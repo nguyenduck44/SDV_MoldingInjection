@@ -224,6 +224,17 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"{GAxis.Name} moved to GateClosePos [{_currentSPDHeadRecipe.GateClosePos}°] done");
+                    Log.Debug("Wait for XY axis move to dummy pos");
+                    Step.OriginStep++;
+                    break;
+                case ESPDHeadProcOriginStep.WaitXYAxisMoveDummyPos:
+                    if (procInputs[ESPDHeadProcInput.XYAxisMoveDummyPosFinish].Value == false)
+                    {
+                        Wait(20);
+                        break;
+                    }
+
+                    Log.Debug("Dummy Pos move done");
                     Step.OriginStep++;
                     break;
                 case ESPDHeadProcOriginStep.PistonCyl_Up:
@@ -265,6 +276,22 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"{PAxis.Name} origin search done");
+                    Step.OriginStep++;
+                    break;
+                case ESPDHeadProcOriginStep.SetFlag_SPDHeadOriginDone:
+                    Log.Debug($"Set flag {head} OriginDone");
+                    procOutputs[ESPDHeadProcOutput.OriginDone].Value = true;
+                    Step.OriginStep++;
+                    break;
+                case ESPDHeadProcOriginStep.ClearFlag_SPDHeadOriginDone:
+                    if (procInputs[ESPDHeadProcInput.XYAxisMoveDummyPosFinish].Value)
+                    {
+                        Wait(20);
+                        break;
+                    }
+
+                    Log.Debug($"Clear flag {head} OriginDone");
+                    procOutputs[ESPDHeadProcOutput.OriginDone].Value = false;
                     Step.OriginStep++;
                     break;
                 case ESPDHeadProcOriginStep.End:

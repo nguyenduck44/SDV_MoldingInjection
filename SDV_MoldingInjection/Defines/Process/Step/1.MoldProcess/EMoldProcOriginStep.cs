@@ -21,6 +21,12 @@ namespace SDV_MoldingInjection.Defines
         XYAxis_Origin,
         XYAxis_OriginWait,
 
+        XYAxis_MoveDummyPos,
+        XYAxis_MoveDummyPosWait,
+
+        SetFlag_MoveDummyPosDone,
+        ClearFlag_MoveDummyPosDone,
+
         End,
     }
 }
