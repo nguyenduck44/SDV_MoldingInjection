@@ -5,38 +5,15 @@ namespace SDV_MoldingInjection.Recipe
 {
     public class RecipeList
     {
-        [JsonConstructor]
-        public RecipeList(CommonRecipe commonRecipe,
-                          InjectRecipe injectRecipe,
-                          DryPumpRecipe dryPumpRecipe,
-                          SPDHeadRecipe sPDHead1_Recipe,
-                          SPDHeadRecipe sPDHead2_Recipe,
-                          SPDHeadRecipe sPDHead3_Recipe,
-                          SPDHeadRecipe sPDHead4_Recipe)
+        public RecipeList()
         {
-            CommonRecipe = commonRecipe;
-            InjectRecipe = injectRecipe;
-            DryPumpRecipe = dryPumpRecipe;
-            SPDHead1_Recipe = sPDHead1_Recipe;
-            SPDHead2_Recipe = sPDHead2_Recipe;
-            SPDHead3_Recipe = sPDHead3_Recipe;
-            SPDHead4_Recipe = sPDHead4_Recipe;
-        }
-        public RecipeList(IEnumerable<IRecipe> recipes)
-        {
-            if (recipes.Count() == 0)
-            {
-                throw new ArgumentException("No recipes found to initialize RecipeList.");
-            }
-
-            CommonRecipe = recipes.OfType<CommonRecipe>().FirstOrDefault()!;
-            InjectRecipe = recipes.OfType<InjectRecipe>().FirstOrDefault()!;
-            DryPumpRecipe = recipes.OfType<DryPumpRecipe>().FirstOrDefault()!;
-
-            SPDHead1_Recipe = recipes.OfType<SPDHeadRecipe>().First(r => r.Name == "SPDHead1_Recipe")!;
-            SPDHead2_Recipe = recipes.OfType<SPDHeadRecipe>().First(r => r.Name == "SPDHead2_Recipe")!;
-            SPDHead3_Recipe = recipes.OfType<SPDHeadRecipe>().First(r => r.Name == "SPDHead3_Recipe")!;
-            SPDHead4_Recipe = recipes.OfType<SPDHeadRecipe>().First(r => r.Name == "SPDHead4_Recipe")!;
+            CommonRecipe = new();
+            InjectRecipe = new();
+            DryPumpRecipe = new();
+            SPDHead1_Recipe = new();
+            SPDHead2_Recipe = new();
+            SPDHead3_Recipe = new();
+            SPDHead4_Recipe = new();
         }
 
         public CommonRecipe CommonRecipe { get; }
@@ -46,5 +23,18 @@ namespace SDV_MoldingInjection.Recipe
         public SPDHeadRecipe SPDHead2_Recipe { get; }
         public SPDHeadRecipe SPDHead3_Recipe { get; }
         public SPDHeadRecipe SPDHead4_Recipe { get; }
+
+        public void CloneFrom(RecipeList source)
+        {
+            if (source == null) return;
+
+            CommonRecipe.Clone(source.CommonRecipe);
+            InjectRecipe.Clone(source.InjectRecipe);
+            DryPumpRecipe.Clone(source.DryPumpRecipe);
+            SPDHead1_Recipe.Clone(source.SPDHead1_Recipe);
+            SPDHead2_Recipe.Clone(source.SPDHead2_Recipe);
+            SPDHead3_Recipe.Clone(source.SPDHead3_Recipe);
+            SPDHead4_Recipe.Clone(source.SPDHead4_Recipe);
+        }
     }
 }

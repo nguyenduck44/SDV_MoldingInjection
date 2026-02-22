@@ -17,27 +17,19 @@ namespace SDV_MoldingInjection.Recipe
         #region Privates
         private RecipeSetting recipeSetting;
         private readonly IConfiguration _configuration;
-        private ObservableCollection<string> validRecipes;
 
         private readonly IAlertService _alarmService;
         private readonly IAlertService _warningService;
         private readonly ILanguageService _languageService;
 
+        private readonly ObservableCollection<string> _validRecipes = new ObservableCollection<string>();
         private string recipeFolder => _configuration.GetValue<string>("Folders:RecipeFolder") ?? "";
         #endregion
 
         #region Properties
         public ObservableCollection<string> ValidRecipes
         {
-            get
-            {
-                return UpdateValidRecipes();
-            }
-            set
-            {
-                validRecipes = value;
-                OnPropertyChanged(nameof(ValidRecipes));
-            }
+            get => _validRecipes;
         }
 
         public RecipeSetting RecipeSetting
@@ -55,19 +47,20 @@ namespace SDV_MoldingInjection.Recipe
 
         #region Constructor
         public RecipeSelector(IConfiguration configuration,
-            RecipeList currentRecipe,
             [FromKeyedServices("AlarmService")] IAlertService alarmService,
             [FromKeyedServices("WarningService")] IAlertService warningService,
             ILanguageService languageService)
         {
             _configuration = configuration;
-            CurrentRecipe = currentRecipe;
             recipeSetting = new RecipeSetting();
             _alarmService = alarmService;
             _warningService = warningService;
             _languageService = languageService;
 
-            currentRecipe.CommonRecipe.SelectedLanguageEvent += CommonRecipe_SelectedLanguageEvent; ;
+            UpdateValidRecipes();
+
+            CurrentRecipe = new RecipeList();
+            CurrentRecipe.CommonRecipe.SelectedLanguageEvent += CommonRecipe_SelectedLanguageEvent; ;
         }
 
         private void CommonRecipe_SelectedLanguageEvent(ILanguageDefinition obj)
@@ -113,35 +106,20 @@ namespace SDV_MoldingInjection.Recipe
             };
             try
             {
-                RecipeList backupRecipe = JsonConvert.DeserializeObject<RecipeList>(File.ReadAllText(currentRecipeFile), settings);
-                PropertyInfo[] properties = CurrentRecipe.GetType().GetProperties();
-
-                foreach (PropertyInfo property in properties)
+                RecipeList? backupRecipe = JsonConvert.DeserializeObject<RecipeList>(File.ReadAllText(currentRecipeFile), settings);
+                if (backupRecipe != null)
                 {
-                    try
-                    {
-                        var currentValue = property.GetValue(CurrentRecipe, null) as IRecipe;
-                        var backupValue = property.GetValue(backupRecipe, null) as IRecipe;
-
-                        if (currentValue != null && backupValue != null)
-                        {
-                            currentValue.Clone(backupValue);
-                        }
-                        else
-                        {
-                            MessageBox.Show($"Property '{property.Name}' is null in either CurrentRecipe or backupRecipe.");
-                            return false;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                        return false;
-                    }
+                    CurrentRecipe.CloneFrom(backupRecipe);
+                }
+                else
+                {
+                    MessageBox.Show($"Failed to load recipe file: {currentRecipeFile}");
+                    return false;
                 }
             }
             catch (Exception ex)
             {
+                MessageBox.Show($"Error loading recipe: {ex.Message}");
                 return false;
             }
             return true;
@@ -149,39 +127,40 @@ namespace SDV_MoldingInjection.Recipe
 
         public void Copy(string selectedRecipe)
         {
-            string recipeFolder = _configuration.GetValue<string>("Folders:RecipeFolder");
-
-            string currentRecipeFolder = Path.Combine(recipeFolder, selectedRecipe);
-            string currentRecipeFile = Path.Combine(currentRecipeFolder, "Recipe.json");
-            if (Directory.Exists(currentRecipeFolder) == false)
-                MessageBox.Show($" Recipe folder \"{currentRecipeFolder}\" not found");
-            var settings = new JsonSerializerSettings
+            string sourceFolder = Path.Combine(recipeFolder, selectedRecipe);
+            if (!Directory.Exists(sourceFolder))
             {
-                TypeNameHandling = TypeNameHandling.Auto
-            };
-            RecipeList backupRecipe = JsonConvert.DeserializeObject<RecipeList>(File.ReadAllText(currentRecipeFile), settings);
-            if (Directory.Exists($"{currentRecipeFolder}_Copy") == false)
-            {
-                Directory.CreateDirectory($"{currentRecipeFolder}_Copy");
-
-                foreach (var file in Directory.GetFiles(currentRecipeFolder))
-                {
-                    string fileSource = Path.Combine(currentRecipeFolder, Path.GetFileName(file));
-                    string fileBackup = Path.Combine($"{currentRecipeFolder}_Copy", Path.GetFileName(file));
-
-                    File.Copy(fileSource, fileBackup, true);
-                }
+                MessageBox.Show($"Recipe folder \"{sourceFolder}\" not found.");
+                return;
             }
-            else
+
+            string destinationFolder = $"{sourceFolder}_Copy";
+            if (Directory.Exists(destinationFolder))
             {
-                MessageBox.Show($" Recipe folder \"$\"{currentRecipeFolder}_copy\"\" exists");
+                MessageBox.Show($"Recipe folder \"{destinationFolder}\" already exists.");
+                return;
+            }
+
+            try
+            {
+                Directory.CreateDirectory(destinationFolder);
+
+                foreach (var file in Directory.GetFiles(sourceFolder))
+                {
+                    string destFile = Path.Combine(destinationFolder, Path.GetFileName(file));
+                    File.Copy(file, destFile, true);
+                }
+                MessageBox.Show($"Recipe '{selectedRecipe}' copied successfully to '{Path.GetFileName(destinationFolder)}'.");
+                UpdateValidRecipes(); // Refresh the list to show the new copied recipe
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to copy recipe: {ex.Message}");
             }
         }
 
         public void Save()
         {
-            string recipeFolder = _configuration.GetValue<string>("Folders:RecipeFolder");
-
             string currentRecipeFolder = Path.Combine(recipeFolder, RecipeSetting.CurrentRecipe);
             string currentRecipeFile = Path.Combine(currentRecipeFolder, "Recipe.json");
             if (Directory.Exists(currentRecipeFolder) == false)
@@ -196,20 +175,31 @@ namespace SDV_MoldingInjection.Recipe
             File.WriteAllText(currentRecipeFile, serializeStr);
         }
 
-        public ObservableCollection<string> UpdateValidRecipes()
+        public void UpdateValidRecipes()
         {
-            ObservableCollection<string> validRecipes = new ObservableCollection<string>();
-            List<string> result = Directory.GetDirectories(recipeFolder, "", SearchOption.TopDirectoryOnly)
-                .Select(d => new DirectoryInfo(d).Name)
-                .ToList();
-            foreach (var model in result)
+            try
             {
-                validRecipes.Add(model);
+                if (!Directory.Exists(recipeFolder))
+                {
+                    _validRecipes.Clear();
+                    return;
+                }
+
+                var onDiskRecipes = Directory.GetDirectories(recipeFolder, "*", SearchOption.TopDirectoryOnly)
+                                             .Select(Path.GetFileName)
+                                             .Where(name => name != null)
+                                             .ToList();
+
+                _validRecipes.Clear();
+                foreach (var recipe in onDiskRecipes.OrderBy(r => r))
+                {
+                    _validRecipes.Add(recipe!);
+                }
+
+                OnPropertyChanged(nameof(ValidRecipes));
             }
-
-            return validRecipes;
+            catch (Exception ex) { MessageBox.Show($"Failed to update recipe list: {ex.Message}"); }
         }
-
         public void SetCurrentModel(string selectedRecipe)
         {
             string selectedRecipeFolder = Path.Combine(recipeFolder, selectedRecipe);

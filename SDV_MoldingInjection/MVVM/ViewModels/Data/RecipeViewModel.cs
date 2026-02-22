@@ -131,7 +131,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    RecipeSelector.ValidRecipes = RecipeSelector.UpdateValidRecipes();
+                    RecipeSelector.UpdateValidRecipes();
                     LoadRecipeEvent?.Invoke();
                 });
             }
@@ -146,7 +146,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     if (MessageBoxEx.ShowDialog($"{CopyRecipe} {SelectedModel} ? ") == true)
                     {
                         RecipeSelector.Copy(SelectedModel);
-                        RecipeSelector.ValidRecipes = RecipeSelector.UpdateValidRecipes();
+                        RecipeSelector.UpdateValidRecipes();
                         LoadRecipeEvent?.Invoke();
                     }
                 });
