@@ -38,8 +38,6 @@
                     <cvt:ObjectSelectedConverter x:Key="ObjectSelectedConverter"/>
                     <uiCvt:EnumDescriptionConverter x:Key="EnumDescriptionConverter"/>
                 </ResourceDictionary>
-
-                <ResourceDictionary Source="/Resource/Template/CylinderControlDataTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <DataTemplate DataType="{x:Type vm:FooterViewModel}">

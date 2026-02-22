@@ -1,9 +1,12 @@
-﻿using EQX.InOut;
+﻿using EQX.Core.Interlock;
+using EQX.InOut;
+using EQX.UI.Controls;
 using SDV_MoldingInjection.Recipe;
+using System.Windows;
 
 namespace SDV_MoldingInjection.Defines.Devices
 {
-    public class InterlockService
+    public class InterlockService : IDisposable
     {
         #region Properties
 
@@ -11,33 +14,47 @@ namespace SDV_MoldingInjection.Defines.Devices
         #endregion
 
         #region Constructor(s)
-        public InterlockService(Devices devices, RecipeSelector recipeSelector)
+        public InterlockService(Devices devices,
+            RecipeSelector recipeSelector,
+            MachineStatus machineStatus)
         {
             _devices = devices;
             _recipeSelector = recipeSelector;
+            _machineStatus = machineStatus;
+
+            InterlockMonitor.OnInterlockBlocked += HandleInterlockBlocked;
         }
         #endregion
 
-        public void Config()
+        #region Public Methods
+        public void Config(bool disable = false)
         {
-            MotionInterlock();
-            CylinderInterlock();
+            MotionInterlock(disable);
+            OutputInterlock(disable);
+            CylinderInterlock(disable);
         }
 
-        private void CylinderInterlock()
+        private void CylinderInterlock(bool disable)
         {
+            if (disable) _devices.Cylinders.ChamberOpenClose.ForwardInterlocks = new Dictionary<string, Func<bool>>();
             _devices.Cylinders.ChamberOpenClose.ForwardInterlocks = new Dictionary<string, Func<bool>>
             {
                 { "YAxis not in Ready Pos", () => _devices.Motions.StageYAxis.Status.ActualPosition <= _currentRecipe.InjectRecipe.YAxisReadyPos },
             };
+        }
+
+        private void OutputInterlock(bool disable)
+        {
+            if (disable) _devices.Outputs.VacChamberOpen.OutputEnableInterlocks = new Dictionary<string, Func<bool>>();
             _devices.Outputs.VacChamberOpen.OutputEnableInterlocks = new Dictionary<string, Func<bool>>
             {
                 { "YAxis not in Ready Pos", () => _devices.Motions.StageYAxis.Status.ActualPosition <= _currentRecipe.InjectRecipe.YAxisReadyPos },
             };
         }
 
-        private void MotionInterlock()
+        private void MotionInterlock(bool disable)
         {
+            if (disable) _devices.Motions.StageYAxis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>();
             _devices.Motions.StageYAxis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>
             {
                 { "Chamber is not CLOSE", () => _devices.Cylinders.ChamberOpenClose.IsClose() },
@@ -47,6 +64,8 @@ namespace SDV_MoldingInjection.Defines.Devices
                 { "Z3Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos },
                 { "Z4Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos },
             };
+
+            if (disable) _devices.Motions.StageYAxis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>();
             _devices.Motions.StageYAxis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>
             {
                 { "Chamber is not CLOSE", () => _devices.Cylinders.ChamberOpenClose.IsClose() },
@@ -56,6 +75,8 @@ namespace SDV_MoldingInjection.Defines.Devices
                 { "Z3Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos },
                 { "Z4Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos },
             };
+
+            if (disable) _devices.Motions.XAxis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>();
             _devices.Motions.XAxis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>
             {
                 { "Z1Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos },
@@ -63,6 +84,8 @@ namespace SDV_MoldingInjection.Defines.Devices
                 { "Z3Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos },
                 { "Z4Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos },
             };
+
+            if (disable) _devices.Motions.XAxis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>();
             _devices.Motions.XAxis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>
             {
                 { "Z1Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos },
@@ -72,9 +95,27 @@ namespace SDV_MoldingInjection.Defines.Devices
             };
         }
 
+        public void Dispose()
+        {
+            InterlockMonitor.OnInterlockBlocked -= HandleInterlockBlocked;
+        }
+        #endregion
+
+        #region Private Methods
+        private void HandleInterlockBlocked(object? sender, InterlockEventAgrs e)
+        {
+            if (_machineStatus.IsStandByProcessMode)
+            {
+                string message = $"{e.Obj.Name} blocked by '{e.Message}' while '{e.Action}'";
+                MessageBoxEx.Show(message, false, "WARNING");
+            }
+        }
+        #endregion
+
         #region Privates
         private readonly Devices _devices;
         private readonly RecipeSelector _recipeSelector;
+        private readonly MachineStatus _machineStatus;
         #endregion
     }
 }
