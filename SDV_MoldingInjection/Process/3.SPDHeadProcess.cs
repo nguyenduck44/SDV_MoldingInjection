@@ -1,4 +1,4 @@
-﻿﻿using EQX.Core.InOut;
+﻿using EQX.Core.InOut;
 using EQX.Core.Motion;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
@@ -307,8 +307,10 @@ namespace SDV_MoldingInjection.Process
                     Sequence_SPDHeadCommon(ESequence.BubbleRemove);
                     break;
                 case ESequence.HeadAssemble:
+                    Sequence_HeadAssembleDisAssemble(isAssemble: true);
                     break;
                 case ESequence.HeadDisassemble:
+                    Sequence_HeadAssembleDisAssemble(isAssemble: false);
                     break;
             }
 
@@ -486,6 +488,133 @@ namespace SDV_MoldingInjection.Process
                     break;
             }
         }
+
+        private void Sequence_HeadAssembleDisAssemble(bool isAssemble)
+        {
+            switch ((ESPDHeadProcAssembleDisAssembleStep)Step.RunStep)
+            {
+                case ESPDHeadProcAssembleDisAssembleStep.Start:
+                    Log.Info(isAssemble ? "HeadAssemble start" : "HeadDisassemble start");
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcAssembleDisAssembleStep.Gate_Close:
+                    if (IsGateOnClosePos)
+                    {
+                        Step.RunStep = (int)ESPDHeadProcAssembleDisAssembleStep.PAxis_AssemblePos_Move;
+                        break;
+                    }
+
+                    Log.Info($"{GAxis.Name} moving to ClosePos [{_currentSPDHeadRecipe.GateClosePos}°]");
+                    GAxis.MoveAbs(_currentSPDHeadRecipe.GateClosePos);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => IsGateOnClosePos);
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcAssembleDisAssembleStep.Gate_CloseWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseHeadAlarm(EAlarm.H1GAxis_MoveClosePos_Timeout);
+                        break;
+                    }
+
+                    Log.Info($"{GAxis.Name} moving to ClosePos done");
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcAssembleDisAssembleStep.PAxis_AssemblePos_Move:
+                    if (PAxis.IsOnPosition(_pAxisAssemble_Pos))
+                    {
+                        Step.RunStep = isAssemble
+                            ? (int)ESPDHeadProcAssembleDisAssembleStep.PistonCyl_Up
+                            : (int)ESPDHeadProcAssembleDisAssembleStep.PistonCyl_Down;
+                        break;
+                    }
+
+                    Log.Info($"{PAxis.Name} moving to AssemblePos [{_pAxisAssemble_Pos}mm]");
+                    PAxis.MoveAbs(_pAxisAssemble_Pos);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => PAxis.IsOnPosition(_pAxisAssemble_Pos));
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcAssembleDisAssembleStep.PAxis_AssemblePos_Move_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseHeadAlarm(EAlarm.H1PAxis_MoveAssemblePos_Timeout);
+                        break;
+                    }
+
+                    Log.Info($"{PAxis.Name} moving to AssemblePos done");
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcAssembleDisAssembleStep.PistonCyl_Up:
+                    if (isAssemble)
+                    {
+                        if (PistonCyl.IsBackward)
+                        {
+                            Step.RunStep = (int)ESPDHeadProcAssembleDisAssembleStep.End;
+                            break;
+                        }
+
+                        Log.Info($"{PistonCyl} moving up");
+                        PistonCyl.Backward();
+                        Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => PistonCyl.IsBackward);
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcAssembleDisAssembleStep.PistonCyl_UpWait:
+                    if (isAssemble)
+                    {
+                        if (WaitTimeOutOccurred)
+                        {
+                            RaiseHeadWarning(EWarning.H1_PistonCyl_UpFail);
+                            break;
+                        }
+
+                        Log.Info($"Move {PistonCyl} up done");
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcAssembleDisAssembleStep.PistonCyl_Down:
+                    if (!isAssemble)
+                    {
+                        if (PistonCyl.IsForward)
+                        {
+                            Step.RunStep = (int)ESPDHeadProcAssembleDisAssembleStep.End;
+                            break;
+                        }
+
+                        Log.Info($"{PistonCyl} moving down");
+                        PistonCyl.Forward();
+                        Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => PistonCyl.IsForward);
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcAssembleDisAssembleStep.PistonCyl_DownWait:
+                    if (!isAssemble)
+                    {
+                        if (WaitTimeOutOccurred)
+                        {
+                            RaiseHeadWarning(EWarning.H1_PistonCyl_DownFail);
+                            break;
+                        }
+
+                        Log.Info($"Move {PistonCyl} down done");
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcAssembleDisAssembleStep.End:
+                    if (Parent?.Sequence != ESequence.AutoRun)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
+
+                    Log.Info(isAssemble ? "Head Assemble End" : "Head DisAssemble End");
+                    Sequence = ESequence.AutoRun;
+                    break;
+            }
+        }
         #endregion
 
         #region Private Methods
@@ -503,6 +632,7 @@ namespace SDV_MoldingInjection.Process
         private readonly Devices _devices;
         private readonly RecipeSelector _recipeSelector;
         private readonly ProcessIO _processIO;
+        private readonly MachineStatus _machineStatus;
 
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
 
@@ -543,6 +673,8 @@ namespace SDV_MoldingInjection.Process
         private double _pAxisCharge_Vel;
         private double _pAxisInject_Pos;
         private double _pAxisInject_Vel;
+        private double _pAxisAssemble_Pos = 13.4375;
+        private double _pAxisBase_Pos = 20.875;
         #endregion
     }
 }

@@ -54,20 +54,24 @@
         P1Axis_Origin_Timeout = 3500,
         G1Axis_Origin_Timeout,
         H1_PistonCyl_UpFail,
+        H1_PistonCyl_DownFail,
 
         //--------- 4500 -> 4999 : SPD Head #2 Process Warning ---------
         P2Axis_Origin_Timeout = 4500,
         G2Axis_Origin_Timeout,
         H2_PistonCyl_UpFail,
+        H2_PistonCyl_DownFail,
 
         //--------- 5500 -> 5999 : SPD Head #3 Process Warning ---------
         P3Axis_Origin_Timeout = 5500,
         G3Axis_Origin_Timeout,
         H3_PistonCyl_UpFail,
+        H3_PistonCyl_DownFail,
 
         //--------- 6500 -> 6999 : SPD Head #3 Process Warning ---------
         P4Axis_Origin_Timeout = 6500,
         G4Axis_Origin_Timeout,
         H4_PistonCyl_UpFail,
+        H4_PistonCyl_DownFail,
     }
 }
