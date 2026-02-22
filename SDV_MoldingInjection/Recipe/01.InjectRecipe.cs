@@ -125,6 +125,64 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        [SingleRecipeDescription(Description = "Needle Clean Cycle Count")]
+        public double NiddleCleanCycleCount
+        {
+            get { return _niddleCleanCycleCount; }
+            set
+            {
+                if (_niddleCleanCycleCount == value) return;
+
+                OnRecipeChanged(_niddleCleanCycleCount, value);
+                _niddleCleanCycleCount = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "Needle Clean Shift Dist", Unit = Unit.mm)]
+        public double NiddleCleanShiftDist
+        {
+            get { return _niddleCleanShiftDist; }
+            set
+            {
+                if (_niddleCleanShiftDist == value) return;
+
+                OnRecipeChanged(_niddleCleanShiftDist, value);
+                _niddleCleanShiftDist = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "X-Axis Needle Clean", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "XAxis")]
+        public double XAxisNeddleClean
+        {
+            get { return _xAxisNeedleClean; }
+            set
+            {
+                if (_xAxisNeedleClean == value) return;
+
+                OnRecipeChanged(_xAxisNeedleClean, value);
+                _xAxisNeedleClean = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "Y-Axis Neddle Clean", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "YAxis")]
+        public double YAxisNeddleClean
+        {
+            get { return _yAxisNeedleClean; }
+            set
+            {
+                if (_yAxisNeedleClean == value) return;
+
+                OnRecipeChanged(_yAxisNeedleClean, value);
+                _yAxisNeedleClean = value;
+                OnPropertyChanged();
+            }
+        }
+
         #region Privates
         private double _xAxisReadyPos;
         private double _xAxisInjectPos;
@@ -136,6 +194,13 @@ namespace SDV_MoldingInjection.Recipe
         private double _yAxisH13DummyPos;
         private double _xAxisH24DummyPos;
         private double _yAxisH24DummyPos;
+
+        private double _niddleCleanCycleCount;
+        private double _niddleCleanShiftDist;
+
+        private double _xAxisNeedleClean;
+        private double _yAxisNeedleClean;
+
         #endregion
     }
 }

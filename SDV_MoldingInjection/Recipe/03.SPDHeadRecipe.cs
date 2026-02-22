@@ -1,4 +1,4 @@
-﻿using EQX.Core.Recipe;
+using EQX.Core.Recipe;
 using EQX.Core.Units;
 
 namespace SDV_MoldingInjection.Recipe
@@ -44,6 +44,21 @@ namespace SDV_MoldingInjection.Recipe
 
                 OnRecipeChanged(_zAxisInjectPos, value);
                 _zAxisInjectPos = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "ZAxis Neddle Clean position", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "ZAxis")]
+        public double ZAxisNeedleCleanPos
+        {
+            get { return _zAxisNeedleCleanPos; }
+            set
+            {
+                if (_zAxisNeedleCleanPos == value) return;
+
+                OnRecipeChanged(_zAxisNeedleCleanPos, value);
+                _zAxisNeedleCleanPos = value;
                 OnPropertyChanged();
             }
         }
@@ -110,6 +125,7 @@ namespace SDV_MoldingInjection.Recipe
 
         private double _zAxisSafetyPos;
         private double _zAxisInjectPos;
+        private double _zAxisNeedleCleanPos;
 
         private double _gateClosePos;
         private double _gateOpenPos;
