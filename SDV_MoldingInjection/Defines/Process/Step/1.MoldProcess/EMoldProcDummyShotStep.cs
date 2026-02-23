@@ -4,17 +4,14 @@
     {
         Start,
 
-        XYAxis_H13DummyPos_Move,
-        XYAxis_H13DummyPos_Wait,
+        XYAxis_DummyPos_Move,
+        XYAxis_DummyPos_Wait,
 
-        Head13_DummyShot_Request,
-        Head13_DummyShot_DoneWait,
+        ZAxis_DummyPos_Move,
+        ZAxis_DummyPos_Wait,
 
-        XYAxis_H24DummyPos_Move,
-        XYAxis_H24DummyPos_Wait,
-
-        Head24_DummyShot_Request,
-        Head24_DummyShot_DoneWait,
+        SPDHead_DummyShot_Request,
+        SPDHead_DummyShot_DoneWait,
 
         End,
     }

@@ -13,33 +13,39 @@
         Mold_Chamber_CloseWarning,
         Mold_Chamber_CloseFail,
 
-        XAxis_Origin_TimeOut,
+        XAxis_Origin_TimeOut = 1550,
         XAxis_ReadyPos_MoveTimeOut,
         XAxis_InjectPos_MoveTimeOut,
         XAxis_DummyPos_MoveTimeOut,
 
-        YAxis_Origin_TimeOut,
+        YAxis_Origin_TimeOut = 1600,
         YAxis_ReadyPos_MoveTimeOut,
         YAxis_InjectPos_MoveTimeOut,
         YAxis_DummyPos_MoveTimeOut,
         XAxis_DotWeightingPos_MoveTimeOut,
 
-        Z1Axis_Origin_TimeOut,
+        Z1Axis_Origin_TimeOut = 1650,
         Z1Axis_SafetyPos_MoveTimeOut,
         Z1Axis_InjectPos_MoveTimeOut,
-        Z2Axis_Origin_TimeOut,
+        Z1Axis_DummyPos_MoveTimeOut,
+
+        Z2Axis_Origin_TimeOut = 1700,
         Z2Axis_SafetyPos_MoveTimeOut,
         Z2Axis_InjectPos_MoveTimeOut,
-        Z3Axis_Origin_TimeOut,
+        Z2Axis_DummyPos_MoveTimeOut,
+
+        Z3Axis_Origin_TimeOut = 1750,
         Z3Axis_SafetyPos_MoveTimeOut,
         Z3Axis_InjectPos_MoveTimeOut,
-        Z4Axis_Origin_TimeOut,
+        Z3Axis_DummyPos_MoveTimeOut,
+
+        Z4Axis_Origin_TimeOut = 1800,
         Z4Axis_SafetyPos_MoveTimeOut,
         Z4Axis_InjectPos_MoveTimeOut,
+        Z4Axis_DummyPos_MoveTimeOut,
 
-        BellowCyl_DownFail,
+        BellowCyl_DownFail = 1900,
         BellowCyl_UpFail,
-
         Chamber_VacuumDetectWarning,
         Chamber_LeftJig_TiltDetect,
         Chamber_RightJig_TiltDetect,
@@ -62,7 +68,10 @@
         H1_Assemble_CheckFail,
         H1_Balance_RequestWeight_Fail,
         H1_Balance_Zero_Fail,
-        H1_Balance_Fail,
+        /// <summary>
+        /// Balance data fail or syringe empty
+        /// </summary>
+        H1_Balance_ZeroWeighting_Fail,
 
         //--------- 4500 -> 4999 : SPD Head #2 Process Warning ---------
         P2Axis_Origin_Timeout = 4500,
@@ -72,7 +81,10 @@
         H2_Assemble_CheckFail,
         H2_Balance_RequestWeight_Fail,
         H2_Balance_Zero_Fail,
-        H2_Balance_Fail,
+        /// <summary>
+        /// Balance data fail or syringe empty
+        /// </summary>
+        H2_Balance_ZeroWeighting_Fail,
 
 
 
@@ -84,8 +96,10 @@
         H3_Assemble_CheckFail,
         H3_Balance_RequestWeight_Fail,
         H3_Balance_Zero_Fail,
-        H3_Balance_Fail,
-
+        /// <summary>
+        /// Balance data fail or syringe empty
+        /// </summary>
+        H3_Balance_ZeroWeighting_Fail,
 
 
         //--------- 6500 -> 6999 : SPD Head #3 Process Warning ---------
@@ -96,8 +110,9 @@
         H4_Assemble_CheckFail,
         H4_Balance_RequestWeight_Fail,
         H4_Balance_Zero_Fail,
-        H4_Balance_Fail,
-
-
+        /// <summary>
+        /// Balance data fail or syringe empty
+        /// </summary>
+        H4_Balance_ZeroWeighting_Fail,
     }
 }

@@ -19,7 +19,7 @@
         Gate_Open,
         Gate_OpenWait,
 
-        Inject_PosVel_Calculte,
+        Base_PosVel_Calculte,
 
         PAxis_InjectPos_Move,
         PAxis_InjectPos_MoveWait,

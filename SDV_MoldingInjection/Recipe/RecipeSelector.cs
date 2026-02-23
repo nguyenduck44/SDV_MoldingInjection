@@ -161,18 +161,21 @@ namespace SDV_MoldingInjection.Recipe
 
         public void Save()
         {
-            string currentRecipeFolder = Path.Combine(recipeFolder, RecipeSetting.CurrentRecipe);
-            string currentRecipeFile = Path.Combine(currentRecipeFolder, "Recipe.json");
-            if (Directory.Exists(currentRecipeFolder) == false)
-                MessageBox.Show($" Recipe folder \"{currentRecipeFolder}\" not found");
-
-            var settings = new JsonSerializerSettings
+            lock (_locker)
             {
-                TypeNameHandling = TypeNameHandling.Auto
-            };
+                string currentRecipeFolder = Path.Combine(recipeFolder, RecipeSetting.CurrentRecipe);
+                string currentRecipeFile = Path.Combine(currentRecipeFolder, "Recipe.json");
+                if (Directory.Exists(currentRecipeFolder) == false)
+                    MessageBox.Show($" Recipe folder \"{currentRecipeFolder}\" not found");
 
-            string serializeStr = JsonConvert.SerializeObject(CurrentRecipe, Formatting.Indented, settings);
-            File.WriteAllText(currentRecipeFile, serializeStr);
+                var settings = new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.Auto
+                };
+
+                string serializeStr = JsonConvert.SerializeObject(CurrentRecipe, Formatting.Indented, settings);
+                File.WriteAllText(currentRecipeFile, serializeStr);
+            }
         }
 
         public void UpdateValidRecipes()
@@ -218,5 +221,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
         #endregion
+
+        private readonly object _locker = new object();
     }
 }

@@ -19,7 +19,7 @@ namespace SDV_MoldingInjection.Recipe
         public event Action<ILanguageDefinition> SelectedLanguageEvent;
         public event Action SelectedLanguageLoadAllRecipe;
 
-        [SingleRecipeDescription(Description = "Resin Weight", Unit = Unit.Miligam)]
+        [SingleRecipeDescription(Description = "Resin Weight", Unit = Unit.mg)]
         public double ResinWeight
         {
             get { return _resinWeight; }
@@ -32,7 +32,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "Resin Weight Spec", Unit = Unit.Miligam)]
+        [SingleRecipeDescription(Description = "Resin Weight Spec", Unit = Unit.mg)]
         public double ResinWeightSpec
         {
             get { return _resinWeightSpec; }

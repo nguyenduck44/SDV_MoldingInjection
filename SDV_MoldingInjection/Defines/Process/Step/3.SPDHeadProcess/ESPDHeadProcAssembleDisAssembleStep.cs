@@ -19,6 +19,12 @@
         PistonCyl_Down,
         PistonCyl_DownWait,
 
+        GAxis_OpenPosition_Move,
+        GAxis_OpenPosition_MoveWait,
+
+        PAxis_BasePosition_Move,
+        PAxis_BasePosition_Wait,
+
         End,
     }
 }

@@ -48,6 +48,21 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        [SingleRecipeDescription(Description = "ZAxis Dummy position", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "ZAxis")]
+        public double ZAxisDummyPos
+        {
+            get { return _zAxisDummyPos; }
+            set
+            {
+                if (_zAxisDummyPos == value) return;
+
+                OnRecipeChanged(_zAxisDummyPos, value);
+                _zAxisDummyPos = value;
+                OnPropertyChanged();
+            }
+        }
+
         [SingleRecipeDescription(Description = "ZAxis Neddle Clean position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "ZAxis")]
         public double ZAxisNeedleCleanPos
@@ -92,20 +107,6 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "PAxis CHARGING position", Unit = Unit.Degree)]
-        public double PAxisChargePos
-        {
-            get { return _pAxisChargePos; }
-            set
-            {
-                if (_pAxisChargePos == value) return;
-
-                OnRecipeChanged(_pAxisChargePos, value);
-                _pAxisChargePos = value;
-                OnPropertyChanged();
-            }
-        }
-
         [SingleRecipeDescription(Description = "PAxis INJECT position", Unit = Unit.Degree)]
         public double PAxisInjectPos
         {
@@ -120,18 +121,31 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        public double PAxisInjectChargePos
+        {
+            get { return _pAxisInjectChargePos; }
+            set
+            {
+                if (_pAxisInjectChargePos == value) return;
+
+                OnRecipeChanged(_pAxisInjectChargePos, value);
+                _pAxisInjectChargePos = value;
+                OnPropertyChanged();
+            }
+        }
         #region Privates
         private bool _headSkip;
 
         private double _zAxisSafetyPos;
         private double _zAxisInjectPos;
         private double _zAxisNeedleCleanPos;
+        private double _zAxisDummyPos;
 
         private double _gateClosePos;
         private double _gateOpenPos;
 
-        private double _pAxisChargePos;
         private double _pAxisInjectPos;
+        private double _pAxisInjectChargePos;
         #endregion
     }
 }

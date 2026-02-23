@@ -65,62 +65,32 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "X-Axis dummy shot position for Head 1, 3", Unit = Unit.mm)]
+        [SingleRecipeDescription(Description = "X-Axis dummy shot position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
-        public double XAxisH13DummyPos
+        public double XAxisDummyPos
         {
-            get { return _xAxisH13DummyPos; }
+            get { return _xAxisDummyPos; }
             set
             {
-                if (_xAxisH13DummyPos == value) return;
+                if (_xAxisDummyPos == value) return;
 
-                OnRecipeChanged(_xAxisH13DummyPos, value);
-                _xAxisH13DummyPos = value;
+                OnRecipeChanged(_xAxisDummyPos, value);
+                _xAxisDummyPos = value;
                 OnPropertyChanged();
             }
         }
 
-        [SingleRecipeDescription(Description = "Y-Axis dummy shot position for Head 1, 3", Unit = Unit.mm)]
+        [SingleRecipeDescription(Description = "Y-Axis dummy shot position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "YAxis")]
-        public double YAxisH13DummyPos
+        public double YAxisDummyPos
         {
-            get { return _yAxisH13DummyPos; }
+            get { return _yAxisDummyPos; }
             set
             {
-                if (_yAxisH13DummyPos == value) return;
+                if (_yAxisDummyPos == value) return;
 
-                OnRecipeChanged(_yAxisH13DummyPos, value);
-                _yAxisH13DummyPos = value;
-                OnPropertyChanged();
-            }
-        }
-
-        [SingleRecipeDescription(Description = "X-Axis dummy shot position for Head 2, 4", Unit = Unit.mm)]
-        [SinglePositionTeaching(Motion = "XAxis")]
-        public double XAxisH24DummyPos
-        {
-            get { return _xAxisH24DummyPos; }
-            set
-            {
-                if (_xAxisH24DummyPos == value) return;
-
-                OnRecipeChanged(_xAxisH24DummyPos, value);
-                _xAxisH24DummyPos = value;
-                OnPropertyChanged();
-            }
-        }
-
-        [SingleRecipeDescription(Description = "Y-Axis dummy shot position for Head 2, 4", Unit = Unit.mm)]
-        [SinglePositionTeaching(Motion = "YAxis")]
-        public double YAxisH24DummyPos
-        {
-            get { return _yAxisH24DummyPos; }
-            set
-            {
-                if (_yAxisH24DummyPos == value) return;
-
-                OnRecipeChanged(_yAxisH24DummyPos, value);
-                _yAxisH24DummyPos = value;
+                OnRecipeChanged(_yAxisDummyPos, value);
+                _yAxisDummyPos = value;
                 OnPropertyChanged();
             }
         }
@@ -218,8 +188,8 @@ namespace SDV_MoldingInjection.Recipe
         private double _yAxisReadyPos;
         private double _yAxisInjectPos;
 
-        private double _xAxisH13DummyPos;
-        private double _yAxisH13DummyPos;
+        private double _xAxisDummyPos;
+        private double _yAxisDummyPos;
         private double _xAxisH24DummyPos;
         private double _yAxisH24DummyPos;
 

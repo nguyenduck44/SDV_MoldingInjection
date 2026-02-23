@@ -23,7 +23,13 @@ namespace SDV_MoldingInjection.Defines
 
         PAxis_Origin,
         PAxis_OriginWait,
-        
+
+        GAxis_OpenPosition_Move,
+        GAxis_OpenPosition_MoveWait,
+
+        PAxis_BasePosition_Move,
+        PAxis_BasePosition_Wait,
+
         SetFlag_SPDHeadOriginDone,
         ClearFlag_SPDHeadOriginDone,
 
