@@ -45,7 +45,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "Inject Time", Unit = Unit.Miligam)]
+        [SingleRecipeDescription(Description = "Inject Time", Unit = Unit.Second)]
         public double InjectTime
         {
             get { return _injectTime; }
