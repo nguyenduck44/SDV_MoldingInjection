@@ -414,6 +414,11 @@ namespace SDV_MoldingInjection.Process
             {
                 case ESPDHeadProcCommonStep.Start:
                     Log.Debug($"{sequence} start");
+                    if (sequence == ESequence.BubbleRemove)
+                    {
+                        _bubbleRemoveCount = 1;
+                    }
+
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.Gate_Close:
@@ -422,6 +427,7 @@ namespace SDV_MoldingInjection.Process
                         Step.RunStep = (int)ESPDHeadProcCommonStep.PAxis_ChargePos_Move;
                         break;
                     }
+
                     Log.Debug($"{GAxis.Name} moving to ClosePos [{_currentSPDHeadRecipe.GateClosePos}°]");
                     GAxis.MoveAbs(_currentSPDHeadRecipe.GateClosePos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
@@ -443,11 +449,12 @@ namespace SDV_MoldingInjection.Process
                     {
                         case ESequence.ResinInject:
                             _pAxisCharge_Pos = _currentSPDHeadRecipe.PAxisInjectChargePos;
-                            _pAxisCharge_Vel = PAxis.Parameter.Velocity;
                             break;
                         case ESequence.DummyShot:
+                            _pAxisCharge_Pos = _pAxisBase_Pos + (_pAxisInjectCharge_Height / 10);
                             break;
                         case ESequence.BubbleRemove:
+                            _pAxisCharge_Pos = _currentSPDHeadRecipe.PAxisInjectChargePos;
                             break;
                         default: throw new NotImplementedException();
                     }
@@ -461,7 +468,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"{PAxis.Name} moving to ChargePos [{_pAxisCharge_Pos}mm]");
-                    PAxis.MoveAbs(_pAxisCharge_Pos, _pAxisCharge_Vel);
+                    PAxis.MoveAbs(_pAxisCharge_Pos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
                         () => PAxis.IsOnPosition(_pAxisCharge_Pos));
                     Step.RunStep++;
@@ -486,6 +493,69 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Input detect {ESPDHeadProcInput.WorkRequest}");
                     Step.RunStep++;
                     break;
+                case ESPDHeadProcCommonStep.Base_PosVel_Calculte:
+                    switch (sequence)
+                    {
+                        case ESequence.ResinInject:
+                            _pAxisInject_Pos = _pAxisBase_Pos;
+                            _pAxisInject_Vel = _pAxisInjectCharge_Height / _currentRecipe.CommonRecipe.InjectTime;
+                            break;
+                        case ESequence.DummyShot:
+                            _pAxisInject_Pos = _pAxisBase_Pos;
+                            _pAxisInject_Vel = PAxis.Parameter.Velocity;
+                            break;
+                        case ESequence.BubbleRemove:
+                            if (_bubbleRemoveCount == _currentSPDHeadRecipe.BubbleRemoveTurn)
+                            {
+                                _pAxisInject_Pos = _pAxisBase_Pos;
+                            }
+                            else
+                            {
+                                _pAxisInject_Pos = _currentSPDHeadRecipe.PAxisInjectChargePos - (_bubbleRemoveCount * (_currentSPDHeadRecipe.PAxisInjectChargePos - _pAxisBase_Pos) / _currentSPDHeadRecipe.BubbleRemoveTurn);
+                            }
+
+                            _gAxisBubbleRemove_Pos = GAxis.Status.ActualPosition + 180;
+                            _pAxisInject_Vel = PAxis.Parameter.Velocity;
+                            break;
+                        default: throw new NotImplementedException();
+                    }
+
+                    if (_pAxisInject_Pos > _pAxisBase_Pos)
+                    {
+                        RaiseHeadWarning(EWarning.H1_BubbleRemove_InjectPosOverBasePos);
+                        break;
+                    }
+
+                    if (sequence != ESequence.BubbleRemove)
+                    {
+                        Step.RunStep = (int)ESPDHeadProcCommonStep.Gate_Open;
+                        break;
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcCommonStep.GAxis_BubbleRemove:
+                    Log.Debug("GAxis bubble remove start");
+                    GAxis.MoveAbs(_gAxisBubbleRemove_Pos);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () =>
+                            GAxis.IsOnPosition(_gAxisBubbleRemove_Pos));
+                    break;
+                case ESPDHeadProcCommonStep.GAxis_BubbleRemove_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseHeadWarning(EWarning.H1_GAxis_BubbleRemove_Timeout);
+                    }
+
+                    _bubbleRemoveCount++;
+                    Log.Debug($"Bubble remove turn: {_bubbleRemoveCount}");
+                    if (_bubbleRemoveCount <= _currentSPDHeadRecipe.BubbleRemoveTurn)
+                    {
+                        Step.RunStep = (int)ESPDHeadProcCommonStep.Base_PosVel_Calculte;
+                        break;
+                    }
+
+                    Step.RunStep++;
+                    break;
                 case ESPDHeadProcCommonStep.Gate_Open:
                     Log.Debug($"{GAxis.Name} moving to OpenPos [{_currentSPDHeadRecipe.GateOpenPos}°]");
                     GAxis.MoveAbs(_currentSPDHeadRecipe.GateOpenPos);
@@ -501,22 +571,6 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"{GAxis.Name} moving to OpenPos done");
-                    Step.RunStep++;
-                    break;
-                case ESPDHeadProcCommonStep.Base_PosVel_Calculte:
-                    _pAxisInject_Pos = _pAxisBase_Pos;
-
-                    switch (sequence)
-                    {
-                        case ESequence.ResinInject:
-                            _pAxisInject_Vel = PAxis.Parameter.Velocity;
-                            break;
-                        case ESequence.DummyShot:
-                            break;
-                        case ESequence.BubbleRemove:
-                            break;
-                        default: throw new NotImplementedException();
-                    }
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.PAxis_InjectPos_Move:
@@ -667,7 +721,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"{PAxis.Name} moving to InjectPos done {_removeResinCount} step");
                     _removeResinCount++;
 
-                    if(_removeResinCount < 2)
+                    if (_removeResinCount < 2)
                     {
                         Step.RunStep = (int)ESPDHeadProcDotWeightingStep.Gate_Close;
                         break;
@@ -685,7 +739,7 @@ namespace SDV_MoldingInjection.Process
                         RaiseHeadWarning(EWarning.H1_Balance_RequestWeight_Fail);
                         break;
                     }
-                    
+
                     if (Balance.WeightData.Weight <= 0)
                     {
                         RaiseHeadWarning(EWarning.H1_Balance_ZeroWeighting_Fail);
@@ -965,11 +1019,13 @@ namespace SDV_MoldingInjection.Process
         private double _pAxisCharge_Vel;
         private double _pAxisInject_Pos;
         private double _pAxisInject_Vel;
+        private double _gAxisBubbleRemove_Pos;
 
         private double _pAxisAssemble_Pos = 13.4375;
         private double _pAxisBase_Pos = 20.875;
 
         public int _removeResinCount;
+        private int _bubbleRemoveCount;
 
         private double _pAxisInjectCharge_Height;
         private double _pAxisInjectCharge_Pos => _pAxisBase_Pos - _pAxisInjectCharge_Height;

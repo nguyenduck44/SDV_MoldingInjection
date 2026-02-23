@@ -72,6 +72,9 @@
         /// Balance data fail or syringe empty
         /// </summary>
         H1_Balance_ZeroWeighting_Fail,
+        H1_PAxis_BubbleRemove_Timeout,
+        H1_GAxis_BubbleRemove_Timeout,
+        H1_BubbleRemove_InjectPosOverBasePos,
 
         //--------- 4500 -> 4999 : SPD Head #2 Process Warning ---------
         P2Axis_Origin_Timeout = 4500,
@@ -85,7 +88,9 @@
         /// Balance data fail or syringe empty
         /// </summary>
         H2_Balance_ZeroWeighting_Fail,
-
+        H2_PAxis_BubbleRemove_Timeout,
+        H2_GAxis_BubbleRemove_Timeout,
+        H2_BubbleRemove_InjectPosOverBasePos,
 
 
         //--------- 5500 -> 5999 : SPD Head #3 Process Warning ---------
@@ -100,7 +105,9 @@
         /// Balance data fail or syringe empty
         /// </summary>
         H3_Balance_ZeroWeighting_Fail,
-
+        H3_PAxis_BubbleRemove_Timeout,
+        H3_GAxis_BubbleRemove_Timeout,
+        H3_BubbleRemove_InjectPosOverBasePos,
 
         //--------- 6500 -> 6999 : SPD Head #3 Process Warning ---------
         P4Axis_Origin_Timeout = 6500,
@@ -114,5 +121,8 @@
         /// Balance data fail or syringe empty
         /// </summary>
         H4_Balance_ZeroWeighting_Fail,
+        H4_PAxis_BubbleRemove_Timeout,
+        H4_GAxis_BubbleRemove_Timeout,
+        H4_BubbleRemove_InjectPosOverBasePos,
     }
 }

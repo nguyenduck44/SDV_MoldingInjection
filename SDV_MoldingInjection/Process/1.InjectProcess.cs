@@ -180,13 +180,13 @@ namespace SDV_MoldingInjection.Process
                     Sequence_DotWeighting();
                     break;
                 case ESequence.HeadAssemble:
-                    Sequence_HeadAssemble();
+                    Sequence_DummyShot();
                     break;
                 case ESequence.HeadDisassemble:
-                    Sequence_HeadDisassemble();
+                    Sequence_DummyShot();
                     break;
                 case ESequence.BubbleRemove:
-                    Sequence_BubbleRemove();
+                    Sequence_DummyShot();
                     break;
             }
 
@@ -658,7 +658,7 @@ namespace SDV_MoldingInjection.Process
                     break;
 
                 case EMoldProcDummyShotStep.XYAxis_DummyPos_Move:
-                    Log.Debug($"Moving XY to dummy shot position for Head 1, 3: X={_currentRecipe.InjectRecipe.XAxisDummyPos}, Y={_currentRecipe.InjectRecipe.YAxisDummyPos}");
+                    Log.Debug($"Moving XY to dummy shot position: X={_currentRecipe.InjectRecipe.XAxisDummyPos}, Y={_currentRecipe.InjectRecipe.YAxisDummyPos}");
                     XAxis.MoveAbs(_currentRecipe.InjectRecipe.XAxisDummyPos);
                     YAxis.MoveAbs(_currentRecipe.InjectRecipe.YAxisDummyPos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () =>
@@ -675,7 +675,7 @@ namespace SDV_MoldingInjection.Process
                             RaiseWarning(EWarning.YAxis_DummyPos_MoveTimeOut);
                         break;
                     }
-                    Log.Debug("Reached dummy shot position for Head 1, 3.");
+                    Log.Debug("Reached dummy shot position");
                     Step.RunStep++;
                     break;
                 case EMoldProcDummyShotStep.ZAxis_DummyPos_Move:
@@ -700,29 +700,24 @@ namespace SDV_MoldingInjection.Process
                     }
                     Step.RunStep++;
                     break;
-                case EMoldProcDummyShotStep.SPDHead_DummyShot_Request:
-                    Log.Debug("Sending dummy shot request");
-                    procOutputs[EInjectProcOutput.SPDHead1_DummyShotRequest].Value = true;
-                    procOutputs[EInjectProcOutput.SPDHead2_DummyShotRequest].Value = true;
-                    procOutputs[EInjectProcOutput.SPDHead3_DummyShotRequest].Value = true;
-                    procOutputs[EInjectProcOutput.SPDHead4_DummyShotRequest].Value = true;
+                case EMoldProcDummyShotStep.SPDHead_InjectResin_Request:
+                    Log.Debug("Sending inject resin request");
+                    procOutputs[EInjectProcOutput.SPDHeadWorkRequest].Value = true;
                     Step.RunStep++;
                     break;
 
-                case EMoldProcDummyShotStep.SPDHead_DummyShot_DoneWait:
-                    if (!procInputs[EInjectProcInput.SPDHead1_DummyShotDone].Value ||
-                        !procInputs[EInjectProcInput.SPDHead2_DummyShotDone].Value ||
-                        !procInputs[EInjectProcInput.SPDHead3_DummyShotDone].Value ||
-                        !procInputs[EInjectProcInput.SPDHead4_DummyShotDone].Value)
+                case EMoldProcDummyShotStep.SPDHead_InjectResin_DoneWait:
+                    if (IsSPDHeadWorkDone(ESPDHead.SPDHead1) == false ||
+                        IsSPDHeadWorkDone(ESPDHead.SPDHead2) == false ||
+                        IsSPDHeadWorkDone(ESPDHead.SPDHead3) == false ||
+                        IsSPDHeadWorkDone(ESPDHead.SPDHead4) == false)
                     {
                         Wait(50);
                         break;
                     }
-                    Log.Debug("Dummy shot done.");
-                    procOutputs[EInjectProcOutput.SPDHead1_DummyShotRequest].Value = false;
-                    procOutputs[EInjectProcOutput.SPDHead2_DummyShotRequest].Value = false;
-                    procOutputs[EInjectProcOutput.SPDHead3_DummyShotRequest].Value = false;
-                    procOutputs[EInjectProcOutput.SPDHead4_DummyShotRequest].Value = false;
+
+                    Log.Debug("Inject Resin done.");
+                    procOutputs[EInjectProcOutput.SPDHeadWorkRequest].Value = false;
                     Step.RunStep++;
                     break;
                 case EMoldProcDummyShotStep.End:
@@ -854,39 +849,6 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Sequence = ESequence.Loading;
-                    break;
-            }
-        }
-
-        private void Sequence_BubbleRemove()
-        {
-            switch ((EMoldProcBubbleRemoveStep)Step.RunStep)
-            {
-                case EMoldProcBubbleRemoveStep.Start:
-                    break;
-                case EMoldProcBubbleRemoveStep.End:
-                    break;
-            }
-        }
-
-        private void Sequence_HeadDisassemble()
-        {
-            switch ((EMoldProcHeadDisassembleStep)Step.RunStep)
-            {
-                case EMoldProcHeadDisassembleStep.Start:
-                    break;
-                case EMoldProcHeadDisassembleStep.End:
-                    break;
-            }
-        }
-
-        private void Sequence_HeadAssemble()
-        {
-            switch ((EMoldProcHeadAssembleStep)Step.RunStep)
-            {
-                case EMoldProcHeadAssembleStep.Start:
-                    break;
-                case EMoldProcHeadAssembleStep.End:
                     break;
             }
         }

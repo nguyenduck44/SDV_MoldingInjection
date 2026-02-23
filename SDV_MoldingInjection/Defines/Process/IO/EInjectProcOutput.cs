@@ -8,10 +8,10 @@
         DryPump_PurgeRequest,
         SPDHeadWorkRequest,
 
-        SPDHead1_DummyShotRequest,
-        SPDHead2_DummyShotRequest,
-        SPDHead3_DummyShotRequest,
-        SPDHead4_DummyShotRequest,
+        SPDHead1_RemoveResinRequest,
+        SPDHead2_RemoveResinRequest,
+        SPDHead3_RemoveResinRequest,
+        SPDHead4_RemoveResinRequest,
 
         SPDHead1_DotWeightingRequest,
         SPDHead2_DotWeightingRequest,

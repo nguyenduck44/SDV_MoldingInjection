@@ -16,10 +16,13 @@
         WorkRequest_Wait,
 
         // ----- INJECT PHASE -----
+        Base_PosVel_Calculte,
+
+        GAxis_BubbleRemove,
+        GAxis_BubbleRemove_Wait,
+
         Gate_Open,
         Gate_OpenWait,
-
-        Base_PosVel_Calculte,
 
         PAxis_InjectPos_Move,
         PAxis_InjectPos_MoveWait,

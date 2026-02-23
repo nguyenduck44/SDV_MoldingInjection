@@ -121,6 +121,20 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        [SingleRecipeDescription(Description = "Bubble remove turn", Unit = Unit.Degree)]
+        public double BubbleRemoveTurn
+        {
+            get { return _bubbleRemoveTurn; }
+            set
+            {
+                if (_bubbleRemoveTurn == value) return;
+
+                OnRecipeChanged(_bubbleRemoveTurn, value);
+                _bubbleRemoveTurn = value;
+                OnPropertyChanged();
+            }
+        }
+
         public double PAxisInjectChargePos
         {
             get { return _pAxisInjectChargePos; }
@@ -146,6 +160,9 @@ namespace SDV_MoldingInjection.Recipe
 
         private double _pAxisInjectPos;
         private double _pAxisInjectChargePos;
+
+        private double _bubbleRemoveTurn;
+
         #endregion
     }
 }

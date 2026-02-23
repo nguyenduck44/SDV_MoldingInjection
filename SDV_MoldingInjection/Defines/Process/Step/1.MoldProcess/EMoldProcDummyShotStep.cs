@@ -10,8 +10,8 @@
         ZAxis_DummyPos_Move,
         ZAxis_DummyPos_Wait,
 
-        SPDHead_DummyShot_Request,
-        SPDHead_DummyShot_DoneWait,
+        SPDHead_InjectResin_Request,
+        SPDHead_InjectResin_DoneWait,
 
         End,
     }
