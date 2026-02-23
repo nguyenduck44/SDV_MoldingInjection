@@ -94,11 +94,16 @@
                         </Grid.RowDefinitions>
                         <UniformGrid
                             Columns="2" Margin="0 5 0 0"
-                            Height="40"
+                            Height="50"
                             VerticalAlignment="Top"
                             >
-                            <Button Content="Move to Target" Margin="2"/>
-                            <Button Content="Current -> Target" Margin="2"/>
+                            <Button
+                                Command="{Binding MoveToTarget}"
+                                Content="Move to Target" Margin="2"
+                                />
+                            <Button Content="Save Current to Target"
+                                    Command="{Binding SaveCurrentToTarget}" Margin="2"
+                                    />
                         </UniformGrid>
 
                         <uiControls:JogControlView
@@ -111,8 +116,14 @@
                         <UniformGrid
                             Grid.Row="2" Columns="2" Margin="0 5 0 0"
                             >
-                            <Button Content="Save" Margin="2"/>
-                            <Button Content="Manual" Margin="2"/>
+                            <Button
+                                Background="LightBlue"
+                                Command="{Binding TeachPositionSaveCommand}"
+                                Content="Save" Margin="2"/>
+                            <Button
+                                Background="Coral"
+                                Command="{Binding TeachPositionCancelCommand}"
+                                Content="Cancel" Margin="2"/>
                         </UniformGrid>
                     </Grid>
                 </GroupBox>

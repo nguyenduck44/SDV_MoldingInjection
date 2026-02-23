@@ -15,7 +15,7 @@ using System.Windows.Input;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
-    public class DryPumpMaintenanceViewModel : MaintenanceViewModel<ESemiSequence, RecipeList>
+    public class DryPumpMaintenanceViewModel : AppMaintenanceViewModel
     {
         #region Properties
         public double PressureSpec => _recipeSelector.CurrentRecipe.DryPumpRecipe.VacuumPressureSpec;
@@ -57,7 +57,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         public DryPumpMaintenanceViewModel(NavigationStore navigationStore,
             Devices devices, RecipeSelector recipeSelector, MachineStatus machineStatus)
-            : base(navigationStore, machineStatus)
+            : base(navigationStore, machineStatus, recipeSelector)
         {
             _devices = devices;
             _recipeSelector = recipeSelector;
@@ -115,12 +115,12 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 Name = "Ready Pos",
                 Points = new ObservableCollection<PositionPoint>
                 {
-                    positionManager.CreatePositionPoint(_currentRecipe => _currentRecipe.InjectRecipe.XAxisReadyPos, _devices.Motions.XAxis),
-                    positionManager.CreatePositionPoint(_currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
-                    positionManager.CreatePositionPoint(_currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                    positionManager.CreatePositionPoint(_currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                    positionManager.CreatePositionPoint(_currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                    positionManager.CreatePositionPoint(_currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
+                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisReadyPos, _devices.Motions.XAxis),
+                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
+                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
+                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
+                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
+                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
                 }
             };
 

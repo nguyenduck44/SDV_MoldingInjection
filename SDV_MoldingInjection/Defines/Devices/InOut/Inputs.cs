@@ -172,7 +172,7 @@ namespace SDV_MoldingInjection.Defines
         public IDInput H4_SyringeAir => _dHead4InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.SYRINGE_AIR);
         #endregion
 
-        public bool DoorClose => DoorCloseLeft.Value && DoorLockLeft.Value
-            && DoorCloseRight.Value && DoorLockRight.Value;
+        public bool DoorClose => !(DoorCloseLeft.Value && DoorLockLeft.Value
+            && DoorCloseRight.Value && DoorLockRight.Value);
     }
 }

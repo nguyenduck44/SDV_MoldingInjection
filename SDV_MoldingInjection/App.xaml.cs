@@ -84,7 +84,9 @@ namespace SDV_MoldingInjection
             if (isInputSimInstance)
             {
                 Window inputSimWindow = new InputSimulationView();
-                inputSimWindow.DataContext = AppHost!.Services.GetRequiredService<IInputSimulationViewModel>();
+                var inputSimulationVM = AppHost!.Services.GetRequiredService<IInputSimulationViewModel>();
+                inputSimulationVM.SetOriginInputsCommand?.Execute(null);
+                inputSimWindow.DataContext = inputSimulationVM;
                 inputSimWindow.Show();
                 return;
             }
