@@ -1134,48 +1134,48 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Z axis at safety position.");
                     Step.RunStep++;
                     break;
-                case EMoldProcDotWeightingStep.XAxis_DotWeightingPos_Move:
-                    Log.Debug($"Moving X to dot weighting position");
-                    XAxis.MoveAbs(_currentRecipe.InjectRecipe.XAxisDotWeightingPos);
+                case EMoldProcDotWeightingStep.YAxis_ReadyPos_Move:
+                    Log.Debug($"Moving Y axis to ready position");
+                    YAxis.MoveAbs(_currentRecipe.InjectRecipe.YAxisReadyPos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () =>
-                        XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisDotWeightingPos));
+                        YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisReadyPos));
                     Step.RunStep++;
                     break;
-                case EMoldProcDotWeightingStep.XAxis_DotWeightingPos_MoveWait:
+                case EMoldProcDotWeightingStep.YAxis_ReadyPos_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        if (!XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisDotWeightingPos))
-                            RaiseWarning(EWarning.XAxis_DotWeightingPos_MoveTimeOut);
+                        if (!YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisReadyPos))
+                            RaiseWarning(EWarning.YAxis_ReadyPos_MoveTimeOut);
                         break;
                     }
 
-                    Log.Debug("X Axis move dot weighting position done");
+                    Log.Debug("Y Axis move ready position done");
 
                     if(_currentRecipe.SPDHead1_Recipe.HeadSkip && _currentRecipe.SPDHead3_Recipe.HeadSkip)
                     {
                         Log.Debug("Head 1, 3 are skipped, skip to Head 2, 4 dot weighting");
-                        Step.RunStep = (int)EMoldProcDotWeightingStep.YAxis_H24DotWeightingPos_Move;
+                        Step.RunStep = (int)EMoldProcDotWeightingStep.XAxis_H24DotWeightingPos_Move;
                         break;
                     }
 
                     Step.RunStep++;
                     break;
-                case EMoldProcDotWeightingStep.YAxis_H13DotWeightingPos_Move:
+                case EMoldProcDotWeightingStep.XAxis_H13DotWeightingPos_Move:
                     Log.Debug($"Moving Y to dot weighting position for Head 1, 3");
-                    YAxis.MoveAbs(_currentRecipe.InjectRecipe.YAxisH13DotWeightingPos);
+                    XAxis.MoveAbs(_currentRecipe.InjectRecipe.XAxisH13DotWeightingPos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () =>
-                        YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisH13DotWeightingPos));
+                        XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisH13DotWeightingPos));
                     Step.RunStep++;
                     break;
-                case EMoldProcDotWeightingStep.YAxis_H13DotWeightingPos_MoveWait:
+                case EMoldProcDotWeightingStep.XAxis_H13DotWeightingPos_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        if (!YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisH13DotWeightingPos))
-                            RaiseWarning(EWarning.YAxis_DotWeightingPos_MoveTimeOut);
+                        if (!XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisH13DotWeightingPos))
+                            RaiseWarning(EWarning.XAxis_DotWeightingPos_MoveTimeOut);
                         break;
                     }
 
-                    Log.Debug("YAxis move dot weighting position for Head 1, 3 done");
+                    Log.Debug("XAxis move dot weighting position for Head 1, 3 done");
                     Step.RunStep++;
                     break;
                 case EMoldProcDotWeightingStep.Head13_DotWeighting_Request:
@@ -1197,7 +1197,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
 
-                case EMoldProcDotWeightingStep.YAxis_H24DotWeightingPos_Move:
+                case EMoldProcDotWeightingStep.XAxis_H24DotWeightingPos_Move:
                     if(_currentRecipe.SPDHead2_Recipe.HeadSkip && _currentRecipe.SPDHead4_Recipe.HeadSkip)
                     {
                         Log.Debug("Head 2, 4 are skipped, skip to end");
@@ -1205,21 +1205,21 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Debug($"Moving Y to dot weighting position for Head 2, 4");
-                    YAxis.MoveAbs(_currentRecipe.InjectRecipe.YAxisH24DotWeightingPos);
+                    Log.Debug($"Moving X axis to dot weighting position for Head 2, 4");
+                    XAxis.MoveAbs(_currentRecipe.InjectRecipe.XAxisH24DotWeightingPos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () =>
-                        YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisH24DotWeightingPos));
+                        XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisH24DotWeightingPos));
                     Step.RunStep++;
                     break;
-                case EMoldProcDotWeightingStep.YAxis_H24DotWeightingPos_MoveWait:
+                case EMoldProcDotWeightingStep.XAxis_H24DotWeightingPos_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        if (!YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisH24DotWeightingPos))
-                            RaiseWarning(EWarning.YAxis_DotWeightingPos_MoveTimeOut);
+                        if (!XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisH24DotWeightingPos))
+                            RaiseWarning(EWarning.XAxis_DotWeightingPos_MoveTimeOut);
                         break;
                     }
 
-                    Log.Debug("YAxis move dot weighting position for Head 2, 4 done");
+                    Log.Debug("XAxis move dot weighting position for Head 2, 4 done");
                     Step.RunStep++;
                     break;
 
