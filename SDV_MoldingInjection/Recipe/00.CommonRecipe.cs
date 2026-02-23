@@ -45,7 +45,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "Resin Weight Spec", Unit = Unit.Miligam)]
+        [SingleRecipeDescription(Description = "Inject Time", Unit = Unit.Miligam)]
         public double InjectTime
         {
             get { return _injectTime; }
