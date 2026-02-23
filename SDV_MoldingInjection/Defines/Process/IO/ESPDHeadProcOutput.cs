@@ -1,9 +1,11 @@
-﻿namespace SDV_MoldingInjection.Defines
+namespace SDV_MoldingInjection.Defines
 {
     public enum ESPDHeadProcOutput
     {
         OriginDone,
 
         InjectFinish,
+
+        DotWeightingDone,
     }
 }

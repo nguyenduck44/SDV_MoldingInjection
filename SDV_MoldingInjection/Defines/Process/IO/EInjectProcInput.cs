@@ -19,5 +19,10 @@
         SPDHead2_DummyShotDone,
         SPDHead3_DummyShotDone,
         SPDHead4_DummyShotDone,
+
+        SPDHead1_DotWeightingDone,
+        SPDHead2_DotWeightingDone,
+        SPDHead3_DotWeightingDone,
+        SPDHead4_DotWeightingDone,
     }
 }

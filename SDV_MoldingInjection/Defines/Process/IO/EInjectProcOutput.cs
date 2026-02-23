@@ -12,5 +12,10 @@
         SPDHead2_DummyShotRequest,
         SPDHead3_DummyShotRequest,
         SPDHead4_DummyShotRequest,
+
+        SPDHead1_DotWeightingRequest,
+        SPDHead2_DotWeightingRequest,
+        SPDHead3_DotWeightingRequest,
+        SPDHead4_DotWeightingRequest,
     }
 }

@@ -5,5 +5,7 @@
         XYAxisMoveDummyPosFinish,
 
         WorkRequest,
+
+        DotWeightingRequest,
     }
 }

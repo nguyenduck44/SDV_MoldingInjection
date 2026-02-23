@@ -1,6 +1,7 @@
 ﻿using EQX.Core.Common;
 using EQX.Core.Vision.Algorithms;
 using EQX.Core.Vision.Grabber;
+using EQX.Device.Balance;
 using log4net;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -81,6 +82,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             RecipeSelector recipeSelector,
             ProcessIO processIO,
             IConfiguration configuration,
+            [FromKeyedServices("BalanceLeft")] MettlerToledoWKC204C balanceLeft,
+            [FromKeyedServices("BalanceRight")] MettlerToledoWKC204C balanceRight,
             InterlockService interlockService)
         {
             _devices = devices;
@@ -90,6 +93,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _recipeSelector = recipeSelector;
             _processIO = processIO;
             _configuration = configuration;
+            _balanceLeft = balanceLeft;
+            _balanceRight = balanceRight;
             _interlockService = interlockService;
 
             _task = new Task(() => { });
@@ -165,6 +170,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         break;
                     case EHandleStep.CommunicationHandle:
                         Log.Debug("Connect Modbus Communication");
+                        _balanceLeft.Connect();
+                        _balanceRight.Connect();
+
+                        if(_balanceLeft.IsConnected == false || _balanceRight.IsConnected == false)
+                        {
+                            ErrorMessages.Add("Balance Connection Failed.");
+                        }
 
                         Thread.Sleep(50);
                         _step++;
@@ -296,6 +308,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         _step++;
                         break;
                     case EHandleStep.CommunicationHandle:
+                        MessageText = "Disconnect Balance Devices";
+                        _balanceLeft.Disconnect();
+                        _balanceRight.Disconnect();
+                        
                         Thread.Sleep(50);
                         _step++;
                         break;
@@ -438,6 +454,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly RecipeSelector _recipeSelector;
         private readonly ProcessIO _processIO;
         private readonly IConfiguration _configuration;
+        private readonly MettlerToledoWKC204C _balanceLeft;
+        private readonly MettlerToledoWKC204C _balanceRight;
         private readonly InterlockService _interlockService;
         private readonly ICamera _alignCamera1;
         private readonly IVisionFlowRepository _visionFlowRepository;

@@ -246,6 +246,7 @@ namespace SDV_MoldingInjection.Process
 
                 _devices.Motions.All.ForEach(r => r.Stop());
                 _devices.Outputs.Lamp_Stop();
+                _devices.Outputs.EQPStop.Value = true;
                 Log.Info("ToStop Done, Stop");
             }
             else
@@ -264,6 +265,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("ToRun Start");
                     Step.ToRunStep++;
                     _devices.Outputs.Buzzer1On.Value = false;
+                    _devices.Outputs.EQPStop.Value = false;
                     break;
                 case ERootProcToRunStep.DoorSensorCheck:
                     //if (_machineStatus.IsByPassMode)
