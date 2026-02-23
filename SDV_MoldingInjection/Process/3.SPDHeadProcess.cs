@@ -1,8 +1,11 @@
-﻿using EQX.Core.InOut;
+using EQX.Core.InOut;
 using EQX.Core.Motion;
+using EQX.Device.Balance;
+using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Recipe;
+using System.Threading.Tasks;
 
 namespace SDV_MoldingInjection.Process
 {
@@ -106,12 +109,27 @@ namespace SDV_MoldingInjection.Process
         };
         #endregion
 
-        public SPDHeadProcess(Devices devices, RecipeSelector recipeSelector,
-            ProcessIO processIO, MachineStatus machineStatus)
+        #region Balance
+        private MettlerToledoWKC204C Balance => head switch
+        {
+            ESPDHead.SPDHead1 or ESPDHead.SPDHead2 => _balanceLeft,
+            ESPDHead.SPDHead3 or ESPDHead.SPDHead4 => _balanceRight,
+            _ => throw new Exception($"Invalid head: {head}")
+        };
+        #endregion
+
+        public SPDHeadProcess(Devices devices,
+            RecipeSelector recipeSelector,
+            ProcessIO processIO,
+            [FromKeyedServices("BalanceLeft")] MettlerToledoWKC204C balanceLeft,
+            [FromKeyedServices("BalanceRight")] MettlerToledoWKC204C balanceRight,
+            MachineStatus machineStatus)
         {
             _devices = devices;
             _recipeSelector = recipeSelector;
             _processIO = processIO;
+            _balanceLeft = balanceLeft;
+            _balanceRight = balanceRight;
             _machineStatus = machineStatus;
         }
 
@@ -323,7 +341,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESequence.DummyShot:
                     if (_currentSPDHeadRecipe.HeadSkip) Sequence = ESequence.Stop;
-                    Sequence_SPDHeadCommon(ESequence.DummyShot);
+                    Sequence_DotWeighting();
                     break;
                 case ESequence.DotWeighting:
                     if (_currentSPDHeadRecipe.HeadSkip) Sequence = ESequence.Stop;
@@ -361,7 +379,7 @@ namespace SDV_MoldingInjection.Process
             switch ((ESPDHeadProcCommonStep)Step.RunStep)
             {
                 case ESPDHeadProcCommonStep.Start:
-                    Log.Info($"{sequence} start");
+                    Log.Debug($"{sequence} start");
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.Gate_Close:
@@ -370,7 +388,7 @@ namespace SDV_MoldingInjection.Process
                         Step.RunStep = (int)ESPDHeadProcCommonStep.PAxis_ChargePos_Move;
                         break;
                     }
-                    Log.Info($"{GAxis.Name} moving to ClosePos [{_currentSPDHeadRecipe.GateClosePos}°]");
+                    Log.Debug($"{GAxis.Name} moving to ClosePos [{_currentSPDHeadRecipe.GateClosePos}°]");
                     GAxis.MoveAbs(_currentSPDHeadRecipe.GateClosePos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
                         () => IsGateOnClosePos);
@@ -383,7 +401,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Info($"{GAxis.Name} moving to ClosePos done");
+                    Log.Debug($"{GAxis.Name} moving to ClosePos done");
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.Charge_PosVel_Calculte:
@@ -433,11 +451,11 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Info($"Input detect {ESPDHeadProcInput.WorkRequest}");
+                    Log.Debug($"Input detect {ESPDHeadProcInput.WorkRequest}");
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.Gate_Open:
-                    Log.Info($"{GAxis.Name} moving to OpenPos [{_currentSPDHeadRecipe.GateOpenPos}°]");
+                    Log.Debug($"{GAxis.Name} moving to OpenPos [{_currentSPDHeadRecipe.GateOpenPos}°]");
                     GAxis.MoveAbs(_currentSPDHeadRecipe.GateOpenPos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
                         () => IsGateOnOpenPos);
@@ -450,7 +468,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Info($"{GAxis.Name} moving to OpenPos done");
+                    Log.Debug($"{GAxis.Name} moving to OpenPos done");
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.Inject_PosVel_Calculte:
@@ -488,7 +506,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.WorkDone_Send:
-                    Log.Info($"Set output {ESPDHeadProcOutput.InjectFinish}");
+                    Log.Debug($"Set output {ESPDHeadProcOutput.InjectFinish}");
                     procOutputs[ESPDHeadProcOutput.InjectFinish].Value = true;
                     Step.RunStep++;
                     break;
@@ -510,8 +528,192 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     // TODO: Implement this later
-                    Log.Info($"{sequence} end, starting new cycle");
+                    Log.Debug($"{sequence} end, starting new cycle");
                     Step.RunStep = (int)ESPDHeadProcCommonStep.Gate_Close;
+                    break;
+            }
+        }
+
+        private void Sequence_DotWeighting()
+        {
+            switch ((ESPDHeadProcDotWeightingStep)Step.RunStep)
+            {
+                case ESPDHeadProcDotWeightingStep.Start:
+                    Log.Debug($"{ESequence.DotWeighting} start");
+                    _removeResinCount = 0;
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcDotWeightingStep.Charge_PosVel_Calculte:
+                    _pAxisCharge_Pos = _currentRecipe.CommonRecipe.ResinWeight / (Math.Pow(2.5, 2) * Math.PI);
+                    _pAxisCharge_AfterCal_Pos[(int)head - 1] = _pAxisCharge_Pos;
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcDotWeightingStep.Gate_Close:
+                    if (IsGateOnClosePos)
+                    {
+                        Step.RunStep = (int)ESPDHeadProcDotWeightingStep.PAxis_ChargePos_Move;
+                        break;
+                    }
+
+                    Log.Debug($"{GAxis.Name} moving to ClosePos [{_currentSPDHeadRecipe.GateClosePos}°]");
+                    GAxis.MoveAbs(_currentSPDHeadRecipe.GateClosePos);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => IsGateOnClosePos);
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcDotWeightingStep.Gate_CloseWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseHeadAlarm(EAlarm.H1GAxis_MoveClosePos_Timeout);
+                        break;
+                    }
+                    Log.Debug($"{GAxis.Name} moving to ClosePos done");
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcDotWeightingStep.PAxis_ChargePos_Move:
+                    Log.Debug($"{PAxis.Name} moving to ChargePos [{_pAxisCharge_AfterCal_Pos[(int)head - 1]}mm]");
+                    PAxis.MoveAbs(_pAxisCharge_AfterCal_Pos[(int)head - 1]);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => PAxis.IsOnPosition(_pAxisCharge_AfterCal_Pos[(int)head - 1]));
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcDotWeightingStep.PAxis_ChargePos_MoveWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseHeadAlarm(EAlarm.H1PAxis_MoveChargePos_Timeout);
+                        break;
+                    }
+
+                    Log.Debug($"{PAxis.Name} moving to ChargePos done");
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcDotWeightingStep.Gate_Open:
+                    Log.Debug($"{GAxis.Name} moving to OpenPos [{_currentSPDHeadRecipe.GateOpenPos}°]");
+                    GAxis.MoveAbs(_currentSPDHeadRecipe.GateOpenPos);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => IsGateOnOpenPos);
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcDotWeightingStep.Gate_OpenWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseHeadAlarm(EAlarm.H1GAxis_MoveOpenPos_Timeout);
+                        break;
+                    }
+                    Log.Debug($"{GAxis.Name} moving to OpenPos done");
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcDotWeightingStep.Wait_DotWeightingPos_Move:
+                    if (procInputs[ESPDHeadProcInput.DotWeightingRequest].Value == false)
+                    {
+                        Wait(20);
+                        break;
+                    }
+
+                    Log.Debug("DotWeighting Position Move Finish");
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcDotWeightingStep.Balance_Zero:
+                    Log.Debug("Balance Zeroing start");
+
+                    Balance.Tare();
+
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcDotWeightingStep.Balance_Zero_Check:
+                    if (Balance.WeightData == null)
+                    {
+                        RaiseHeadWarning(EWarning.H1_Balance_RequestWeight_Fail);
+                        break;
+                    }
+
+                    //TODO: Tolerance
+                    if (Balance.WeightData.Weight != 0)
+                    {
+                        RaiseHeadWarning(EWarning.H1_Balance_Zero_Fail);
+                        break;
+                    }
+
+                    Balance.RequestStableWeight();
+
+                    Log.Debug("Balance Zero done");
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcDotWeightingStep.PAxis_InjectPos_Move:
+                    Log.Debug($"{PAxis.Name} moving inject position [{_pAxisBase_Pos}mm]");
+                    PAxis.MoveAbs(_pAxisBase_Pos);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => PAxis.IsOnPosition(_pAxisBase_Pos));
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcDotWeightingStep.PAxis_InjectPos_MoveWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseHeadAlarm(EAlarm.H1PAxis_MoveInjectPos_Timeout);
+                        break;
+                    }
+
+                    Log.Debug($"{PAxis.Name} moving to InjectPos done {_removeResinCount} step");
+                    _removeResinCount++;
+
+                    if(_removeResinCount < 2)
+                    {
+                        Step.RunStep = (int)ESPDHeadProcDotWeightingStep.Gate_Close;
+                        break;
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcDotWeightingStep.Calibrate_Weight:
+                    Log.Debug("Calibrate_Weight (DotWeighting)");
+
+                    if (Balance.WeightData == null)
+                    {
+                        RaiseHeadWarning(EWarning.H1_Balance_RequestWeight_Fail);
+                        break;
+                    }
+
+                    if (Balance.WeightData.Weight <= 0)
+                    {
+                        RaiseHeadWarning(EWarning.H1_Balance_Fail);
+                        break;
+                    }
+
+                    _dotWeightingWeight = Balance.WeightData.Weight * 1000; // g -> mg
+
+
+                    if (_dotWeightingWeight <= _currentRecipe.CommonRecipe.ResinWeight + _currentRecipe.CommonRecipe.ResinWeightSpec &&
+                        _dotWeightingWeight >= _currentRecipe.CommonRecipe.ResinWeight - _currentRecipe.CommonRecipe.ResinWeightSpec)
+                    {
+                        Log.Debug("DotWeighting Pass");
+                        Step.RunStep = (int)ESPDHeadProcDotWeightingStep.SetFlag_DotWeightingDone;
+                        break;
+                    }
+
+                    _pAxisCharge_AfterCal_Pos[(int)head - 1] = (_pAxisCharge_Pos * _currentRecipe.CommonRecipe.ResinWeight) / _dotWeightingWeight;
+
+                    Step.RunStep = (int)ESPDHeadProcDotWeightingStep.PAxis_ChargePos_Move;
+                    break;
+                case ESPDHeadProcDotWeightingStep.SetFlag_DotWeightingDone:
+                    Log.Debug($"Set output {ESPDHeadProcOutput.DotWeightingDone}");
+                    procOutputs[ESPDHeadProcOutput.DotWeightingDone].Value = true;
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcDotWeightingStep.ClearFlag_DotWeightingDone:
+                    if (procInputs[ESPDHeadProcInput.DotWeightingRequest].Value == true)
+                    {
+                        Wait(20);
+                        break;
+                    }
+
+                    procOutputs[ESPDHeadProcOutput.DotWeightingDone].Value = false;
+                    Log.Debug($"Clear output {ESPDHeadProcOutput.DotWeightingDone}");
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcDotWeightingStep.End:
+                    if (Parent?.Sequence != ESequence.AutoRun)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
+                    Log.Info($"{ESequence.DotWeighting} end, starting new cycle");
+                    Step.RunStep = (int)ESPDHeadProcDotWeightingStep.Gate_Close;
                     break;
             }
         }
@@ -521,7 +723,7 @@ namespace SDV_MoldingInjection.Process
             switch ((ESPDHeadProcAssembleDisAssembleStep)Step.RunStep)
             {
                 case ESPDHeadProcAssembleDisAssembleStep.Start:
-                    Log.Info(isAssemble ? "HeadAssemble start" : "HeadDisassemble start");
+                    Log.Debug(isAssemble ? "HeadAssemble start" : "HeadDisassemble start");
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAssembleDisAssembleStep.Gate_Close:
@@ -531,7 +733,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Info($"{GAxis.Name} moving to ClosePos [{_currentSPDHeadRecipe.GateClosePos}°]");
+                    Log.Debug($"{GAxis.Name} moving to ClosePos [{_currentSPDHeadRecipe.GateClosePos}°]");
                     GAxis.MoveAbs(_currentSPDHeadRecipe.GateClosePos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => IsGateOnClosePos);
                     Step.RunStep++;
@@ -543,7 +745,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Info($"{GAxis.Name} moving to ClosePos done");
+                    Log.Debug($"{GAxis.Name} moving to ClosePos done");
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAssembleDisAssembleStep.PAxis_AssemblePos_Move:
@@ -555,7 +757,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Info($"{PAxis.Name} moving to AssemblePos [{_pAxisAssemble_Pos}mm]");
+                    Log.Debug($"{PAxis.Name} moving to AssemblePos [{_pAxisAssemble_Pos}mm]");
                     PAxis.MoveAbs(_pAxisAssemble_Pos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => PAxis.IsOnPosition(_pAxisAssemble_Pos));
                     Step.RunStep++;
@@ -567,7 +769,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Info($"{PAxis.Name} moving to AssemblePos done");
+                    Log.Debug($"{PAxis.Name} moving to AssemblePos done");
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAssembleDisAssembleStep.AssembleCheck:
@@ -577,7 +779,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Info($"Waiting for {In_AssembleCheck} detect");
+                    Log.Debug($"Waiting for {In_AssembleCheck} detect");
                     Wait(1000, () => In_AssembleCheck.Value);
                     Step.RunStep++;
                     break;
@@ -588,11 +790,11 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Info($"{In_AssembleCheck} detected, proceed PistonCyl Up");
+                    Log.Debug($"{In_AssembleCheck} detected, proceed PistonCyl Up");
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAssembleDisAssembleStep.PistonCyl_Up:
-                    Log.Info($"{PistonCyl} moving up");
+                    Log.Debug($"{PistonCyl} moving up");
                     PistonCyl.Backward();
                     Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => PistonCyl.IsBackward);
                     Step.RunStep++;
@@ -604,13 +806,13 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Info($"Move {PistonCyl} up done");
+                    Log.Debug($"Move {PistonCyl} up done");
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAssembleDisAssembleStep.PistonCyl_Down:
                     if (!isAssemble)
                     {
-                        Log.Info($"{PistonCyl} moving down");
+                        Log.Debug($"{PistonCyl} moving down");
                         PistonCyl.Forward();
                         Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => PistonCyl.IsForward);
                     }
@@ -626,7 +828,7 @@ namespace SDV_MoldingInjection.Process
                             break;
                         }
 
-                        Log.Info($"Move {PistonCyl} down done");
+                        Log.Debug($"Move {PistonCyl} down done");
                     }
 
                     Step.RunStep++;
@@ -638,7 +840,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Info(isAssemble ? "Head Assemble End" : "Head DisAssemble End");
+                    Log.Debug(isAssemble ? "Head Assemble End" : "Head DisAssemble End");
                     Sequence = ESequence.AutoRun;
                     break;
             }
@@ -660,6 +862,8 @@ namespace SDV_MoldingInjection.Process
         private readonly Devices _devices;
         private readonly RecipeSelector _recipeSelector;
         private readonly ProcessIO _processIO;
+        private readonly MettlerToledoWKC204C _balanceLeft;
+        private readonly MettlerToledoWKC204C _balanceRight;
         private readonly MachineStatus _machineStatus;
 
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
@@ -688,6 +892,7 @@ namespace SDV_MoldingInjection.Process
             "SPDHead4" => ESPDHead.SPDHead4,
             _ => throw new Exception($"Invalid process name: {Name}")
         };
+
         private SPDHeadRecipe _currentSPDHeadRecipe => Name switch
         {
             "SPDHead1" => _currentRecipe.SPDHead1_Recipe,
@@ -697,13 +902,21 @@ namespace SDV_MoldingInjection.Process
             _ => throw new Exception($"Invalid process name: {Name}")
         };
 
+        private void WKC204C_WeightReceived(object? sender, WeightEventArgs e)
+        {
+        }
+
         private double _pAxisCharge_Pos;
         private double _pAxisCharge_Vel;
         private double _pAxisInject_Pos;
         private double _pAxisInject_Vel;
         private double _pAxisAssemble_Pos = 13.4375;
         private double _pAxisBase_Pos = 20.875;
-        private int _assembleCheckStableStartTick;
+        private double[] _pAxisCharge_AfterCal_Pos = new double[4];
+        private double _dotWeightingWeight;
+        public int _removeResinCount;
+        private ESequence _prevSequence;
+        WeightEventArgs? weightData;
         #endregion
     }
 }

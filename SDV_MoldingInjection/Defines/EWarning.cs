@@ -17,11 +17,13 @@
         XAxis_ReadyPos_MoveTimeOut,
         XAxis_InjectPos_MoveTimeOut,
         XAxis_DummyPos_MoveTimeOut,
+        XAxis_DotWeightingPos_MoveTimeOut,
 
         YAxis_Origin_TimeOut,
         YAxis_ReadyPos_MoveTimeOut,
         YAxis_InjectPos_MoveTimeOut,
         YAxis_DummyPos_MoveTimeOut,
+        YAxis_DotWeightingPos_MoveTimeOut,
 
         Z1Axis_Origin_TimeOut,
         Z1Axis_SafetyPos_MoveTimeOut,
@@ -59,6 +61,9 @@
         H1_PistonCyl_UpFail,
         H1_PistonCyl_DownFail,
         H1_Assemble_CheckFail,
+        H1_Balance_RequestWeight_Fail,
+        H1_Balance_Zero_Fail,
+        H1_Balance_Fail,
 
         //--------- 4500 -> 4999 : SPD Head #2 Process Warning ---------
         P2Axis_Origin_Timeout = 4500,
@@ -66,6 +71,11 @@
         H2_PistonCyl_UpFail,
         H2_PistonCyl_DownFail,
         H2_Assemble_CheckFail,
+        H2_Balance_RequestWeight_Fail,
+        H2_Balance_Zero_Fail,
+        H2_Balance_Fail,
+
+
 
         //--------- 5500 -> 5999 : SPD Head #3 Process Warning ---------
         P3Axis_Origin_Timeout = 5500,
@@ -73,6 +83,11 @@
         H3_PistonCyl_UpFail,
         H3_PistonCyl_DownFail,
         H3_Assemble_CheckFail,
+        H3_Balance_RequestWeight_Fail,
+        H3_Balance_Zero_Fail,
+        H3_Balance_Fail,
+
+
 
         //--------- 6500 -> 6999 : SPD Head #3 Process Warning ---------
         P4Axis_Origin_Timeout = 6500,
@@ -80,5 +95,10 @@
         H4_PistonCyl_UpFail,
         H4_PistonCyl_DownFail,
         H4_Assemble_CheckFail,
+        H4_Balance_RequestWeight_Fail,
+        H4_Balance_Zero_Fail,
+        H4_Balance_Fail,
+
+
     }
 }

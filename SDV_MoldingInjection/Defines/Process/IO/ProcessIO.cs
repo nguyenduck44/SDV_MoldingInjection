@@ -98,7 +98,6 @@ namespace SDV_MoldingInjection.Defines
                 .MapTo(SPDHead3_ProcOutput[ESPDHeadProcOutput.InjectFinish]);
             InjectProcInput[EInjectProcInput.SPDHead4_WorkDone]
                 .MapTo(SPDHead4_ProcOutput[ESPDHeadProcOutput.InjectFinish]);
-
             InjectProcInput[EInjectProcInput.SPDHead1_OriginDone]
                 .MapTo(SPDHead1_ProcOutput[ESPDHeadProcOutput.OriginDone]);
             InjectProcInput[EInjectProcInput.SPDHead2_OriginDone]
@@ -107,6 +106,14 @@ namespace SDV_MoldingInjection.Defines
                 .MapTo(SPDHead3_ProcOutput[ESPDHeadProcOutput.OriginDone]);
             InjectProcInput[EInjectProcInput.SPDHead4_OriginDone]
                 .MapTo(SPDHead4_ProcOutput[ESPDHeadProcOutput.OriginDone]);
+            InjectProcInput[EInjectProcInput.SPDHead1_DotWeightingDone]
+                .MapTo(SPDHead1_ProcOutput[ESPDHeadProcOutput.DotWeightingDone]);
+            InjectProcInput[EInjectProcInput.SPDHead2_DotWeightingDone]
+                .MapTo(SPDHead2_ProcOutput[ESPDHeadProcOutput.DotWeightingDone]);
+            InjectProcInput[EInjectProcInput.SPDHead3_DotWeightingDone]
+                .MapTo(SPDHead3_ProcOutput[ESPDHeadProcOutput.DotWeightingDone]);
+            InjectProcInput[EInjectProcInput.SPDHead4_DotWeightingDone]
+                .MapTo(SPDHead4_ProcOutput[ESPDHeadProcOutput.DotWeightingDone]);
 
 
             DryPumpProcInput[EDryPumpProcInput.Vacuum_WorkRequest]
@@ -122,7 +129,6 @@ namespace SDV_MoldingInjection.Defines
                .MapTo(InjectProcOutput[EInjectProcOutput.SPDHeadWorkRequest]);
             SPDHead4_ProcInput[ESPDHeadProcInput.WorkRequest]
                .MapTo(InjectProcOutput[EInjectProcOutput.SPDHeadWorkRequest]);
-
             SPDHead1_ProcInput[ESPDHeadProcInput.XYAxisMoveDummyPosFinish]
                .MapTo(InjectProcOutput[EInjectProcOutput.XYAxisMoveDummyPosFinish]);
             SPDHead2_ProcInput[ESPDHeadProcInput.XYAxisMoveDummyPosFinish]
@@ -131,6 +137,14 @@ namespace SDV_MoldingInjection.Defines
                .MapTo(InjectProcOutput[EInjectProcOutput.XYAxisMoveDummyPosFinish]);
             SPDHead4_ProcInput[ESPDHeadProcInput.XYAxisMoveDummyPosFinish]
                .MapTo(InjectProcOutput[EInjectProcOutput.XYAxisMoveDummyPosFinish]);
+            SPDHead1_ProcInput[ESPDHeadProcInput.DotWeightingRequest]
+               .MapTo(InjectProcOutput[EInjectProcOutput.SPDHead1_DotWeightingRequest]);
+            SPDHead2_ProcInput[ESPDHeadProcInput.DotWeightingRequest]
+               .MapTo(InjectProcOutput[EInjectProcOutput.SPDHead2_DotWeightingRequest]);
+            SPDHead3_ProcInput[ESPDHeadProcInput.DotWeightingRequest]
+               .MapTo(InjectProcOutput[EInjectProcOutput.SPDHead3_DotWeightingRequest]);
+            SPDHead4_ProcInput[ESPDHeadProcInput.DotWeightingRequest]
+               .MapTo(InjectProcOutput[EInjectProcOutput.SPDHead4_DotWeightingRequest]);
         }
     }
 }

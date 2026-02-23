@@ -125,6 +125,48 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        [SingleRecipeDescription(Description = "X-Axis dot weighting position", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "XAxis")]
+        public double XAxisDotWeightingPos
+        {
+            get { return _xAxisDotWeightingPos; }
+            set
+            {
+                if (_xAxisDotWeightingPos == value) return;
+                OnRecipeChanged(_xAxisDotWeightingPos, value);
+                _xAxisDotWeightingPos = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "Y-Axis dot weighting position for Head 1, 3", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "YAxis")]
+        public double YAxisH13DotWeightingPos
+        {
+            get { return _yAxisH13DotWeightingPos; }
+            set
+            {
+                if (_yAxisH13DotWeightingPos == value) return;
+                OnRecipeChanged(_yAxisH13DotWeightingPos, value);
+                _yAxisH13DotWeightingPos = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "Y-Axis dot weighting position for Head 2, 4", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "YAxis")]
+        public double YAxisH24DotWeightingPos
+        {
+            get { return _yAxisH24DotWeightingPos; }
+            set
+            {
+                if (_yAxisH24DotWeightingPos == value) return;
+                OnRecipeChanged(_yAxisH24DotWeightingPos, value);
+                _yAxisH24DotWeightingPos = value;
+                OnPropertyChanged();
+            }
+        }
+
         [SingleRecipeDescription(Description = "Needle Clean Cycle Count")]
         public double NiddleCleanCycleCount
         {
@@ -194,6 +236,10 @@ namespace SDV_MoldingInjection.Recipe
         private double _yAxisH13DummyPos;
         private double _xAxisH24DummyPos;
         private double _yAxisH24DummyPos;
+
+        private double _xAxisDotWeightingPos;
+        private double _yAxisH13DotWeightingPos;
+        private double _yAxisH24DotWeightingPos;
 
         private double _niddleCleanCycleCount;
         private double _niddleCleanShiftDist;
