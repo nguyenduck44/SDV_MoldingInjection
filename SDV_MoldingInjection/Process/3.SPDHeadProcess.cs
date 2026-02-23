@@ -341,11 +341,11 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESequence.DummyShot:
                     if (_currentSPDHeadRecipe.HeadSkip) Sequence = ESequence.Stop;
-                    Sequence_DotWeighting();
+                    Sequence_SPDHeadCommon(ESequence.DummyShot);
                     break;
                 case ESequence.DotWeighting:
                     if (_currentSPDHeadRecipe.HeadSkip) Sequence = ESequence.Stop;
-                    Sequence_SPDHeadCommon(ESequence.DotWeighting);
+                    Sequence_DotWeighting();
                     break;
                 case ESequence.BubbleRemove:
                     if (_currentSPDHeadRecipe.HeadSkip) Sequence = ESequence.Stop;
@@ -479,8 +479,6 @@ namespace SDV_MoldingInjection.Process
                             _pAxisInject_Vel = PAxis.Parameter.Velocity;
                             break;
                         case ESequence.DummyShot:
-                            break;
-                        case ESequence.DotWeighting:
                             break;
                         case ESequence.BubbleRemove:
                             break;

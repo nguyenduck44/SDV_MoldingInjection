@@ -265,6 +265,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("ToRun Start");
                     Step.ToRunStep++;
                     _devices.Outputs.Buzzer1On.Value = false;
+                    _devices.Outputs.EQPStop.Value = false;
                     break;
                 case ERootProcToRunStep.DoorSensorCheck:
                     //if (_machineStatus.IsByPassMode)
