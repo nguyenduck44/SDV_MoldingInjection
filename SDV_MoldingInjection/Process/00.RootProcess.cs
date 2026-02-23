@@ -25,14 +25,6 @@ namespace SDV_MoldingInjection.Process
         private readonly IAlertService _warningService;
         private readonly object _lockAlarm = new object();
 
-        private bool DoorClose
-        {
-            get
-            {
-                return _devices.Inputs.DoorClose;
-            }
-        }
-
         private bool IsMainAirSupplied => _devices.Inputs.MainCDACheck.Value;
         private bool IsServoOn => _devices.Inputs.ServoOn.Value;
         #endregion
@@ -207,13 +199,16 @@ namespace SDV_MoldingInjection.Process
             {
                 case ERootProcToOriginStep.Start:
                     Log.Info("To Origin started");
-                    _devices.Outputs.Buzzer1On.Value = false;
+                    Step.OriginStep++;
+                    break;
+                case ERootProcToOriginStep.DoorClose:
+                    _devices.Outputs.EQPStop.Value = false;
+                    Wait(5000, () => _devices.Inputs.DoorClose);
                     Step.OriginStep++;
                     break;
                 case ERootProcToOriginStep.DoorSensorCheck:
                     if (_devices.Inputs.DoorClose == false)
                     {
-                        //WARNING
                         RaiseWarning((int)EWarning.DoorOpen);
                         break;
                     }
@@ -264,22 +259,19 @@ namespace SDV_MoldingInjection.Process
                 case ERootProcToRunStep.Start:
                     Log.Debug("ToRun Start");
                     Step.ToRunStep++;
-                    _devices.Outputs.Buzzer1On.Value = false;
+                    break;
+                case ERootProcToRunStep.DoorClose:
                     _devices.Outputs.EQPStop.Value = false;
+                    Wait(5000, () => _devices.Inputs.DoorClose);
+                    Step.ToRunStep++;
                     break;
                 case ERootProcToRunStep.DoorSensorCheck:
-                    //if (_machineStatus.IsByPassMode)
-                    //{
-                    //    Log.Warn("ByPass mode active - skipping door sensor check during run.");
-                    //    Step.ToRunStep++;
-                    //    break;
-                    //}
+                    if (_devices.Inputs.DoorClose == false)
+                    {
+                        RaiseWarning((int)EWarning.DoorOpen);
+                        break;
+                    }
 
-                    //if (DoorSensor == false)
-                    //{
-                    //    RaiseWarning((int)EWarning.DoorOpen);
-                    //    break;
-                    //}
                     Log.Debug("Doors closed.");
                     Step.ToRunStep++;
                     break;
@@ -292,6 +284,7 @@ namespace SDV_MoldingInjection.Process
                     Step.ToRunStep++;
                     break;
                 case ERootProcToRunStep.End:
+                    _devices.Outputs.Lamp_Run();
                     ProcessMode = EProcessMode.Run;
                     Log.Info("ToRun Done, Running");
                     break;
@@ -350,13 +343,14 @@ namespace SDV_MoldingInjection.Process
 
         private void CheckRealTimeAlarmStatus()
         {
-            //if (IsPowerMCOn == false)
-            //{
-            //    RaiseAlarm((int)EAlarm.PowerMCOff);
-            //    Childs!.ToList().ForEach(p => p.IsAlarm = true);
-            //    Childs!.ToList().ForEach(p => p.IsCanStop = true);
-            //    return;
-            //}
+            if (_devices.Inputs.DoorClose == false &&
+                (ProcessMode == EProcessMode.Run || ProcessMode == EProcessMode.Origin))
+            {
+                RaiseAlarm((int)EAlarm.DoorOpen);
+                Childs!.ToList().ForEach(p => p.IsAlarm = true);
+                Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                return;
+            }
 
             if (_devices.Inputs.Emergency.Value == true)
             {
@@ -366,13 +360,13 @@ namespace SDV_MoldingInjection.Process
                 return;
             }
 
-            //if (IsMainAirSupplied == false)
-            //{
-            //    Childs!.ToList().ForEach(p => p.IsAlarm = true);
-            //    Childs!.ToList().ForEach(p => p.IsCanStop = true);
-            //    RaiseAlarm((int)EAlarm.MainAirNotSupplied);
-            //    return;
-            //}
+            if (_devices.Inputs.MainCDACheck.Value == false)
+            {
+                Childs!.ToList().ForEach(p => p.IsAlarm = true);
+                Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                RaiseAlarm((int)EAlarm.MainAirNotSupplied);
+                return;
+            }
 
             if (_devices.Motions.All.Count(motion => motion.Status.IsMotionOn != true) > 0 &&
                 (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run))
@@ -389,7 +383,7 @@ namespace SDV_MoldingInjection.Process
                 && ProcessMode != EProcessMode.Origin && ProcessMode != EProcessMode.ToOrigin
                 && ProcessMode != EProcessMode.ToWarning && ProcessMode != EProcessMode.Warning
                 && ProcessMode != EProcessMode.ToAlarm && ProcessMode != EProcessMode.Alarm
-                && ProcessMode != EProcessMode.None)
+                && ProcessMode != EProcessMode.None && ProcessMode != EProcessMode.Stop)
             {
                 _devices.Motions.All.Where(m => m.Status.HwNegLimitDetect == true).ToList().ForEach(motion =>
                 {
@@ -413,22 +407,6 @@ namespace SDV_MoldingInjection.Process
                 RaiseAlarm((int)EAlarm.Motion_Alarm_Detected);
             }
         }
-
-        //private EOperationCommand GetUserCommand()
-        //{
-        //    if (_systemState.CommandState.HMICommand == EOperationCommand.Stop ||
-        //        _devices.Inputs.StopSW.Value == true)
-        //    {
-        //        return EOperationCommand.Stop;
-        //    }
-        //    if (_systemState.CommandState.HMICommand == EOperationCommand.Stop ||
-        //        _devices.Inputs.StopSW.Value == true)
-        //    {
-        //        return EOperationCommand.Stop;
-        //    }
-
-        //    return EOperationCommand.None;
-        //}
 
         private void HandleOPCommand(EOperationCommand command)
         {

@@ -3,6 +3,7 @@
     public enum ERootProcToOriginStep
     {
         Start,
+        DoorClose,
         DoorSensorCheck,
         ChildsToOriginDone_Wait,
         End

@@ -1,4 +1,5 @@
 using EQX.Core.InOut;
+using EQX.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Extensions;
 using System.Linq;
@@ -22,6 +23,8 @@ namespace SDV_MoldingInjection.Defines
             _dHead4OutputDevice = dOutputDevices.First(device => device.Name == EOutputDevice.Head4Output.ToString());
 
             Initialize();
+
+            AlertNotifyView.BuzzerOff += BuzzerOff;
         }
 
         public bool Initialize()
@@ -118,20 +121,53 @@ namespace SDV_MoldingInjection.Defines
         public void Lamp_Run()
         {
             Lamp_Clear();
+
+            EQPStop.Value = false;
+
+            TowerLampGreen.Value = true;
+            StartLamp.Value = true;
         }
 
         public void Lamp_Stop()
         {
             Lamp_Clear();
+
+            EQPStop.Value = true;
+
+            TowerLampYellow.Value = true;
+            StopLamp.Value = true;
         }
 
         public void Lamp_Alarm(bool isUseBuzzer)
         {
             Lamp_Clear();
-        }
 
+
+            EQPStop.Value = true;
+
+            TowerLampRed.Value = true;
+
+            if (isUseBuzzer)
+            {
+                Buzzer1On.Value = true;
+            }
+        }
         private void Lamp_Clear()
         {
+            TowerLampGreen.Value = false;
+            TowerLampRed.Value = false;
+            TowerLampYellow.Value = false;
+
+            StartLamp.Value = false;
+            StopLamp.Value = false;
+        }
+
+        private void BuzzerOff()
+        {
+            Buzzer1On.Value = false;
+            Buzzer2On.Value = false;
+            Buzzer3On.Value = false;
+            Buzzer4On.Value = false;
         }
     }
 }

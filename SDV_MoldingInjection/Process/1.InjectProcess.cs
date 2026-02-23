@@ -82,7 +82,7 @@ namespace SDV_MoldingInjection.Process
                     Step.ToRunStep++;
                     break;
                 case EMoldProcToRunStep.CheckIfChamberOpen:
-                    if (ChamberOpenClose.IsForward)
+                    if (ChamberOpenClose.IsOpen())
                     {
                         RaiseWarning(EWarning.Mold_Chamber_OpenWarning);
                         return false;
@@ -202,7 +202,7 @@ namespace SDV_MoldingInjection.Process
                     Step.OriginStep++;
                     break;
                 case EMoldProcOriginStep.CheckIfChamberOpen:
-                    if (ChamberOpenClose.IsForward)
+                    if (ChamberOpenClose.IsOpen())
                     {
                         RaiseWarning(EWarning.Mold_Chamber_OpenWarning);
                         return false;
@@ -526,7 +526,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Info("ResinInject end");
-                    Sequence = ESequence.Unloading;
+                    Sequence = ESequence.DummyShot;
                     break;
             }
         }
@@ -560,13 +560,14 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    Wait(100);
+
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Chamber_CoverOpen:
                     Log.Debug($"Open {ChamberOpenClose} cylinder");
-                    ChamberOpenClose.Forward();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout,
-                        () => ChamberOpenClose.IsForward);
+                    ChamberOpenClose.Open();
+                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, ChamberOpenClose.IsOpen);
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Chamber_CoverOpenWait:
@@ -607,9 +608,9 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcLoadingUnloadingStep.Chamber_CoverClose:
                     Log.Debug($"Close {ChamberOpenClose} cylinder");
-                    ChamberOpenClose.Backward();
+                    ChamberOpenClose.Close();
                     Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout,
-                        () => ChamberOpenClose.IsBackward);
+                        () => ChamberOpenClose.IsClose());
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Chamber_CoverCloseWait:
@@ -635,14 +636,8 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    // TODO: Modify this
-                    if (_needleCleanCount >= _currentRecipe.InjectRecipe.NiddleCleanCycleCount)
-                    {
-                        Log.Debug($"Needle clean count [{_needleCleanCount}] exceed recipe setting [{_currentRecipe.InjectRecipe.NiddleCleanCycleCount}], sequence set to {ESequence.NeedleCleaning}");
-                        Log.Info("Next sequence NeedleClean");
-                        Sequence = ESequence.NeedleCleaning;
-                        break;
-                    }
+                    Log.Info("Unloading end");
+                    Sequence = ESequence.Loading;
 
                     break;
             }
@@ -848,7 +843,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Sequence = ESequence.Loading;
+                    Sequence = ESequence.Unloading;
                     break;
             }
         }

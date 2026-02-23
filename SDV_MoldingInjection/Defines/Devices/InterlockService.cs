@@ -1,6 +1,7 @@
 ﻿using EQX.Core.Interlock;
 using EQX.InOut;
 using EQX.UI.Controls;
+using log4net;
 using SDV_MoldingInjection.Recipe;
 using System.Windows;
 
@@ -152,10 +153,14 @@ namespace SDV_MoldingInjection.Defines.Devices
         #region Private Methods
         private void HandleInterlockBlocked(object? sender, InterlockEventAgrs e)
         {
+            string message = $"{e.Obj.Name} blocked by '{e.Message}' while '{e.Action}'";
             if (_machineStatus.IsStandByProcessMode)
             {
-                string message = $"{e.Obj.Name} blocked by '{e.Message}' while '{e.Action}'";
                 MessageBoxEx.Show(message, false, "WARNING");
+            }
+            else
+            {
+                LogManager.GetLogger("Interlock").Error(message);
             }
         }
         #endregion

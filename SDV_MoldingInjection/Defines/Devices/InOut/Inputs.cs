@@ -88,10 +88,10 @@ namespace SDV_MoldingInjection.Defines
         public IDInput MainBreakerTrip => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_BREAKER_TRIP);
         public IDInput MainCDACheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_CDA_CHECK);
 
-        public IDInput DoorCloseLeft => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_CLOSE_LEFT);
-        public IDInput DoorLockLeft => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_LOCK_LEFT);
-        public IDInput DoorCloseRight => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_CLOSE_RIGHT);
-        public IDInput DoorLockRight => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_LOCK_RIGHT);
+        public IDInput DoorOpenLeft => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_OPEN_LEFT);
+        public IDInput DoorReleaseLeft => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_RELEASE_LEFT);
+        public IDInput DoorOpenRight => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_OPEN_RIGHT);
+        public IDInput DoorReleaseRight => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_RELEASE_RIGHT);
         public IDInput MainPanelCloseCheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_PANEL_CLOSE_CHECK);    
 
         //MAIN_BREAKER TRIP_EBOX
@@ -172,7 +172,10 @@ namespace SDV_MoldingInjection.Defines
         public IDInput H4_SyringeAir => _dHead4InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.SYRINGE_AIR);
         #endregion
 
-        public bool DoorClose => !(DoorCloseLeft.Value && DoorLockLeft.Value
-            && DoorCloseRight.Value && DoorLockRight.Value);
+        public bool DoorClose =>
+            DoorOpenLeft.Value == false &&
+            DoorReleaseLeft.Value == false &&
+            DoorOpenRight.Value == false &&
+            DoorReleaseRight.Value == false;
     }
 }

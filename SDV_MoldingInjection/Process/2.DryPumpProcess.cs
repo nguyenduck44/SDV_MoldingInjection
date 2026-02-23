@@ -182,6 +182,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.AngleValve_Open:
+                    Log.Debug($"Opening {AngleValve.Name}");
                     AngleValve.Open();
                     Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, AngleValve.IsOpen);
                     Step.RunStep++;
@@ -193,6 +194,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    Log.Debug($"{AngleValve.Name} Opened");
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.VacuumGauge_SpecIn_Wait:
