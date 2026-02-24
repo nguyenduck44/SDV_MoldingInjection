@@ -4,6 +4,9 @@
     {
         Start,
 
+        YAxis_ReadyPos_Move,
+        YAxis_ReadyPos_Wait,
+
         WaitSPDHeadRequest,
 
         XAxis_H13DotWeightingPos_Move,

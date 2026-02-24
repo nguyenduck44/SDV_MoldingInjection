@@ -5,9 +5,9 @@
         Start,
 
         // ----- CHARGING PHASE -----
-        Charge_PosVel_Calculte,
-
         Request_XYAxis_DotWeightingPos_Move,
+
+        Charge_PosVel_Calculte,
 
         Gate_Close,
         Gate_CloseWait,

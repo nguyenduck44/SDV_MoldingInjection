@@ -846,6 +846,27 @@ namespace SDV_MoldingInjection.Process
             {
                 case EMoldProcDotWeightingStep.Start:
                     Log.Debug("DotWeighting start");
+                    Step.RunStep++;
+                    break;
+                case EMoldProcDotWeightingStep.YAxis_ReadyPos_Move:
+                    if (YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisReadyPos))
+                    {
+                        Step.RunStep++;
+                        break;
+                    }
+                    Log.Debug($"Move {YAxis.Name} to ready pos [{_currentRecipe.InjectRecipe.YAxisReadyPos}mm]");
+                    YAxis.MoveAbs(_currentRecipe.InjectRecipe.YAxisReadyPos);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () =>
+                        YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisReadyPos));
+                    Step.RunStep++;
+                    break;
+                case EMoldProcDotWeightingStep.YAxis_ReadyPos_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseWarning(EWarning.YAxis_ReadyPos_MoveTimeOut);
+                        break;
+                    }
+                    Log.Debug($"{YAxis.Name} move to ready pos done");
                     Log.Debug("Wait SPDHead request");
                     Step.RunStep++;
                     break;
@@ -862,12 +883,10 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-
-                    if(_machineStatus.MachineCalibration.All(x => x))
+                    if (_machineStatus.MachineCalibration.All(x => x))
                     {
                         Step.RunStep = (int)EMoldProcDotWeightingStep.End;
                         break;
-
                     }
 
                     break;
