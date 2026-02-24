@@ -216,6 +216,28 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Doors closed.");
                     Step.OriginStep++;
                     break;
+                case ERootProcToOriginStep.Motion_AlarmReset:
+                    if (_devices.Motions.All.All(m => m.Status.IsAlarm == false))
+                    {
+                        Step.OriginStep = (int)ERootProcToOriginStep.ChildsToOriginDone_Wait;
+                        break;
+                    }
+
+                    _devices.Motions.All.Where(m => m.Status.IsAlarm == true)
+                        .ToList().ForEach(m => m.AlarmReset());
+
+                    Wait(2000);
+                    Step.OriginStep++;
+                    break;
+                case ERootProcToOriginStep.Motion_AlarmReset_Wait:
+                    if (_devices.Motions.All.Any(m => m.Status.IsAlarm))
+                    {
+                        RaiseAlarm(EAlarm.Motion_Alarm_ResetFail);
+                        break;
+                    }
+
+                    Step.OriginStep++;
+                    break;
                 case ERootProcToOriginStep.ChildsToOriginDone_Wait:
                     if (Childs!.Count(child => child.ProcessStatus != EProcessStatus.ToOriginDone) != 0)
                     {

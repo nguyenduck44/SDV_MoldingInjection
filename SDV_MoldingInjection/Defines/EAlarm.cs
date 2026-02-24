@@ -8,13 +8,13 @@
         // System Level Alarms
         MainAirNotSupplied = 0,
         MainPowerDown = 1,
-        MotionAlarmDetected = 2,
         DoorOpen = 3,
         EmergencyStopActivated = 6,
         PowerMCOff = 7,
+        Motion_Alarm_Detected,
+        Motion_Alarm_ResetFail,
         Motion_Driver_Off,
         Motion_Limit_Detected,
-        Motion_Alarm_Detected,
 
         //--------- 1500 -> 1499 : Mold Process Alarm ---------
         Z1Axis_MoveNeedleCleanPos_Timeout = 1500,
