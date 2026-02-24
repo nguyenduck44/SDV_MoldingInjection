@@ -406,7 +406,7 @@ namespace SDV_MoldingInjection.Process
 
         private void Sequence_AutoRun()
         {
-            if(_machineStatus.MachineCalibration == false && _machineStatus.IsDryRunMode == false)
+            if (_machineStatus.MachineCalibration == false && _machineStatus.IsDryRunMode == false)
             {
                 Sequence = ESequence.DotWeighting;
             }
@@ -432,7 +432,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESPDHeadProcCommonStep.MachineCalibration_Check:
                     Log.Debug("Machine Calibration check");
-                    if(_machineStatus.MachineCalibration == false && _machineStatus.IsDryRunMode == false)
+                    if (_machineStatus.MachineCalibration == false && _machineStatus.IsDryRunMode == false)
                     {
                         RaiseWarning(EWarning.Machine_Need_Calibration);
                         break;
@@ -558,19 +558,12 @@ namespace SDV_MoldingInjection.Process
                     GAxis.MoveAbs(_gAxisBubbleRemove_Pos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () =>
                             GAxis.IsOnPosition(_gAxisBubbleRemove_Pos));
+                    Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.GAxis_BubbleRemove_Wait:
                     if (WaitTimeOutOccurred)
                     {
                         RaiseHeadWarning(EWarning.H1_GAxis_BubbleRemove_Timeout);
-                    }
-
-                    _bubbleRemoveCount++;
-                    Log.Debug($"Bubble remove turn: {_bubbleRemoveCount}");
-                    if (_bubbleRemoveCount <= _currentSPDHeadRecipe.BubbleRemoveTurn)
-                    {
-                        Step.RunStep = (int)ESPDHeadProcCommonStep.Base_PosVel_Calculte;
-                        break;
                     }
 
                     Step.RunStep++;
@@ -606,6 +599,17 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    if (sequence == ESequence.BubbleRemove)
+                    {
+                        _bubbleRemoveCount++;
+                        Log.Debug($"Bubble remove turn: {_bubbleRemoveCount}");
+                        if (_bubbleRemoveCount <= _currentSPDHeadRecipe.BubbleRemoveTurn)
+                        {
+                            Step.RunStep = (int)ESPDHeadProcCommonStep.Base_PosVel_Calculte;
+                            break;
+                        }
+                    }
+
                     Log.Debug($"{PAxis.Name} moving to InjectPos done");
                     Step.RunStep++;
                     break;
@@ -634,16 +638,14 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"{sequence} end, starting new cycle");
                     if (sequence == ESequence.ResinInject)
                     {
+                        Log.Info($"Set next sequence: {ESequence.DummyShot}");
                         Sequence = ESequence.DummyShot;
                         break;
                     }
 
-                    if (sequence == ESequence.DummyShot)
-                    {
-                        Sequence = ESequence.NeedleCleaning;
-                        break;
-                    }
-                break;
+                    Log.Info($"Set next sequence: {ESequence.ResinInject}");
+                    Sequence = ESequence.ResinInject;
+                    break;
             }
         }
 
@@ -971,14 +973,8 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAssembleDisAssembleStep.End:
-                    if (Parent?.Sequence != ESequence.AutoRun)
-                    {
-                        Sequence = ESequence.Stop;
-                        break;
-                    }
-
                     Log.Debug(isAssemble ? "Head Assemble End" : "Head DisAssemble End");
-                    Sequence = ESequence.AutoRun;
+                    Sequence = ESequence.Stop;
                     break;
             }
         }
