@@ -7,23 +7,29 @@
         Gate_Close,
         Gate_CloseWait,
 
+        WorkRequest_Wait,
+
         PAxis_AssemblePos_Move,
         PAxis_AssemblePos_Move_Wait,
 
-        AssembleCheck,
-        AssembleCheckWait,
+        PistonCyl_Down,
+        PistonCyl_DownWait,
+
+        WaitDisOrAssembleSensorStatus,
+        DisOrAssembleSensorStatusCheck,
+        AssembleSensorStatus_Confirm,
 
         PistonCyl_Up,
         PistonCyl_UpWait,
-
-        PistonCyl_Down,
-        PistonCyl_DownWait,
 
         GAxis_OpenPosition_Move,
         GAxis_OpenPosition_MoveWait,
 
         PAxis_BasePosition_Move,
         PAxis_BasePosition_Wait,
+
+        WorkDone_Send,
+        WorkDone_Clear,
 
         End,
     }

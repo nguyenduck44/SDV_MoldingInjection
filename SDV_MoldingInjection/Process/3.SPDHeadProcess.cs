@@ -1,5 +1,6 @@
 using EQX.Core.InOut;
 using EQX.Core.Motion;
+using EQX.Core.Sequence;
 using EQX.Device.Balance;
 using EQX.InOut;
 using Microsoft.Extensions.DependencyInjection;
@@ -199,6 +200,16 @@ namespace SDV_MoldingInjection.Process
             return true;
         }
 
+        public override bool ProcessToOrigin()
+        {
+            if (ProcessStatus != EProcessStatus.ToOriginDone)
+            {
+                procOutputs.ClearOutputs();
+            }
+
+            return base.ProcessToOrigin();
+        }
+
         public override bool ProcessOrigin()
         {
             switch ((ESPDHeadProcOriginStep)Step.OriginStep)
@@ -367,15 +378,27 @@ namespace SDV_MoldingInjection.Process
                     Sequence_Ready();
                     break;
                 case ESequence.AutoRun:
-                    if (_currentSPDHeadRecipe.HeadSkip) Sequence = ESequence.Stop;
+                    if (_currentSPDHeadRecipe.HeadSkip)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
                     Sequence_AutoRun();
                     break;
                 case ESequence.ResinInject:
-                    if (_currentSPDHeadRecipe.HeadSkip) Sequence = ESequence.Stop;
+                    if (_currentSPDHeadRecipe.HeadSkip)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
                     Sequence_SPDHeadCommon(ESequence.ResinInject);
                     break;
                 case ESequence.DummyShot:
-                    if (_currentSPDHeadRecipe.HeadSkip) Sequence = ESequence.Stop;
+                    if (_currentSPDHeadRecipe.HeadSkip)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
                     Sequence_SPDHeadCommon(ESequence.DummyShot);
                     break;
                 case ESequence.DotWeighting:
@@ -383,17 +406,32 @@ namespace SDV_MoldingInjection.Process
                     {
                         _machineStatus.MachineCalibration[(int)head-1] = true;
                         Sequence = ESequence.Stop;
+                        break;
                     }
                     Sequence_DotWeighting();
                     break;
                 case ESequence.BubbleRemove:
-                    if (_currentSPDHeadRecipe.HeadSkip) Sequence = ESequence.Stop;
+                    if (_currentSPDHeadRecipe.HeadSkip)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
                     Sequence_SPDHeadCommon(ESequence.BubbleRemove);
                     break;
                 case ESequence.HeadAssemble:
+                    if (_currentSPDHeadRecipe.HeadSkip)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
                     Sequence_HeadAssembleDisAssemble(isAssemble: true);
                     break;
                 case ESequence.HeadDisassemble:
+                    if (_currentSPDHeadRecipe.HeadSkip)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
                     Sequence_HeadAssembleDisAssemble(isAssemble: false);
                     break;
             }
@@ -871,7 +909,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcAssembleDisAssembleStep.Gate_Close:
                     if (IsGateOnClosePos)
                     {
-                        Step.RunStep = (int)ESPDHeadProcAssembleDisAssembleStep.PAxis_AssemblePos_Move;
+                        Step.RunStep = (int)ESPDHeadProcAssembleDisAssembleStep.WorkRequest_Wait;
                         break;
                     }
 
@@ -890,12 +928,20 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"{GAxis.Name} moving to ClosePos done");
                     Step.RunStep++;
                     break;
+                case ESPDHeadProcAssembleDisAssembleStep.WorkRequest_Wait:
+                    if (procInputs[ESPDHeadProcInput.WorkRequest].Value == false)
+                    {
+                        Wait(50);
+                        break;
+                    }
+
+                    Log.Debug($"Input detect {ESPDHeadProcInput.WorkRequest}");
+                    Step.RunStep++;
+                    break;
                 case ESPDHeadProcAssembleDisAssembleStep.PAxis_AssemblePos_Move:
                     if (PAxis.IsOnPosition(_pAxisAssemble_Pos))
                     {
-                        Step.RunStep = isAssemble
-                            ? (int)ESPDHeadProcAssembleDisAssembleStep.AssembleCheck
-                            : (int)ESPDHeadProcAssembleDisAssembleStep.PistonCyl_Down;
+                        Step.RunStep = (int)ESPDHeadProcAssembleDisAssembleStep.PistonCyl_Down;
                         break;
                     }
 
@@ -914,28 +960,47 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"{PAxis.Name} moving to AssemblePos done");
                     Step.RunStep++;
                     break;
-                case ESPDHeadProcAssembleDisAssembleStep.AssembleCheck:
-                    if (!isAssemble)
-                    {
-                        Step.RunStep = (int)ESPDHeadProcAssembleDisAssembleStep.PistonCyl_Down;
-                        break;
-                    }
-
-                    Log.Debug($"Waiting for {In_AssembleCheck} detect");
-                    Wait(5000, () => In_AssembleCheck.Value);
+                case ESPDHeadProcAssembleDisAssembleStep.PistonCyl_Down:
+                    Log.Debug($"{PistonCyl} moving down");
+                    PistonCyl.Down();
+                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, PistonCyl.IsDown);
                     Step.RunStep++;
                     break;
-                case ESPDHeadProcAssembleDisAssembleStep.AssembleCheckWait:
+                case ESPDHeadProcAssembleDisAssembleStep.PistonCyl_DownWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadWarning(EWarning.H1_Assemble_CheckFail);
+                        RaiseHeadWarning(EWarning.H1_PistonCyl_DownFail);
                         break;
                     }
 
-                    Wait(2000);
-                    if(In_AssembleCheck.Value == false)
+                    Log.Debug($"Move {PistonCyl} down done");
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcAssembleDisAssembleStep.WaitDisOrAssembleSensorStatus:
+                    Wait(30000, () => isAssemble == In_AssembleCheck.Value);
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcAssembleDisAssembleStep.DisOrAssembleSensorStatusCheck:
+                    if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadWarning(EWarning.H1_Assemble_CheckFail);
+                        if (isAssemble) RaiseHeadWarning(EWarning.H1_Assemble_Check_Timeout);
+                        else RaiseHeadWarning(EWarning.H1_Disassemble_Check_Timeout);
+                        break;
+                    }
+
+                    if (!isAssemble)
+                    {
+                        Step.RunStep = (int)ESPDHeadProcAssembleDisAssembleStep.WorkDone_Send;
+                        break;
+                    }
+
+                    Wait(3000);
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcAssembleDisAssembleStep.AssembleSensorStatus_Confirm:
+                    if (In_AssembleCheck.Value == false)
+                    {
+                        Step.RunStep = (int)ESPDHeadProcAssembleDisAssembleStep.WaitDisOrAssembleSensorStatus;
                         break;
                     }
 
@@ -958,32 +1023,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Move {PistonCyl} up done");
                     Step.RunStep++;
                     break;
-                case ESPDHeadProcAssembleDisAssembleStep.PistonCyl_Down:
-                    if (!isAssemble)
-                    {
-                        Log.Debug($"{PistonCyl} moving down");
-                        PistonCyl.Down();
-                        Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, PistonCyl.IsDown);
-                    }
-
-                    Step.RunStep++;
-                    break;
-                case ESPDHeadProcAssembleDisAssembleStep.PistonCyl_DownWait:
-                    if (!isAssemble)
-                    {
-                        if (WaitTimeOutOccurred)
-                        {
-                            RaiseHeadWarning(EWarning.H1_PistonCyl_DownFail);
-                            break;
-                        }
-
-                        Log.Debug($"Move {PistonCyl} down done");
-                        Step.RunStep = (int)ESPDHeadProcAssembleDisAssembleStep.End;
-                        break;
-                    }
-
-                    Step.RunStep++;
-                    break;
+                
                 case ESPDHeadProcAssembleDisAssembleStep.GAxis_OpenPosition_Move:
                     Log.Debug($"{GAxis.Name} move to GateOpenPos [{_currentSPDHeadRecipe.GateOpenPos}°]");
                     GAxis.MoveAbs(_currentSPDHeadRecipe.GateOpenPos);
@@ -1016,6 +1056,21 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"{PAxis.Name} moved to BasePos [{_pAxisBase_Pos}mm] done");
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcAssembleDisAssembleStep.WorkDone_Send:
+                    Log.Debug($"Set output {ESPDHeadProcOutput.InjectFinish}");
+                    procOutputs[ESPDHeadProcOutput.InjectFinish].Value = true;
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcAssembleDisAssembleStep.WorkDone_Clear:
+                    if (procInputs[ESPDHeadProcInput.WorkRequest].Value == true)
+                    {
+                        Wait(10);
+                        break;
+                    }
+
+                    procOutputs[ESPDHeadProcOutput.InjectFinish].Value = false;
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAssembleDisAssembleStep.End:

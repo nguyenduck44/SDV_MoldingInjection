@@ -72,7 +72,8 @@
         G1Axis_Origin_Timeout,
         H1_PistonCyl_UpFail,
         H1_PistonCyl_DownFail,
-        H1_Assemble_CheckFail,
+        H1_Assemble_Check_Timeout,
+        H1_Disassemble_Check_Timeout,
         H1_Balance_RequestWeight_Fail,
         H1_Balance_Zero_Fail,
         /// <summary>
@@ -88,7 +89,8 @@
         G2Axis_Origin_Timeout,
         H2_PistonCyl_UpFail,
         H2_PistonCyl_DownFail,
-        H2_Assemble_CheckFail,
+        H2_Assemble_Check_Timeout,
+        H2_Disassemble_Check_Timeout,
         H2_Balance_RequestWeight_Fail,
         H2_Balance_Zero_Fail,
         /// <summary>
@@ -105,7 +107,8 @@
         G3Axis_Origin_Timeout,
         H3_PistonCyl_UpFail,
         H3_PistonCyl_DownFail,
-        H3_Assemble_CheckFail,
+        H3_Assemble_Check_Timeout,
+        H3_Disassemble_Check_Timeout,
         H3_Balance_RequestWeight_Fail,
         H3_Balance_Zero_Fail,
         /// <summary>
@@ -121,7 +124,8 @@
         G4Axis_Origin_Timeout,
         H4_PistonCyl_UpFail,
         H4_PistonCyl_DownFail,
-        H4_Assemble_CheckFail,
+        H4_Assemble_Check_Timeout,
+        H4_Disassemble_Check_Timeout,
         H4_Balance_RequestWeight_Fail,
         H4_Balance_Zero_Fail,
         /// <summary>

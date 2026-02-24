@@ -1,5 +1,6 @@
 using EQX.Core.InOut;
 using EQX.Core.Motion;
+using EQX.Core.Sequence;
 using EQX.InOut;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
@@ -144,7 +145,6 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcToRunStep.End:
                     Log.Info("ToRun end");
                     Step.ToRunStep++;
-
                     base.ProcessToRun();
                     break;
             }
@@ -197,6 +197,16 @@ namespace SDV_MoldingInjection.Process
             }
 
             return true;
+        }
+
+        public override bool ProcessToOrigin()
+        {
+            if (ProcessStatus != EProcessStatus.ToOriginDone)
+            {
+                procOutputs.ClearOutputs();
+            }
+
+            return base.ProcessToOrigin();
         }
 
         public override bool ProcessOrigin()
