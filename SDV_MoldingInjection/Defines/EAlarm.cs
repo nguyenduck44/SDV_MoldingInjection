@@ -17,15 +17,7 @@
         Motion_Limit_Detected,
 
         //--------- 1500 -> 1499 : Mold Process Alarm ---------
-        Z1Axis_MoveNeedleCleanPos_Timeout = 1500,
-        Z2Axis_MoveNeedleCleanPos_Timeout,
-        Z3Axis_MoveNeedleCleanPos_Timeout,
-        Z4Axis_MoveNeedleCleanPos_Timeout,
-
-        XAxis_MoveNeedleCleanPos_Timeout,
-        YAxis_MoveNeedleCleanPos_Timeout,
-        YAxis_MoveCleaning_Timeout,
-        YAxis_MoveBackCleaning_Timeout,
+        
 
         //--------- 2000 -> 2499 : Dry Pump Process Alarm ---------
 
