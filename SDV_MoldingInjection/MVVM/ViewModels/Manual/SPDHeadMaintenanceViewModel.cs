@@ -140,7 +140,22 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 }
             };
 
+            var dummyGroup = new MultiPointPosition
+            {
+                Name = "Dummy Pos",
+                Points = new ObservableCollection<PositionPoint>
+                {
+                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisDummyPos, _devices.Motions.XAxis),
+                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisDummyPos, _devices.Motions.StageYAxis),
+                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisDummyPos, _devices.Motions.Z1Axis),
+                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisDummyPos, _devices.Motions.Z2Axis),
+                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisDummyPos, _devices.Motions.Z3Axis),
+                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisDummyPos, _devices.Motions.Z4Axis),
+                }
+            };
+
             positionManager.GroupedPositions.Add(readyGroup);
+            positionManager.GroupedPositions.Add(dummyGroup);
 
             return positionManager;
         }
@@ -179,6 +194,14 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             "SPDHead2" => _devices.Cylinders.PistonCyl_H2,
             "SPDHead3" => _devices.Cylinders.PistonCyl_H3,
             "SPDHead4" => _devices.Cylinders.PistonCyl_H4,
+            _ => throw new Exception($"Invalid process name: {Name}")
+        };
+        private SPDHeadRecipe headRecipe => Name switch
+        {
+            "SPDHead1" => _recipeSelector.CurrentRecipe.SPDHead1_Recipe,
+            "SPDHead2" => _recipeSelector.CurrentRecipe.SPDHead2_Recipe,
+            "SPDHead3" => _recipeSelector.CurrentRecipe.SPDHead3_Recipe,
+            "SPDHead4" => _recipeSelector.CurrentRecipe.SPDHead4_Recipe,
             _ => throw new Exception($"Invalid process name: {Name}")
         };
         #endregion

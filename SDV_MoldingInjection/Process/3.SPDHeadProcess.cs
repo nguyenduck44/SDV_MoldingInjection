@@ -512,7 +512,7 @@ namespace SDV_MoldingInjection.Process
                             _pAxisCharge_Pos = _currentSPDHeadRecipe.PAxisInjectChargePos;
                             break;
                         case ESequence.DummyShot:
-                            _pAxisCharge_Pos = _pAxisBase_Pos - Math.Abs(_currentSPDHeadRecipe.PAxisInjectChargePos - _pAxisBase_Pos) / 10;
+                            _pAxisCharge_Pos = _pAxisBase_Pos - 10;
                             break;
                         case ESequence.BubbleRemove:
                             _pAxisCharge_Pos = _currentSPDHeadRecipe.PAxisInjectChargePos;
@@ -555,22 +555,17 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.Base_PosVel_Calculte:
+                    _pAxisInject_Pos = _pAxisBase_Pos;
                     switch (sequence)
                     {
                         case ESequence.ResinInject:
-                            _pAxisInject_Pos = _pAxisBase_Pos;
                             _pAxisInject_Vel = Math.Abs(_currentSPDHeadRecipe.PAxisInjectChargePos - _pAxisBase_Pos) / _currentRecipe.CommonRecipe.InjectTime;
                             break;
                         case ESequence.DummyShot:
-                            _pAxisInject_Pos = _pAxisBase_Pos;
                             _pAxisInject_Vel = PAxis.Parameter.Velocity;
                             break;
                         case ESequence.BubbleRemove:
-                            if (_bubbleRemoveCount == _currentSPDHeadRecipe.BubbleRemoveTurn)
-                            {
-                                _pAxisInject_Pos = _pAxisBase_Pos;
-                            }
-                            else
+                            if (_bubbleRemoveCount != _currentSPDHeadRecipe.BubbleRemoveTurn)
                             {
                                 _pAxisInject_Pos = _currentSPDHeadRecipe.PAxisInjectChargePos + (_bubbleRemoveCount * Math.Abs(_currentSPDHeadRecipe.PAxisInjectChargePos - _pAxisBase_Pos) / _currentSPDHeadRecipe.BubbleRemoveTurn);
                             }
