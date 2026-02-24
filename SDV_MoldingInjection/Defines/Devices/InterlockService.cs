@@ -1,8 +1,10 @@
 ﻿using EQX.Core.Interlock;
+using EQX.Core.Motion;
 using EQX.InOut;
 using EQX.UI.Controls;
 using log4net;
 using SDV_MoldingInjection.Recipe;
+using System.CodeDom;
 using System.Windows;
 
 namespace SDV_MoldingInjection.Defines.Devices
@@ -61,10 +63,10 @@ namespace SDV_MoldingInjection.Defines.Devices
                 { "Door is not CLOSE", () => _devices.Inputs.DoorClose },
                 { "Chamber is not CLOSE", () => _devices.Cylinders.ChamberOpenClose.IsClose() },
                 { "Chamber is not DOWN", () => _devices.Cylinders.BellowCyl.IsDown() },
-                { "Z1Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos },
-                { "Z2Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos },
-                { "Z3Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos },
-                { "Z4Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos },
+                { "Z1Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z1Axis) },
+                { "Z2Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z2Axis) },
+                { "Z3Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z3Axis) },
+                { "Z4Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z4Axis) },
             };
 
             if (disable) _devices.Motions.StageYAxis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>();
@@ -73,30 +75,30 @@ namespace SDV_MoldingInjection.Defines.Devices
                 { "Door is not CLOSE", () => _devices.Inputs.DoorClose },
                 { "Chamber is not CLOSE", () => _devices.Cylinders.ChamberOpenClose.IsClose() },
                 { "Bellow is not DOWN", () => _devices.Cylinders.BellowCyl.IsDown() },
-                { "Z1Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos },
-                { "Z2Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos },
-                { "Z3Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos },
-                { "Z4Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos },
+                { "Z1Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z1Axis) },
+                { "Z2Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z2Axis) },
+                { "Z3Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z3Axis) },
+                { "Z4Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z4Axis) },
             };
 
             if (disable) _devices.Motions.XAxis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>();
             _devices.Motions.XAxis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>
             {
                 { "Door is not CLOSE", () => _devices.Inputs.DoorClose },
-                { "Z1Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos },
-                { "Z2Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos },
-                { "Z3Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos },
-                { "Z4Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos },
+                { "Z1Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z1Axis) },
+                { "Z2Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z2Axis) },
+                { "Z3Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z3Axis) },
+                { "Z4Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z4Axis) },
             };
 
             if (disable) _devices.Motions.XAxis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>();
             _devices.Motions.XAxis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>
             {
                 { "Door is not CLOSE", () => _devices.Inputs.DoorClose },
-                { "Z1Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos },
-                { "Z2Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos },
-                { "Z3Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos },
-                { "Z4Axis not in Safety Pos", () => _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos },
+                { "Z1Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z1Axis) },
+                { "Z2Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z2Axis) },
+                { "Z3Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z3Axis) },
+                { "Z4Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z4Axis) },
             };
 
             if (disable) _devices.Motions.Z1Axis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>();
@@ -162,6 +164,16 @@ namespace SDV_MoldingInjection.Defines.Devices
             {
                 LogManager.GetLogger("Interlock").Error(message);
             }
+        }
+        
+        private bool IsZAxisOnSafetyPosition(IMotion zAxis)
+        {
+            if (zAxis == _devices.Motions.Z1Axis) return _devices.Motions.Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos) || _devices.Motions.Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos;
+            if (zAxis == _devices.Motions.Z2Axis) return _devices.Motions.Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos) || _devices.Motions.Z2Axis.Status.ActualPosition >= _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos;
+            if (zAxis == _devices.Motions.Z3Axis) return _devices.Motions.Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos) || _devices.Motions.Z3Axis.Status.ActualPosition >= _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos;
+            if (zAxis == _devices.Motions.Z4Axis) return _devices.Motions.Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos) || _devices.Motions.Z4Axis.Status.ActualPosition >= _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos;
+
+            throw new Exception($"{zAxis.Name} is not supported ZAxis");
         }
         #endregion
 

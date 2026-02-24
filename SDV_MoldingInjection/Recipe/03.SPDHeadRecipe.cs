@@ -20,6 +20,7 @@ namespace SDV_MoldingInjection.Recipe
 
         [SingleRecipeDescription(Description = "ZAxis SAFETY position (ready position)", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "ZAxis")]
+        [SingleRecipeMinMax(Min = -5)]
         public double ZAxisSafetyPos
         {
             get { return _zAxisSafetyPos; }
@@ -74,6 +75,21 @@ namespace SDV_MoldingInjection.Recipe
 
                 OnRecipeChanged(_zAxisNeedleCleanPos, value);
                 _zAxisNeedleCleanPos = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "ZAxis Weighting position", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "ZAxis")]
+        public double ZAxisWeightingPos
+        {
+            get { return _zAxisWeightingPos; }
+            set
+            {
+                if (_zAxisWeightingPos == value) return;
+
+                OnRecipeChanged(_zAxisWeightingPos, value);
+                _zAxisWeightingPos = value;
                 OnPropertyChanged();
             }
         }
@@ -147,6 +163,7 @@ namespace SDV_MoldingInjection.Recipe
                 OnPropertyChanged();
             }
         }
+
         #region Privates
         private bool _headSkip;
 
@@ -154,6 +171,7 @@ namespace SDV_MoldingInjection.Recipe
         private double _zAxisInjectPos;
         private double _zAxisNeedleCleanPos;
         private double _zAxisDummyPos;
+        private double _zAxisWeightingPos;
 
         private double _gateClosePos;
         private double _gateOpenPos;

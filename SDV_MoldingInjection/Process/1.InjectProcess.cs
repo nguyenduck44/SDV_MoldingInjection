@@ -174,22 +174,16 @@ namespace SDV_MoldingInjection.Process
                     Sequence_LoadingUnloading(isLoading: false);
                     break;
                 case ESequence.DummyShot:
-                    Sequence_DummyShot();
+                case ESequence.HeadAssemble:
+                case ESequence.HeadDisassemble:
+                case ESequence.BubbleRemove:
+                    Sequence_AtDummyPos(Sequence);
                     break;
                 case ESequence.NeedleCleaning:
                     Sequence_NeedleClean();
                     break;
                 case ESequence.DotWeighting:
                     Sequence_DotWeighting();
-                    break;
-                case ESequence.HeadAssemble:
-                    Sequence_DummyShot();
-                    break;
-                case ESequence.HeadDisassemble:
-                    Sequence_DummyShot();
-                    break;
-                case ESequence.BubbleRemove:
-                    Sequence_DummyShot();
                     break;
                 default:
                     Sequence = ESequence.Stop;
@@ -662,7 +656,7 @@ namespace SDV_MoldingInjection.Process
             }
         }
 
-        private void Sequence_DummyShot()
+        private void Sequence_AtDummyPos(ESequence sequence)
         {
             switch ((EMoldProcDummyShotStep)Step.RunStep)
             {
@@ -725,6 +719,28 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug("Inject Resin done.");
                     procOutputs[EInjectProcOutput.SPDHeadWorkRequest].Value = false;
+                    Step.RunStep++;
+                    break;
+                case EMoldProcDummyShotStep.ZAxis_SafetyPos_Move:
+                    if (sequence == ESequence.HeadAssemble || sequence == ESequence.HeadDisassemble)
+                    {
+                        Step.RunStep = (int)EMoldProcDummyShotStep.End;
+                        break;
+                    }
+
+                    Log.Debug($"Moving Z-Axes to safety position");
+                    ZAxisSafetyPosMove();
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => AllZAxisInSafetyPos(ref _failHead));
+                    Step.RunStep++;
+                    break;
+                case EMoldProcDummyShotStep.ZAxis_SafetyPos_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseHeadWarning(EWarning.Z1Axis_SafetyPos_MoveTimeOut, _failHead);
+                        break;
+                    }
+
+                    Log.Debug($"Z-Axes move to safety position done");
                     Step.RunStep++;
                     break;
                 case EMoldProcDummyShotStep.End:
@@ -880,6 +896,22 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
                     Log.Debug($"{YAxis.Name} move to ready pos done");
+                    Step.RunStep++;
+                    break;
+                case EMoldProcDotWeightingStep.ZAxis_SafetyPos_Move:
+                    Log.Debug($"Moving Z-Axes to safety position");
+                    ZAxisSafetyPosMove();
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => AllZAxisInSafetyPos(ref _failHead));
+                    Step.RunStep++;
+                    break;
+                case EMoldProcDotWeightingStep.ZAxis_SafetyPos_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseHeadWarning(EWarning.Z1Axis_SafetyPos_MoveTimeOut, _failHead);
+                        break;
+                    }
+
+                    Log.Debug($"Z-Axes move to safety position done");
                     Log.Debug("Wait SPDHead request");
                     Step.RunStep++;
                     break;
@@ -921,6 +953,21 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("XAxis move dot weighting position for Head 1, 3 done");
                     Step.RunStep++;
                     break;
+                case EMoldProcDotWeightingStep.ZAxis_H13DotWeightingPos_Move:
+                    Log.Debug("ZAxis move dummy position");
+                    ZAxisDummyPosMove();
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
+                        () => AllZAxisInDummyPos(ref _failHead));
+                    Step.RunStep++;
+                    break;
+                case EMoldProcDotWeightingStep.ZAxis_H13DotWeightingPos_MoveWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseHeadWarning(EWarning.Z1Axis_DummyPos_MoveTimeOut, _failHead);
+                        break;
+                    }
+                    Step.RunStep++;
+                    break;
                 case EMoldProcDotWeightingStep.Head13_DotWeighting_Request:
                     Log.Debug("Sending dot weighting request for Head 1, 3.");
                     procOutputs[EInjectProcOutput.H13DotWeightingInPos].Value = true;
@@ -935,7 +982,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     procOutputs[EInjectProcOutput.H13DotWeightingInPos].Value = false;
-                    Step.RunStep = (int)EMoldProcDotWeightingStep.WaitSPDHeadRequest;
+                    Step.RunStep = (int)EMoldProcDotWeightingStep.ZAxis_SafetyPos_Move;
                     break;
                 case EMoldProcDotWeightingStep.XAxis_H24DotWeightingPos_Move:
                     Log.Debug($"Moving X axis to dot weighting position for Head 2, 4");
@@ -955,7 +1002,21 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("XAxis move dot weighting position for Head 2, 4 done");
                     Step.RunStep++;
                     break;
-
+                case EMoldProcDotWeightingStep.ZAxis_H24DotWeightingPos_Move:
+                    Log.Debug("ZAxis move dummy position");
+                    ZAxisDummyPosMove();
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
+                        () => AllZAxisInDummyPos(ref _failHead));
+                    Step.RunStep++;
+                    break;
+                case EMoldProcDotWeightingStep.ZAxis_H24DotWeightingPos_MoveWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseHeadWarning(EWarning.Z1Axis_DummyPos_MoveTimeOut, _failHead);
+                        break;
+                    }
+                    Step.RunStep++;
+                    break;
                 case EMoldProcDotWeightingStep.Head24_DotWeighting_Request:
                     Log.Debug("Sending dot weighting request for Head 2, 4.");
                     procOutputs[EInjectProcOutput.H24DotWeightingInPos].Value = true;
@@ -970,7 +1031,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     procOutputs[EInjectProcOutput.H24DotWeightingInPos].Value = false;
-                    Step.RunStep = (int)EMoldProcDotWeightingStep.WaitSPDHeadRequest;
+                    Step.RunStep = (int)EMoldProcDotWeightingStep.ZAxis_SafetyPos_Move;
                     break;
                 case EMoldProcDotWeightingStep.End:
                     Log.Debug("DotWeighting end");
@@ -1137,6 +1198,42 @@ namespace SDV_MoldingInjection.Process
             if (!ret) failHead = ESPDHead.SPDHead3;
 
             ret = _currentRecipe.SPDHead4_Recipe.HeadSkip || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisDummyPos);
+            result &= ret;
+            if (!ret) failHead = ESPDHead.SPDHead4;
+
+            return result;
+        }
+
+        private void ZAxisWeightingPosMove()
+        {
+            if (!_currentRecipe.SPDHead1_Recipe.HeadSkip)
+                Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisWeightingPos);
+            if (!_currentRecipe.SPDHead2_Recipe.HeadSkip)
+                Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisWeightingPos);
+            if (!_currentRecipe.SPDHead3_Recipe.HeadSkip)
+                Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisWeightingPos);
+            if (!_currentRecipe.SPDHead4_Recipe.HeadSkip)
+                Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisWeightingPos);
+        }
+
+        private bool AllZAxisInWeightingPos(ref ESPDHead failHead)
+        {
+            bool result = true;
+            bool ret = false;
+
+            ret = _currentRecipe.SPDHead1_Recipe.HeadSkip || Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisWeightingPos);
+            result &= ret;
+            if (!ret) failHead = ESPDHead.SPDHead1;
+
+            ret = _currentRecipe.SPDHead2_Recipe.HeadSkip || Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisWeightingPos);
+            result &= ret;
+            if (!ret) failHead = ESPDHead.SPDHead2;
+
+            ret = _currentRecipe.SPDHead3_Recipe.HeadSkip || Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisWeightingPos);
+            result &= ret;
+            if (!ret) failHead = ESPDHead.SPDHead3;
+
+            ret = _currentRecipe.SPDHead4_Recipe.HeadSkip || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisWeightingPos);
             result &= ret;
             if (!ret) failHead = ESPDHead.SPDHead4;
 

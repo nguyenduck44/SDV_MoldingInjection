@@ -757,14 +757,14 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.Wait_DotWeightingPos_Move:
-                    if (procInputs[ESPDHeadProcInput.H13DotWeightingInPos].Value == false && 
+                    if (procInputs[ESPDHeadProcInput.XYAxisInH13DotWeightingPos].Value == false && 
                         (head == ESPDHead.SPDHead1 || head == ESPDHead.SPDHead3))
                     {
                         Wait(20);
                         break;
                     }
 
-                    if (procInputs[ESPDHeadProcInput.H24DotWeightingInPos].Value == false &&
+                    if (procInputs[ESPDHeadProcInput.XYAxisInH24DotWeightingPos].Value == false &&
                         (head == ESPDHead.SPDHead2 || head == ESPDHead.SPDHead4))
                     {
                         Wait(20);
@@ -839,16 +839,22 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    double _dotWeightingWeight = Balance.WeightData.Weight * 1000; // g -> mg
+                    if (Balance.WeightData.IsStable == false)
+                    {
+                        RaiseHeadWarning(EWarning.H1_Balance_NotStable);
+                        break;
+                    }
 
-                    if (_dotWeightingWeight < 0)
+                    double _calibWeight_mg = Balance.WeightData.Weight * (Balance.WeightData.Unit == "g" ? 1000 : 1); // g -> mg
+
+                    if (_calibWeight_mg <= 0)
                     {
                         RaiseHeadWarning(EWarning.H1_Balance_ZeroWeighting_Fail);
                         break;
                     }
 
-                    if (_dotWeightingWeight <= _currentRecipe.CommonRecipe.ResinWeight + _currentRecipe.CommonRecipe.ResinWeightSpec &&
-                        _dotWeightingWeight >= _currentRecipe.CommonRecipe.ResinWeight - _currentRecipe.CommonRecipe.ResinWeightSpec)
+                    if (_calibWeight_mg <= _currentRecipe.CommonRecipe.ResinWeight + _currentRecipe.CommonRecipe.ResinWeightSpec &&
+                        _calibWeight_mg >= _currentRecipe.CommonRecipe.ResinWeight - _currentRecipe.CommonRecipe.ResinWeightSpec)
                     {
                         Log.Debug("DotWeighting Pass");
                         _currentSPDHeadRecipe.PAxisInjectChargePos = _pAxisInjectCharge_Pos;
@@ -857,19 +863,19 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    _pAxisInjectCharge_Height = (_pAxisInjectCharge_Height * _currentRecipe.CommonRecipe.ResinWeight) / _dotWeightingWeight;
+                    _pAxisInjectCharge_Height = (_pAxisInjectCharge_Height * _currentRecipe.CommonRecipe.ResinWeight) / _calibWeight_mg;
 
                     Step.RunStep = (int)ESPDHeadProcDotWeightingStep.PAxis_ChargePos_Move;
                     break;
                 case ESPDHeadProcDotWeightingStep.ClearFlag_Request_XYAxis_DotWeightingPos:
-                    if (procInputs[ESPDHeadProcInput.H13DotWeightingInPos].Value == true &&
+                    if (procInputs[ESPDHeadProcInput.XYAxisInH13DotWeightingPos].Value == true &&
                         (head == ESPDHead.SPDHead1 || head == ESPDHead.SPDHead3))
                     {
                         Wait(20);
                         break;
                     }
 
-                    if (procInputs[ESPDHeadProcInput.H24DotWeightingInPos].Value == true &&
+                    if (procInputs[ESPDHeadProcInput.XYAxisInH24DotWeightingPos].Value == true &&
                         (head == ESPDHead.SPDHead2 || head == ESPDHead.SPDHead4))
                     {
                         Wait(20);

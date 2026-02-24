@@ -13,6 +13,9 @@
         SPDHead_InjectResin_Request,
         SPDHead_InjectResin_DoneWait,
 
+        ZAxis_SafetyPos_Move,
+        ZAxis_SafetyPos_Wait,
+
         End,
     }
 }

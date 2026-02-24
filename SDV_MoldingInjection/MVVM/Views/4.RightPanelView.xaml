@@ -154,8 +154,7 @@
             <ui:ImageButton
                     Image="/EQX.UI;component/Resources/Images/Components/Common/return_origin_selected.png"
                     Content="{DynamicResource str_Origin}"
-                    Command="{Binding OriginCommand}"
-                    IsEnabled="{Binding MachineStatus.IsStandByProcessMode}" />
+                    Command="{Binding OriginCommand}" />
 
         </UniformGrid>
     </Grid>

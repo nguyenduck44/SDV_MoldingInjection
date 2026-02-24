@@ -140,6 +140,20 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 }
             };
 
+            var dummyZSafetyGroup = new MultiPointPosition
+            {
+                Name = "Dummy Pos (Z Safety)",
+                Points = new ObservableCollection<PositionPoint>
+                {
+                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisDummyPos, _devices.Motions.XAxis),
+                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisDummyPos, _devices.Motions.StageYAxis),
+                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
+                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
+                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
+                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
+                }
+            };
+
             var dummyGroup = new MultiPointPosition
             {
                 Name = "Dummy Pos",
@@ -154,8 +168,39 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 }
             };
 
+            var weightingZSafetyGroup = new MultiPointPosition
+            {
+                Name = "Weighting Pos (Z Safety)",
+                Points = new ObservableCollection<PositionPoint>
+                {
+                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisH13DotWeightingPos, _devices.Motions.XAxis),
+                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
+                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
+                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
+                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
+                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
+                }
+            };
+
+            var weightingGroup = new MultiPointPosition
+            {
+                Name = "Weighting Pos",
+                Points = new ObservableCollection<PositionPoint>
+                {
+                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisH13DotWeightingPos, _devices.Motions.XAxis),
+                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
+                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisWeightingPos, _devices.Motions.Z1Axis),
+                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisWeightingPos, _devices.Motions.Z2Axis),
+                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisWeightingPos, _devices.Motions.Z3Axis),
+                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisWeightingPos, _devices.Motions.Z4Axis),
+                }
+            };
+
             positionManager.GroupedPositions.Add(readyGroup);
+            positionManager.GroupedPositions.Add(dummyZSafetyGroup);
             positionManager.GroupedPositions.Add(dummyGroup);
+            positionManager.GroupedPositions.Add(weightingZSafetyGroup);
+            positionManager.GroupedPositions.Add(weightingGroup);
 
             return positionManager;
         }

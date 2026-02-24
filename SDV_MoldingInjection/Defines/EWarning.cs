@@ -74,6 +74,7 @@
         H1_PistonCyl_DownFail,
         H1_Assemble_Check_Timeout,
         H1_Disassemble_Check_Timeout,
+        H1_Balance_NotStable,
         H1_Balance_RequestWeight_Fail,
         H1_Balance_Zero_Fail,
         /// <summary>
@@ -91,6 +92,7 @@
         H2_PistonCyl_DownFail,
         H2_Assemble_Check_Timeout,
         H2_Disassemble_Check_Timeout,
+        H2_Balance_NotStable,
         H2_Balance_RequestWeight_Fail,
         H2_Balance_Zero_Fail,
         /// <summary>
@@ -109,6 +111,7 @@
         H3_PistonCyl_DownFail,
         H3_Assemble_Check_Timeout,
         H3_Disassemble_Check_Timeout,
+        H3_Balance_NotStable,
         H3_Balance_RequestWeight_Fail,
         H3_Balance_Zero_Fail,
         /// <summary>
@@ -126,6 +129,7 @@
         H4_PistonCyl_DownFail,
         H4_Assemble_Check_Timeout,
         H4_Disassemble_Check_Timeout,
+        H4_Balance_NotStable,
         H4_Balance_RequestWeight_Fail,
         H4_Balance_Zero_Fail,
         /// <summary>

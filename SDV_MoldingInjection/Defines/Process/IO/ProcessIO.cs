@@ -137,13 +137,13 @@ namespace SDV_MoldingInjection.Defines
                .MapTo(InjectProcOutput[EInjectProcOutput.XYAxisMoveDummyPosFinish]);
             SPDHead4_ProcInput[ESPDHeadProcInput.XYAxisMoveDummyPosFinish]
                .MapTo(InjectProcOutput[EInjectProcOutput.XYAxisMoveDummyPosFinish]);
-            SPDHead1_ProcInput[ESPDHeadProcInput.H13DotWeightingInPos]
+            SPDHead1_ProcInput[ESPDHeadProcInput.XYAxisInH13DotWeightingPos]
                .MapTo(InjectProcOutput[EInjectProcOutput.H13DotWeightingInPos]);
-            SPDHead2_ProcInput[ESPDHeadProcInput.H24DotWeightingInPos]
+            SPDHead2_ProcInput[ESPDHeadProcInput.XYAxisInH24DotWeightingPos]
                .MapTo(InjectProcOutput[EInjectProcOutput.H24DotWeightingInPos]);
-            SPDHead3_ProcInput[ESPDHeadProcInput.H13DotWeightingInPos]
+            SPDHead3_ProcInput[ESPDHeadProcInput.XYAxisInH13DotWeightingPos]
                .MapTo(InjectProcOutput[EInjectProcOutput.H13DotWeightingInPos]);
-            SPDHead4_ProcInput[ESPDHeadProcInput.H24DotWeightingInPos]
+            SPDHead4_ProcInput[ESPDHeadProcInput.XYAxisInH24DotWeightingPos]
                .MapTo(InjectProcOutput[EInjectProcOutput.H24DotWeightingInPos]);
         }
     }
