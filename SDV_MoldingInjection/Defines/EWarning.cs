@@ -59,6 +59,7 @@
         AngleValve_CloseFail = 2500,
         AngleValve_OpenFail,
         DryPump_Run_Timeout,
+        Machine_Need_Calibration,
 
         //--------- 3500 -> 3999 : SPD Head #1 Process Warning ---------
         P1Axis_Origin_Timeout = 3500,

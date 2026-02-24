@@ -53,10 +53,13 @@ namespace SDV_MoldingInjection.Process
         #endregion
 
         #region Constructors
-        public InjectProcess(Devices devices, ProcessIO processIO,
+        public InjectProcess(Devices devices, 
+            ProcessIO processIO,
+            MachineStatus machineStatus,
             RecipeSelector recipeSelector)
         {
             _devices = devices;
+            _machineStatus = machineStatus;
             _recipeSelector = recipeSelector;
 
             procInputs = processIO.InjectProcInput;
@@ -375,6 +378,16 @@ namespace SDV_MoldingInjection.Process
                     {
                         Log.Info($"Sequence set to {ESequence.Unloading}");
                         Sequence = ESequence.Unloading;
+                        break;
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case EMoldProcAutoRunStep.Calibration_Check:
+                    if (_machineStatus.MachineCalibration == false && _machineStatus.IsDryRunMode == false)
+                    {
+                        Log.Info($"Sequence set to {ESequence.DotWeighting}");
+                        Sequence = ESequence.DotWeighting;
                         break;
                     }
 
@@ -790,13 +803,13 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcNeedleCleaningStep.Z_Axis_NeedleCleanPos_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        if (!_currentRecipe.SPDHead1_Recipe.HeadSkip && !Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisInjectPos))
+                        if (!_currentRecipe.SPDHead1_Recipe.HeadSkip && !Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisNeedleCleanPos))
                             RaiseAlarm(EAlarm.Z1Axis_MoveNeedleCleanPos_Timeout);
-                        if (!_currentRecipe.SPDHead2_Recipe.HeadSkip && !Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisInjectPos))
+                        if (!_currentRecipe.SPDHead2_Recipe.HeadSkip && !Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisNeedleCleanPos))
                             RaiseAlarm(EAlarm.Z2Axis_MoveNeedleCleanPos_Timeout);
-                        if (!_currentRecipe.SPDHead3_Recipe.HeadSkip && !Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisInjectPos))
+                        if (!_currentRecipe.SPDHead3_Recipe.HeadSkip && !Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisNeedleCleanPos))
                             RaiseAlarm(EAlarm.Z3Axis_MoveNeedleCleanPos_Timeout);
-                        if (!_currentRecipe.SPDHead4_Recipe.HeadSkip && !Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisInjectPos))
+                        if (!_currentRecipe.SPDHead4_Recipe.HeadSkip && !Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisNeedleCleanPos))
                             RaiseAlarm(EAlarm.Z4Axis_MoveNeedleCleanPos_Timeout);
                         break;
                     }
@@ -980,8 +993,15 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcDotWeightingStep.End:
+                    if (Parent?.Sequence != ESequence.AutoRun)
+                    {
+                        Log.Debug("DotWeighting end");
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
+
                     Log.Debug("DotWeighting end");
-                    Sequence = ESequence.Stop;
+                    Sequence = ESequence.AutoRun;
                     break;
             }
         }
@@ -1167,6 +1187,7 @@ namespace SDV_MoldingInjection.Process
 
         #region Privates
         private readonly Devices _devices;
+        private readonly MachineStatus _machineStatus;
         private readonly RecipeSelector _recipeSelector;
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
         private int _needleCleanCount = 0;

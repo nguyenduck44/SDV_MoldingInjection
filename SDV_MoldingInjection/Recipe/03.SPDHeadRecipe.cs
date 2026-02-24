@@ -121,7 +121,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "Bubble remove turn", Unit = Unit.Degree)]
+        [SingleRecipeDescription(Description = "Bubble remove turn")]
         public double BubbleRemoveTurn
         {
             get { return _bubbleRemoveTurn; }

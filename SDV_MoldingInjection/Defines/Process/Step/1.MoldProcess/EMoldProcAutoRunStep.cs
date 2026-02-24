@@ -7,6 +7,8 @@
         JigDetect_Check,
         JigStatus_Check,
 
+        Calibration_Check,
+
         End,
     }
 }

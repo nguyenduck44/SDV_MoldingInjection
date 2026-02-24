@@ -56,6 +56,8 @@ namespace SDV_MoldingInjection.Defines
 
         public bool MachineTestMode { get; set; }
 
+        public bool MachineCalibration { get; set; }
+
         #region Privates
         private EProcessMode currentProcessMode;
         

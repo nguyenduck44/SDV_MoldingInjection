@@ -4,6 +4,8 @@
     {
         Start,
 
+        MachineCalibration_Check,
+
         // ----- CHARGING PHASE -----
         Gate_Close,
         Gate_CloseWait,

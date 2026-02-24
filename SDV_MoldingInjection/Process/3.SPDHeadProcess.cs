@@ -406,7 +406,15 @@ namespace SDV_MoldingInjection.Process
 
         private void Sequence_AutoRun()
         {
-            Sequence = ESequence.ResinInject;
+            if(_machineStatus.MachineCalibration == false && _machineStatus.IsDryRunMode == false)
+            {
+                Sequence = ESequence.DotWeighting;
+            }
+            else
+            {
+                Sequence = ESequence.ResinInject;
+            }
+
         }
 
         private void Sequence_SPDHeadCommon(ESequence sequence)
@@ -418,6 +426,16 @@ namespace SDV_MoldingInjection.Process
                     if (sequence == ESequence.BubbleRemove)
                     {
                         _bubbleRemoveCount = 1;
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcCommonStep.MachineCalibration_Check:
+                    Log.Debug("Machine Calibration check");
+                    if(_machineStatus.MachineCalibration == false && _machineStatus.IsDryRunMode == false)
+                    {
+                        RaiseWarning(EWarning.Machine_Need_Calibration);
+                        break;
                     }
 
                     Step.RunStep++;
@@ -613,10 +631,19 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    // TODO: Implement this later
                     Log.Debug($"{sequence} end, starting new cycle");
-                    Step.RunStep = (int)ESPDHeadProcCommonStep.Gate_Close;
-                    break;
+                    if (sequence == ESequence.ResinInject)
+                    {
+                        Sequence = ESequence.DummyShot;
+                        break;
+                    }
+
+                    if (sequence == ESequence.DummyShot)
+                    {
+                        Sequence = ESequence.NeedleCleaning;
+                        break;
+                    }
+                break;
             }
         }
 
@@ -775,6 +802,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    _machineStatus.MachineCalibration = true;
                     procOutputs[ESPDHeadProcOutput.DotWeightingDone].Value = false;
                     Log.Debug($"Clear output {ESPDHeadProcOutput.DotWeightingDone}");
                     Step.RunStep++;
@@ -786,7 +814,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
                     Log.Info($"{ESequence.DotWeighting} end, starting new cycle");
-                    Step.RunStep = (int)ESPDHeadProcDotWeightingStep.Gate_Close;
+                    Sequence = ESequence.AutoRun;
                     break;
             }
         }
