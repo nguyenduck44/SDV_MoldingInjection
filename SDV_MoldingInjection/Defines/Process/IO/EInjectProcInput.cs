@@ -15,9 +15,9 @@
         SPDHead3_WorkDone,
         SPDHead4_WorkDone,
 
-        SPDHead1_DotWeightingDone,
-        SPDHead2_DotWeightingDone,
-        SPDHead3_DotWeightingDone,
-        SPDHead4_DotWeightingDone,
+        SPDHead1_RequestDotWaiting,
+        SPDHead2_RequestDotWaiting,
+        SPDHead3_RequestDotWaiting,
+        SPDHead4_RequestDotWaiting,
     }
 }

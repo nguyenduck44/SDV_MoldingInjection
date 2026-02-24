@@ -6,6 +6,6 @@ namespace SDV_MoldingInjection.Defines
 
         InjectFinish,
 
-        DotWeightingDone,
+        SPDHeadRequestDotWeighting,
     }
 }

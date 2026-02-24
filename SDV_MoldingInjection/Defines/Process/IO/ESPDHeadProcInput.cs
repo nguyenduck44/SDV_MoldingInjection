@@ -6,6 +6,7 @@
 
         WorkRequest,
 
-        DotWeightingRequest,
+        H13DotWeightingInPos,
+        H24DotWeightingInPos,
     }
 }
