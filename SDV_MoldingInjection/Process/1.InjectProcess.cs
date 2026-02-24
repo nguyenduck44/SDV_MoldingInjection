@@ -846,7 +846,7 @@ namespace SDV_MoldingInjection.Process
             {
                 case EMoldProcDotWeightingStep.Start:
                     Log.Debug("DotWeighting start");
-                    _machineStatus.ClearDotWeightingPassedFlags();
+                    Log.Debug("Wait SPDHead request");
                     Step.RunStep++;
                     break;
                 case EMoldProcDotWeightingStep.WaitSPDHeadRequest:
@@ -862,7 +862,14 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Step.RunStep = (int)EMoldProcDotWeightingStep.End;
+
+                    if(_machineStatus.MachineCalibration.All(x => x))
+                    {
+                        Step.RunStep = (int)EMoldProcDotWeightingStep.End;
+                        break;
+
+                    }
+
                     break;
                 case EMoldProcDotWeightingStep.XAxis_H13DotWeightingPos_Move:
                     Log.Debug($"Moving Y to dot weighting position for Head 1, 3");

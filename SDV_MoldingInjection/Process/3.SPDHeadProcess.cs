@@ -668,7 +668,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.Charge_PosVel_Calculte:
-                    _pAxisInjectCharge_Height = _pAxisBase_Pos + V380Weight2mg(_currentRecipe.CommonRecipe.ResinWeight);
+                    _pAxisInjectCharge_Height = _pAxisBase_Pos - V380Weight2mg(_currentRecipe.CommonRecipe.ResinWeight);
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.Gate_Close:
@@ -693,9 +693,9 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.PAxis_ChargePos_Move:
-                    Log.Debug($"{PAxis.Name} moving to ChargePos [{_pAxisInjectCharge_Pos}mm]");
-                    PAxis.MoveAbs(_pAxisInjectCharge_Pos);
-                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => PAxis.IsOnPosition(_pAxisInjectCharge_Pos));
+                    Log.Debug($"{PAxis.Name} moving to ChargePos [{_pAxisInjectCharge_Height}mm]");
+                    PAxis.MoveAbs(_pAxisInjectCharge_Height);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => PAxis.IsOnPosition(_pAxisInjectCharge_Height));
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.PAxis_ChargePos_MoveWait:
@@ -742,28 +742,34 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.Balance_Zero:
-                    Log.Debug("Balance Zeroing start");
-
-                    Balance.Tare();
-                    Balance.RequestStableWeight();
-                    Wait(5000, () => Balance.WeightData != null);
+                    if(_removeResinCount == 2)
+                    {
+                        Log.Debug("Balance Zeroing start");
+                        Balance.Tare();
+                        Balance.RequestStableWeight();
+                        Wait(5000, () => Balance.WeightData != null);
+                    }
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.Balance_Zero_Check:
-                    if (WaitTimeOutOccurred || Balance.WeightData == null)
+                    if ((WaitTimeOutOccurred || Balance.WeightData == null) && _removeResinCount == 2)
                     {
                         RaiseHeadWarning(EWarning.H1_Balance_RequestWeight_Fail);
                         break;
                     }
 
-                    double weight = Balance.WeightData.Weight * 1000;
-                    if(weight < -3 || weight > 3)
+                    if(_removeResinCount == 2)
                     {
-                        RaiseHeadWarning(EWarning.H1_Balance_Zero_Fail);
-                        break;
+                        double weight = Balance.WeightData.Weight * 1000;
+                        if(weight < -3 || weight > 3)
+                        {
+                            RaiseHeadWarning(EWarning.H1_Balance_Zero_Fail);
+                            break;
+                        }
+
+                        Log.Debug("Balance Zero done"); 
                     }
 
-                    Log.Debug("Balance Zero done");
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.PAxis_InjectPos_Move:
@@ -779,10 +785,10 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Debug($"{PAxis.Name} moving to InjectPos done {_removeResinCount} step");
+                    Log.Debug($"{PAxis.Name} moving to InjectPos turn {_removeResinCount} done");
                     _removeResinCount++;
 
-                    if (_removeResinCount < 2)
+                    if (_removeResinCount <= 2)
                     {
                         Step.RunStep = (int)ESPDHeadProcDotWeightingStep.Gate_Close;
                         break;
@@ -916,11 +922,18 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"Waiting for {In_AssembleCheck} detect");
-                    Wait(1000, () => In_AssembleCheck.Value);
+                    Wait(5000, () => In_AssembleCheck.Value);
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAssembleDisAssembleStep.AssembleCheckWait:
                     if (WaitTimeOutOccurred)
+                    {
+                        RaiseHeadWarning(EWarning.H1_Assemble_CheckFail);
+                        break;
+                    }
+
+                    Wait(2000);
+                    if(In_AssembleCheck.Value == false)
                     {
                         RaiseHeadWarning(EWarning.H1_Assemble_CheckFail);
                         break;
@@ -1070,7 +1083,7 @@ namespace SDV_MoldingInjection.Process
 
         private double V380Weight2mg(double weight, double constant = 1)
         {
-            return weight / (Math.Pow(2.5, 2) * Math.PI);
+            return Math.Round(weight / (Math.Pow(2.5, 2) * Math.PI),3);
         }
 
         private double _pAxisCharge_Pos;
