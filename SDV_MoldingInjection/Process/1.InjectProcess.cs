@@ -191,6 +191,9 @@ namespace SDV_MoldingInjection.Process
                 case ESequence.BubbleRemove:
                     Sequence_DummyShot();
                     break;
+                default:
+                    Sequence = ESequence.Stop;
+                    break;
             }
 
             return true;

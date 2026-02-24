@@ -131,6 +131,9 @@ namespace SDV_MoldingInjection.Process
                 case ESequence.ResinInject:
                     Sequence_ResinInject();
                     break;
+                default:
+                    Sequence = ESequence.Stop;
+                    break;
             }
             return true;
         }
