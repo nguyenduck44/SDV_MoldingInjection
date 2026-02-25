@@ -793,7 +793,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.Charge_PosVel_Calculte:
-                    _pAxisInjectCharge_Height = _pAxisBase_Pos - V380Weight2mg(_currentRecipe.CommonRecipe.ResinWeight);
+                    _pAxisInjectCharge_Height = V380Weight2mg(_currentRecipe.CommonRecipe.ResinWeight);
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.Gate_Close:
@@ -818,9 +818,9 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.PAxis_ChargePos_Move:
-                    Log.Debug($"{PAxis.Name} moving to ChargePos [{_pAxisInjectCharge_Height}mm]");
-                    PAxis.MoveAbs(_pAxisInjectCharge_Height);
-                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => PAxis.IsOnPosition(_pAxisInjectCharge_Height));
+                    Log.Debug($"{PAxis.Name} moving to ChargePos [{_pAxisInjectCharge_Pos}mm]");
+                    PAxis.MoveAbs(_pAxisInjectCharge_Pos);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => PAxis.IsOnPosition(_pAxisInjectCharge_Pos));
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.PAxis_ChargePos_MoveWait:
@@ -863,25 +863,27 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Debug("DotWeighting Position Move Finish");
+                    //Log.Debug("DotWeighting Position Move Finish");
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.Balance_Zero:
                     if (_removeResinCount == 0)
                     {
+                        _removeResinCount++;
                         Step.RunStep = (int)ESPDHeadProcDotWeightingStep.PAxis_InjectPos_Move;
                         break;
                     }
 
                     Log.Debug("Balance Zeroing start");
-                    Balance.Zero();
-                    Wait(10000);
+                    Balance.SendZeroCommand();
+                    Wait(10000, () => Balance.WeightData != null);
+
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.Balance_Zero_Check:
-                    if (WaitTimeOutOccurred || Balance.WeightData == null)
+                    if (Balance.WeightData == null)
                     {
-                        RaiseHeadWarning(EWarning.H1_Balance_RequestWeight_Fail);
+                        RaiseHeadWarning(EWarning.H1_Balance_Zero_Fail);
                         break;
                     }
 
@@ -892,7 +894,6 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    _removeResinCount++;
                     Log.Debug("Balance Zero done"); 
                     Step.RunStep++;
                     break;
@@ -914,6 +915,7 @@ namespace SDV_MoldingInjection.Process
                     if (_removeResinCount <= 1)
                     {
                         // Ignore balance first time
+                        _removeResinCount++;
                         Step.RunStep = (int)ESPDHeadProcDotWeightingStep.Gate_Close;
                         break;
                     }
@@ -958,7 +960,7 @@ namespace SDV_MoldingInjection.Process
 
                     _pAxisInjectCharge_Height = (_pAxisInjectCharge_Height * _currentRecipe.CommonRecipe.ResinWeight) / _calibWeight_mg;
 
-                    Step.RunStep = (int)ESPDHeadProcDotWeightingStep.PAxis_ChargePos_Move;
+                    Step.RunStep = (int)ESPDHeadProcDotWeightingStep.Gate_Close;
                     break;
                 case ESPDHeadProcDotWeightingStep.ClearFlag_Request_XYAxis_DotWeightingPos:
                     if (procInputs[ESPDHeadProcInput.XYAxisInH13DotWeightingPos].Value == true &&
