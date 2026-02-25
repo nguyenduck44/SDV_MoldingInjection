@@ -544,7 +544,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESPDHeadProcCommonStep.MachineCalibration_Check:
                     Log.Debug("Machine Calibration check");
-                    if (_machineStatus.MachineCalibration.All(x => x) == false && _machineStatus.IsDryRunMode == false)
+                    if (_machineStatus.MachineCalibration.All(x => x) == false && _machineStatus.IsDryRunMode == false && sequence == ESequence.ResinInject)
                     {
                         RaiseWarning(EWarning.Machine_Need_Calibration);
                         break;
@@ -870,26 +870,26 @@ namespace SDV_MoldingInjection.Process
                     if(_removeResinCount == 2)
                     {
                         Log.Debug("Balance Zeroing start");
-                        Balance.Tare();
-                        Wait(5000, () => Balance.WeightData != null);
+                        Balance.Zero();
+                        Wait(1000);
                     }
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.Balance_Zero_Check:
-                    if ((WaitTimeOutOccurred || Balance.WeightData == null) && _removeResinCount == 2)
-                    {
-                        RaiseHeadWarning(EWarning.H1_Balance_RequestWeight_Fail);
-                        break;
-                    }
+                    //if ((WaitTimeOutOccurred || Balance.WeightData == null) && _removeResinCount == 2)
+                    //{
+                    //    RaiseHeadWarning(EWarning.H1_Balance_RequestWeight_Fail);
+                    //    break;
+                    //}
 
                     if(_removeResinCount == 2)
                     {
-                        double weight = Balance.WeightData.Weight * 1000;
-                        if(weight < -3 || weight > 3)
-                        {
-                            RaiseHeadWarning(EWarning.H1_Balance_Zero_Fail);
-                            break;
-                        }
+                        //double weight = Balance.WeightData.Weight * 1000;
+                        //if(weight < -3 || weight > 3)
+                        //{
+                        //    RaiseHeadWarning(EWarning.H1_Balance_Zero_Fail);
+                        //    break;
+                        //}
 
                         Log.Debug("Balance Zero done"); 
                     }
@@ -920,7 +920,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug("Calibrate_Weight (DotWeighting)");
                     Balance.RequestStableWeight();
-                    Wait(5000, () => Balance.WeightData != null);
+                    Wait(20000, () => Balance.WeightData != null);
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.Calibrate_Weight:

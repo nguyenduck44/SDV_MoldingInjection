@@ -354,7 +354,8 @@ namespace SDV_MoldingInjection.Process
                         Step.OriginStep++;
                         break;
                     }
-                    Step.OriginStep++;
+                    currentHead++;
+                    Step.OriginStep = (int)EMoldProcOriginStep.XYAxis_MoveDummyPos;
                     break;
                 case EMoldProcOriginStep.End:
                     Log.Debug("Origin end");

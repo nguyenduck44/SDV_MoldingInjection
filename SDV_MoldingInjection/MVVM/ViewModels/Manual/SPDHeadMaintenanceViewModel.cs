@@ -20,7 +20,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _recipeSelector = recipeSelector;
 
             Motions = new ObservableCollection<IMotion>();
-            _positionManager = UpdatePositionManager();
             if (GroupedPositions != null && GroupedPositions.Count > 0)
             {
                 SelectedGroupedPosition = GroupedPositions.FirstOrDefault()!;
@@ -140,31 +139,124 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 }
             };
 
-            var dummyZSafetyGroup = new MultiPointPosition
+            var dummyZSafetyGroup = new MultiPointPosition();
+            switch (Head)
             {
-                Name = $"Dummy Pos (Z Safety) {Name}",
-                Points = new ObservableCollection<PositionPoint>
-                {
-                    positionManager.CreatePositionPoint(2, _currentRecipe => headRecipe.XAxisDummyPos, _devices.Motions.XAxis),
-                    positionManager.CreatePositionPoint(2, _currentRecipe => headRecipe.YAxisDummyPos, _devices.Motions.StageYAxis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
-                }
-            };
+                case ESPDHead.SPDHead1:
+                    dummyZSafetyGroup = new MultiPointPosition
+                    {
+                        Name = $"Dummy Pos (Z Safety) {Name}",
+                        Points = new ObservableCollection<PositionPoint>
+                    {
+                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead1_Recipe.XAxisDummyPos, _devices.Motions.XAxis),
+                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead1_Recipe.YAxisDummyPos, _devices.Motions.StageYAxis),
+                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
+                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
+                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
+                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
+                    }
+                    };
+                    break;
+                case ESPDHead.SPDHead2:
+                    dummyZSafetyGroup = new MultiPointPosition
+                    {
+                        Name = $"Dummy Pos (Z Safety) {Name}",
+                        Points = new ObservableCollection<PositionPoint>
+                    {
+                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead2_Recipe.XAxisDummyPos, _devices.Motions.XAxis),
+                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead2_Recipe.YAxisDummyPos, _devices.Motions.StageYAxis),
+                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
+                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
+                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
+                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
+                    }
+                    };
+                    break;
+                case ESPDHead.SPDHead3:
+                    dummyZSafetyGroup = new MultiPointPosition
+                    {
+                        Name = $"Dummy Pos (Z Safety) {Name}",
+                        Points = new ObservableCollection<PositionPoint>
+                    {
+                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead3_Recipe.XAxisDummyPos, _devices.Motions.XAxis),
+                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead3_Recipe.YAxisDummyPos, _devices.Motions.StageYAxis),
+                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
+                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
+                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
+                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
+                    }
+                    };
+                    break;
+                case ESPDHead.SPDHead4:
+                    dummyZSafetyGroup = new MultiPointPosition
+                    {
+                        Name = $"Dummy Pos (Z Safety) {Name}",
+                        Points = new ObservableCollection<PositionPoint>
+                    {
+                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead4_Recipe.XAxisDummyPos, _devices.Motions.XAxis),
+                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead4_Recipe.YAxisDummyPos, _devices.Motions.StageYAxis),
+                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
+                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
+                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
+                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
+                    }
+                    };
+                    break;
+            }
 
-            var dummyGroup = new MultiPointPosition
+            var dummyGroup = new MultiPointPosition();
+            switch (Head)
             {
-                Name = $"Dummy Pos {Name}",
-                Points = new ObservableCollection<PositionPoint>
-                {
-                    positionManager.CreatePositionPoint(1, _currentRecipe => headRecipe.XAxisDummyPos, _devices.Motions.XAxis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => headRecipe.YAxisDummyPos, _devices.Motions.StageYAxis),
-                    positionManager.CreatePositionPoint(2, _currentRecipe => headRecipe.ZAxisDummyPos, ZAxis),
-                }
-            };
-
+                case ESPDHead.SPDHead1:
+                    dummyGroup = new MultiPointPosition
+                    {
+                        Name = $"Dummy Pos {Name}",
+                        Points = new ObservableCollection<PositionPoint>
+                        {
+                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead1_Recipe.XAxisDummyPos, _devices.Motions.XAxis),
+                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead1_Recipe.YAxisDummyPos, _devices.Motions.StageYAxis),
+                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
+                        }
+                    };
+                    break;
+                case ESPDHead.SPDHead2:
+                    dummyGroup = new MultiPointPosition
+                    {
+                        Name = $"Dummy Pos {Name}",
+                        Points = new ObservableCollection<PositionPoint>
+                        {
+                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead2_Recipe.XAxisDummyPos, _devices.Motions.XAxis),
+                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead2_Recipe.YAxisDummyPos, _devices.Motions.StageYAxis),
+                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
+                        }
+                    };
+                    break;
+                case ESPDHead.SPDHead3:
+                    dummyGroup = new MultiPointPosition
+                    {
+                        Name = $"Dummy Pos {Name}",
+                        Points = new ObservableCollection<PositionPoint>
+                        {
+                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead3_Recipe.XAxisDummyPos, _devices.Motions.XAxis),
+                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead3_Recipe.YAxisDummyPos, _devices.Motions.StageYAxis),
+                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
+                        }
+                    };
+                    break;
+                case ESPDHead.SPDHead4:
+                    dummyGroup = new MultiPointPosition
+                    {
+                        Name = $"Dummy Pos {Name}",
+                        Points = new ObservableCollection<PositionPoint>
+                        {
+                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead4_Recipe.XAxisDummyPos, _devices.Motions.XAxis),
+                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead4_Recipe.YAxisDummyPos, _devices.Motions.StageYAxis),
+                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
+                        }
+                    };
+                    break;
+            }
+            
             var weightingZSafetyGroup = new MultiPointPosition
             {
                 Name = "Weighting Pos (Z Safety)",

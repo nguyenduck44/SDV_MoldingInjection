@@ -62,8 +62,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _devices = devices;
             _recipeSelector = recipeSelector;
 
-            _positionManager = UpdatePositionManager();
-
             if (GroupedPositions != null && GroupedPositions.Count > 0)
             {
                 SelectedGroupedPosition = GroupedPositions.FirstOrDefault()!;

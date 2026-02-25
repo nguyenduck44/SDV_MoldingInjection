@@ -1,9 +1,13 @@
-﻿using EQX.InOut.InputSimulation;
+﻿using EQX.Core.Common;
+using EQX.InOut.InputSimulation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Extensions;
 using SDV_MoldingInjection.MVVM.ViewModels;
 using SDV_MoldingInjection.MVVM.Views;
+using SDV_MoldingInjection.Process;
+using SDV_MoldingInjection.Recipe;
 using System.Windows;
 
 namespace SDV_MoldingInjection
