@@ -2,7 +2,7 @@
 {
     public enum ESPDHeadProcInput
     {
-        XYAxisMoveDummyPosFinish,
+        XYAxisInDummyPos,
 
         WorkRequest,
 

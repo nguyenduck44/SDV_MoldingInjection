@@ -22,8 +22,15 @@ namespace SDV_MoldingInjection.Defines
         ResinInject,
         [Description("Jig UNLOADING")]
         Unloading,
-        [Description("Dummy shot")]
-        DummyShot,
+        [Description("Dummy shot H1")]
+        DummyShot_H1,
+        [Description("Dummy shot H2")]
+        DummyShot_H2,
+        [Description("Dummy shot H3")]
+        DummyShot_H3,
+        [Description("Dummy shot H4")]
+        DummyShot_H4,
+
         [Description("Needle cleaning")]
         NeedleCleaning,
         [Description("Dot weighting")]
@@ -33,8 +40,15 @@ namespace SDV_MoldingInjection.Defines
         HeadAssemble,
         [Description("Head DISASSEMBLE")]
         HeadDisassemble,
-        [Description("Bubble remove")]
-        BubbleRemove
+
+        [Description("Bubble remove H1")]
+        BubbleRemove_H1,
+        [Description("Bubble remove H2")]
+        BubbleRemove_H2,
+        [Description("Bubble remove H3")]
+        BubbleRemove_H3,
+        [Description("Bubble remove H4")]
+        BubbleRemove_H4,
     }
 
     public enum ESemiSequence
@@ -52,8 +66,14 @@ namespace SDV_MoldingInjection.Defines
         ResinInject,
         [Description("Jig UNLOADING")]
         Unloading,
-        [Description("Dummy shot")]
-        DummyShot,
+        [Description("Dummy shot H1")]
+        DummyShot_H1,
+        [Description("Dummy shot H2")]
+        DummyShot_H2,
+        [Description("Dummy shot H3")]
+        DummyShot_H3,
+        [Description("Dummy shot H4")]
+        DummyShot_H4,
         [Description("Needle cleaning")]
         NeedleCleaning,
         [Description("Dot weighting")]
@@ -63,7 +83,14 @@ namespace SDV_MoldingInjection.Defines
         HeadAssemble,
         [Description("Head DISASSEMBLE")]
         HeadDisassemble,
-        [Description("Bubble remove")]
-        BubbleRemove
+        
+        [Description("Bubble remove H1")]
+        BubbleRemove_H1,
+        [Description("Bubble remove H2")]
+        BubbleRemove_H2,
+        [Description("Bubble remove H3")]
+        BubbleRemove_H3,
+        [Description("Bubble remove H4")]
+        BubbleRemove_H4,
     }
 }

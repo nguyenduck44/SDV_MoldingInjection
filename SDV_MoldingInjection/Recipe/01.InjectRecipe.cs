@@ -65,36 +65,6 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "X-Axis dummy shot position", Unit = Unit.mm)]
-        [SinglePositionTeaching(Motion = "XAxis")]
-        public double XAxisDummyPos
-        {
-            get { return _xAxisDummyPos; }
-            set
-            {
-                if (_xAxisDummyPos == value) return;
-
-                OnRecipeChanged(_xAxisDummyPos, value);
-                _xAxisDummyPos = value;
-                OnPropertyChanged();
-            }
-        }
-
-        [SingleRecipeDescription(Description = "Y-Axis dummy shot position", Unit = Unit.mm)]
-        [SinglePositionTeaching(Motion = "YAxis")]
-        public double YAxisDummyPos
-        {
-            get { return _yAxisDummyPos; }
-            set
-            {
-                if (_yAxisDummyPos == value) return;
-
-                OnRecipeChanged(_yAxisDummyPos, value);
-                _yAxisDummyPos = value;
-                OnPropertyChanged();
-            }
-        }
-
         [SingleRecipeDescription(Description = "X-Axis dot weighting position for Head 1, 3", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
         public double XAxisH13DotWeightingPos
@@ -187,11 +157,6 @@ namespace SDV_MoldingInjection.Recipe
 
         private double _yAxisReadyPos;
         private double _yAxisInjectPos;
-
-        private double _xAxisDummyPos;
-        private double _yAxisDummyPos;
-        private double _xAxisH24DummyPos;
-        private double _yAxisH24DummyPos;
 
         private double _xAxisH13DotWeightingPos;
         private double _xAxisH24DotWeightingPos;

@@ -258,7 +258,7 @@ namespace SDV_MoldingInjection.Process
                     Step.OriginStep++;
                     break;
                 case ESPDHeadProcOriginStep.WaitXYAxisMoveDummyPos:
-                    if (procInputs[ESPDHeadProcInput.XYAxisMoveDummyPosFinish].Value == false)
+                    if (procInputs[ESPDHeadProcInput.XYAxisInDummyPos].Value == false)
                     {
                         Wait(20);
                         break;
@@ -348,7 +348,7 @@ namespace SDV_MoldingInjection.Process
                     Step.OriginStep++;
                     break;
                 case ESPDHeadProcOriginStep.ClearFlag_SPDHeadOriginDone:
-                    if (procInputs[ESPDHeadProcInput.XYAxisMoveDummyPosFinish].Value)
+                    if (procInputs[ESPDHeadProcInput.XYAxisInDummyPos].Value)
                     {
                         Wait(20);
                         break;
@@ -393,13 +393,45 @@ namespace SDV_MoldingInjection.Process
                     }
                     Sequence_SPDHeadCommon(ESequence.ResinInject);
                     break;
-                case ESequence.DummyShot:
-                    if (_currentSPDHeadRecipe.HeadSkip)
+                case ESequence.DummyShot_H1:
+                    if (head == ESPDHead.SPDHead1 && !_currentSPDHeadRecipe.HeadSkip)
+                    {
+                        Sequence_SPDHeadCommon(ESequence.DummyShot_H1);
+                    }
+                    else
                     {
                         Sequence = ESequence.Stop;
-                        break;
                     }
-                    Sequence_SPDHeadCommon(ESequence.DummyShot);
+                    break;
+                case ESequence.DummyShot_H2:
+                    if (head == ESPDHead.SPDHead2 && !_currentSPDHeadRecipe.HeadSkip)
+                    {
+                        Sequence_SPDHeadCommon(ESequence.DummyShot_H2);
+                    }
+                    else
+                    {
+                        Sequence = ESequence.Stop;
+                    }
+                    break;
+                case ESequence.DummyShot_H3:
+                    if (head == ESPDHead.SPDHead3 && !_currentSPDHeadRecipe.HeadSkip)
+                    {
+                        Sequence_SPDHeadCommon(ESequence.DummyShot_H3);
+                    }
+                    else
+                    {
+                        Sequence = ESequence.Stop;
+                    }
+                    break;
+                case ESequence.DummyShot_H4:
+                    if (head == ESPDHead.SPDHead4 && !_currentSPDHeadRecipe.HeadSkip)
+                    {
+                        Sequence_SPDHeadCommon(ESequence.DummyShot_H4);
+                    }
+                    else
+                    {
+                        Sequence = ESequence.Stop;
+                    }
                     break;
                 case ESequence.DotWeighting:
                     if (_currentSPDHeadRecipe.HeadSkip)
@@ -410,13 +442,45 @@ namespace SDV_MoldingInjection.Process
                     }
                     Sequence_DotWeighting();
                     break;
-                case ESequence.BubbleRemove:
-                    if (_currentSPDHeadRecipe.HeadSkip)
+                case ESequence.BubbleRemove_H1:
+                    if (head == ESPDHead.SPDHead1 && !_currentSPDHeadRecipe.HeadSkip)
+                    {
+                        Sequence_SPDHeadCommon(ESequence.BubbleRemove_H1);
+                    }
+                    else
                     {
                         Sequence = ESequence.Stop;
-                        break;
                     }
-                    Sequence_SPDHeadCommon(ESequence.BubbleRemove);
+                    break;
+                case ESequence.BubbleRemove_H2:
+                    if (head == ESPDHead.SPDHead2 && !_currentSPDHeadRecipe.HeadSkip)
+                    {
+                        Sequence_SPDHeadCommon(ESequence.BubbleRemove_H2);
+                    }
+                    else
+                    {
+                        Sequence = ESequence.Stop;
+                    }
+                    break;
+                case ESequence.BubbleRemove_H3:
+                    if (head == ESPDHead.SPDHead3 && !_currentSPDHeadRecipe.HeadSkip)
+                    {
+                        Sequence_SPDHeadCommon(ESequence.BubbleRemove_H3);
+                    }
+                    else
+                    {
+                        Sequence = ESequence.Stop;
+                    }
+                    break;
+                case ESequence.BubbleRemove_H4:
+                    if (head == ESPDHead.SPDHead4 && !_currentSPDHeadRecipe.HeadSkip)
+                    {
+                        Sequence_SPDHeadCommon(ESequence.BubbleRemove_H4);
+                    }
+                    else
+                    {
+                        Sequence = ESequence.Stop;
+                    }
                     break;
                 case ESequence.HeadAssemble:
                     if (_currentSPDHeadRecipe.HeadSkip)
@@ -459,13 +523,19 @@ namespace SDV_MoldingInjection.Process
 
         }
 
+        // Resin Inject
+        // Dummy Shot
+        // Bubble Remove
         private void Sequence_SPDHeadCommon(ESequence sequence)
         {
             switch ((ESPDHeadProcCommonStep)Step.RunStep)
             {
                 case ESPDHeadProcCommonStep.Start:
                     Log.Debug($"{sequence} start");
-                    if (sequence == ESequence.BubbleRemove)
+                    if (sequence == ESequence.BubbleRemove_H1 ||
+                        sequence == ESequence.BubbleRemove_H2 ||
+                        sequence == ESequence.BubbleRemove_H3 ||
+                        sequence == ESequence.BubbleRemove_H4)
                     {
                         _bubbleRemoveCount = 1;
                     }
@@ -511,10 +581,16 @@ namespace SDV_MoldingInjection.Process
                         case ESequence.ResinInject:
                             _pAxisCharge_Pos = _currentSPDHeadRecipe.PAxisInjectChargePos;
                             break;
-                        case ESequence.DummyShot:
+                        case ESequence.DummyShot_H1:
+                        case ESequence.DummyShot_H2:
+                        case ESequence.DummyShot_H3:
+                        case ESequence.DummyShot_H4:
                             _pAxisCharge_Pos = _pAxisBase_Pos - 10;
                             break;
-                        case ESequence.BubbleRemove:
+                        case ESequence.BubbleRemove_H1:
+                        case ESequence.BubbleRemove_H2:
+                        case ESequence.BubbleRemove_H3:
+                        case ESequence.BubbleRemove_H4:
                             _pAxisCharge_Pos = _currentSPDHeadRecipe.PAxisInjectChargePos;
                             break;
                         default: throw new NotImplementedException();
@@ -561,10 +637,16 @@ namespace SDV_MoldingInjection.Process
                         case ESequence.ResinInject:
                             _pAxisInject_Vel = Math.Abs(_currentSPDHeadRecipe.PAxisInjectChargePos - _pAxisBase_Pos) / _currentRecipe.CommonRecipe.InjectTime;
                             break;
-                        case ESequence.DummyShot:
+                        case ESequence.DummyShot_H1:
+                        case ESequence.DummyShot_H2:
+                        case ESequence.DummyShot_H3:
+                        case ESequence.DummyShot_H4:
                             _pAxisInject_Vel = PAxis.Parameter.Velocity;
                             break;
-                        case ESequence.BubbleRemove:
+                        case ESequence.BubbleRemove_H1:
+                        case ESequence.BubbleRemove_H2:
+                        case ESequence.BubbleRemove_H3:
+                        case ESequence.BubbleRemove_H4:
                             if (_bubbleRemoveCount != _currentSPDHeadRecipe.BubbleRemoveTurn)
                             {
                                 _pAxisInject_Pos = _currentSPDHeadRecipe.PAxisInjectChargePos + (_bubbleRemoveCount * Math.Abs(_currentSPDHeadRecipe.PAxisInjectChargePos - _pAxisBase_Pos) / _currentSPDHeadRecipe.BubbleRemoveTurn);
@@ -582,7 +664,10 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    if (sequence != ESequence.BubbleRemove)
+                    if (sequence != ESequence.BubbleRemove_H1 &&
+                        sequence != ESequence.BubbleRemove_H2 &&
+                        sequence != ESequence.BubbleRemove_H3 &&
+                        sequence != ESequence.BubbleRemove_H4)
                     {
                         Step.RunStep = (int)ESPDHeadProcCommonStep.Gate_Open;
                         break;
@@ -636,7 +721,10 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    if (sequence == ESequence.BubbleRemove)
+                    if (sequence == ESequence.BubbleRemove_H1 ||
+                        sequence == ESequence.BubbleRemove_H2 ||
+                        sequence == ESequence.BubbleRemove_H3 ||
+                        sequence == ESequence.BubbleRemove_H4)
                     {
                         _bubbleRemoveCount++;
                         Log.Debug($"Bubble remove turn: {_bubbleRemoveCount}");
@@ -672,16 +760,20 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Debug($"{sequence} end, starting new cycle");
+                    Log.Debug($"{sequence} end");
                     if (sequence == ESequence.ResinInject)
                     {
-                        Log.Info($"Set next sequence: {ESequence.DummyShot}");
-                        Sequence = ESequence.DummyShot;
-                        break;
+                        Log.Info($"Set next sequence: {ESequence.DummyShot_H1}");
+                        Sequence = ESequence.DummyShot_H1;
                     }
+                    else if (sequence >= ESequence.DummyShot_H1 && sequence < ESequence.DummyShot_H4)
+                    {
+                        Sequence = (ESequence)((int)sequence + 1);
+                        Log.Info($"Set next sequence: {Sequence}");
+                    }
+                    else
+                        Sequence = ESequence.Stop;
 
-                    Log.Info($"Set next sequence: {ESequence.ResinInject}");
-                    Sequence = ESequence.ResinInject;
                     break;
             }
         }

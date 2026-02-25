@@ -2,7 +2,10 @@
 {
     public enum EInjectProcOutput
     {
-        XYAxisMoveDummyPosFinish,
+        XYAxisInDummyPosH1,
+        XYAxisInDummyPosH2,
+        XYAxisInDummyPosH3,
+        XYAxisInDummyPosH4,
 
         DryPump_VacuumRequest,
         DryPump_PurgeRequest,

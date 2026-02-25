@@ -49,6 +49,36 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        [SingleRecipeDescription(Description = "X-Axis dummy shot position", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "XAxis")]
+        public double XAxisDummyPos
+        {
+            get { return _xAxisDummyPos; }
+            set
+            {
+                if (_xAxisDummyPos == value) return;
+
+                OnRecipeChanged(_xAxisDummyPos, value);
+                _xAxisDummyPos = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "Y-Axis dummy shot position", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "YAxis")]
+        public double YAxisDummyPos
+        {
+            get { return _yAxisDummyPos; }
+            set
+            {
+                if (_yAxisDummyPos == value) return;
+
+                OnRecipeChanged(_yAxisDummyPos, value);
+                _yAxisDummyPos = value;
+                OnPropertyChanged();
+            }
+        }
+
         [SingleRecipeDescription(Description = "ZAxis Dummy position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "ZAxis")]
         public double ZAxisDummyPos
@@ -166,6 +196,9 @@ namespace SDV_MoldingInjection.Recipe
 
         #region Privates
         private bool _headSkip;
+
+        private double _xAxisDummyPos;
+        private double _yAxisDummyPos;
 
         private double _zAxisSafetyPos;
         private double _zAxisInjectPos;

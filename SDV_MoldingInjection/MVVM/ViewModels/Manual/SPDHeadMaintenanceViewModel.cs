@@ -47,9 +47,9 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 ESemiSequence.Ready,
                 ESemiSequence.ResinInject,
-                ESemiSequence.DummyShot,
+                ESemiSequence.DummyShot_H1 + (int)(Head - ESPDHead.SPDHead1),
                 ESemiSequence.NeedleCleaning,
-                ESemiSequence.BubbleRemove,
+                ESemiSequence.BubbleRemove_H1 + (int)(Head - ESPDHead.SPDHead1),
                 ESemiSequence.DotWeighting,
                 ESemiSequence.HeadAssemble,
                 ESemiSequence.HeadDisassemble,
@@ -142,11 +142,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
             var dummyZSafetyGroup = new MultiPointPosition
             {
-                Name = "Dummy Pos (Z Safety)",
+                Name = $"Dummy Pos (Z Safety) {Name}",
                 Points = new ObservableCollection<PositionPoint>
                 {
-                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisDummyPos, _devices.Motions.XAxis),
-                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisDummyPos, _devices.Motions.StageYAxis),
+                    positionManager.CreatePositionPoint(2, _currentRecipe => headRecipe.XAxisDummyPos, _devices.Motions.XAxis),
+                    positionManager.CreatePositionPoint(2, _currentRecipe => headRecipe.YAxisDummyPos, _devices.Motions.StageYAxis),
                     positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
                     positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
                     positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
@@ -156,15 +156,12 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
             var dummyGroup = new MultiPointPosition
             {
-                Name = "Dummy Pos",
+                Name = $"Dummy Pos {Name}",
                 Points = new ObservableCollection<PositionPoint>
                 {
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisDummyPos, _devices.Motions.XAxis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisDummyPos, _devices.Motions.StageYAxis),
-                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisDummyPos, _devices.Motions.Z1Axis),
-                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisDummyPos, _devices.Motions.Z2Axis),
-                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisDummyPos, _devices.Motions.Z3Axis),
-                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisDummyPos, _devices.Motions.Z4Axis),
+                    positionManager.CreatePositionPoint(1, _currentRecipe => headRecipe.XAxisDummyPos, _devices.Motions.XAxis),
+                    positionManager.CreatePositionPoint(1, _currentRecipe => headRecipe.YAxisDummyPos, _devices.Motions.StageYAxis),
+                    positionManager.CreatePositionPoint(2, _currentRecipe => headRecipe.ZAxisDummyPos, ZAxis),
                 }
             };
 
@@ -209,6 +206,14 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly Devices _devices;
         private readonly RecipeSelector _recipeSelector;
 
+        private ESPDHead Head => Name switch
+        {
+            "SPDHead1" => ESPDHead.SPDHead1,
+            "SPDHead2" => ESPDHead.SPDHead2,
+            "SPDHead3" => ESPDHead.SPDHead3,
+            "SPDHead4" => ESPDHead.SPDHead4,
+            _ => throw new Exception($"Invalid process name: {Name}")
+        };
         private IMotion ZAxis => Name switch
         {
             "SPDHead1" => _devices.Motions.Z1Axis,
