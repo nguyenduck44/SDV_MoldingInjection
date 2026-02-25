@@ -867,33 +867,33 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.Balance_Zero:
-                    if(_removeResinCount > 0)
+                    if (_removeResinCount == 0)
                     {
-                        Log.Debug("Balance Zeroing start");
-                        Balance.Zero();
-                        Wait(10000);
+                        Step.RunStep = (int)ESPDHeadProcDotWeightingStep.PAxis_InjectPos_Move;
+                        break;
                     }
+
+                    Log.Debug("Balance Zeroing start");
+                    Balance.Zero();
+                    Wait(10000);
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.Balance_Zero_Check:
-                    //if ((WaitTimeOutOccurred || Balance.WeightData == null) && _removeResinCount == 2)
-                    //{
-                    //    RaiseHeadWarning(EWarning.H1_Balance_RequestWeight_Fail);
-                    //    break;
-                    //}
-
-                    if(_removeResinCount > 0)
+                    if (WaitTimeOutOccurred || Balance.WeightData == null)
                     {
-                        //double weight = Balance.WeightData.Weight * 1000;
-                        //if(weight < -3 || weight > 3)
-                        //{
-                        //    RaiseHeadWarning(EWarning.H1_Balance_Zero_Fail);
-                        //    break;
-                        //}
-
-                        Log.Debug("Balance Zero done"); 
+                        RaiseHeadWarning(EWarning.H1_Balance_RequestWeight_Fail);
+                        break;
                     }
 
+                    double weight = Balance.WeightData.Weight * 1000;
+                    if (weight < -3 || weight > 3)
+                    {
+                        RaiseHeadWarning(EWarning.H1_Balance_Zero_Fail);
+                        break;
+                    }
+
+                    _removeResinCount++;
+                    Log.Debug("Balance Zero done"); 
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.PAxis_InjectPos_Move:
@@ -910,16 +910,16 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"{PAxis.Name} moving to InjectPos turn {_removeResinCount} done");
-                    _removeResinCount++;
 
                     if (_removeResinCount <= 1)
                     {
+                        // Ignore balance first time
                         Step.RunStep = (int)ESPDHeadProcDotWeightingStep.Gate_Close;
                         break;
                     }
 
                     Log.Debug("Calibrate_Weight (DotWeighting)");
-                    Balance.RequestStableWeight();
+                    Balance.SendRequestStableWeightCommand();
                     Wait(20000, () => Balance.WeightData != null);
                     Step.RunStep++;
                     break;
