@@ -779,7 +779,6 @@ namespace SDV_MoldingInjection.Process
                     {
                         Log.Debug("Balance Zeroing start");
                         Balance.Tare();
-                        Balance.RequestStableWeight();
                         Wait(5000, () => Balance.WeightData != null);
                     }
                     Step.RunStep++;

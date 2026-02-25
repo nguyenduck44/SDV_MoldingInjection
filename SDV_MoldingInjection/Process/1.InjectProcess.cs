@@ -687,6 +687,12 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcDummyShotStep.ZAxis_DummyPos_Move:
+                    if (sequence == ESequence.HeadAssemble || sequence == ESequence.HeadDisassemble)
+                    {
+                        Step.RunStep = (int)EMoldProcDummyShotStep.SPDHead_InjectResin_Request;
+                        break;
+                    }
+
                     Log.Debug("ZAxis move dummy position");
                     ZAxisDummyPosMove();
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
