@@ -867,11 +867,11 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.Balance_Zero:
-                    if(_removeResinCount == 2)
+                    if(_removeResinCount > 0)
                     {
                         Log.Debug("Balance Zeroing start");
                         Balance.Zero();
-                        Wait(1000);
+                        Wait(10000);
                     }
                     Step.RunStep++;
                     break;
@@ -882,7 +882,7 @@ namespace SDV_MoldingInjection.Process
                     //    break;
                     //}
 
-                    if(_removeResinCount == 2)
+                    if(_removeResinCount > 0)
                     {
                         //double weight = Balance.WeightData.Weight * 1000;
                         //if(weight < -3 || weight > 3)
@@ -912,7 +912,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"{PAxis.Name} moving to InjectPos turn {_removeResinCount} done");
                     _removeResinCount++;
 
-                    if (_removeResinCount <= 2)
+                    if (_removeResinCount <= 1)
                     {
                         Step.RunStep = (int)ESPDHeadProcDotWeightingStep.Gate_Close;
                         break;
@@ -943,6 +943,8 @@ namespace SDV_MoldingInjection.Process
                         RaiseHeadWarning(EWarning.H1_Balance_ZeroWeighting_Fail);
                         break;
                     }
+
+                    Log.Info($"WEIGHT = {_calibWeight_mg} [mg] | IsStable = {Balance.WeightData.IsStable}");
 
                     if (_calibWeight_mg <= _currentRecipe.CommonRecipe.ResinWeight + _currentRecipe.CommonRecipe.ResinWeightSpec &&
                         _calibWeight_mg >= _currentRecipe.CommonRecipe.ResinWeight - _currentRecipe.CommonRecipe.ResinWeightSpec)

@@ -915,7 +915,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcDotWeightingStep.YAxis_ReadyPos_Move:
                     if (YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisReadyPos))
                     {
-                        Step.RunStep++;
+                        Step.RunStep = (int)EMoldProcDotWeightingStep.ZAxis_SafetyPos_Move;
                         break;
                     }
                     Log.Debug($"Move {YAxis.Name} to ready pos [{_currentRecipe.InjectRecipe.YAxisReadyPos}mm]");
