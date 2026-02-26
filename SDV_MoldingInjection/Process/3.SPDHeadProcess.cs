@@ -966,6 +966,12 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Info($"WEIGHT = {_calibWeight_mg} [mg] | IsStable = {Balance.WeightData.IsStable}");
 
+                    if(_machineStatus.IsDotWeightingTest)
+                    {
+                        Step.RunStep = (int)ESPDHeadProcDotWeightingStep.ClearFlag_Request_XYAxis_DotWeightingPos;
+                        break;
+                    }
+
                     if (_calibWeight_mg <= _currentRecipe.CommonRecipe.ResinWeight + _currentRecipe.CommonRecipe.ResinWeightSpec &&
                         _calibWeight_mg >= _currentRecipe.CommonRecipe.ResinWeight - _currentRecipe.CommonRecipe.ResinWeightSpec)
                     {
@@ -981,12 +987,6 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)ESPDHeadProcDotWeightingStep.Gate_Close;
                     break;
                 case ESPDHeadProcDotWeightingStep.ClearFlag_Request_XYAxis_DotWeightingPos:
-                    if (procInputs[ESPDHeadProcInput.XYAxisInDotWeightingPos].Value)
-                    {
-                        Wait(20);
-                        break;
-                    }
-
                     _machineStatus.MachineCalibration[(int)head - 1] = true;
                     procOutputs[ESPDHeadProcOutput.SPDHeadRequestDotWeighting].Value = false;
                     Log.Debug($"Clear output {ESPDHeadProcOutput.SPDHeadRequestDotWeighting}");

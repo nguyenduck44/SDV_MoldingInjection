@@ -54,6 +54,18 @@ namespace SDV_MoldingInjection.Defines
             set { _originDone = value; }
         }
 
+        private bool isDotWeightingTest;
+
+        public bool IsDotWeightingTest
+        {
+            get { return isDotWeightingTest; }
+            set 
+            {
+                isDotWeightingTest = value;
+                OnPropertyChanged();
+            }
+        }
+
         public bool MachineTestMode { get; set; }
 
         public bool[] MachineCalibration { get; set; } = new bool[4];

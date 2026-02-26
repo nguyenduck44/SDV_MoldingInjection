@@ -16,8 +16,12 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
     </UserControl.Resources>
-
     <DockPanel>
+        <StackPanel DockPanel.Dock="Left">
+            <CheckBox IsChecked="{Binding MachineStatus.IsDotWeightingTest}"
+                      Content="Dot Weighting Test"
+                      Tag="Check to Enable Dot Weighting Test Mode"/>
+        </StackPanel>
         <ui:LogDisplayer
             DockPanel.Dock="Right"
             Width="600"/>
