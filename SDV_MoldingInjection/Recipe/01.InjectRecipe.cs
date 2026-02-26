@@ -65,34 +65,6 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "X-Axis dot weighting position for Head 1, 3", Unit = Unit.mm)]
-        [SinglePositionTeaching(Motion = "XAxis")]
-        public double XAxisH13DotWeightingPos
-        {
-            get { return _xAxisH13DotWeightingPos; }
-            set
-            {
-                if (_xAxisH13DotWeightingPos == value) return;
-                OnRecipeChanged(_xAxisH13DotWeightingPos, value);
-                _xAxisH13DotWeightingPos = value;
-                OnPropertyChanged();
-            }
-        }
-
-        [SingleRecipeDescription(Description = "X-Axis dot weighting position for Head 2, 4", Unit = Unit.mm)]
-        [SinglePositionTeaching(Motion = "XAxis")]
-        public double XAxisH24DotWeightingPos
-        {
-            get { return _xAxisH24DotWeightingPos; }
-            set
-            {
-                if (_xAxisH24DotWeightingPos == value) return;
-                OnRecipeChanged(_xAxisH24DotWeightingPos, value);
-                _xAxisH24DotWeightingPos = value;
-                OnPropertyChanged();
-            }
-        }
-
         [SingleRecipeDescription(Description = "Needle Clean Cycle Count")]
         public double NiddleCleanCycleCount
         {
@@ -121,21 +93,6 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "X-Axis Needle Clean", Unit = Unit.mm)]
-        [SinglePositionTeaching(Motion = "XAxis")]
-        public double XAxisNeddleClean
-        {
-            get { return _xAxisNeedleClean; }
-            set
-            {
-                if (_xAxisNeedleClean == value) return;
-
-                OnRecipeChanged(_xAxisNeedleClean, value);
-                _xAxisNeedleClean = value;
-                OnPropertyChanged();
-            }
-        }
-
         [SingleRecipeDescription(Description = "Y-Axis Neddle Clean", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "YAxis")]
         public double YAxisNeddleClean
@@ -158,15 +115,10 @@ namespace SDV_MoldingInjection.Recipe
         private double _yAxisReadyPos;
         private double _yAxisInjectPos;
 
-        private double _xAxisH13DotWeightingPos;
-        private double _xAxisH24DotWeightingPos;
-
         private double _niddleCleanCycleCount;
         private double _niddleCleanShiftDist;
 
-        private double _xAxisNeedleClean;
         private double _yAxisNeedleClean;
-
         #endregion
     }
 }

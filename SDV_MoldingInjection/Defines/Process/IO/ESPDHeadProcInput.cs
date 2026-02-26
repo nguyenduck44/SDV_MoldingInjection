@@ -6,7 +6,6 @@
 
         WorkRequest,
 
-        XYAxisInH13DotWeightingPos,
-        XYAxisInH24DotWeightingPos,
+        XYAxisInDotWeightingPos,
     }
 }

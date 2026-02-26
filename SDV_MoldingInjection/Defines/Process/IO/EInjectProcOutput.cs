@@ -16,7 +16,9 @@
         SPDHead3_RemoveResinRequest,
         SPDHead4_RemoveResinRequest,
 
-        H13DotWeightingInPos,
-        H24DotWeightingInPos,
+        H1DotWeightingInPos,
+        H2DotWeightingInPos,
+        H3DotWeightingInPos,
+        H4DotWeightingInPos,
     }
 }
