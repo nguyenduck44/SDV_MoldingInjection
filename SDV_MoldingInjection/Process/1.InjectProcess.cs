@@ -1086,7 +1086,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     procOutputs[EInjectProcOutput.H4DotWeightingInPos].Value = false;
-                    Step.RunStep ++;
+                    Step.RunStep++;
                     break;
                 case EMoldProcDotWeightingStep.ZAxis_SafetyPos_Move_End:
                     Log.Debug($"Moving Z-Axes to safety position");
@@ -1426,10 +1426,10 @@ namespace SDV_MoldingInjection.Process
         {
             return head switch
             {
-                ESPDHead.SPDHead1 => _currentRecipe.InjectRecipe.XAxisH1DotWeightingPos,
-                ESPDHead.SPDHead2 => _currentRecipe.InjectRecipe.XAxisH2DotWeightingPos,
-                ESPDHead.SPDHead3 => _currentRecipe.InjectRecipe.XAxisH3DotWeightingPos,
-                ESPDHead.SPDHead4 => _currentRecipe.InjectRecipe.XAxisH4DotWeightingPos,
+                ESPDHead.SPDHead1 => _currentRecipe.SPDHead1_Recipe.XAxisDotWeightingPos,
+                ESPDHead.SPDHead2 => _currentRecipe.SPDHead2_Recipe.XAxisDotWeightingPos,
+                ESPDHead.SPDHead3 => _currentRecipe.SPDHead3_Recipe.XAxisDotWeightingPos,
+                ESPDHead.SPDHead4 => _currentRecipe.SPDHead4_Recipe.XAxisDotWeightingPos,
                 _ => throw new Exception($"{head} is not valid"),
             };
         }

@@ -65,64 +65,6 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "X-Axis dot weighting position for Head 1", Unit = Unit.mm)]
-        [SinglePositionTeaching(Motion = "XAxis")]
-        public double XAxisH1DotWeightingPos
-        {
-            get { return _xAxisH1DotWeightingPos; }
-            set
-            {
-                if (_xAxisH1DotWeightingPos == value) return;
-                OnRecipeChanged(_xAxisH1DotWeightingPos, value);
-                _xAxisH1DotWeightingPos = value;
-                OnPropertyChanged();
-            }
-        }
-
-        [SingleRecipeDescription(Description = "X-Axis dot weighting position for Head 2", Unit = Unit.mm)]
-        [SinglePositionTeaching(Motion = "XAxis")]
-        public double XAxisH2DotWeightingPos
-        {
-            get { return _xAxisH2DotWeightingPos; }
-            set
-            {
-                if (_xAxisH2DotWeightingPos == value) return;
-                OnRecipeChanged(_xAxisH2DotWeightingPos, value);
-                _xAxisH2DotWeightingPos = value;
-                OnPropertyChanged();
-            }
-        }
-
-        [SingleRecipeDescription(Description = "X-Axis dot weighting position for Head 3", Unit = Unit.mm)]
-        [SinglePositionTeaching(Motion = "XAxis")]
-        public double XAxisH3DotWeightingPos
-        {
-            get { return _xAxisH3DotWeightingPos; }
-            set 
-            {
-                if (_xAxisH3DotWeightingPos == value) return;
-
-                OnRecipeChanged(_xAxisH3DotWeightingPos,value);
-                _xAxisH3DotWeightingPos = value;
-                OnPropertyChanged();
-            }
-        }
-
-        [SingleRecipeDescription(Description = "X-Axis dot weighting position for Head 4", Unit = Unit.mm)]
-        [SinglePositionTeaching(Motion = "XAxis")]
-        public double XAxisH4DotWeightingPos
-        {
-            get { return _xAxisH4DotWeightingPos; }
-            set 
-            {
-                if (_xAxisH4DotWeightingPos == value) return;
-
-                OnRecipeChanged(_xAxisH4DotWeightingPos, value);
-                _xAxisH4DotWeightingPos = value; 
-                OnPropertyChanged();
-            }
-        }
-
         [SingleRecipeDescription(Description = "Needle Clean Cycle Count")]
         public double NiddleCleanCycleCount
         {

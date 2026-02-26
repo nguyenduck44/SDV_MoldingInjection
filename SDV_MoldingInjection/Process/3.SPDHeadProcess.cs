@@ -433,6 +433,46 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.Stop;
                     }
                     break;
+                case ESequence.DotWeighting_H1:
+                    if (head == ESPDHead.SPDHead1)
+                    {
+                        Sequence_DotWeighting();
+                    }
+                    else
+                    {
+                        Sequence = ESequence.Stop;
+                    }
+                    break;
+                case ESequence.DotWeighting_H2:
+                    if (head == ESPDHead.SPDHead2)
+                    {
+                        Sequence_DotWeighting();
+                    }
+                    else
+                    {
+                        Sequence = ESequence.Stop;
+                    }
+                    break;
+                case ESequence.DotWeighting_H3:
+                    if (head == ESPDHead.SPDHead3)
+                    {
+                        Sequence_DotWeighting();
+                    }
+                    else
+                    {
+                        Sequence = ESequence.Stop;
+                    }
+                    break;
+                case ESequence.DotWeighting_H4:
+                    if (head == ESPDHead.SPDHead4)
+                    {
+                        Sequence_DotWeighting();
+                    }
+                    else
+                    {
+                        Sequence = ESequence.Stop;
+                    }
+                    break;
                 case ESequence.BubbleRemove_H1:
                     if (head == ESPDHead.SPDHead1 && !_currentSPDHeadRecipe.HeadSkip)
                     {
@@ -832,21 +872,13 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.Wait_DotWeightingPos_Move:
-                    if (procInputs[ESPDHeadProcInput.XYAxisInH13DotWeightingPos].Value == false &&
-                        (head == ESPDHead.SPDHead1 || head == ESPDHead.SPDHead3))
+                    if (procInputs[ESPDHeadProcInput.XYAxisInDotWeightingPos].Value == false)
                     {
                         Wait(20);
                         break;
                     }
 
-                    if (procInputs[ESPDHeadProcInput.XYAxisInH24DotWeightingPos].Value == false &&
-                        (head == ESPDHead.SPDHead2 || head == ESPDHead.SPDHead4))
-                    {
-                        Wait(20);
-                        break;
-                    }
-
-                    //Log.Debug("DotWeighting Position Move Finish");
+                    Log.Debug("DotWeighting Position Move Finish");
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.Balance_Zero:
@@ -946,15 +978,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)ESPDHeadProcDotWeightingStep.Gate_Close;
                     break;
                 case ESPDHeadProcDotWeightingStep.ClearFlag_Request_XYAxis_DotWeightingPos:
-                    if (procInputs[ESPDHeadProcInput.XYAxisInH13DotWeightingPos].Value == true &&
-                        (head == ESPDHead.SPDHead1 || head == ESPDHead.SPDHead3))
-                    {
-                        Wait(20);
-                        break;
-                    }
-
-                    if (procInputs[ESPDHeadProcInput.XYAxisInH24DotWeightingPos].Value == true &&
-                        (head == ESPDHead.SPDHead2 || head == ESPDHead.SPDHead4))
+                    if (procInputs[ESPDHeadProcInput.XYAxisInDotWeightingPos].Value)
                     {
                         Wait(20);
                         break;

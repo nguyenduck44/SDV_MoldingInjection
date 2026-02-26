@@ -109,6 +109,21 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        [SingleRecipeDescription(Description = "XAxis Weighting position", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "XAxis")]
+        public double XAxisDotWeightingPos
+        {
+            get { return _xAxisDotWeightPos; }
+            set 
+            {
+                if (_xAxisDotWeightPos == value) return;
+                OnRecipeChanged(_xAxisDotWeightPos, value);
+                _xAxisDotWeightPos = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         [SingleRecipeDescription(Description = "ZAxis Weighting position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "ZAxis")]
         public double ZAxisWeightingPos
@@ -204,6 +219,7 @@ namespace SDV_MoldingInjection.Recipe
         private double _zAxisInjectPos;
         private double _zAxisNeedleCleanPos;
         private double _zAxisDummyPos;
+        private double _xAxisDotWeightPos;
         private double _zAxisWeightingPos;
 
         private double _gateClosePos;
