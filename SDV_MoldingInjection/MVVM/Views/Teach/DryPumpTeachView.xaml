@@ -9,6 +9,14 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type vm:DryPumpMaintenanceViewModel}}"
              d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <Style TargetType="{x:Type uiControls:CylinderSimpleView}">
+            <Setter Property="Width" Value="149"/>
+            <Setter Property="Height" Value="70"/>
+        </Style>
+    </UserControl.Resources>
+
     <DockPanel>
         <!--UNIT STATUS-->
         <GroupBox
@@ -105,6 +113,21 @@
                 Style="{x:Null}"
                 >
 
+                </GroupBox>
+
+                <GroupBox Grid.Row="1"
+                          Grid.Column="2"
+                          Style="{x:Null}"
+                          FontWeight="Bold"
+                          Grid.ColumnSpan="2"
+                          Header="Cylinders">
+                    <ItemsControl ItemsSource="{Binding Cylinders}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
                 </GroupBox>
             </Grid>
         </GroupBox>
