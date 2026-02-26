@@ -529,6 +529,9 @@ namespace SDV_MoldingInjection.Process
                     }
                     Sequence_HeadAssembleDisAssemble(isAssemble: false);
                     break;
+                default:
+                    Sequence = ESequence.Stop;
+                    break;
             }
 
             return true;
