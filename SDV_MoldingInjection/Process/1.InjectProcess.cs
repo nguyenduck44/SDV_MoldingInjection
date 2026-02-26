@@ -705,6 +705,14 @@ namespace SDV_MoldingInjection.Process
             switch ((EMoldProcDummyShotStep)Step.RunStep)
             {
                 case EMoldProcDummyShotStep.Start:
+                    if (head == ESPDHead.SPDHead1 && _currentRecipe.SPDHead1_Recipe.HeadSkip ||
+                        head == ESPDHead.SPDHead2 && _currentRecipe.SPDHead2_Recipe.HeadSkip ||
+                        head == ESPDHead.SPDHead3 && _currentRecipe.SPDHead3_Recipe.HeadSkip ||
+                        head == ESPDHead.SPDHead4 && _currentRecipe.SPDHead4_Recipe.HeadSkip)
+                    {
+                        Step.RunStep = (int)EMoldProcDummyShotStep.End;
+                        break;
+                    }
                     Log.Info($"DummyShot for {head} start");
                     Step.RunStep++;
                     break;
@@ -793,6 +801,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     if (head == ESPDHead.SPDHead4)
                     {
+                        Log.Info("Sequence Cleaning");
                         Sequence = ESequence.NeedleCleaning_H1;
                         break;
                     }
@@ -807,6 +816,15 @@ namespace SDV_MoldingInjection.Process
             switch ((EMoldProcNeedleCleaningStep)Step.RunStep)
             {
                 case EMoldProcNeedleCleaningStep.Start:
+                    if (head == ESPDHead.SPDHead1 && _currentRecipe.SPDHead1_Recipe.HeadSkip ||
+                        head == ESPDHead.SPDHead2 && _currentRecipe.SPDHead2_Recipe.HeadSkip ||
+                        head == ESPDHead.SPDHead3 && _currentRecipe.SPDHead3_Recipe.HeadSkip ||
+                        head == ESPDHead.SPDHead4 && _currentRecipe.SPDHead4_Recipe.HeadSkip)
+                    {
+                        Step.RunStep = (int)EMoldProcNeedleCleaningStep.End;
+                        break;
+                    }
+
                     Log.Info("NeedleClean start");
                     Step.RunStep++;
                     break;
@@ -911,7 +929,14 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Sequence = ESequence.Unloading;
+                    if (head == ESPDHead.SPDHead4)
+                    {
+                        Log.Info("Sequence Unloading");
+                        Sequence = ESequence.Unloading;
+                        break;
+                    }
+
+                    Sequence = (ESequence)((int)Sequence + 1);
                     break;
             }
         }
