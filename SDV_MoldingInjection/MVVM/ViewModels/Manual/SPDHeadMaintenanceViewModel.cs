@@ -1,28 +1,104 @@
-﻿using EQX.Core.Common;
+﻿using CommunityToolkit.Mvvm.Input;
+using EQX.Core.Common;
 using EQX.Core.InOut;
 using EQX.Core.Motion;
 using EQX.Core.Recipe;
+using EQX.Core.Sequence;
+using EQX.Device.Balance;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
+using SDV_MoldingInjection.Defines.Devices.Balance;
 using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
     public class SPDHeadMaintenanceViewModel : AppMaintenanceViewModel
     {
         public SPDHeadMaintenanceViewModel(Devices devices, NavigationStore navigationStore,
+            Balances balances,
             MachineStatus machineStatus, RecipeSelector recipeSelector)
             : base(navigationStore, machineStatus, recipeSelector)
         {
             _devices = devices;
+            _balances = balances;
             _recipeSelector = recipeSelector;
 
             Motions = new ObservableCollection<IMotion>();
             if (GroupedPositions != null && GroupedPositions.Count > 0)
             {
                 SelectedGroupedPosition = GroupedPositions.FirstOrDefault()!;
+            }
+        }
+
+        protected override void ExternalTimerElapsedAction()
+        {
+            if(Balance.WeightData != null)
+            {
+                BalanceStableWeight = Balance.WeightData.Weight * (Balance.WeightData.Unit == "g" ? 1000 : 1);
+            }
+        }
+
+        public double BalanceStableWeight
+        {
+            get { return balanceStableWeight; }
+            set 
+            {
+                balanceStableWeight = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ICommand DotWeightingCalibCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    ESemiSequence seq = ESemiSequence.DotWeighting_H1 + (int)(Head - ESPDHead.SPDHead1);
+
+                    MachineStatus.OPCommand = EOperationCommand.SemiAuto;
+                    MachineStatus.SemiAutoSequence = seq;
+                });
+            }
+        }
+
+        private MettlerToledoWKC204C Balance
+        {
+            get
+            {
+                if(Head == ESPDHead.SPDHead1 || Head == ESPDHead.SPDHead2)
+                {
+                    return _balances.BalanceLeft;
+                }
+                else
+                {
+                    return _balances.BalanceRight;
+                }
+            }
+        }
+
+        public ICommand BalanceSetZeroCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    Balance.SendZeroCommand();
+                });
+            }
+        }
+
+        public ICommand GetMesureCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    Balance.SendRequestStableWeightCommand();
+                });
             }
         }
 
@@ -388,7 +464,9 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         #region Privates
         private readonly Devices _devices;
+        private readonly Balances _balances;
         private readonly RecipeSelector _recipeSelector;
+        private double balanceStableWeight;
 
         private ESPDHead Head => Name switch
         {
