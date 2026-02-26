@@ -65,7 +65,26 @@
                                         Height="50"
                                         Content="{Binding Name}"
                                         Command="{Binding DataContext.TeachingPositionButtonCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                                        CommandParameter="{Binding .}" />
+                                        CommandParameter="{Binding .}">
+                                    <Button.Style>
+                                        <Style TargetType="Button"
+                                               BasedOn="{StaticResource {x:Type Button}}">
+                                            <Style.Triggers>
+                                                <DataTrigger Value="true">
+                                                    <DataTrigger.Binding>
+                                                        <MultiBinding Converter="{StaticResource ObjectSelectedConverter}">
+                                                            <Binding />
+                                                            <Binding Path="DataContext.SelectedGroupedPosition"
+                                                                             RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
+                                                        </MultiBinding>
+                                                    </DataTrigger.Binding>
+                                                    <Setter Property="Background"
+                                                            Value="LightGreen" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
