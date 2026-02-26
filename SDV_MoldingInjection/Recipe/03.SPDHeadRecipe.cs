@@ -64,6 +64,20 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        [SingleRecipeDescription(Description = "X-Axis needle clean position", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "XAxis")]
+        public double XAxisNeedleCleanPos
+        {
+            get { return _xAxisNeedleCleanPos; }
+            set
+            {
+                if (_xAxisNeedleCleanPos == value) return;
+                OnRecipeChanged(_xAxisNeedleCleanPos, value);
+                _xAxisNeedleCleanPos = value;
+                OnPropertyChanged();
+            }
+        }
+
         [SingleRecipeDescription(Description = "Y-Axis dummy shot position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "YAxis")]
         public double YAxisDummyPos
@@ -114,7 +128,7 @@ namespace SDV_MoldingInjection.Recipe
         public double XAxisDotWeightingPos
         {
             get { return _xAxisDotWeightPos; }
-            set 
+            set
             {
                 if (_xAxisDotWeightPos == value) return;
                 OnRecipeChanged(_xAxisDotWeightPos, value);
@@ -142,7 +156,7 @@ namespace SDV_MoldingInjection.Recipe
         [SingleRecipeDescription(Description = "Gate open position (Nozzle <----> SPD)", Unit = Unit.Degree)]
         public double GateOpenPos
         {
-			get { return _gateOpenPos; }
+            get { return _gateOpenPos; }
             set
             {
                 if (_gateOpenPos == value) return;
@@ -229,6 +243,7 @@ namespace SDV_MoldingInjection.Recipe
         private double _pAxisInjectChargePos;
 
         private double _bubbleRemoveTurn;
+        private double _xAxisNeedleCleanPos;
 
         #endregion
     }

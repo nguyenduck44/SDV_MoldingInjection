@@ -282,9 +282,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                             positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead1_Recipe.XAxisDotWeightingPos, _devices.Motions.XAxis),
                             positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
                             positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisWeightingPos, _devices.Motions.Z1Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisWeightingPos, _devices.Motions.Z2Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisWeightingPos, _devices.Motions.Z3Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisWeightingPos, _devices.Motions.Z4Axis),
                         }
                     };
                     break;
@@ -296,10 +293,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         {
                             positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead2_Recipe.XAxisDotWeightingPos, _devices.Motions.XAxis),
                             positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisWeightingPos, _devices.Motions.Z1Axis),
                             positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisWeightingPos, _devices.Motions.Z2Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisWeightingPos, _devices.Motions.Z3Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisWeightingPos, _devices.Motions.Z4Axis),
                         }
                     };
                     break;
@@ -311,10 +305,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         {
                             positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead3_Recipe.XAxisDotWeightingPos, _devices.Motions.XAxis),
                             positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisWeightingPos, _devices.Motions.Z1Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisWeightingPos, _devices.Motions.Z2Axis),
                             positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisWeightingPos, _devices.Motions.Z3Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisWeightingPos, _devices.Motions.Z4Axis),
                         }
                     };
                     break;
@@ -326,9 +317,59 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         {
                             positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead4_Recipe.XAxisDotWeightingPos, _devices.Motions.XAxis),
                             positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisWeightingPos, _devices.Motions.Z1Axis),
+                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisWeightingPos, _devices.Motions.Z4Axis),
+                        }
+                    };
+                    break;
+            }
+
+            var cleaningGroup = new MultiPointPosition();
+            switch (Head)
+            {
+                case ESPDHead.SPDHead1:
+                    weightingGroup = new MultiPointPosition
+                    {
+                        Name = $"Clean Pos {Name}",
+                        Points = new ObservableCollection<PositionPoint>
+                        {
+                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead1_Recipe.XAxisNeedleCleanPos, _devices.Motions.XAxis),
+                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
+                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisNeedleCleanPos, _devices.Motions.Z1Axis),
+                        }
+                    };
+                    break;
+                case ESPDHead.SPDHead2:
+                    weightingGroup = new MultiPointPosition
+                    {
+                        Name = $"Dot Weighting Pos {Name}",
+                        Points = new ObservableCollection<PositionPoint>
+                        {
+                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead2_Recipe.XAxisNeedleCleanPos, _devices.Motions.XAxis),
+                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
                             positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisWeightingPos, _devices.Motions.Z2Axis),
+                        }
+                    };
+                    break;
+                case ESPDHead.SPDHead3:
+                    weightingGroup = new MultiPointPosition
+                    {
+                        Name = $"Dot Weighting Pos {Name}",
+                        Points = new ObservableCollection<PositionPoint>
+                        {
+                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead3_Recipe.XAxisNeedleCleanPos, _devices.Motions.XAxis),
+                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
                             positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisWeightingPos, _devices.Motions.Z3Axis),
+                        }
+                    };
+                    break;
+                case ESPDHead.SPDHead4:
+                    weightingGroup = new MultiPointPosition
+                    {
+                        Name = $"Dot Weighting Pos {Name}",
+                        Points = new ObservableCollection<PositionPoint>
+                        {
+                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead4_Recipe.XAxisNeedleCleanPos, _devices.Motions.XAxis),
+                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
                             positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisWeightingPos, _devices.Motions.Z4Axis),
                         }
                     };
@@ -340,6 +381,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             positionManager.GroupedPositions.Add(dummyGroup);
             positionManager.GroupedPositions.Add(weightingZSafetyGroup);
             positionManager.GroupedPositions.Add(weightingGroup);
+            positionManager.GroupedPositions.Add(cleaningGroup);
 
             return positionManager;
         }

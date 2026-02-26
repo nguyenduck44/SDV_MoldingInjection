@@ -31,8 +31,14 @@ namespace SDV_MoldingInjection.Defines
         [Description("Dummy shot H4")]
         DummyShot_H4,
 
-        [Description("Needle cleaning")]
-        NeedleCleaning,
+        [Description("Needle cleaning H1")]
+        NeedleCleaning_H1,
+        [Description("Needle cleaning H2")]
+        NeedleCleaning_H2,
+        [Description("Needle cleaning H3")]
+        NeedleCleaning_H3,
+        [Description("Needle cleaning H4")]
+        NeedleCleaning_H4,
         [Description("Dot weighting H1")]
         DotWeighting_H1,
         [Description("Dot weighting H2")]
