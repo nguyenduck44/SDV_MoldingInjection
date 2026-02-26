@@ -10,7 +10,27 @@
              d:DataContext="{d:DesignInstance Type={x:Type vm:AutoViewModel}}"
              d:DesignHeight="1060"
              d:DesignWidth="1920">
-    
+
+    <UserControl.Resources>
+        <Style x:Key="DoorIndicatorRectangleStyle"
+            TargetType="Rectangle">
+            <Setter Property="HorizontalAlignment"
+            Value="Stretch" />
+            <Setter Property="VerticalAlignment"
+            Value="Stretch" />
+            <Setter Property="RadiusX"
+            Value="2" />
+            <Setter Property="RadiusY"
+            Value="2" />
+            <Setter Property="Stroke"
+            Value="Black" />
+            <Setter Property="StrokeThickness"
+            Value="1" />
+            <Setter Property="Margin"
+            Value="0" />
+        </Style>
+    </UserControl.Resources>
+
     <Grid Margin="10 0 0 0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*" />
@@ -19,7 +39,39 @@
 
         <!-- Machine Image -->
         <Image Grid.Column="1"
+               Margin="0 0 15 0"
             Source="/SDV_MoldingInjection;component/Resource/Images/MoldInjection_TopView.png"
             />
+
+        <!-- DoorLock View -->
+        <Grid Grid.Row="0"
+      Grid.Column="1">
+            <Canvas>
+                <Rectangle Width="10"
+                   Height="195"
+                   Canvas.Left="210"
+                   Canvas.Top="150"
+                   Style="{StaticResource DoorIndicatorRectangleStyle}" HorizontalAlignment="Center" VerticalAlignment="Top">
+                    <Rectangle.Fill>
+                        <MultiBinding Converter="{StaticResource DoorStatusToBrushConverterRevers}">
+                            <Binding Path="Devices.Inputs.DoorOpenLeft.Value" />
+                            <Binding Path="Devices.Inputs.DoorReleaseLeft.Value" />
+                        </MultiBinding>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <Rectangle Width="10"
+                   Height="120"
+                   Canvas.Left="533"
+                   Canvas.Top="230"
+                   Style="{StaticResource DoorIndicatorRectangleStyle}" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <Rectangle.Fill>
+                        <MultiBinding Converter="{StaticResource DoorStatusToBrushConverterRevers}">
+                            <Binding Path="Devices.Inputs.DoorOpenRight.Value" />
+                            <Binding Path="Devices.Inputs.DoorReleaseRight.Value" />
+                        </MultiBinding>
+                    </Rectangle.Fill>
+                </Rectangle>
+            </Canvas>
+        </Grid>
     </Grid>
 </UserControl>
