@@ -433,15 +433,6 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.Stop;
                     }
                     break;
-                case ESequence.DotWeighting:
-                    if (_currentSPDHeadRecipe.HeadSkip)
-                    {
-                        _machineStatus.MachineCalibration[(int)head-1] = true;
-                        Sequence = ESequence.Stop;
-                        break;
-                    }
-                    Sequence_DotWeighting();
-                    break;
                 case ESequence.BubbleRemove_H1:
                     if (head == ESPDHead.SPDHead1 && !_currentSPDHeadRecipe.HeadSkip)
                     {
@@ -512,14 +503,7 @@ namespace SDV_MoldingInjection.Process
 
         private void Sequence_AutoRun()
         {
-            if (_machineStatus.MachineCalibration.All(x => x) == false && _machineStatus.IsDryRunMode == false)
-            {
-                Sequence = ESequence.DotWeighting;
-            }
-            else
-            {
-                Sequence = ESequence.ResinInject;
-            }
+            Sequence = ESequence.ResinInject;
 
         }
 
@@ -783,7 +767,6 @@ namespace SDV_MoldingInjection.Process
             switch ((ESPDHeadProcDotWeightingStep)Step.RunStep)
             {
                 case ESPDHeadProcDotWeightingStep.Start:
-                    Log.Debug($"{ESequence.DotWeighting} start");
                     _removeResinCount = 0;
                     Step.RunStep++;
                     break;
@@ -849,7 +832,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.Wait_DotWeightingPos_Move:
-                    if (procInputs[ESPDHeadProcInput.XYAxisInH13DotWeightingPos].Value == false && 
+                    if (procInputs[ESPDHeadProcInput.XYAxisInH13DotWeightingPos].Value == false &&
                         (head == ESPDHead.SPDHead1 || head == ESPDHead.SPDHead3))
                     {
                         Wait(20);
@@ -894,7 +877,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Debug("Balance Zero done"); 
+                    Log.Debug("Balance Zero done");
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.PAxis_InjectPos_Move:
@@ -988,7 +971,6 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.Stop;
                         break;
                     }
-                    Log.Info($"{ESequence.DotWeighting} end, starting new cycle");
                     Sequence = ESequence.AutoRun;
                     break;
             }
@@ -1119,7 +1101,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Move {PistonCyl} up done");
                     Step.RunStep++;
                     break;
-                
+
                 case ESPDHeadProcAssembleDisAssembleStep.GAxis_OpenPosition_Move:
                     Log.Debug($"{GAxis.Name} move to GateOpenPos [{_currentSPDHeadRecipe.GateOpenPos}°]");
                     GAxis.MoveAbs(_currentSPDHeadRecipe.GateOpenPos);
@@ -1234,7 +1216,7 @@ namespace SDV_MoldingInjection.Process
 
         private double V380Weight2mg(double weight, double constant = 1)
         {
-            return Math.Round(weight / (Math.Pow(2.5, 2) * Math.PI),3);
+            return Math.Round(weight / (Math.Pow(2.5, 2) * Math.PI), 3);
         }
 
         private double _pAxisCharge_Pos;

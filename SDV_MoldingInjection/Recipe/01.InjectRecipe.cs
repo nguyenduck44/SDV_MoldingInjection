@@ -65,30 +65,60 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "X-Axis dot weighting position for Head 1, 3", Unit = Unit.mm)]
+        [SingleRecipeDescription(Description = "X-Axis dot weighting position for Head 1", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
-        public double XAxisH13DotWeightingPos
+        public double XAxisH1DotWeightingPos
         {
-            get { return _xAxisH13DotWeightingPos; }
+            get { return _xAxisH1DotWeightingPos; }
             set
             {
-                if (_xAxisH13DotWeightingPos == value) return;
-                OnRecipeChanged(_xAxisH13DotWeightingPos, value);
-                _xAxisH13DotWeightingPos = value;
+                if (_xAxisH1DotWeightingPos == value) return;
+                OnRecipeChanged(_xAxisH1DotWeightingPos, value);
+                _xAxisH1DotWeightingPos = value;
                 OnPropertyChanged();
             }
         }
 
-        [SingleRecipeDescription(Description = "X-Axis dot weighting position for Head 2, 4", Unit = Unit.mm)]
+        [SingleRecipeDescription(Description = "X-Axis dot weighting position for Head 2", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
-        public double XAxisH24DotWeightingPos
+        public double XAxisH2DotWeightingPos
         {
-            get { return _xAxisH24DotWeightingPos; }
+            get { return _xAxisH2DotWeightingPos; }
             set
             {
-                if (_xAxisH24DotWeightingPos == value) return;
-                OnRecipeChanged(_xAxisH24DotWeightingPos, value);
-                _xAxisH24DotWeightingPos = value;
+                if (_xAxisH2DotWeightingPos == value) return;
+                OnRecipeChanged(_xAxisH2DotWeightingPos, value);
+                _xAxisH2DotWeightingPos = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "X-Axis dot weighting position for Head 3", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "XAxis")]
+        public double XAxisH3DotWeightingPos
+        {
+            get { return _xAxisH3DotWeightingPos; }
+            set 
+            {
+                if (_xAxisH3DotWeightingPos == value) return;
+
+                OnRecipeChanged(_xAxisH3DotWeightingPos,value);
+                _xAxisH3DotWeightingPos = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "X-Axis dot weighting position for Head 4", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "XAxis")]
+        public double XAxisH4DotWeightingPos
+        {
+            get { return _xAxisH4DotWeightingPos; }
+            set 
+            {
+                if (_xAxisH4DotWeightingPos == value) return;
+
+                OnRecipeChanged(_xAxisH4DotWeightingPos, value);
+                _xAxisH4DotWeightingPos = value; 
                 OnPropertyChanged();
             }
         }
@@ -158,8 +188,8 @@ namespace SDV_MoldingInjection.Recipe
         private double _yAxisReadyPos;
         private double _yAxisInjectPos;
 
-        private double _xAxisH13DotWeightingPos;
-        private double _xAxisH24DotWeightingPos;
+        private double _xAxisH1DotWeightingPos;
+        private double _xAxisH2DotWeightingPos;
 
         private double _niddleCleanCycleCount;
         private double _niddleCleanShiftDist;
@@ -167,6 +197,8 @@ namespace SDV_MoldingInjection.Recipe
         private double _xAxisNeedleClean;
         private double _yAxisNeedleClean;
 
+        private double _xAxisH3DotWeightingPos;
+        private double _xAxisH4DotWeightingPos;
         #endregion
     }
 }

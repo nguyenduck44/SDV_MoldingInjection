@@ -262,7 +262,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 Name = "Weighting Pos (Z Safety)",
                 Points = new ObservableCollection<PositionPoint>
                 {
-                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisH13DotWeightingPos, _devices.Motions.XAxis),
+                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisH1DotWeightingPos, _devices.Motions.XAxis),
                     positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
                     positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
                     positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
@@ -276,7 +276,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 Name = "Weighting Pos",
                 Points = new ObservableCollection<PositionPoint>
                 {
-                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisH13DotWeightingPos, _devices.Motions.XAxis),
+                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisH1DotWeightingPos, _devices.Motions.XAxis),
                     positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
                     positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisWeightingPos, _devices.Motions.Z1Axis),
                     positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisWeightingPos, _devices.Motions.Z2Axis),

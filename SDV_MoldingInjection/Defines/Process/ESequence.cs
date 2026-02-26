@@ -33,8 +33,14 @@ namespace SDV_MoldingInjection.Defines
 
         [Description("Needle cleaning")]
         NeedleCleaning,
-        [Description("Dot weighting")]
-        DotWeighting,
+        [Description("Dot weighting H1")]
+        DotWeighting_H1,
+        [Description("Dot weighting H2")]
+        DotWeighting_H2,
+        [Description("Dot weighting H3")]
+        DotWeighting_H3,
+        [Description("Dot weighting H4")]
+        DotWeighting_H4,
 
         [Description("Head ASSEMBLE")]
         HeadAssemble,
