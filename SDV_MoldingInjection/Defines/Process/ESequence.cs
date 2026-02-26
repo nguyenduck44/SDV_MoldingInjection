@@ -116,11 +116,24 @@ namespace SDV_MoldingInjection.Defines
         [Description("Dot weighting H4")]
         DotWeighting_H4,
 
-        [Description("Head ASSEMBLE")]
-        HeadAssemble,
-        [Description("Head DISASSEMBLE")]
-        HeadDisassemble,
-        
+        [Description("Head ASSEMBLE H1")]
+        HeadAssemble_H1,
+        [Description("Head ASSEMBLE H2")]
+        HeadAssemble_H2,
+        [Description("Head ASSEMBLE H3")]
+        HeadAssemble_H3,
+        [Description("Head ASSEMBLE H4")]
+        HeadAssemble_H4,
+
+        [Description("Head DISASSEMBLE H1")]
+        HeadDisassemble_H1,
+        [Description("Head DISASSEMBLE H2")]
+        HeadDisassemble_H2,
+        [Description("Head DISASSEMBLE H3")]
+        HeadDisassemble_H3,
+        [Description("Head DISASSEMBLE H4")]
+        HeadDisassemble_H4,
+
         [Description("Bubble remove H1")]
         BubbleRemove_H1,
         [Description("Bubble remove H2")]

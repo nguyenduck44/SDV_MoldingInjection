@@ -554,7 +554,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.HeadDisassemble_H1:
-                    if (head == ESPDHead.SPDHead4 && !_currentSPDHeadRecipe.HeadSkip)
+                    if (head == ESPDHead.SPDHead1 && !_currentSPDHeadRecipe.HeadSkip)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: false);
                     }
@@ -564,7 +564,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.HeadDisassemble_H2:
-                    if (head == ESPDHead.SPDHead4 && !_currentSPDHeadRecipe.HeadSkip)
+                    if (head == ESPDHead.SPDHead2 && !_currentSPDHeadRecipe.HeadSkip)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: false);
                     }
@@ -574,7 +574,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.HeadDisassemble_H3:
-                    if (head == ESPDHead.SPDHead4 && !_currentSPDHeadRecipe.HeadSkip)
+                    if (head == ESPDHead.SPDHead3 && !_currentSPDHeadRecipe.HeadSkip)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: false);
                     }
@@ -1115,11 +1115,11 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAssembleDisAssembleStep.PAxis_AssemblePos_Move:
-                    if (PAxis.IsOnPosition(_pAxisAssemble_Pos))
-                    {
-                        Step.RunStep = (int)ESPDHeadProcAssembleDisAssembleStep.PistonCyl_Down;
-                        break;
-                    }
+                    //if (PAxis.IsOnPosition(_pAxisAssemble_Pos))
+                    //{
+                    //    Step.RunStep = (int)ESPDHeadProcAssembleDisAssembleStep.PistonCyl_Down;
+                    //    break;
+                    //}
 
                     Log.Debug($"{PAxis.Name} moving to AssemblePos [{_pAxisAssemble_Pos}mm]");
                     PAxis.MoveAbs(_pAxisAssemble_Pos);
