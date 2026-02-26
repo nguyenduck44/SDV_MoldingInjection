@@ -157,7 +157,7 @@
                                    BorderBrush="LightGray"/>
                             <Border BorderThickness="1"
                                     BorderBrush="LightGray">
-                                <TextBlock Text="{Binding BalanceStableWeight,StringFormat='{}{0:0.###} mm'}"
+                                <TextBlock Text="{Binding BalanceStableWeight,StringFormat='{}{0:0.###} mg'}"
                                            VerticalAlignment="Center"
                                            HorizontalAlignment="Center"
                                            FontSize="14"/>

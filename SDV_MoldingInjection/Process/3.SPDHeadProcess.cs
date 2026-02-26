@@ -618,7 +618,7 @@ namespace SDV_MoldingInjection.Process
                         case ESequence.BubbleRemove_H2:
                         case ESequence.BubbleRemove_H3:
                         case ESequence.BubbleRemove_H4:
-                            _pAxisCharge_Pos = _currentSPDHeadRecipe.PAxisInjectChargePos;
+                            _pAxisCharge_Pos = 5;
                             break;
                         default: throw new NotImplementedException();
                     }
@@ -676,7 +676,7 @@ namespace SDV_MoldingInjection.Process
                         case ESequence.BubbleRemove_H4:
                             if (_bubbleRemoveCount != _currentSPDHeadRecipe.BubbleRemoveTurn)
                             {
-                                _pAxisInject_Pos = _currentSPDHeadRecipe.PAxisInjectChargePos + (_bubbleRemoveCount * Math.Abs(_currentSPDHeadRecipe.PAxisInjectChargePos - _pAxisBase_Pos) / _currentSPDHeadRecipe.BubbleRemoveTurn);
+                                _pAxisInject_Pos = _pAxisCharge_Pos + (_bubbleRemoveCount * Math.Abs(_pAxisCharge_Pos - _pAxisBase_Pos) / _currentSPDHeadRecipe.BubbleRemoveTurn);
                             }
 
                             _gAxisBubbleRemove_Pos = GAxis.Status.ActualPosition + 180;
@@ -819,7 +819,12 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.Charge_PosVel_Calculte:
-                    _pAxisInjectCharge_Height = V380Weight2mg(_currentRecipe.CommonRecipe.ResinWeight);
+                    Log.Debug("Calculate Charge Position");
+                    if (_machineStatus.IsDotWeightingTest == false)
+                    {
+                        _pAxisInjectCharge_Height = V380Weight2mg(_currentRecipe.CommonRecipe.ResinWeight);
+                    }
+
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.Gate_Close:
@@ -885,7 +890,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.Balance_Zero:
-                    if (_removeResinCount == 0)
+                    if (_removeResinCount == 0 && _machineStatus.IsDotWeightingTest == false)
                     {
                         _removeResinCount++;
                         Step.RunStep = (int)ESPDHeadProcDotWeightingStep.PAxis_InjectPos_Move;
@@ -930,7 +935,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"{PAxis.Name} moving to InjectPos turn {_removeResinCount} done");
 
-                    if (_removeResinCount <= 1)
+                    if (_removeResinCount <= 1 && _machineStatus.IsDotWeightingTest == false)
                     {
                         // Ignore balance first time
                         _removeResinCount++;
@@ -938,7 +943,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Thread.Sleep(500);
+                    Thread.Sleep(1000);
 
                     Log.Debug("Calibrate_Weight (DotWeighting)");
                     Balance.SendRequestStableWeightCommand();
