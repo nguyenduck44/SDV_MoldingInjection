@@ -1,24 +1,45 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using EQX.Core.Common;
-using EQX.Core.Sequence;
-using EQX.Device.Indicator;
-using EQX.InOut;
-using EQX.UI.Controls;
-using EQX.UI.Language;
+﻿using EQX.Core.Common;
 using log4net;
-using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
-using SDV_MoldingInjection.Process;
-using SDV_MoldingInjection.Recipe;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Windows;
-using System.Windows.Input;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
     public class AutoViewModel : ViewModelBase
     {
-        
+        #region Properties
+        public Devices Devices { get; }
+        #endregion
+
+        #region Contructors
+        public AutoViewModel(
+            Devices devices,
+            NavigationStore navigationStore)
+        {
+            Devices = devices;
+            _navigationStore = navigationStore;
+
+            Log = LogManager.GetLogger("AutoVM");
+
+            statusUpdateTimer = new System.Timers.Timer(100);
+            statusUpdateTimer.Elapsed += StatusUpdateTimerHandler;
+            statusUpdateTimer.Start();
+        }
+        #endregion
+
+        #region Private Methods
+        private void StatusUpdateTimerHandler(object? sender, System.Timers.ElapsedEventArgs e)
+        {
+            if (_navigationStore.CurrentViewModel != this) return;
+            Devices.Inputs.DoorOpenLeft.RaiseValueUpdated();
+            Devices.Inputs.DoorReleaseLeft.RaiseValueUpdated();
+            Devices.Inputs.DoorOpenRight.RaiseValueUpdated();
+            Devices.Inputs.DoorReleaseRight.RaiseValueUpdated();
+        }
+        #endregion
+
+        #region Privates
+        private readonly NavigationStore _navigationStore;
+        private readonly System.Timers.Timer statusUpdateTimer;
+        #endregion
     }
 }
