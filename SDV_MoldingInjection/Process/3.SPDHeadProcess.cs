@@ -938,6 +938,8 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    Thread.Sleep(500);
+
                     Log.Debug("Calibrate_Weight (DotWeighting)");
                     Balance.SendRequestStableWeightCommand();
                     Wait(20000, () => Balance.WeightData != null);

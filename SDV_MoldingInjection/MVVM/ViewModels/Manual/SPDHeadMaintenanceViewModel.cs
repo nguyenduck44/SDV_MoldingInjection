@@ -31,13 +31,18 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 SelectedGroupedPosition = GroupedPositions.FirstOrDefault()!;
             }
+
         }
 
         protected override void ExternalTimerElapsedAction()
         {
-            if(Balance.WeightData != null)
+            if (Balance.WeightData != null)
             {
                 BalanceStableWeight = Balance.WeightData.Weight * (Balance.WeightData.Unit == "g" ? 1000 : 1);
+                if((MachineStatus as MachineStatus)!.IsStandByProcessMode)
+                {
+                    Balance.SendRequestImmediateWeightCommand();
+                }
             }
         }
 
@@ -91,7 +96,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
         }
 
-        public ICommand GetMesureCommand
+        public ICommand BalanceGetMeasureCommand
         {
             get
             {
@@ -195,6 +200,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     _devices.Outputs.H4_CylDown,
                 };
             }
+
+            Balance.SendRequestImmediateWeightCommand();
         }
 
         protected override RecipePositionManagerBase<RecipeList> UpdatePositionManager()

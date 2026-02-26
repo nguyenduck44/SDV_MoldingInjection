@@ -116,13 +116,26 @@
 
                 <GroupBox Header="Balance"
                           Grid.Column="2"
+                          FontWeight="Bold"
                           Style="{x:Null}">
                     <UniformGrid Rows="3">
-                        <Button Content="Dot Weighting Calib"
+                        <Button Content="Dot Weighting"
                                 Command="{Binding DotWeightingCalibCommand}"/>
                         <UniformGrid Columns="2">
-                            <Label Content="Balance (mg)"/>
-                            <Label Content="{Binding BalanceStableWeight}"/>
+                            <Label Content="Balance (mg)"
+                                   FontSize="14"
+                                   VerticalContentAlignment="Center"
+                                   HorizontalContentAlignment="Center"
+                                   BorderThickness="1"
+                                   BorderBrush="LightGray"/>
+                            <Border BorderThickness="1"
+                                    BorderBrush="LightGray">
+                                <TextBlock Text="{Binding BalanceStableWeight,StringFormat='{}{0:0.###} mm'}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           FontSize="14"/>
+                            </Border>
+                            
                         </UniformGrid>
                         <UniformGrid Columns="2">
                             <Button Content="Set Zero"
