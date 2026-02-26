@@ -1,11 +1,6 @@
 ﻿using EQX.Core.Recipe;
 using EQX.Core.Units;
 using EQX.UI.Language;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SDV_MoldingInjection.Recipe
 {
@@ -56,7 +51,21 @@ namespace SDV_MoldingInjection.Recipe
                 _injectTime = value;
                 OnPropertyChanged();
             }
-        }   
+        }
+
+        [SingleRecipeDescription(Description = "Bubble remove turn")]
+        public double BubbleRemoveTurn
+        {
+            get { return _bubbleRemoveTurn; }
+            set
+            {
+                if (_bubbleRemoveTurn == value) return;
+
+                OnRecipeChanged(_bubbleRemoveTurn, value);
+                _bubbleRemoveTurn = value;
+                OnPropertyChanged();
+            }
+        }
 
         [SingleRecipeDescription(Description = "Cylinder Move Timeout", Unit = Unit.Second)]
         public double CylinderMoveTimeout
@@ -130,10 +139,10 @@ namespace SDV_MoldingInjection.Recipe
         public int LogSaveDay
         {
             get { return logSaveDay; }
-            set 
+            set
             {
                 OnRecipeChanged(logSaveDay, value);
-                logSaveDay = value; 
+                logSaveDay = value;
             }
         }
 
@@ -156,6 +165,7 @@ namespace SDV_MoldingInjection.Recipe
         private double _resinWeight;
         private double _resinWeightSpec;
         private double _injectTime;
+        private double _bubbleRemoveTurn;
         private ILanguageDefinition selectLanguage;
         #endregion
     }

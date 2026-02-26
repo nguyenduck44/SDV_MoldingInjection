@@ -174,56 +174,76 @@ namespace SDV_MoldingInjection.Process
                     Sequence_LoadingUnloading(isLoading: false);
                     break;
                 case ESequence.DummyShot_H1:
-                    Sequence_AtDummyPos(ESPDHead.SPDHead1);
+                    Sequence_AtDummyPos(ESequence.DummyShot_H1, ESPDHead.SPDHead1);
                     break;
                 case ESequence.DummyShot_H2:
-                    Sequence_AtDummyPos(ESPDHead.SPDHead2);
+                    Sequence_AtDummyPos(ESequence.DummyShot_H2, ESPDHead.SPDHead2);
                     break;
                 case ESequence.DummyShot_H3:
-                    Sequence_AtDummyPos(ESPDHead.SPDHead3);
+                    Sequence_AtDummyPos(ESequence.DummyShot_H3, ESPDHead.SPDHead3);
                     break;
                 case ESequence.DummyShot_H4:
-                    Sequence_AtDummyPos(ESPDHead.SPDHead4);
+                    Sequence_AtDummyPos(ESequence.DummyShot_H4, ESPDHead.SPDHead4);
                     break;
                 case ESequence.NeedleCleaning_H1:
-                    Sequence_NeedleClean(ESPDHead.SPDHead1);
+                    Sequence_NeedleClean(ESequence.NeedleCleaning_H1, ESPDHead.SPDHead1);
                     break;
                 case ESequence.NeedleCleaning_H2:
-                    Sequence_NeedleClean(ESPDHead.SPDHead2);
+                    Sequence_NeedleClean(ESequence.NeedleCleaning_H2, ESPDHead.SPDHead2);
                     break;
                 case ESequence.NeedleCleaning_H3:
-                    Sequence_NeedleClean(ESPDHead.SPDHead3);
+                    Sequence_NeedleClean(ESequence.NeedleCleaning_H3, ESPDHead.SPDHead3);
                     break;
                 case ESequence.NeedleCleaning_H4:
-                    Sequence_NeedleClean(ESPDHead.SPDHead4);
+                    Sequence_NeedleClean(ESequence.NeedleCleaning_H4, ESPDHead.SPDHead4);
                     break;
                 case ESequence.DotWeighting_H1:
-                    Sequence_DotWeighting(ESPDHead.SPDHead1);
+                    Sequence_DotWeighting(ESequence.DotWeighting_H1, ESPDHead.SPDHead1);
                     break;
                 case ESequence.DotWeighting_H2:
-                    Sequence_DotWeighting(ESPDHead.SPDHead2);
+                    Sequence_DotWeighting(ESequence.DotWeighting_H2, ESPDHead.SPDHead2);
                     break;
                 case ESequence.DotWeighting_H3:
-                    Sequence_DotWeighting(ESPDHead.SPDHead3);
+                    Sequence_DotWeighting(ESequence.DotWeighting_H3, ESPDHead.SPDHead3);
                     break;
                 case ESequence.DotWeighting_H4:
-                    Sequence_DotWeighting(ESPDHead.SPDHead4);
+                    Sequence_DotWeighting(ESequence.DotWeighting_H4, ESPDHead.SPDHead4);
                     break;
-                case ESequence.HeadDisassemble:
-                case ESequence.HeadAssemble:
-                    Sequence_AtDummyPos(ESPDHead.SPDHead1);
+                case ESequence.HeadAssemble_H1:
+                    Sequence_AtDummyPos(ESequence.HeadAssemble_H1, ESPDHead.SPDHead1);
+                    break;
+                case ESequence.HeadAssemble_H2:
+                    Sequence_AtDummyPos(ESequence.HeadAssemble_H2, ESPDHead.SPDHead2);
+                    break;
+                case ESequence.HeadAssemble_H3:
+                    Sequence_AtDummyPos(ESequence.HeadAssemble_H3, ESPDHead.SPDHead3);
+                    break;
+                case ESequence.HeadAssemble_H4:
+                    Sequence_AtDummyPos(ESequence.HeadAssemble_H4, ESPDHead.SPDHead4);
+                    break;
+                case ESequence.HeadDisassemble_H1:
+                    Sequence_AtDummyPos(ESequence.HeadDisassemble_H1, ESPDHead.SPDHead1);
+                    break;
+                case ESequence.HeadDisassemble_H2:
+                    Sequence_AtDummyPos(ESequence.HeadDisassemble_H2, ESPDHead.SPDHead2);
+                    break;
+                case ESequence.HeadDisassemble_H3:
+                    Sequence_AtDummyPos(ESequence.HeadDisassemble_H3, ESPDHead.SPDHead3);
+                    break;
+                case ESequence.HeadDisassemble_H4:
+                    Sequence_AtDummyPos(ESequence.HeadDisassemble_H4, ESPDHead.SPDHead4);
                     break;
                 case ESequence.BubbleRemove_H1:
-                    Sequence_AtDummyPos(ESPDHead.SPDHead1);
+                    Sequence_AtDummyPos(ESequence.BubbleRemove_H1, ESPDHead.SPDHead1);
                     break;
                 case ESequence.BubbleRemove_H2:
-                    Sequence_AtDummyPos(ESPDHead.SPDHead2);
+                    Sequence_AtDummyPos(ESequence.BubbleRemove_H2, ESPDHead.SPDHead2);
                     break;
                 case ESequence.BubbleRemove_H3:
-                    Sequence_AtDummyPos(ESPDHead.SPDHead3);
+                    Sequence_AtDummyPos(ESequence.BubbleRemove_H3, ESPDHead.SPDHead3);
                     break;
                 case ESequence.BubbleRemove_H4:
-                    Sequence_AtDummyPos(ESPDHead.SPDHead4);
+                    Sequence_AtDummyPos(ESequence.BubbleRemove_H4, ESPDHead.SPDHead4);
                     break;
                 default:
                     Sequence = ESequence.Stop;
@@ -700,7 +720,7 @@ namespace SDV_MoldingInjection.Process
             }
         }
 
-        private void Sequence_AtDummyPos(ESPDHead head)
+        private void Sequence_AtDummyPos(ESequence sequence, ESPDHead head)
         {
             switch ((EMoldProcDummyShotStep)Step.RunStep)
             {
@@ -713,10 +733,9 @@ namespace SDV_MoldingInjection.Process
                         Step.RunStep = (int)EMoldProcDummyShotStep.End;
                         break;
                     }
-                    Log.Info($"DummyShot for {head} start");
+                    Log.Info($"Dummy position for {head} start");
                     Step.RunStep++;
                     break;
-
                 case EMoldProcDummyShotStep.XYAxis_DummyPos_Move:
                     Log.Debug($"Moving XY to dummy shot position for {head}: X={GetXAxisDummyPos(head)}, Y={GetYAxisDummyPos(head)}");
                     XAxis.MoveAbs(GetXAxisDummyPos(head));
@@ -739,16 +758,58 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcDummyShotStep.ZAxis_DummyPos_Move:
-                    Log.Debug("ZAxis move dummy position");
-                    ZAxisDummyPosMove(head);
-                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
-                        () => ZAxisInDummyPos(head));
+                    if (sequence == ESequence.BubbleRemove_H1 ||
+                        sequence == ESequence.BubbleRemove_H2 ||
+                        sequence == ESequence.BubbleRemove_H3 ||
+                        sequence == ESequence.BubbleRemove_H4)
+                    {
+                        Log.Debug("ZAxis move bubble remove position");
+                        ZAxisBubbleRemovePosMove(head);
+                        Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
+                            () => ZAxisInBubbleRemovePos(head));
+                    }
+                    else if (sequence == ESequence.HeadAssemble_H1 || sequence == ESequence.HeadAssemble_H2 ||
+                             sequence == ESequence.HeadAssemble_H3 || sequence == ESequence.HeadAssemble_H4 ||
+                             sequence == ESequence.HeadDisassemble_H1 || sequence == ESequence.HeadDisassemble_H2 ||
+                             sequence == ESequence.HeadDisassemble_H3 || sequence == ESequence.HeadDisassemble_H4)
+                    {
+                        Log.Debug("ZAxis move assemble/disassemble position");
+                        ZAxisAssembleDisassemblePosMove(head);
+                        Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
+                            () => ZAxisInAssembleDisassemblePos(head));
+                    }
+                    else
+                    {
+                        Log.Debug("ZAxis move dummy position");
+                        ZAxisDummyPosMove(head);
+                        Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
+                            () => ZAxisInDummyPos(head));
+                    }
+
                     Step.RunStep++;
                     break;
                 case EMoldProcDummyShotStep.ZAxis_DummyPos_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadWarning(EWarning.Z1Axis_DummyPos_MoveTimeOut, head);
+                        if (sequence == ESequence.BubbleRemove_H1 ||
+                            sequence == ESequence.BubbleRemove_H2 ||
+                            sequence == ESequence.BubbleRemove_H3 ||
+                            sequence == ESequence.BubbleRemove_H4)
+                        {
+                            RaiseHeadWarning(EWarning.Z1Axis_MoveBubbleRemovePos_Timeout, head);
+                        }
+                        else if (sequence == ESequence.HeadAssemble_H1 || sequence == ESequence.HeadAssemble_H2 ||
+                                 sequence == ESequence.HeadAssemble_H3 || sequence == ESequence.HeadAssemble_H4 ||
+                                 sequence == ESequence.HeadDisassemble_H1 || sequence == ESequence.HeadDisassemble_H2 ||
+                                 sequence == ESequence.HeadDisassemble_H3 || sequence == ESequence.HeadDisassemble_H4)
+                        {
+                            RaiseHeadWarning(EWarning.Z1Axis_MoveAssembleDisassemblePos_Timeout, head);
+                        }
+                        else
+                        {
+                            RaiseHeadWarning(EWarning.Z1Axis_DummyPos_MoveTimeOut, head);
+                        }
+
                         break;
                     }
                     Step.RunStep++;
@@ -771,7 +832,10 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcDummyShotStep.ZAxis_SafetyPos_Move:
-                    if (Sequence == ESequence.HeadAssemble || Sequence == ESequence.HeadDisassemble)
+                    if (sequence == ESequence.HeadAssemble_H1 || sequence == ESequence.HeadAssemble_H2 ||
+                        sequence == ESequence.HeadAssemble_H3 || sequence == ESequence.HeadAssemble_H4 ||
+                        sequence == ESequence.HeadDisassemble_H1 || sequence == ESequence.HeadDisassemble_H2 ||
+                        sequence == ESequence.HeadDisassemble_H3 || sequence == ESequence.HeadDisassemble_H4)
                     {
                         Step.RunStep = (int)EMoldProcDummyShotStep.End;
                         break;
@@ -799,6 +863,7 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.Stop;
                         break;
                     }
+
                     if (head == ESPDHead.SPDHead4)
                     {
                         Log.Info("Sequence Cleaning");
@@ -811,7 +876,7 @@ namespace SDV_MoldingInjection.Process
             }
         }
 
-        private void Sequence_NeedleClean(ESPDHead head)
+        private void Sequence_NeedleClean(ESequence sequence, ESPDHead head)
         {
             switch ((EMoldProcNeedleCleaningStep)Step.RunStep)
             {
@@ -956,7 +1021,7 @@ namespace SDV_MoldingInjection.Process
             }
         }
 
-        private void Sequence_DotWeighting(ESPDHead head)
+        private void Sequence_DotWeighting(ESequence sequence, ESPDHead head)
         {
             switch ((EMoldProcDotWeightingStep)Step.RunStep)
             {
@@ -1315,6 +1380,7 @@ namespace SDV_MoldingInjection.Process
             if (_currentRecipe.SPDHead4_Recipe.HeadSkip == false && head == ESPDHead.SPDHead4)
                 Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisDummyPos);
         }
+
         private bool ZAxisInDummyPos(ESPDHead head)
         {
             if (head == ESPDHead.SPDHead1)
@@ -1335,6 +1401,80 @@ namespace SDV_MoldingInjection.Process
             if (head == ESPDHead.SPDHead4)
             {
                 return _currentRecipe.SPDHead4_Recipe.HeadSkip || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisDummyPos);
+            }
+
+            return true;
+        }
+
+        private void ZAxisBubbleRemovePosMove(ESPDHead head)
+        {
+            if (_currentRecipe.SPDHead1_Recipe.HeadSkip == false && head == ESPDHead.SPDHead1)
+                Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisBubbleRemovePos);
+            if (_currentRecipe.SPDHead2_Recipe.HeadSkip == false && head == ESPDHead.SPDHead2)
+                Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisBubbleRemovePos);
+            if (_currentRecipe.SPDHead3_Recipe.HeadSkip == false && head == ESPDHead.SPDHead3)
+                Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisBubbleRemovePos);
+            if (_currentRecipe.SPDHead4_Recipe.HeadSkip == false && head == ESPDHead.SPDHead4)
+                Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisBubbleRemovePos);
+        }
+
+        private bool ZAxisInBubbleRemovePos(ESPDHead head)
+        {
+            if (head == ESPDHead.SPDHead1)
+            {
+                return _currentRecipe.SPDHead1_Recipe.HeadSkip || Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisBubbleRemovePos);
+            }
+
+            if (head == ESPDHead.SPDHead2)
+            {
+                return _currentRecipe.SPDHead2_Recipe.HeadSkip || Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisBubbleRemovePos);
+            }
+
+            if (head == ESPDHead.SPDHead3)
+            {
+                return _currentRecipe.SPDHead3_Recipe.HeadSkip || Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisBubbleRemovePos);
+            }
+
+            if (head == ESPDHead.SPDHead4)
+            {
+                return _currentRecipe.SPDHead4_Recipe.HeadSkip || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisBubbleRemovePos);
+            }
+
+            return true;
+        }
+
+        private void ZAxisAssembleDisassemblePosMove(ESPDHead head)
+        {
+            if (_currentRecipe.SPDHead1_Recipe.HeadSkip == false && head == ESPDHead.SPDHead1)
+                Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisAssembleDisassemblePos);
+            if (_currentRecipe.SPDHead2_Recipe.HeadSkip == false && head == ESPDHead.SPDHead2)
+                Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisAssembleDisassemblePos);
+            if (_currentRecipe.SPDHead3_Recipe.HeadSkip == false && head == ESPDHead.SPDHead3)
+                Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisAssembleDisassemblePos);
+            if (_currentRecipe.SPDHead4_Recipe.HeadSkip == false && head == ESPDHead.SPDHead4)
+                Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisAssembleDisassemblePos);
+        }
+
+        private bool ZAxisInAssembleDisassemblePos(ESPDHead head)
+        {
+            if (head == ESPDHead.SPDHead1)
+            {
+                return _currentRecipe.SPDHead1_Recipe.HeadSkip || Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisAssembleDisassemblePos);
+            }
+
+            if (head == ESPDHead.SPDHead2)
+            {
+                return _currentRecipe.SPDHead2_Recipe.HeadSkip || Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisAssembleDisassemblePos);
+            }
+
+            if (head == ESPDHead.SPDHead3)
+            {
+                return _currentRecipe.SPDHead3_Recipe.HeadSkip || Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisAssembleDisassemblePos);
+            }
+
+            if (head == ESPDHead.SPDHead4)
+            {
+                return _currentRecipe.SPDHead4_Recipe.HeadSkip || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisAssembleDisassemblePos);
             }
 
             return true;

@@ -513,21 +513,85 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.Stop;
                     }
                     break;
-                case ESequence.HeadAssemble:
-                    if (_currentSPDHeadRecipe.HeadSkip)
+                case ESequence.HeadAssemble_H1:
+                    if (head == ESPDHead.SPDHead1 && !_currentSPDHeadRecipe.HeadSkip)
+                    {
+                        Sequence_HeadAssembleDisAssemble(isAssemble: true);
+                    }
+                    else
                     {
                         Sequence = ESequence.Stop;
-                        break;
                     }
-                    Sequence_HeadAssembleDisAssemble(isAssemble: true);
                     break;
-                case ESequence.HeadDisassemble:
-                    if (_currentSPDHeadRecipe.HeadSkip)
+                case ESequence.HeadAssemble_H2:
+                    if (head == ESPDHead.SPDHead2 && !_currentSPDHeadRecipe.HeadSkip)
+                    {
+                        Sequence_HeadAssembleDisAssemble(isAssemble: true);
+                    }
+                    else
                     {
                         Sequence = ESequence.Stop;
-                        break;
                     }
-                    Sequence_HeadAssembleDisAssemble(isAssemble: false);
+                    break;
+                case ESequence.HeadAssemble_H3:
+                    if (head == ESPDHead.SPDHead3 && !_currentSPDHeadRecipe.HeadSkip)
+                    {
+                        Sequence_HeadAssembleDisAssemble(isAssemble: true);
+                    }
+                    else
+                    {
+                        Sequence = ESequence.Stop;
+                    }
+                    break;
+                case ESequence.HeadAssemble_H4:
+                    if (head == ESPDHead.SPDHead4 && !_currentSPDHeadRecipe.HeadSkip)
+                    {
+                        Sequence_HeadAssembleDisAssemble(isAssemble: true);
+                    }
+                    else
+                    {
+                        Sequence = ESequence.Stop;
+                    }
+                    break;
+                case ESequence.HeadDisassemble_H1:
+                    if (head == ESPDHead.SPDHead4 && !_currentSPDHeadRecipe.HeadSkip)
+                    {
+                        Sequence_HeadAssembleDisAssemble(isAssemble: false);
+                    }
+                    else
+                    {
+                        Sequence = ESequence.Stop;
+                    }
+                    break;
+                case ESequence.HeadDisassemble_H2:
+                    if (head == ESPDHead.SPDHead4 && !_currentSPDHeadRecipe.HeadSkip)
+                    {
+                        Sequence_HeadAssembleDisAssemble(isAssemble: false);
+                    }
+                    else
+                    {
+                        Sequence = ESequence.Stop;
+                    }
+                    break;
+                case ESequence.HeadDisassemble_H3:
+                    if (head == ESPDHead.SPDHead4 && !_currentSPDHeadRecipe.HeadSkip)
+                    {
+                        Sequence_HeadAssembleDisAssemble(isAssemble: false);
+                    }
+                    else
+                    {
+                        Sequence = ESequence.Stop;
+                    }
+                    break;
+                case ESequence.HeadDisassemble_H4:
+                    if (head == ESPDHead.SPDHead4 && !_currentSPDHeadRecipe.HeadSkip)
+                    {
+                        Sequence_HeadAssembleDisAssemble(isAssemble: false);
+                    }
+                    else
+                    {
+                        Sequence = ESequence.Stop;
+                    }
                     break;
                 default:
                     Sequence = ESequence.Stop;
@@ -674,9 +738,9 @@ namespace SDV_MoldingInjection.Process
                         case ESequence.BubbleRemove_H2:
                         case ESequence.BubbleRemove_H3:
                         case ESequence.BubbleRemove_H4:
-                            if (_bubbleRemoveCount != _currentSPDHeadRecipe.BubbleRemoveTurn)
+                            if (_bubbleRemoveCount != _currentRecipe.CommonRecipe.BubbleRemoveTurn)
                             {
-                                _pAxisInject_Pos = _pAxisCharge_Pos + (_bubbleRemoveCount * Math.Abs(_pAxisCharge_Pos - _pAxisBase_Pos) / _currentSPDHeadRecipe.BubbleRemoveTurn);
+                                _pAxisInject_Pos = _pAxisCharge_Pos + (_bubbleRemoveCount * Math.Abs(_pAxisCharge_Pos - _pAxisBase_Pos) / _currentRecipe.CommonRecipe.BubbleRemoveTurn);
                             }
 
                             _gAxisBubbleRemove_Pos = GAxis.Status.ActualPosition + 180;
@@ -755,7 +819,7 @@ namespace SDV_MoldingInjection.Process
                     {
                         _bubbleRemoveCount++;
                         Log.Debug($"Bubble remove turn: {_bubbleRemoveCount}");
-                        if (_bubbleRemoveCount <= _currentSPDHeadRecipe.BubbleRemoveTurn)
+                        if (_bubbleRemoveCount <= _currentRecipe.CommonRecipe.BubbleRemoveTurn)
                         {
                             Step.RunStep = (int)ESPDHeadProcCommonStep.Base_PosVel_Calculte;
                             break;

@@ -32,6 +32,8 @@
         Z1Axis_DummyPos_MoveTimeOut,
         Z1Axis_MoveNeedleCleanPos_Timeout,
         Z1Axis_MoveDotWeightingPos_Timeout,
+        Z1Axis_MoveBubbleRemovePos_Timeout,
+        Z1Axis_MoveAssembleDisassemblePos_Timeout,
 
         Z2Axis_Origin_TimeOut = 1700,
         Z2Axis_SafetyPos_MoveTimeOut,
@@ -39,6 +41,8 @@
         Z2Axis_DummyPos_MoveTimeOut,
         Z2Axis_MoveNeedleCleanPos_Timeout,
         Z2Axis_MoveDotWeightingPos_Timeout,
+        Z2Axis_MoveBubbleRemovePos_Timeout,
+        Z2Axis_MoveAssembleDisassemblePos_Timeout,
 
         Z3Axis_Origin_TimeOut = 1750,
         Z3Axis_SafetyPos_MoveTimeOut,
@@ -46,6 +50,8 @@
         Z3Axis_DummyPos_MoveTimeOut,
         Z3Axis_MoveNeedleCleanPos_Timeout,
         Z3Axis_MoveDotWeightingPos_Timeout,
+        Z3Axis_MoveBubbleRemovePos_Timeout,
+        Z3Axis_MoveAssembleDisassemblePos_Timeout,
 
         Z4Axis_Origin_TimeOut = 1800,
         Z4Axis_SafetyPos_MoveTimeOut,
@@ -53,6 +59,8 @@
         Z4Axis_DummyPos_MoveTimeOut,
         Z4Axis_MoveNeedleCleanPos_Timeout,
         Z4Axis_MoveDotWeightingPos_Timeout,
+        Z4Axis_MoveBubbleRemovePos_Timeout,
+        Z4Axis_MoveAssembleDisassemblePos_Timeout,
 
         BellowCyl_DownFail = 1900,
         BellowCyl_UpFail,

@@ -5,6 +5,7 @@ namespace SDV_MoldingInjection.Recipe
 {
     public class SPDHeadRecipe : RecipeBase
     {
+        [SingleRecipeDescription(Description = "Skip Head", Detail = "Check to Skip Head")]
         public bool HeadSkip
         {
             get { return _headSkip; }
@@ -18,7 +19,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "ZAxis SAFETY position (ready position)", Unit = Unit.mm)]
+        [SingleRecipeDescription(Description = "Z-Axis SAFETY position (ready position)", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "ZAxis")]
         [SingleRecipeMinMax(Min = -5)]
         public double ZAxisSafetyPos
@@ -34,7 +35,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "ZAxis INJECT position (down position)", Unit = Unit.mm)]
+        [SingleRecipeDescription(Description = "Z-Axis INJECT position (down position)", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "ZAxis")]
         public double ZAxisInjectPos
         {
@@ -49,7 +50,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "X-Axis dummy shot position", Unit = Unit.mm)]
+        [SingleRecipeDescription(Description = "X-Axis Dummy Shot position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
         public double XAxisDummyPos
         {
@@ -60,6 +61,66 @@ namespace SDV_MoldingInjection.Recipe
 
                 OnRecipeChanged(_xAxisDummyPos, value);
                 _xAxisDummyPos = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "Y-Axis Dummy Shot position", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "YAxis")]
+        public double YAxisDummyPos
+        {
+            get { return _yAxisDummyPos; }
+            set
+            {
+                if (_yAxisDummyPos == value) return;
+
+                OnRecipeChanged(_yAxisDummyPos, value);
+                _yAxisDummyPos = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "Z-Axis Dummy Shot position", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "ZAxis")]
+        public double ZAxisDummyPos
+        {
+            get { return _zAxisDummyPos; }
+            set
+            {
+                if (_zAxisDummyPos == value) return;
+
+                OnRecipeChanged(_zAxisDummyPos, value);
+                _zAxisDummyPos = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "Z-Axis Bubble Remove position", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "ZAxis")]
+        public double ZAxisBubbleRemovePos
+        {
+            get { return _zAxisBubbleRemove; }
+            set
+            {
+                if (_zAxisBubbleRemove == value) return;
+
+                OnRecipeChanged(_zAxisBubbleRemove, value);
+                _zAxisBubbleRemove = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "Z-Axis Assemble-Disassemble position", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "ZAxis")]
+        public double ZAxisAssembleDisassemblePos
+        {
+            get { return _zAxisAssembleDisassemble; }
+            set
+            {
+                if (_zAxisAssembleDisassemble == value) return;
+
+                OnRecipeChanged(_zAxisAssembleDisassemble, value);
+                _zAxisAssembleDisassemble = value;
                 OnPropertyChanged();
             }
         }
@@ -78,37 +139,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "Y-Axis dummy shot position", Unit = Unit.mm)]
-        [SinglePositionTeaching(Motion = "YAxis")]
-        public double YAxisDummyPos
-        {
-            get { return _yAxisDummyPos; }
-            set
-            {
-                if (_yAxisDummyPos == value) return;
-
-                OnRecipeChanged(_yAxisDummyPos, value);
-                _yAxisDummyPos = value;
-                OnPropertyChanged();
-            }
-        }
-
-        [SingleRecipeDescription(Description = "ZAxis Dummy position", Unit = Unit.mm)]
-        [SinglePositionTeaching(Motion = "ZAxis")]
-        public double ZAxisDummyPos
-        {
-            get { return _zAxisDummyPos; }
-            set
-            {
-                if (_zAxisDummyPos == value) return;
-
-                OnRecipeChanged(_zAxisDummyPos, value);
-                _zAxisDummyPos = value;
-                OnPropertyChanged();
-            }
-        }
-
-        [SingleRecipeDescription(Description = "ZAxis Neddle Clean position", Unit = Unit.mm)]
+        [SingleRecipeDescription(Description = "Z-Axis Neddle Clean position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "ZAxis")]
         public double ZAxisNeedleCleanPos
         {
@@ -123,7 +154,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "XAxis Weighting position", Unit = Unit.mm)]
+        [SingleRecipeDescription(Description = "X-Axis Weighting position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
         public double XAxisDotWeightingPos
         {
@@ -138,7 +169,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
 
-        [SingleRecipeDescription(Description = "ZAxis Weighting position", Unit = Unit.mm)]
+        [SingleRecipeDescription(Description = "Z-Axis Weighting position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "ZAxis")]
         public double ZAxisWeightingPos
         {
@@ -182,7 +213,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "PAxis INJECT position", Unit = Unit.Degree)]
+        [SingleRecipeDescription(Description = "P-Axis INJECT position", Unit = Unit.mm)]
         public double PAxisInjectPos
         {
             get { return _pAxisInjectPos; }
@@ -196,19 +227,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "Bubble remove turn")]
-        public double BubbleRemoveTurn
-        {
-            get { return _bubbleRemoveTurn; }
-            set
-            {
-                if (_bubbleRemoveTurn == value) return;
-
-                OnRecipeChanged(_bubbleRemoveTurn, value);
-                _bubbleRemoveTurn = value;
-                OnPropertyChanged();
-            }
-        }
+        
 
         public double PAxisInjectChargePos
         {
@@ -233,6 +252,8 @@ namespace SDV_MoldingInjection.Recipe
         private double _zAxisInjectPos;
         private double _zAxisNeedleCleanPos;
         private double _zAxisDummyPos;
+        private double _zAxisBubbleRemove;
+        private double _zAxisAssembleDisassemble;
         private double _xAxisDotWeightPos;
         private double _zAxisWeightingPos;
 
@@ -242,7 +263,6 @@ namespace SDV_MoldingInjection.Recipe
         private double _pAxisInjectPos;
         private double _pAxisInjectChargePos;
 
-        private double _bubbleRemoveTurn;
         private double _xAxisNeedleCleanPos;
 
         #endregion
