@@ -861,8 +861,8 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcNeedleCleaningStep.NzlCleanCyl_UnGrip:
                     Log.Debug("Nozzle clean cylinder Ungrip");
-                    NozzleCleanCyl_UnGrip();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => NozzleCleanCyl_UnGrip_Check());
+                    NozzleCleanCyl_UnGrip(head);
+                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => NozzleCleanCyl_UnGrip_Check(head));
                     Step.RunStep++;
                     break;
                 case EMoldProcNeedleCleaningStep.NzlCleanCyl_UnGripWait:
@@ -918,6 +918,21 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
                     Log.Debug("Z axis up after clean done");
+                    Step.RunStep++;
+                    break;
+                case EMoldProcNeedleCleaningStep.NzlCleanCyl_UnGrip_AfterClean:
+                    Log.Debug("Nozzle clean cylinder Ungrip");
+                    NozzleCleanCyl_UnGrip(head);
+                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => NozzleCleanCyl_UnGrip_Check(head));
+                    Step.RunStep++;
+                    break;
+                case EMoldProcNeedleCleaningStep.NzlCleanCyl_UnGrip_AfterClean_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseWarning(EWarning.Nozzle_CleanCyl_UnGripFail);
+                        break;
+                    }
+                    Log.Debug("Nozzle clean cylinder Ungrip done");
                     Step.RunStep++;
                     break;
                 case EMoldProcNeedleCleaningStep.End:
@@ -1397,25 +1412,24 @@ namespace SDV_MoldingInjection.Process
             return true;
         }
 
-        private void NozzleCleanCyl_UnGrip()
+        private void NozzleCleanCyl_UnGrip(ESPDHead head)
         {
-            if (!_currentRecipe.SPDHead1_Recipe.HeadSkip)
+            if (_currentRecipe.SPDHead1_Recipe.HeadSkip == false && head == ESPDHead.SPDHead1)
                 NozzleClean_H1.Ungrip();
-            if (!_currentRecipe.SPDHead2_Recipe.HeadSkip)
+            if (_currentRecipe.SPDHead2_Recipe.HeadSkip == false && head == ESPDHead.SPDHead2)
                 NozzleClean_H2.Ungrip();
-            if (!_currentRecipe.SPDHead3_Recipe.HeadSkip)
+            if (_currentRecipe.SPDHead3_Recipe.HeadSkip == false && head == ESPDHead.SPDHead3)
                 NozzleClean_H3.Ungrip();
-            if (!_currentRecipe.SPDHead4_Recipe.HeadSkip)
+            if (_currentRecipe.SPDHead4_Recipe.HeadSkip == false && head == ESPDHead.SPDHead4)
                 NozzleClean_H4.Ungrip();
         }
 
-        private bool NozzleCleanCyl_UnGrip_Check()
+        private bool NozzleCleanCyl_UnGrip_Check(ESPDHead head)
         {
-            return
-                (_currentRecipe.SPDHead1_Recipe.HeadSkip || NozzleClean_H1.IsUngrip()) &&
-                (_currentRecipe.SPDHead2_Recipe.HeadSkip || NozzleClean_H2.IsUngrip()) &&
-                (_currentRecipe.SPDHead3_Recipe.HeadSkip || NozzleClean_H3.IsUngrip()) &&
-                (_currentRecipe.SPDHead4_Recipe.HeadSkip || NozzleClean_H4.IsUngrip());
+            if (head == ESPDHead.SPDHead1) return _currentRecipe.SPDHead1_Recipe.HeadSkip || NozzleClean_H1.IsUngrip();
+            if (head == ESPDHead.SPDHead2) return _currentRecipe.SPDHead2_Recipe.HeadSkip || NozzleClean_H2.IsUngrip();
+            if (head == ESPDHead.SPDHead3) return _currentRecipe.SPDHead3_Recipe.HeadSkip || NozzleClean_H3.IsUngrip();
+            return _currentRecipe.SPDHead4_Recipe.HeadSkip || NozzleClean_H4.IsUngrip();
         }
 
         private bool IsSPDHeadWorkDone(ESPDHead head)

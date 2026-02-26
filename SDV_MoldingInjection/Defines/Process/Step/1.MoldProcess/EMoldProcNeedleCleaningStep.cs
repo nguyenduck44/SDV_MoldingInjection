@@ -21,6 +21,9 @@ namespace SDV_MoldingInjection.Defines
         Z_Axis_Up_AfterClean,
         Z_Axis_Up_AfterCleanWait,
 
+        NzlCleanCyl_UnGrip_AfterClean,
+        NzlCleanCyl_UnGrip_AfterClean_Wait,
+
         End,
     }
 }
