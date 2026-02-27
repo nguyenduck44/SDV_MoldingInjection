@@ -146,6 +146,12 @@
                                     Content="Start Test"
                                     Command="{Binding LeakTestStartCommand}"/>
                                 <Button
+                                    Margin="0 1 1 1"
+                                    FontSize="14"
+                                    Background="OrangeRed"
+                                    Content="Stop Test"
+                                    Command="{Binding LeakTestStopCommand}"/>
+                                <Button
                                     Margin="0 1"
                                     FontSize="14"
                                     Content="Show Result"

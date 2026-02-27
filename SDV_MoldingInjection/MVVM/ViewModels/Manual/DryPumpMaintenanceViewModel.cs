@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
 using EQX.Core.InOut;
 using EQX.Core.Motion;
@@ -40,6 +40,22 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     tickCount = Environment.TickCount;
                     enableExternalTimerAction = true;
                     specReached = false;
+                });
+            }
+        }
+
+        public ICommand LeakTestStopCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    if (!enableExternalTimerAction) return;
+
+                    _devices.Cylinders.AngleValve.Close();
+                    PressureLog(CurrentPressure, "Valve Close");
+
+                    enableExternalTimerAction = false;
                 });
             }
         }
@@ -142,6 +158,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 specReached = true;
                 _devices.Cylinders.AngleValve.Close();
                 PressureLog(pressure, "Valve Close");
+                enableExternalTimerAction = false;
                 return;
             }
 
