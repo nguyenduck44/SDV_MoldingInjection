@@ -12,6 +12,7 @@ namespace SDV_MoldingInjection.Extensions
             hostBuilder.AddMotionDevices();
             hostBuilder.AddIODevices();
             hostBuilder.AddCylinderDevices();
+            hostBuilder.AddIndicatorDevices();
 
             hostBuilder.ConfigureServices((hostContext, services) =>
             {

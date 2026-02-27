@@ -172,9 +172,9 @@
             </Canvas>
             <Canvas>
                 <Image  Source="/SDV_MoldingInjection;component/Resource/Images/PowerON.png"
-                        Canvas.Left="131"
-                        Canvas.Top="283"
-                        HorizontalAlignment="Center"
+                        Canvas.Left="130"
+                        Canvas.Top="282"
+                        HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Width="11"
                         Height="10" RenderTransformOrigin="1.243,1.841">
@@ -186,8 +186,8 @@
             </Canvas>
             <Canvas>
                 <Image  Source="/SDV_MoldingInjection;component/Resource/Images/PowerON.png"
-                        Canvas.Left="147"
-                        Canvas.Top="283"
+                        Canvas.Left="144"
+                        Canvas.Top="282"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Width="11"
@@ -200,8 +200,8 @@
             </Canvas>
             <Canvas>
                 <Image  Source="/SDV_MoldingInjection;component/Resource/Images/PowerON.png"
-                        Canvas.Left="161"
-                        Canvas.Top="283"
+                        Canvas.Left="159"
+                        Canvas.Top="282"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Width="11"
