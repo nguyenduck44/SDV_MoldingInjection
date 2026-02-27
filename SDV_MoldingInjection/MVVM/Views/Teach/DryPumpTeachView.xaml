@@ -106,13 +106,53 @@
                     </ItemsControl>
                 </GroupBox>
 
-                <GroupBox
-                Grid.Row="1" Grid.Column="1"
-                FontWeight="Bold"
-                Header="Motion Moving"
-                Style="{x:Null}"
-                >
+                <GroupBox Grid.Row="1"
+                          Grid.Column="1"
+                          FontWeight="Bold"
+                          Header="Motion Moving"
+                          Style="{x:Null}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1.3*" />
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="6.7*" />
+                            <RowDefinition Height="1*" />
+                        </Grid.RowDefinitions>
+                        <UniformGrid Columns="2"
+                                     Margin="0 0 0 0"
+                                     Height="45"
+                                     VerticalAlignment="Top">
+                            <Button Command="{Binding MoveToTarget}"
+                                    Content="Move to Target"
+                                    Margin="2" />
+                            <Button Content="Save Current to Target"
+                                    Command="{Binding SaveCurrentToTarget}"
+                                    Margin="2" />
+                        </UniformGrid>
 
+                        <Button Grid.Row="1"
+                                Command="{Binding StopCommand}"
+                                Content="STOP"
+                                Margin="2" />
+
+                        <uiControls:JogControlView Grid.Row="2"
+                                   ItemsSource="{Binding SelectedGroupedPosition.Points}"
+                                   JogSpeedItemsSource="{Binding JogSpeedLevels}"
+                                   SelectedJogSpeed="{Binding SelectedJogSpeed}" />
+
+                        <UniformGrid Grid.Row="3"
+                                     Columns="2"
+                                     Margin="0 5 0 0">
+                            <Button Background="LightBlue"
+                                    Command="{Binding TeachPositionSaveCommand}"
+                                    Content="Save"
+                                    Margin="2" />
+                            <Button Background="Coral"
+                                    Command="{Binding TeachPositionCancelCommand}"
+                                    Content="Cancel"
+                                    Margin="2" />
+                        </UniformGrid>
+                    </Grid>
                 </GroupBox>
 
                 <GroupBox Grid.Row="1"
