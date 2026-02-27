@@ -156,9 +156,8 @@
                       Canvas.Top="375">
                     <Rectangle Style="{StaticResource DoorIndicatorRectangleStyle}">
                         <Rectangle.Fill>
-                            <MultiBinding Converter="{StaticResource DoorStatusToBrushConverterRevers}">
-                                <Binding Path="Devices.Inputs.MainPanelCloseCheck.Value" />
-                            </MultiBinding>
+                            <Binding Path="Devices.Inputs.MainPanelCloseCheck.Value"
+                                         Converter="{StaticResource BooleanToOnOffBrushConverter}" />
                         </Rectangle.Fill>
                     </Rectangle>
                     <TextBlock Text="MAIN PANEL DOOR CLOSE"
@@ -172,9 +171,9 @@
             </Canvas>
             <Canvas>
                 <Image  Source="/SDV_MoldingInjection;component/Resource/Images/PowerON.png"
-                        Canvas.Left="130"
-                        Canvas.Top="282"
-                        HorizontalAlignment="Left"
+                        Canvas.Left="131"
+                        Canvas.Top="283"
+                        HorizontalAlignment="Center"
                         VerticalAlignment="Top"
                         Width="11"
                         Height="10" RenderTransformOrigin="1.243,1.841">
@@ -262,6 +261,22 @@
                         <MultiBinding Converter="{StaticResource BooleanOrToVisibilityConverter}">
                             <Binding Path="Devices.Inputs.Jig1Detect.Value" />
                             <Binding Path="Devices.Inputs.Jig2Detect.Value" />
+                        </MultiBinding>
+                    </Image.Visibility>
+                </Image>
+            </Canvas>
+            <Canvas>
+                <Image  Source="/SDV_MoldingInjection;component/Resource/Images/BONDINGJIG.png"
+                        Canvas.Left="415"
+                        Canvas.Top="305"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Width="44"
+                        Height="28" RenderTransformOrigin="1.222,0.506">
+                    <Image.Visibility>
+                        <MultiBinding Converter="{StaticResource BooleanOrToVisibilityConverter}">
+                            <Binding Path="Devices.Inputs.Jig3Detect.Value" />
+                            <Binding Path="Devices.Inputs.Jig4Detect.Value" />
                         </MultiBinding>
                     </Image.Visibility>
                 </Image>
