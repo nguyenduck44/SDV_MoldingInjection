@@ -103,7 +103,7 @@ namespace SDV_MoldingInjection.Process
                         || _devices.Inputs.OPButtonReset.Value == true)
                         && (_viewModelavigationStore.CurrentViewModel is AutoViewModel))
                     {
-                        command = EOperationCommand.Ready;
+                        //command = EOperationCommand.Ready;
                     }
                     else if ((_machineStatus.OPCommand == EOperationCommand.Start
                         || _devices.Inputs.OPButtonStart.Value == true)
@@ -565,6 +565,8 @@ namespace SDV_MoldingInjection.Process
 
                     if (Sequence == ESequence.MoveMultiPoint)
                     {
+                        _devices.Outputs.EQPStop.Value = false;
+                        Thread.Sleep(50);
                         ProcessMode = EProcessMode.Run;
                     }
                     else

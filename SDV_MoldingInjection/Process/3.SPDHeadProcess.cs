@@ -682,19 +682,13 @@ namespace SDV_MoldingInjection.Process
                         case ESequence.BubbleRemove_H2:
                         case ESequence.BubbleRemove_H3:
                         case ESequence.BubbleRemove_H4:
-                            _pAxisCharge_Pos = 5;
+                            _pAxisCharge_Pos = 1;
                             break;
                         default: throw new NotImplementedException();
                     }
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.PAxis_ChargePos_Move:
-                    if (PAxis.IsOnPosition(_currentSPDHeadRecipe.PAxisInjectChargePos))
-                    {
-                        Step.RunStep = (int)ESPDHeadProcCommonStep.WorkRequest_Wait;
-                        break;
-                    }
-
                     Log.Debug($"{PAxis.Name} moving to ChargePos [{_pAxisCharge_Pos}mm]");
                     PAxis.MoveAbs(_pAxisCharge_Pos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
