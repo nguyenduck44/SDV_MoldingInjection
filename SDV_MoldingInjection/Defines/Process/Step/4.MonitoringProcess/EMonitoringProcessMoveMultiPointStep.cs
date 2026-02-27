@@ -1,6 +1,6 @@
 ﻿namespace SDV_MoldingInjection.Defines
 {
-    public enum ERootProcessMoveMultiPointStep
+    public enum EMonitoringProcessMoveMultiPointStep
     {
         Start,
         Init_QueuePosition,

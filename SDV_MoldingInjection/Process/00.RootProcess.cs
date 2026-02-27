@@ -346,9 +346,6 @@ namespace SDV_MoldingInjection.Process
                         Log.Info("Initialize done");
                     }
                     break;
-                case ESequence.MoveMultiPoint:
-                    Sequence_MoveMultiPoint();
-                    break;
                 default: // User defined SemiAuto sequence
                     if (Childs!.Count(child => child.Sequence != ESequence.Stop) == 0)
                     {
@@ -579,65 +576,6 @@ namespace SDV_MoldingInjection.Process
                     _machineStatus.SemiAutoSequence = ESemiSequence.None;
                     break;
                 default:
-                    break;
-            }
-        }
-
-        private void Sequence_MoveMultiPoint()
-        {
-            switch ((ERootProcessMoveMultiPointStep)Step.RunStep)
-            {
-                case ERootProcessMoveMultiPointStep.Start:
-                    Log.Debug("Move Target Position Start");
-                    Step.RunStep++;
-                    break;
-                case ERootProcessMoveMultiPointStep.Init_QueuePosition:
-                    var positionPoints = _machineStatus.MultiPointPosition.Points
-                       .GroupBy(p => p.MovingOrder)
-                       .OrderBy(g => g.Key)
-                       .ToList();
-
-                    MoveMultiPointQueueSteps = new Queue<IGrouping<uint, PositionPoint>>(positionPoints);
-
-                    Step.RunStep++;
-                    break;
-                case ERootProcessMoveMultiPointStep.QueueEmptyCheck:
-                    if (MoveMultiPointQueueSteps.Count <= 0)
-                    {
-                        Step.RunStep = (int)ERootProcessMoveMultiPointStep.End;
-                        break;
-                    }
-
-                    currentPoints = MoveMultiPointQueueSteps.Dequeue().ToList();
-                    Step.RunStep++;
-                    break;
-                case ERootProcessMoveMultiPointStep.PointMove:
-                    foreach (var pp in currentPoints)
-                    {
-                        pp.Motion.MoveAbs(pp.Value);
-                    }
-
-                    Wait(_recipeSelector.CurrentRecipe.CommonRecipe.MotionMoveTimeout, () =>
-                    {
-                        return currentPoints.All(pp => pp.Motion.IsOnPosition(pp.Value));
-                    });
-
-                    Step.RunStep++;
-                    break;
-                case ERootProcessMoveMultiPointStep.PointMove_Wait:
-                    if (WaitTimeOutOccurred)
-                    {
-                        Log.Error($"Move To {_machineStatus.MultiPointPosition.Name} Fail");
-                        RaiseWarning(EWarning.MoveTargetPosition_Fail);
-                        break;
-                    }
-
-                    Step.RunStep = (int)ERootProcessMoveMultiPointStep.QueueEmptyCheck;
-                    break;
-                case ERootProcessMoveMultiPointStep.End:
-                    Log.Info($"Move To {_machineStatus.MultiPointPosition.Name} Done");
-                    _machineStatus.MultiPointPosition = new MultiPointPosition();
-                    ProcessMode = EProcessMode.ToStop;
                     break;
             }
         }

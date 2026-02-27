@@ -9,5 +9,6 @@
         SPDHead2,
         SPDHead3,
         SPDHead4,
+        Monitoring,
     }
 }

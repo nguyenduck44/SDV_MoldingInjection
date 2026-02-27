@@ -26,6 +26,7 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddSingleton<IProcess<ESequence>, SPDHeadProcess>();
                 services.AddSingleton<IProcess<ESequence>, SPDHeadProcess>();
                 services.AddSingleton<IProcess<ESequence>, SPDHeadProcess>();
+                services.AddSingleton<IProcess<ESequence>, MonitoringProcess>();
 
                 services.AddSingleton<Processes>();
             });

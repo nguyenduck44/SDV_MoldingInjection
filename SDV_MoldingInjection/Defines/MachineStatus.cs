@@ -7,48 +7,12 @@ namespace SDV_MoldingInjection.Defines
     public class MachineStatus : MachineStatusBase<ESemiSequence>
     {
         public bool[] MachineCalibration { get; set; } = new bool[4];
-        public bool IsRunningProcessMode => !IsStandByProcessMode;
         public MultiPointPosition MultiPointPosition { get; set; }
         public bool MachineReadyDone { get; set; }
         public bool MachineTestMode { get; set; }
 
         public MachineStatus()
         {
-        }
-
-        public EProcessMode CurrentProcessMode
-        {
-            get => currentProcessMode;
-            set
-            {
-                currentProcessMode = value;
-                OnPropertyChanged(nameof(IsRunningProcessMode));
-                OnPropertyChanged(nameof(IsStandByProcessMode));
-                OnPropertyChanged(nameof(IsReadyToRunProcessMode));
-                OnPropertyChanged();
-            }
-        }
-
-        public bool IsReadyToRunProcessMode
-        {
-            get
-            {
-                return
-                    currentProcessMode == EProcessMode.Warning ||
-                    currentProcessMode == EProcessMode.Stop;
-            }
-        }
-
-        public bool IsStandByProcessMode
-        {
-            get
-            {
-                return
-                    currentProcessMode == EProcessMode.None ||
-                    currentProcessMode == EProcessMode.Alarm ||
-                    currentProcessMode == EProcessMode.Warning ||
-                    currentProcessMode == EProcessMode.Stop;
-            }
         }
         
         public bool OriginDone
