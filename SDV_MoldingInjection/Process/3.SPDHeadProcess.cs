@@ -846,6 +846,9 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"{sequence} end");
+
+                    ConsumeSyringeAmount(_currentRecipe.CommonRecipe.ResinWeight);
+
                     if (sequence == ESequence.ResinInject)
                     {
                         Log.Info($"Set next sequence: {ESequence.DummyShot_H1}");
@@ -1063,6 +1066,7 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.Stop;
                         break;
                     }
+                    ConsumeSyringeAmount(_currentRecipe.CommonRecipe.ResinWeight);
                     Sequence = ESequence.AutoRun;
                     break;
             }
@@ -1259,6 +1263,22 @@ namespace SDV_MoldingInjection.Process
         private void RaiseHeadAlarm(EAlarm warning)
         {
             RaiseAlarm(warning + 1000 * ((int)head - 1));
+        }
+
+        private void ConsumeSyringeAmount(double weightMg)
+        {
+            if (_machineStatus.SyringeAmounts == null) return;
+
+            int index = (int)head - 1; 
+            if (index < 0 || index >= _machineStatus.SyringeAmounts.Length) return;
+
+            var status = _machineStatus.SyringeAmounts[index];
+            if (status == null) return;
+
+            double usedG = weightMg / 1000.0;
+            if (usedG <= 0) return;
+
+            status.RemainVolume = Math.Max(0, status.RemainVolume - usedG);
         }
         #endregion
 

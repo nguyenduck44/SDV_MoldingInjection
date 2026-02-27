@@ -1,4 +1,4 @@
-﻿using EQX.Core.Recipe;
+using EQX.Core.Recipe;
 using EQX.Core.Sequence;
 using EQX.Process;
 using SDV_MoldingInjection.Defines;
@@ -35,7 +35,7 @@ namespace SDV_MoldingInjection.Process
             switch ((EMonitoringProcessMoveMultiPointStep)Step.RunStep)
             {
                 case EMonitoringProcessMoveMultiPointStep.Start:
-                    Log.Debug("Move Target Position Start");
+                    Log.Info($"Move To {_machineStatus.MultiPointPosition.Name} Start");
                     Step.RunStep++;
                     break;
                 case EMonitoringProcessMoveMultiPointStep.Init_QueuePosition:

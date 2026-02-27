@@ -133,6 +133,30 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        [SingleRecipeDescription(Description = "Syringe Mount Time Change", Unit = Unit.Hour)]
+        public double SyringeMountTimeChange
+        {
+            get { return _syringeAmountTimeChange; }
+            set
+            {
+                OnRecipeChanged(_syringeAmountTimeChange, value);
+                _syringeAmountTimeChange = value;
+            }
+        }
+
+        [SingleRecipeDescription(Description = "Syringe Amount Weight", Unit = Unit.Gram)]
+        public double SyringeAmountWeight
+        {
+            get { return _syringeAmountWeight; }
+            set
+            {
+                if (_syringeAmountWeight == value) return;
+
+                OnRecipeChanged(_syringeAmountWeight, value);
+                _syringeAmountWeight = value;
+                OnPropertyChanged();
+            }
+        }
 
         [SingleRecipeDescription(Description = "Log Save Day")]
         [SingleRecipeMinMax(Max = 100, Min = 5)]
@@ -166,6 +190,8 @@ namespace SDV_MoldingInjection.Recipe
         private double _resinWeightSpec;
         private double _injectTime;
         private double _bubbleRemoveTurn;
+        private double _syringeAmountTimeChange;
+        private double _syringeAmountWeight;
         private ILanguageDefinition selectLanguage;
         #endregion
     }
