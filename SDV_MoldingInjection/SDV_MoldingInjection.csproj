@@ -50,6 +50,17 @@
     <Resource Include="Resource\Images\DryPump_IsoView.png" />
     <Resource Include="Resource\Images\Inject_IsoView.png" />
     <Resource Include="Resource\Images\MoldInjection_TopView.png" />
+	  
+    <Resource Include="Resource\Images\Blance.png" />
+    <Resource Include="Resource\Images\EMS BUTTON GRAY.png" />
+    <Resource Include="Resource\Images\EMS BUTTON.png" />
+    <Resource Include="Resource\Images\HEAD.png" />
+    <Resource Include="Resource\Images\MachineView.png" />
+    <Resource Include="Resource\Images\PowerON.png" />
+    <Resource Include="Resource\Images\BONDINGJIG.png" />
+    <Resource Include="Resource\Images\CHAMBER CLOSE.png" />
+    <Resource Include="Resource\Images\CHAMBER OPEN.png" />
+	  
     <Resource Include="Resource\Images\SPDHead_IsoView.png" />
     <Resource Include="TopIcon.ico" />
   </ItemGroup>
