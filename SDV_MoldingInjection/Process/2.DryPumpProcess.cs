@@ -1,4 +1,4 @@
-﻿using EQX.Core.InOut;
+using EQX.Core.InOut;
 using EQX.Core.Motion;
 using EQX.Core.Sequence;
 using EQX.InOut;
@@ -28,6 +28,12 @@ namespace SDV_MoldingInjection.Process
         #endregion
 
         #region Motions
+        private IMotion XAxis => _devices.Motions.XAxis;
+        private IMotion YAxis => _devices.Motions.StageYAxis;
+        private IMotion Z1Axis => _devices.Motions.Z1Axis;
+        private IMotion Z2Axis => _devices.Motions.Z2Axis;
+        private IMotion Z3Axis => _devices.Motions.Z3Axis;
+        private IMotion Z4Axis => _devices.Motions.Z4Axis;
         #endregion
 
         #region Cylinders
@@ -153,7 +159,65 @@ namespace SDV_MoldingInjection.Process
         #region Sequence Methods
         private void Sequence_Ready()
         {
-            Sequence = ESequence.Stop;
+            switch ((EDryPumpProcReadyStep)Step.RunStep)
+            {
+                case EDryPumpProcReadyStep.Start:
+                    Log.Info("Ready start");
+                    Step.RunStep++;
+                    break;
+                case EDryPumpProcReadyStep.ZAxis_ReadyPos_Move:
+                    if (AllZAxisInSafetyPos(ref _failHead))
+                    {
+                        Log.Debug($"ZAxis is on safety position already");
+                        Step.RunStep = (int)EDryPumpProcReadyStep.XYAxis_ReadyPos_Move;
+                        break;
+                    }
+
+                    Log.Debug($"Moving Z-Axes to safety position");
+                    ZAxisSafetyPosMove();
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => AllZAxisInSafetyPos(ref _failHead));
+                    Step.RunStep++;
+                    break;
+                case EDryPumpProcReadyStep.ZAxis_ReadyPos_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseHeadWarning(EWarning.Z1Axis_SafetyPos_MoveTimeOut, _failHead);
+                        break;
+                    }
+
+                    Log.Debug($"Z-Axes move to safety position done");
+                    Step.RunStep++;
+                    break;
+                case EDryPumpProcReadyStep.XYAxis_ReadyPos_Move:
+                    XAxis.MoveAbs(_currentRecipe.InjectRecipe.XAxisReadyPos);
+                    YAxis.MoveAbs(_currentRecipe.InjectRecipe.YAxisReadyPos);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
+                        () => XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisReadyPos) &&
+                              YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisReadyPos));
+                    Step.RunStep++;
+                    break;
+                case EDryPumpProcReadyStep.XYAxis_ReadyPos_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        if (!XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisReadyPos))
+                            RaiseWarning(EWarning.XAxis_ReadyPos_MoveTimeOut);
+                        else
+                            RaiseWarning(EWarning.YAxis_ReadyPos_MoveTimeOut);
+                        break;
+                    }
+
+                    Log.Debug($"{XAxis.Name}|{YAxis.Name} move to ready pos done");
+                    Step.RunStep++;
+                    break;
+                case EDryPumpProcReadyStep.End:
+                    Log.Debug("Ready run end");
+                    Sequence = ESequence.Stop;
+                    break;
+                default:
+                    Wait(20);
+                    break;
+            }
+
         }
 
         private void Sequence_ResinInject()
@@ -287,12 +351,50 @@ namespace SDV_MoldingInjection.Process
         }
         #endregion
 
+        private void ZAxisSafetyPosMove()
+        {
+            Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos);
+            Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos);
+            Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos);
+            Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos);
+        }
+
+        private bool AllZAxisInSafetyPos(ref ESPDHead failHead)
+        {
+            bool result = true;
+            bool ret = false;
+
+            ret = Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos;
+            result &= ret;
+            if (!ret) failHead = ESPDHead.SPDHead1;
+
+            ret = Z2Axis.Status.ActualPosition >= _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos;
+            result &= ret;
+            if (!ret) failHead = ESPDHead.SPDHead2;
+
+            ret = Z3Axis.Status.ActualPosition >= _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos;
+            result &= ret;
+            if (!ret) failHead = ESPDHead.SPDHead3;
+
+            ret = Z4Axis.Status.ActualPosition >= _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos;
+            result &= ret;
+            if (!ret) failHead = ESPDHead.SPDHead4;
+
+            return result;
+        }
+
+        private void RaiseHeadWarning(EWarning warning, ESPDHead _failHead)
+        {
+            RaiseWarning(warning + ((int)(EWarning.Z2Axis_Origin_TimeOut - EWarning.Z1Axis_Origin_TimeOut)) * (_failHead - ESPDHead.SPDHead1));
+        }
+
         #region Privates
         private readonly Devices _devices;
         private readonly RecipeSelector _recipeSelector;
         private readonly MachineStatus _machineStatus;
 
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
+        private ESPDHead _failHead;
         #endregion
     }
 }
