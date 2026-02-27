@@ -60,6 +60,10 @@
     <Resource Include="Resource\Images\BONDINGJIG.png" />
     <Resource Include="Resource\Images\CHAMBER CLOSE.png" />
     <Resource Include="Resource\Images\CHAMBER OPEN.png" />
+    <Resource Include="Resource\Images\HEAD_LEFT.png" />
+    <Resource Include="Resource\Images\HEAD_RIGHT.png" />
+    <Resource Include="Resource\Images\BELOW.png" />
+    <Resource Include="Resource\Images\Pump.png" />
 	  
     <Resource Include="Resource\Images\SPDHead_IsoView.png" />
     <Resource Include="TopIcon.ico" />

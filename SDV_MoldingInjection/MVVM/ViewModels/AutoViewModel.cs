@@ -42,6 +42,21 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             Devices.Inputs.DoorReleaseLeft.RaiseValueUpdated();
             Devices.Inputs.DoorOpenRight.RaiseValueUpdated();
             Devices.Inputs.DoorReleaseRight.RaiseValueUpdated();
+            Devices.Inputs.ChamberOpen.RaiseValueUpdated();
+            Devices.Inputs.Jig1Detect.RaiseValueUpdated();
+            Devices.Inputs.Jig2Detect.RaiseValueUpdated();
+            Devices.Inputs.Jig3Detect.RaiseValueUpdated();
+            Devices.Inputs.Jig4Detect.RaiseValueUpdated();
+            Devices.Inputs.Emergency.RaiseValueUpdated();
+            Devices.Inputs.OPButtonStart.RaiseValueUpdated();
+            Devices.Inputs.OPButtonStop.RaiseValueUpdated();
+            Devices.Inputs.OPButtonReset.RaiseValueUpdated();
+            Devices.Inputs.H1_CylDown.RaiseValueUpdated();
+            Devices.Inputs.H2_CylDown.RaiseValueUpdated();
+            Devices.Inputs.H3_CylDown.RaiseValueUpdated();
+            Devices.Inputs.H4_CylDown.RaiseValueUpdated();
+            Devices.Inputs.BelowsUp.RaiseValueUpdated();
+            Devices.Inputs.DryPumpRun.RaiseValueUpdated();
 
             UpdateSyringeStatus();
         }

@@ -1,4 +1,4 @@
-﻿<Application x:Class="SDV_MoldingInjection.App"
+<Application x:Class="SDV_MoldingInjection.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
@@ -35,12 +35,13 @@
 
                 <ResourceDictionary>
                     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-                    <uiCvt:CylinderButtonBrushConverter x:Key="CylinderButtonBrushConverter" />
-                    <cvt:UserPermissionToVisibilityConverter x:Key="UserPermissionToVisibilityConverter" />
-                    <uiCvt:CylinderTypeToButtonNameConverter x:Key="CylinderTypeToButtonNameConverter" />
-                    <cvt:ObjectSelectedConverter x:Key="ObjectSelectedConverter" />
-                    <uiCvt:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
-                    <uiCvt:DoorStatusToBrushConverterRevers x:Key="DoorStatusToBrushConverterRevers" />
+                    <uiCvt:BooleanOrToVisibilityConverter x:Key="BooleanOrToVisibilityConverter"/>
+                    <uiCvt:CylinderButtonBrushConverter x:Key="CylinderButtonBrushConverter"/>
+                    <cvt:UserPermissionToVisibilityConverter x:Key="UserPermissionToVisibilityConverter"/>
+                    <uiCvt:CylinderTypeToButtonNameConverter x:Key="CylinderTypeToButtonNameConverter"/>
+                    <cvt:ObjectSelectedConverter x:Key="ObjectSelectedConverter"/>
+                    <uiCvt:EnumDescriptionConverter x:Key="EnumDescriptionConverter"/>
+                    <uiCvt:DoorStatusToBrushConverterRevers x:Key="DoorStatusToBrushConverterRevers"/>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
 
