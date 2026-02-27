@@ -6,6 +6,7 @@
         Root = 500,
         DoorOpen,
         DoorNotSafetyLock,
+        MoveTargetPosition_Fail,
 
         //--------- 1500 -> 1999 : Mold Process Warning ---------
         Mold_Chamber_OpenWarning = 1500,

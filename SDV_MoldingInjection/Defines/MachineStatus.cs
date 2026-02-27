@@ -1,10 +1,17 @@
 using EQX.Core.Common;
+using EQX.Core.Recipe;
 using EQX.Core.Sequence;
 
 namespace SDV_MoldingInjection.Defines
 {
     public class MachineStatus : MachineStatusBase<ESemiSequence>
     {
+        public bool[] MachineCalibration { get; set; } = new bool[4];
+        public bool IsRunningProcessMode => !IsStandByProcessMode;
+        public MultiPointPosition MultiPointPosition { get; set; }
+        public bool MachineReadyDone { get; set; }
+        public bool MachineTestMode { get; set; }
+
         public MachineStatus()
         {
         }
@@ -43,11 +50,7 @@ namespace SDV_MoldingInjection.Defines
                     currentProcessMode == EProcessMode.Stop;
             }
         }
-
-        public bool IsRunningProcessMode => !IsStandByProcessMode;
-
-        public bool MachineReadyDone { get; set; }
-
+        
         public bool OriginDone
         {
             get { return _originDone; }
@@ -65,10 +68,6 @@ namespace SDV_MoldingInjection.Defines
                 OnPropertyChanged();
             }
         }
-
-        public bool MachineTestMode { get; set; }
-
-        public bool[] MachineCalibration { get; set; } = new bool[4];
 
         /// <summary>
         /// Trạng thái pass DotWeighting của từng head (index 0..3 = Head1..Head4).
@@ -91,6 +90,16 @@ namespace SDV_MoldingInjection.Defines
             for (int i = 0; i < _dotWeightingPassedByHead.Length; i++)
                 if (!_dotWeightingPassedByHead[i]) return false;
             return true;
+        }
+
+        public override void MoveMultiPointPositionSequence(MultiPointPosition multiPointPosition)
+        {
+            if (multiPointPosition == null || multiPointPosition.Points.Count <= 0) return;
+
+            MultiPointPosition = multiPointPosition;
+
+            OPCommand = EOperationCommand.SemiAuto;
+            SemiAutoSequence = ESemiSequence.MoveMultiPoint;
         }
 
         #region Privates

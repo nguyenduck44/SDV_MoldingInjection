@@ -1,4 +1,5 @@
 ﻿using EQX.Core.Common;
+using EQX.Core.Recipe;
 using EQX.Core.Sequence;
 using EQX.Process;
 using EQX.UI.Controls;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.MVVM.ViewModels;
+using SDV_MoldingInjection.Recipe;
 using System.Windows;
 
 namespace SDV_MoldingInjection.Process
@@ -19,6 +21,7 @@ namespace SDV_MoldingInjection.Process
         private readonly Devices _devices;
         private readonly MachineStatus _machineStatus;
         private readonly NavigationStore _viewModelavigationStore;
+        private readonly RecipeSelector _recipeSelector;
         private int raisedAlarmCode = -1;
         private int raisedWarningCode = -1;
         private readonly IAlertService _alarmService;
@@ -33,12 +36,14 @@ namespace SDV_MoldingInjection.Process
         public RootProcess(Devices devices,
             MachineStatus machineStatus,
             NavigationStore viewModelavigationStore,
+            RecipeSelector recipeSelector,
             [FromKeyedServices("AlarmService")] IAlertService alarmService,
             [FromKeyedServices("WarningService")] IAlertService warningService)
         {
             _devices = devices;
             _machineStatus = machineStatus;
             _viewModelavigationStore = viewModelavigationStore;
+            _recipeSelector = recipeSelector;
             _alarmService = alarmService;
             _warningService = warningService;
 
@@ -119,6 +124,12 @@ namespace SDV_MoldingInjection.Process
                 {
                     MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_ResetAlarmBeforeRun"], (string)Application.Current.Resources["str_Confirm"]);
                     _machineStatus.OPCommand = EOperationCommand.None;
+                }
+
+                else if (_machineStatus.OPCommand == EOperationCommand.SemiAuto &&
+                    _machineStatus.SemiAutoSequence == ESemiSequence.MoveMultiPoint)
+                {
+                    command = EOperationCommand.SemiAuto;
                 }
             }
 
@@ -334,6 +345,9 @@ namespace SDV_MoldingInjection.Process
                         _devices.Outputs.Lamp_Stop();
                         Log.Info("Initialize done");
                     }
+                    break;
+                case ESequence.MoveMultiPoint:
+                    Sequence_MoveMultiPoint();
                     break;
                 default: // User defined SemiAuto sequence
                     if (Childs!.Count(child => child.Sequence != ESequence.Stop) == 0)
@@ -552,12 +566,78 @@ namespace SDV_MoldingInjection.Process
                         process.Sequence = Sequence;
                     }
 
-                    ProcessMode = EProcessMode.ToRun;
+                    if (Sequence == ESequence.MoveMultiPoint)
+                    {
+                        ProcessMode = EProcessMode.Run;
+                    }
+                    else
+                    {
+                        ProcessMode = EProcessMode.ToRun;
+                    }
 
                     _machineStatus.OPCommand = EOperationCommand.None;
                     _machineStatus.SemiAutoSequence = ESemiSequence.None;
                     break;
                 default:
+                    break;
+            }
+        }
+
+        private void Sequence_MoveMultiPoint()
+        {
+            switch ((ERootProcessMoveMultiPointStep)Step.RunStep)
+            {
+                case ERootProcessMoveMultiPointStep.Start:
+                    Log.Debug("Move Target Position Start");
+                    Step.RunStep++;
+                    break;
+                case ERootProcessMoveMultiPointStep.Init_QueuePosition:
+                    var positionPoints = _machineStatus.MultiPointPosition.Points
+                       .GroupBy(p => p.MovingOrder)
+                       .OrderBy(g => g.Key)
+                       .ToList();
+
+                    MoveMultiPointQueueSteps = new Queue<IGrouping<uint, PositionPoint>>(positionPoints);
+
+                    Step.RunStep++;
+                    break;
+                case ERootProcessMoveMultiPointStep.QueueEmptyCheck:
+                    if (MoveMultiPointQueueSteps.Count <= 0)
+                    {
+                        Step.RunStep = (int)ERootProcessMoveMultiPointStep.End;
+                        break;
+                    }
+
+                    currentPoints = MoveMultiPointQueueSteps.Dequeue().ToList();
+                    Step.RunStep++;
+                    break;
+                case ERootProcessMoveMultiPointStep.PointMove:
+                    foreach (var pp in currentPoints)
+                    {
+                        pp.Motion.MoveAbs(pp.Value);
+                    }
+
+                    Wait(_recipeSelector.CurrentRecipe.CommonRecipe.MotionMoveTimeout, () =>
+                    {
+                        return currentPoints.All(pp => pp.Motion.IsOnPosition(pp.Value));
+                    });
+
+                    Step.RunStep++;
+                    break;
+                case ERootProcessMoveMultiPointStep.PointMove_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        Log.Error($"Move To {_machineStatus.MultiPointPosition.Name} Fail");
+                        RaiseWarning(EWarning.MoveTargetPosition_Fail);
+                        break;
+                    }
+
+                    Step.RunStep = (int)ERootProcessMoveMultiPointStep.QueueEmptyCheck;
+                    break;
+                case ERootProcessMoveMultiPointStep.End:
+                    Log.Info($"Move To {_machineStatus.MultiPointPosition.Name} Done");
+                    _machineStatus.MultiPointPosition = new MultiPointPosition();
+                    ProcessMode = EProcessMode.ToStop;
                     break;
             }
         }
@@ -586,6 +666,9 @@ namespace SDV_MoldingInjection.Process
                 ProcessMode = EProcessMode.ToWarning;
             }
         }
+
+        private Queue<IGrouping<uint, PositionPoint>> MoveMultiPointQueueSteps = new Queue<IGrouping<uint, PositionPoint>>();
+        private List<PositionPoint> currentPoints = new List<PositionPoint>();
         #endregion
     }
 }

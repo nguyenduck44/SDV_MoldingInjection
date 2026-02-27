@@ -74,6 +74,8 @@ namespace SDV_MoldingInjection.Defines
         BubbleRemove_H3,
         [Description("Bubble remove H4")]
         BubbleRemove_H4,
+
+        MoveMultiPoint,
     }
 
     public enum ESemiSequence
@@ -142,5 +144,7 @@ namespace SDV_MoldingInjection.Defines
         BubbleRemove_H3,
         [Description("Bubble remove H4")]
         BubbleRemove_H4,
+
+        MoveMultiPoint,
     }
 }
