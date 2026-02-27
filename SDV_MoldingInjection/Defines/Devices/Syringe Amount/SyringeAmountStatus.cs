@@ -1,9 +1,4 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using System;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace SDV_MoldingInjection.Defines.Devices
 {
@@ -36,7 +31,6 @@ namespace SDV_MoldingInjection.Defines.Devices
             }
         }
 
-        [JsonIgnore]
         public double RemainPercent
         {
             get
@@ -46,7 +40,6 @@ namespace SDV_MoldingInjection.Defines.Devices
             }
         }
 
-        [JsonIgnore]
         public DateTime ResetTime
         {
             get => resetTime;
@@ -57,7 +50,8 @@ namespace SDV_MoldingInjection.Defines.Devices
             }
         }
 
-        [JsonIgnore]
+        public TimeSpan ElapsedTime => DateTime.Now - ResetTime;
+
         public bool IsTimeOver
         {
             get => isTimeOver;
@@ -75,54 +69,9 @@ namespace SDV_MoldingInjection.Defines.Devices
             ResetTime = DateTime.Now;
         }
 
-        #region Persistence helpers
-        private const string SyringeStateFileName = "SyringeState.json";
-
-        private class SyringeState
+        public void UpdateElapsedTime()
         {
-            public DateTime[] ResetTimes { get; set; } = Array.Empty<DateTime>();
+            OnPropertyChanged(nameof(ElapsedTime));
         }
-
-        public static void SaveStates(SyringeAmountStatus[] statuses)
-        {
-            if (statuses == null || statuses.Length == 0) return;
-
-            var state = new SyringeState
-            {
-                ResetTimes = statuses
-                    .Select(s => s?.ResetTime ?? DateTime.Now)
-                    .ToArray()
-            };
-
-            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SyringeStateFileName);
-
-            var options = new JsonSerializerOptions
-            {
-                WriteIndented = true
-            };
-
-            var json = JsonSerializer.Serialize(state, options);
-            File.WriteAllText(filePath, json);
-        }
-
-        public static void LoadStates(SyringeAmountStatus[] statuses)
-        {
-            if (statuses == null || statuses.Length == 0) return;
-
-            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SyringeStateFileName);
-            if (!File.Exists(filePath)) return;
-
-            var json = File.ReadAllText(filePath);
-            var state = JsonSerializer.Deserialize<SyringeState>(json);
-            if (state?.ResetTimes == null) return;
-
-            int count = Math.Min(state.ResetTimes.Length, statuses.Length);
-            for (int i = 0; i < count; i++)
-            {
-                var time = state.ResetTimes[i];
-                statuses[i].ResetTime = time == default ? DateTime.Now : time;
-            }
-        }
-        #endregion
     }
 }

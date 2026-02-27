@@ -14,21 +14,21 @@
 
     <UserControl.Resources>
         <Style x:Key="DoorIndicatorRectangleStyle"
-            TargetType="Rectangle">
+               TargetType="Rectangle">
             <Setter Property="HorizontalAlignment"
-            Value="Stretch" />
+                    Value="Stretch" />
             <Setter Property="VerticalAlignment"
-            Value="Stretch" />
+                    Value="Stretch" />
             <Setter Property="RadiusX"
-            Value="2" />
+                    Value="2" />
             <Setter Property="RadiusY"
-            Value="2" />
+                    Value="2" />
             <Setter Property="Stroke"
-            Value="Black" />
+                    Value="Black" />
             <Setter Property="StrokeThickness"
-            Value="1" />
+                    Value="1" />
             <Setter Property="Margin"
-            Value="0" />
+                    Value="0" />
         </Style>
     </UserControl.Resources>
 
@@ -38,8 +38,8 @@
             <ColumnDefinition Width="4*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="3*"/>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="3*" />
         </Grid.RowDefinitions>
 
         <!-- SYRINGE AMOUNT -->
@@ -52,22 +52,39 @@
                             Orientation="Horizontal"
                             HorizontalAlignment="Center"
                             Margin="5 5 5 0">
-                    <TextBlock Text="H1" Width="60" TextAlignment="Center" FontWeight="Bold"/>
-                    <TextBlock Text="H2" Width="60" TextAlignment="Center" FontWeight="Bold"/>
-                    <TextBlock Text="H3" Width="60" TextAlignment="Center" FontWeight="Bold"/>
-                    <TextBlock Text="H4" Width="60" TextAlignment="Center" FontWeight="Bold"/>
+                    <TextBlock Text="H1"
+                               Width="60"
+                               TextAlignment="Center"
+                               FontWeight="Bold" />
+                    <TextBlock Text="H2"
+                               Width="60"
+                               TextAlignment="Center"
+                               FontWeight="Bold" />
+                    <TextBlock Text="H3"
+                               Width="60"
+                               TextAlignment="Center"
+                               FontWeight="Bold" />
+                    <TextBlock Text="H4"
+                               Width="60"
+                               TextAlignment="Center"
+                               FontWeight="Bold" />
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Center">
-                    <controls:SyringeUnitView Width="60"
-                                              SyringeAmountStatus="{Binding MachineStatus.SyringeAmounts[0]}"/>
-                    <controls:SyringeUnitView Width="60"
-                                              SyringeAmountStatus="{Binding MachineStatus.SyringeAmounts[1]}"/>
-                    <controls:SyringeUnitView Width="60"
-                                              SyringeAmountStatus="{Binding MachineStatus.SyringeAmounts[2]}"/>
-                    <controls:SyringeUnitView Width="60"
-                                              SyringeAmountStatus="{Binding MachineStatus.SyringeAmounts[3]}"/>
+                    <ItemsControl ItemsSource="{Binding SyringeAmountStatusList.SyringeAmounts}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <ContentControl Width="60" 
+                                                Content="{Binding .}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </StackPanel>
             </DockPanel>
         </GroupBox>
@@ -118,7 +135,7 @@
                            Fill="Gray"
                            Style="{StaticResource DoorIndicatorRectangleStyle}"
                            HorizontalAlignment="Left"
-                           VerticalAlignment="Center"/>
+                           VerticalAlignment="Center" />
             </Canvas>
         </Grid>
     </Grid>

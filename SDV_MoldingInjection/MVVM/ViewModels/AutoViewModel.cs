@@ -11,19 +11,19 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
     {
         #region Properties
         public Devices Devices { get; }
-        public MachineStatus MachineStatus { get; }
+        public SyringAmountStatusList SyringeAmountStatusList { get; }
         #endregion
 
         #region Contructors
         public AutoViewModel(
             Devices devices,
             NavigationStore navigationStore,
-            MachineStatus machineStatus,
+            SyringAmountStatusList syringeAmountStatusList,
             RecipeSelector recipeSelector)
         {
             Devices = devices;
             _navigationStore = navigationStore;
-            MachineStatus = machineStatus;
+            SyringeAmountStatusList = syringeAmountStatusList;
             _recipeSelector = recipeSelector;
 
             Log = LogManager.GetLogger("AutoVM");
@@ -48,6 +48,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         private void UpdateSyringeStatus()
         {
+            foreach(var syringe in SyringeAmountStatusList.SyringeAmounts)
+            {
+                syringe.UpdateElapsedTime();
+            }
             var recipe = _recipeSelector.CurrentRecipe;
             if (recipe == null) return;
 
@@ -57,9 +61,9 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             double maxVolumeG = common.SyringeAmountWeight / 1000.0;
             double limitHours = common.SyringeMountTimeChange;
 
-            for (int i = 0; i < MachineStatus.SyringeAmounts.Length; i++)
+            for (int i = 0; i < SyringeAmountStatusList.SyringeAmounts.Count; i++)
             {
-                var status = MachineStatus.SyringeAmounts[i];
+                var status = SyringeAmountStatusList.SyringeAmounts[i];
                 if (status == null) continue;
 
                 if (maxVolumeG > 0 && Math.Abs(status.MaxVolume - maxVolumeG) > 0.0001)

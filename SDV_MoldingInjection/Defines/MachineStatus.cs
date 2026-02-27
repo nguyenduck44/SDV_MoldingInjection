@@ -12,14 +12,6 @@ namespace SDV_MoldingInjection.Defines
         public bool MachineReadyDone { get; set; }
         public bool MachineTestMode { get; set; }
 
-        public SyringeAmountStatus[] SyringeAmounts { get; } =
-        {
-            new SyringeAmountStatus(),
-            new SyringeAmountStatus(),
-            new SyringeAmountStatus(),
-            new SyringeAmountStatus()
-        };
-
         public MachineStatus()
         {
         }
@@ -53,8 +45,6 @@ namespace SDV_MoldingInjection.Defines
         }
 
         #region Privates
-        private EProcessMode currentProcessMode;
-        
         private bool _originDone;
         #endregion
     }

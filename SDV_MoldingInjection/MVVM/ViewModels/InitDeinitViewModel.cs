@@ -85,7 +85,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             [FromKeyedServices("BalanceLeft")] MettlerToledoWKC204C balanceLeft,
             [FromKeyedServices("BalanceRight")] MettlerToledoWKC204C balanceRight,
             InterlockService interlockService,
-            MachineStatus machineStatus)
+            SyringAmountStatusList syringAmountStatusList)
         {
             _devices = devices;
             _processes = processes;
@@ -97,7 +97,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _balanceLeft = balanceLeft;
             _balanceRight = balanceRight;
             _interlockService = interlockService;
-            _machineStatus = machineStatus;
+            _syringAmountStatusList = syringAmountStatusList;
 
             _task = new Task(() => { });
             ErrorMessages = new List<string>();
@@ -166,15 +166,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         _step++;
                         break;
                     case EHandleStep.FileSystemHandle:
-                        try
-                        {
-                            SyringeAmountStatus.LoadStates(_machineStatus.SyringeAmounts);
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.Error($"Load syringe state fail: {ex.Message}");
-                        }
-
+                        _syringAmountStatusList.Load();
                         Thread.Sleep(50);
                         _step++;
                         break;
@@ -314,16 +306,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         _step++;
                         break;
                     case EHandleStep.FileSystemHandle:
-                        try
-                        {
-                            // Save syringe reset times when deinit.
-                            SyringeAmountStatus.SaveStates(_machineStatus.SyringeAmounts);
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.Error($"Save syringe state fail: {ex.Message}");
-                        }
-
+                        _syringAmountStatusList.Save();
                         Thread.Sleep(50);
                         _step++;
                         break;
@@ -477,6 +460,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly MettlerToledoWKC204C _balanceLeft;
         private readonly MettlerToledoWKC204C _balanceRight;
         private readonly InterlockService _interlockService;
+        private readonly SyringAmountStatusList _syringAmountStatusList;
         private readonly ICamera _alignCamera1;
         private readonly IVisionFlowRepository _visionFlowRepository;
         private readonly Devices _devices;

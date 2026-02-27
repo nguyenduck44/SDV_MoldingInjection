@@ -4,6 +4,7 @@ using EQX.UI.Language;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SDV_MoldingInjection.Defines;
+using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Services;
 
 namespace SDV_MoldingInjection.Extensions
@@ -28,6 +29,7 @@ namespace SDV_MoldingInjection.Extensions
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
                 services.AddSingleton<CellStatusToColorConverter>();
+                services.AddSingleton<SyringAmountStatusList>();
 
                 services.AddKeyedScoped<IAlertService, AlarmService<EAlarm>>("AlarmService");
                 services.AddKeyedScoped<IAlertService, WarningService<EWarning>>("WarningService");

@@ -9,6 +9,8 @@
              xmlns:viewsLib="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
              xmlns:uiMVVM="clr-namespace:EQX.UI.MVVM;assembly=EQX.UI"
              xmlns:local="clr-namespace:SDV_MoldingInjection"
+             xmlns:controls="clr-namespace:SDV_MoldingInjection.Controls"
+             xmlns:devices="clr-namespace:SDV_MoldingInjection.Defines.Devices"
              xmlns:services="clr-namespace:SDV_MoldingInjection.Services">
     <Application.Resources>
         <ResourceDictionary>
@@ -21,9 +23,9 @@
                 <ResourceDictionary Source="/EQX.UI;component/Resources/Language/ChineseLanguage.xaml" />
                 <ResourceDictionary Source="/EQX.UI;component/Resources/Language/EnglishLanguage.xaml" />
                 <ResourceDictionary Source="/EQX.UI;component/Styles/TextBox/TextBoxWithNameLeftStyle.xaml" />
-                <ResourceDictionary Source="/Styles/DataGridCellStyles.xaml"/>
-                <ResourceDictionary Source="/Styles/TextBlockHeaderGroupBoxStyle.xaml"/>
-                <ResourceDictionary Source="/Styles/AutoWidthTabItemStyle.xaml"/>
+                <ResourceDictionary Source="/Styles/DataGridCellStyles.xaml" />
+                <ResourceDictionary Source="/Styles/TextBlockHeaderGroupBoxStyle.xaml" />
+                <ResourceDictionary Source="/Styles/AutoWidthTabItemStyle.xaml" />
                 <ResourceDictionary Source="/EQX.UI;component/Styles/RadioButton/ButtonLikeRadioButtonStyle.xaml" />
 
                 <ResourceDictionary Source="/SDV_MoldingInjection;component/Resource/Language/KoreanLanguage.xaml" />
@@ -33,12 +35,12 @@
 
                 <ResourceDictionary>
                     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-                    <uiCvt:CylinderButtonBrushConverter x:Key="CylinderButtonBrushConverter"/>
-                    <cvt:UserPermissionToVisibilityConverter x:Key="UserPermissionToVisibilityConverter"/>
-                    <uiCvt:CylinderTypeToButtonNameConverter x:Key="CylinderTypeToButtonNameConverter"/>
-                    <cvt:ObjectSelectedConverter x:Key="ObjectSelectedConverter"/>
-                    <uiCvt:EnumDescriptionConverter x:Key="EnumDescriptionConverter"/>
-                    <uiCvt:DoorStatusToBrushConverterRevers x:Key="DoorStatusToBrushConverterRevers"/>
+                    <uiCvt:CylinderButtonBrushConverter x:Key="CylinderButtonBrushConverter" />
+                    <cvt:UserPermissionToVisibilityConverter x:Key="UserPermissionToVisibilityConverter" />
+                    <uiCvt:CylinderTypeToButtonNameConverter x:Key="CylinderTypeToButtonNameConverter" />
+                    <cvt:ObjectSelectedConverter x:Key="ObjectSelectedConverter" />
+                    <uiCvt:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
+                    <uiCvt:DoorStatusToBrushConverterRevers x:Key="DoorStatusToBrushConverterRevers" />
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
 
@@ -54,7 +56,7 @@
             <DataTemplate DataType="{x:Type vm:NavigateMenuViewModel}">
                 <views:NavigateMenuView />
             </DataTemplate>
-            
+
             <DataTemplate DataType="{x:Type vm:InitDeinitViewModel}">
                 <views:InitDeinitView />
             </DataTemplate>
@@ -64,67 +66,64 @@
             <DataTemplate DataType="{x:Type vm:AutoViewModel}">
                 <views:AutoView />
             </DataTemplate>
-            
+
             <DataTemplate DataType="{x:Type vm:DataViewModel}">
                 <views:DataView />
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:RecipeViewModel}">
                 <views:RecipeView />
             </DataTemplate>
-            
+
             <!-- MAINTENANCE DATATEMPLATE -->
             <DataTemplate x:Key="InjectManualView">
-                <views:InjectManualView/>
+                <views:InjectManualView />
             </DataTemplate>
             <DataTemplate x:Key="DryPumpManualView">
-                <views:DryPumpManualView/>
+                <views:DryPumpManualView />
             </DataTemplate>
             <DataTemplate x:Key="SPDHeadManualView">
-                <views:SPDHeadManualView/>
+                <views:SPDHeadManualView />
             </DataTemplate>
 
             <DataTemplate x:Key="InjectTeachView">
-                <views:InjectTeachView/>
+                <views:InjectTeachView />
             </DataTemplate>
             <DataTemplate x:Key="DryPumpTeachView">
-                <views:DryPumpTeachView/>
+                <views:DryPumpTeachView />
             </DataTemplate>
             <DataTemplate x:Key="SPDHeadTeachView">
-                <views:SPDHeadTeachView/>
+                <views:SPDHeadTeachView />
             </DataTemplate>
 
-            <services:MaintenaceViewSelector
-                x:Key="InjectMaintenanceViewSelector"
-                ManualViewTemplate="{StaticResource InjectManualView}"
-                TeachViewTemplate="{StaticResource InjectTeachView}"
-                />
-            <services:MaintenaceViewSelector
-                x:Key="DryPumpMaintenanceViewSelector"
-                ManualViewTemplate="{StaticResource DryPumpManualView}"
-                TeachViewTemplate="{StaticResource DryPumpTeachView}"
-                />
-            <services:MaintenaceViewSelector
-                x:Key="SPDHeadMaintenanceViewSelector"
-                ManualViewTemplate="{StaticResource SPDHeadManualView}"
-                TeachViewTemplate="{StaticResource SPDHeadTeachView}"
-                />
+            <services:MaintenaceViewSelector x:Key="InjectMaintenanceViewSelector"
+                                             ManualViewTemplate="{StaticResource InjectManualView}"
+                                             TeachViewTemplate="{StaticResource InjectTeachView}" />
+            <services:MaintenaceViewSelector x:Key="DryPumpMaintenanceViewSelector"
+                                             ManualViewTemplate="{StaticResource DryPumpManualView}"
+                                             TeachViewTemplate="{StaticResource DryPumpTeachView}" />
+            <services:MaintenaceViewSelector x:Key="SPDHeadMaintenanceViewSelector"
+                                             ManualViewTemplate="{StaticResource SPDHeadManualView}"
+                                             TeachViewTemplate="{StaticResource SPDHeadTeachView}" />
 
             <DataTemplate DataType="{x:Type vm:ManualViewModel}">
                 <views:ManualView />
             </DataTemplate>
-            
+
             <DataTemplate DataType="{x:Type vm:TeachViewModel}">
                 <views:TeachView />
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type vm:DryPumpMaintenanceViewModel}">
-                <ContentControl Content="{Binding .}" ContentTemplateSelector="{StaticResource DryPumpMaintenanceViewSelector}"/>
+                <ContentControl Content="{Binding .}"
+                                ContentTemplateSelector="{StaticResource DryPumpMaintenanceViewSelector}" />
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:InjectMaintenanceViewModel}">
-                <ContentControl Content="{Binding .}" ContentTemplateSelector="{StaticResource InjectMaintenanceViewSelector}"/>
+                <ContentControl Content="{Binding .}"
+                                ContentTemplateSelector="{StaticResource InjectMaintenanceViewSelector}" />
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:SPDHeadMaintenanceViewModel}">
-                <ContentControl Content="{Binding .}" ContentTemplateSelector="{StaticResource SPDHeadMaintenanceViewSelector}"/>
+                <ContentControl Content="{Binding .}"
+                                ContentTemplateSelector="{StaticResource SPDHeadMaintenanceViewSelector}" />
             </DataTemplate>
 
             <!-- MONITOR DATATEMPLATE -->
@@ -134,7 +133,7 @@
             <DataTemplate DataType="{x:Type vm:MonitorMotionViewModel}">
                 <views:MonitorMotionView />
             </DataTemplate>
-            
+
             <DataTemplate DataType="{x:Type vm:DevViewModel}">
                 <views:DevView />
             </DataTemplate>
@@ -147,9 +146,12 @@
             <DataTemplate DataType="{x:Type vm:MonitorViewModel}">
                 <views:MonitorView />
             </DataTemplate>
-            
+            <DataTemplate DataType="{x:Type devices:SyringeAmountStatus}">
+                <controls:SyringeUnitView />
+            </DataTemplate>
+
             <DataTemplate DataType="{x:Type inout:CylinderBase}">
-                <viewsLib:CylinderSimpleView/>
+                <viewsLib:CylinderSimpleView />
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>

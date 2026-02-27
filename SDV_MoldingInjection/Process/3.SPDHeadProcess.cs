@@ -125,6 +125,7 @@ namespace SDV_MoldingInjection.Process
             ProcessIO processIO,
             [FromKeyedServices("BalanceLeft")] MettlerToledoWKC204C balanceLeft,
             [FromKeyedServices("BalanceRight")] MettlerToledoWKC204C balanceRight,
+            SyringAmountStatusList syringeAmountStatusList,
             MachineStatus machineStatus)
         {
             _devices = devices;
@@ -132,6 +133,7 @@ namespace SDV_MoldingInjection.Process
             _processIO = processIO;
             _balanceLeft = balanceLeft;
             _balanceRight = balanceRight;
+            _syringeAmountStatusList = syringeAmountStatusList;
             _machineStatus = machineStatus;
         }
 
@@ -839,6 +841,8 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.End:
+                    _syringeAmountStatusList.ConsumeSyringeAmount(head, _currentRecipe.CommonRecipe.ResinWeight);
+
                     if (Parent?.Sequence != ESequence.AutoRun)
                     {
                         Sequence = ESequence.Stop;
@@ -847,7 +851,6 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"{sequence} end");
 
-                    ConsumeSyringeAmount(_currentRecipe.CommonRecipe.ResinWeight);
 
                     if (sequence == ESequence.ResinInject)
                     {
@@ -1066,7 +1069,7 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.Stop;
                         break;
                     }
-                    ConsumeSyringeAmount(_currentRecipe.CommonRecipe.ResinWeight);
+                    _syringeAmountStatusList.ConsumeSyringeAmount(head, _currentRecipe.CommonRecipe.ResinWeight);
                     Sequence = ESequence.AutoRun;
                     break;
             }
@@ -1264,22 +1267,6 @@ namespace SDV_MoldingInjection.Process
         {
             RaiseAlarm(warning + 1000 * ((int)head - 1));
         }
-
-        private void ConsumeSyringeAmount(double weightMg)
-        {
-            if (_machineStatus.SyringeAmounts == null) return;
-
-            int index = (int)head - 1; 
-            if (index < 0 || index >= _machineStatus.SyringeAmounts.Length) return;
-
-            var status = _machineStatus.SyringeAmounts[index];
-            if (status == null) return;
-
-            double usedG = weightMg / 1000.0;
-            if (usedG <= 0) return;
-
-            status.RemainVolume = Math.Max(0, status.RemainVolume - usedG);
-        }
         #endregion
 
         #region Privates
@@ -1288,6 +1275,7 @@ namespace SDV_MoldingInjection.Process
         private readonly ProcessIO _processIO;
         private readonly MettlerToledoWKC204C _balanceLeft;
         private readonly MettlerToledoWKC204C _balanceRight;
+        private readonly SyringAmountStatusList _syringeAmountStatusList;
         private readonly MachineStatus _machineStatus;
 
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
