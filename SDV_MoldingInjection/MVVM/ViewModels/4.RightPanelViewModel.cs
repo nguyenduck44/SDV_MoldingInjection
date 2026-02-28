@@ -194,27 +194,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 });
             }
         }
-
-
-        public ICommand DoorOpenCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                });
-            }
-        }
-
-        public ICommand BuzzerOffCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                });
-            }
-        }
         #endregion
 
         #region Privates
