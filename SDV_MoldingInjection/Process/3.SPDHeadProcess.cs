@@ -804,8 +804,17 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcCommonStep.PAxis_InjectPos_Move:
                     Log.Debug($"{PAxis.Name} moving to InjectPos [{_pAxisInject_Pos}mm]");
                     PAxis.MoveAbs(_pAxisInject_Pos, _pAxisInject_Vel);
-                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
-                        () => PAxis.IsOnPosition(_pAxisInject_Pos));
+                    if (sequence == ESequence.ResinInject)
+                    {
+                        Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout + _currentSPDHeadRecipe.InjectTime,
+                            () => PAxis.IsOnPosition(_pAxisInject_Pos));
+                    }
+                    else
+                    {
+                        Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
+                            () => PAxis.IsOnPosition(_pAxisInject_Pos));
+                    }
+
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.PAxis_InjectPos_MoveWait:

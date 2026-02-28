@@ -132,8 +132,6 @@ namespace SDV_MoldingInjection.Defines
         {
             Lamp_Clear();
 
-            EQPStop.Value = true;
-
             TowerLampYellow.Value = true;
             StopLamp.Value = true;
         }
@@ -141,9 +139,6 @@ namespace SDV_MoldingInjection.Defines
         public void Lamp_Alarm(bool isUseBuzzer)
         {
             Lamp_Clear();
-
-
-            EQPStop.Value = true;
 
             TowerLampRed.Value = true;
 
