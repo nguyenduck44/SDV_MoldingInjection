@@ -402,7 +402,8 @@ namespace SDV_MoldingInjection.Process
                     }
                     else
                     {
-                        Sequence = ESequence.Stop;
+                        Sequence = ESequence.DummyShot_H2;
+                        Log.Info($"Head1 skip, set next sequence: {Sequence}");
                     }
                     break;
                 case ESequence.DummyShot_H2:
@@ -412,7 +413,8 @@ namespace SDV_MoldingInjection.Process
                     }
                     else
                     {
-                        Sequence = ESequence.Stop;
+                        Sequence = ESequence.DummyShot_H3;
+                        Log.Info($"Head2 skip, set next sequence: {Sequence}");
                     }
                     break;
                 case ESequence.DummyShot_H3:
@@ -422,7 +424,8 @@ namespace SDV_MoldingInjection.Process
                     }
                     else
                     {
-                        Sequence = ESequence.Stop;
+                        Sequence = ESequence.DummyShot_H4;
+                        Log.Info($"Head3 skip, set next sequence: {Sequence}");
                     }
                     break;
                 case ESequence.DummyShot_H4:
@@ -432,7 +435,8 @@ namespace SDV_MoldingInjection.Process
                     }
                     else
                     {
-                        Sequence = ESequence.Stop;
+                        Sequence = ESequence.ResinInject;
+                        Log.Info($"Head4 skip, set next sequence: {Sequence}");
                     }
                     break;
                 case ESequence.DotWeighting_H1:
@@ -642,8 +646,8 @@ namespace SDV_MoldingInjection.Process
                     _machineStatus.MachineCalibration[2] = _currentRecipe.SPDHead3_Recipe.HeadSkip;
                     _machineStatus.MachineCalibration[3] = _currentRecipe.SPDHead4_Recipe.HeadSkip;
 
-                    if (_machineStatus.MachineCalibration.All(x => x) == false && 
-                        _machineStatus.IsDryRunMode == false && 
+                    if (_machineStatus.MachineCalibration.All(x => x) == false &&
+                        _machineStatus.IsDryRunMode == false &&
                         sequence == ESequence.ResinInject)
                     {
                         RaiseWarning(EWarning.Machine_Need_Calibration);
@@ -870,7 +874,7 @@ namespace SDV_MoldingInjection.Process
 
                     if (sequence == ESequence.ResinInject)
                     {
-                        Log.Info($"Set next sequence: {ESequence.DummyShot_H1}");
+                        Log.Info($"Set next sequence DummyShot");
                         Sequence = ESequence.DummyShot_H1;
                     }
                     else if (sequence >= ESequence.DummyShot_H1 && sequence < ESequence.DummyShot_H4)
@@ -879,7 +883,7 @@ namespace SDV_MoldingInjection.Process
                         Log.Info($"Set next sequence: {Sequence}");
                     }
                     else
-                        Sequence = ESequence.Stop;
+                        Sequence = ESequence.ResinInject;
 
                     break;
             }
@@ -1053,7 +1057,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Info($"WEIGHT = {_calibWeight_mg} [mg] | IsStable = {Balance.WeightData.IsStable}");
 
-                    if(_machineStatus.IsDotWeightingTest)
+                    if (_machineStatus.IsDotWeightingTest)
                     {
                         Step.RunStep = (int)ESPDHeadProcDotWeightingStep.ClearFlag_Request_XYAxis_DotWeightingPos;
                         break;

@@ -730,6 +730,7 @@ namespace SDV_MoldingInjection.Process
                         head == ESPDHead.SPDHead3 && _currentRecipe.SPDHead3_Recipe.HeadSkip ||
                         head == ESPDHead.SPDHead4 && _currentRecipe.SPDHead4_Recipe.HeadSkip)
                     {
+                        Log.Debug("SKIP dummy shot for head " + head);
                         Step.RunStep = (int)EMoldProcDummyShotStep.End;
                         break;
                     }
