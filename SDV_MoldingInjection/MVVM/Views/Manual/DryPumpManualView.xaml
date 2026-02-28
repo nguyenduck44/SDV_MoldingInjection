@@ -9,14 +9,14 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type={x:Type vm:DryPumpMaintenanceViewModel}}"
              d:DesignHeight="450" d:DesignWidth="800">
-    
+
     <UserControl.Resources>
         <Style TargetType="{x:Type uiControls:CylinderSimpleView}">
             <Setter Property="MinWidth" Value="180"/>
             <Setter Property="Height" Value="70"/>
         </Style>
     </UserControl.Resources>
-    
+
     <DockPanel>
         <!--UNIT STATUS-->
         <GroupBox Header="UNIT STATUS"
@@ -139,18 +139,20 @@
                                     Text="{Binding TimeInSecond, Mode=OneWay, StringFormat='{}{0:F1} s'}"
                                     Style="{StaticResource TextBoxWithDescriptionStyle}"
                                     Tag="Time"/>
-                                <Button
+                                <UniformGrid Columns="2">
+                                    <Button
                                     Margin="0 1 1 1"
                                     FontSize="14"
                                     Background="LightGreen"
                                     Content="Start Test"
                                     Command="{Binding LeakTestStartCommand}"/>
-                                <Button
+                                    <Button
                                     Margin="0 1 1 1"
                                     FontSize="14"
                                     Background="OrangeRed"
                                     Content="Stop Test"
                                     Command="{Binding LeakTestStopCommand}"/>
+                                </UniformGrid>
                                 <Button
                                     Margin="0 1"
                                     FontSize="14"
@@ -159,7 +161,7 @@
                             </UniformGrid>
                         </Grid>
                     </GroupBox>
-                    
+
                     <!--UNIT IMAGE-->
                     <Image
                         Grid.Column="1"
