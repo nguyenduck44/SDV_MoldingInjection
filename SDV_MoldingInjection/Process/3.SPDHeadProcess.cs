@@ -637,6 +637,11 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESPDHeadProcCommonStep.MachineCalibration_Check:
                     Log.Debug("Machine Calibration check");
+                    _machineStatus.MachineCalibration[0] = _currentRecipe.SPDHead1_Recipe.HeadSkip;
+                    _machineStatus.MachineCalibration[1] = _currentRecipe.SPDHead2_Recipe.HeadSkip;
+                    _machineStatus.MachineCalibration[2] = _currentRecipe.SPDHead3_Recipe.HeadSkip;
+                    _machineStatus.MachineCalibration[3] = _currentRecipe.SPDHead4_Recipe.HeadSkip;
+
                     if (_machineStatus.MachineCalibration.All(x => x) == false && 
                         _machineStatus.IsDryRunMode == false && 
                         sequence == ESequence.ResinInject)
