@@ -1,4 +1,6 @@
 using System;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
 using log4net;
 using SDV_MoldingInjection.Defines;
@@ -99,6 +101,44 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 }
 
                 status.IsTimeOver = isOver;
+            }
+        }
+        #endregion
+
+        #region Commands
+        public ICommand DoorOpenCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    Devices.Outputs.EQPStop.Value = !Devices.Outputs.EQPStop.Value;
+                });
+            }
+        }
+
+        public ICommand BuzzerOffCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    Devices.Outputs.Buzzer1On.Value = false;
+                    Devices.Outputs.Buzzer2On.Value = false;
+                    Devices.Outputs.Buzzer3On.Value = false;
+                    Devices.Outputs.Buzzer4On.Value = false;
+                });
+            }
+        }
+
+        public ICommand SafetyKeyCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    Devices.Outputs.SWKeyLock.Value = !Devices.Outputs.SWKeyLock.Value;
+                });
             }
         }
         #endregion
