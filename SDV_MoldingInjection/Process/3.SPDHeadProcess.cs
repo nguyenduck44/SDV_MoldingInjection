@@ -637,7 +637,9 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESPDHeadProcCommonStep.MachineCalibration_Check:
                     Log.Debug("Machine Calibration check");
-                    if (_machineStatus.MachineCalibration.All(x => x) == false && _machineStatus.IsDryRunMode == false && sequence == ESequence.ResinInject)
+                    if (_machineStatus.MachineCalibration.All(x => x) == false && 
+                        _machineStatus.IsDryRunMode == false && 
+                        sequence == ESequence.ResinInject)
                     {
                         RaiseWarning(EWarning.Machine_Need_Calibration);
                         break;
@@ -722,7 +724,7 @@ namespace SDV_MoldingInjection.Process
                     switch (sequence)
                     {
                         case ESequence.ResinInject:
-                            _pAxisInject_Vel = Math.Abs(_currentSPDHeadRecipe.PAxisInjectChargePos - _pAxisBase_Pos) / _currentRecipe.CommonRecipe.InjectTime;
+                            _pAxisInject_Vel = Math.Abs(_currentSPDHeadRecipe.PAxisInjectChargePos - _pAxisBase_Pos) / _currentSPDHeadRecipe.InjectTime;
                             break;
                         case ESequence.DummyShot_H1:
                         case ESequence.DummyShot_H2:
@@ -841,7 +843,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.End:
-                    _syringeAmountStatusList.ConsumeSyringeAmount(head, _currentRecipe.CommonRecipe.ResinWeight);
+                    _syringeAmountStatusList.ConsumeSyringeAmount(head, _currentSPDHeadRecipe.ResinWeight);
 
                     if (Parent?.Sequence != ESequence.AutoRun)
                     {
@@ -886,7 +888,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Calculate Charge Position");
                     if (_machineStatus.IsDotWeightingTest == false)
                     {
-                        _pAxisInjectCharge_Height = V380Weight2mg(_currentRecipe.CommonRecipe.ResinWeight);
+                        _pAxisInjectCharge_Height = V380Weight2mg(_currentSPDHeadRecipe.ResinWeight);
                     }
 
                     Step.RunStep++;
@@ -1043,8 +1045,8 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    if (_calibWeight_mg <= _currentRecipe.CommonRecipe.ResinWeight + _currentRecipe.CommonRecipe.ResinWeightSpec &&
-                        _calibWeight_mg >= _currentRecipe.CommonRecipe.ResinWeight - _currentRecipe.CommonRecipe.ResinWeightSpec)
+                    if (_calibWeight_mg <= _currentSPDHeadRecipe.ResinWeight + _currentSPDHeadRecipe.ResinWeightSpec &&
+                        _calibWeight_mg >= _currentSPDHeadRecipe.ResinWeight - _currentSPDHeadRecipe.ResinWeightSpec)
                     {
                         Log.Debug("DotWeighting Pass");
                         _currentSPDHeadRecipe.PAxisInjectChargePos = _pAxisInjectCharge_Pos;
@@ -1053,7 +1055,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    _pAxisInjectCharge_Height = (_pAxisInjectCharge_Height * _currentRecipe.CommonRecipe.ResinWeight) / _calibWeight_mg;
+                    _pAxisInjectCharge_Height = (_pAxisInjectCharge_Height * _currentSPDHeadRecipe.ResinWeight) / _calibWeight_mg;
 
                     Step.RunStep = (int)ESPDHeadProcDotWeightingStep.Gate_Close;
                     break;
@@ -1069,7 +1071,7 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.Stop;
                         break;
                     }
-                    _syringeAmountStatusList.ConsumeSyringeAmount(head, _currentRecipe.CommonRecipe.ResinWeight);
+                    _syringeAmountStatusList.ConsumeSyringeAmount(head, _currentSPDHeadRecipe.ResinWeight);
                     Sequence = ESequence.AutoRun;
                     break;
             }

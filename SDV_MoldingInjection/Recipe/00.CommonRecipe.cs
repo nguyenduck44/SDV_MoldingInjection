@@ -14,45 +14,6 @@ namespace SDV_MoldingInjection.Recipe
         public event Action<ILanguageDefinition> SelectedLanguageEvent;
         public event Action SelectedLanguageLoadAllRecipe;
 
-        [SingleRecipeDescription(Description = "Resin Weight", Unit = Unit.mg)]
-        public double ResinWeight
-        {
-            get { return _resinWeight; }
-            set
-            {
-                if (_resinWeight == value) return;
-                OnRecipeChanged(_resinWeight, value);
-                _resinWeight = value;
-                OnPropertyChanged();
-            }
-        }
-
-        [SingleRecipeDescription(Description = "Resin Weight Spec", Unit = Unit.mg)]
-        public double ResinWeightSpec
-        {
-            get { return _resinWeightSpec; }
-            set
-            {
-                if (_resinWeightSpec == value) return;
-                OnRecipeChanged(_resinWeightSpec, value);
-                _resinWeightSpec = value;
-                OnPropertyChanged();
-            }
-        }
-
-        [SingleRecipeDescription(Description = "Inject Time", Unit = Unit.Second)]
-        public double InjectTime
-        {
-            get { return _injectTime; }
-            set
-            {
-                if (_injectTime == value) return;
-                OnRecipeChanged(_injectTime, value);
-                _injectTime = value;
-                OnPropertyChanged();
-            }
-        }
-
         [SingleRecipeDescription(Description = "Bubble remove turn")]
         public double BubbleRemoveTurn
         {
@@ -185,10 +146,6 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         #region Privates
-
-        private double _resinWeight;
-        private double _resinWeightSpec;
-        private double _injectTime;
         private double _bubbleRemoveTurn;
         private double _syringeAmountTimeChange;
         private double _syringeAmountWeight;
