@@ -402,8 +402,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     else
                     {
-                        Sequence = ESequence.DummyShot_H2;
-                        Log.Info($"Head1 skip, set next sequence: {Sequence}");
+                        Sequence = ESequence.Stop;
                     }
                     break;
                 case ESequence.DummyShot_H2:
@@ -640,20 +639,6 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.MachineCalibration_Check:
-                    Log.Debug("Machine Calibration check");
-                    _machineStatus.MachineCalibration[0] = _currentRecipe.SPDHead1_Recipe.HeadSkip;
-                    _machineStatus.MachineCalibration[1] = _currentRecipe.SPDHead2_Recipe.HeadSkip;
-                    _machineStatus.MachineCalibration[2] = _currentRecipe.SPDHead3_Recipe.HeadSkip;
-                    _machineStatus.MachineCalibration[3] = _currentRecipe.SPDHead4_Recipe.HeadSkip;
-
-                    if (_machineStatus.MachineCalibration.All(x => x) == false &&
-                        _machineStatus.IsDryRunMode == false &&
-                        sequence == ESequence.ResinInject)
-                    {
-                        RaiseWarning(EWarning.Machine_Need_Calibration);
-                        break;
-                    }
-
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.Gate_Close:

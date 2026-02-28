@@ -83,6 +83,26 @@ namespace SDV_MoldingInjection.Process
                     Log.Info("ToRun start");
                     Log.Debug($"{procOutputs.Name} ClearOutputs");
                     procOutputs.ClearOutputs();
+
+                    if (Parent!.Sequence != ESequence.AutoRun)
+                    {
+                        Step.ToRunStep++;
+                        break;
+                    }
+
+                    Log.Debug("Machine Calibration check");
+                    _machineStatus.MachineCalibration[0] |= _currentRecipe.SPDHead1_Recipe.HeadSkip;
+                    _machineStatus.MachineCalibration[1] |= _currentRecipe.SPDHead2_Recipe.HeadSkip;
+                    _machineStatus.MachineCalibration[2] |= _currentRecipe.SPDHead3_Recipe.HeadSkip;
+                    _machineStatus.MachineCalibration[3] |= _currentRecipe.SPDHead4_Recipe.HeadSkip;
+
+                    if (_machineStatus.MachineCalibration.All(x => x) == false &&
+                        _machineStatus.IsDryRunMode == false)
+                    {
+                        RaiseWarning(EWarning.Machine_Need_Calibration);
+                        break;
+                    }
+
                     Step.ToRunStep++;
                     break;
                 case EMoldProcToRunStep.CheckIfChamberOpen:
