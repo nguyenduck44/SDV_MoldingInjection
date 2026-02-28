@@ -24,9 +24,20 @@ namespace SDV_MoldingInjection.Recipe
         [SingleRecipeMinMax(Min = -5)]
         public double ZAxisSafetyPos
         {
-            get { return _zAxisSafetyPos; }
+            get
+            {
+                if (_zAxisSafetyPos < -5)
+                {
+                    _zAxisSafetyPos = -5;
+                }
+                return _zAxisSafetyPos;
+            }
             set
             {
+                if (value < -5)
+                {
+                    value = -5;
+                }
                 if (_zAxisSafetyPos == value) return;
 
                 OnRecipeChanged(_zAxisSafetyPos, value);
