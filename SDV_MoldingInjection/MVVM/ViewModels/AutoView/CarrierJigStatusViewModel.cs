@@ -13,13 +13,19 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
     {
         public CarrierJigStatusViewModel(RecipeSelector recipeSelector, Processes processes)
         {
-            var processByName = processes.All.ToDictionary(p => p.Name);
+            var headProcesses = processes.All.OfType<SPDHeadProcess>().ToList();
+            SPDHeadProcess? ResolveHeadProcess(int index, string name)
+            {
+                return headProcesses.FirstOrDefault(p => p.Name == name)
+                    ?? (index < headProcesses.Count ? headProcesses[index] : null);
+            }
+
             Heads = new ObservableCollection<CarrierJigHeadItemViewModel>
             {
-                new CarrierJigHeadItemViewModel("H1", recipeSelector.CurrentRecipe.SPDHead1_Recipe, recipeSelector.Save, processByName.GetValueOrDefault(EProcess.SPDHead1.ToString())),
-                new CarrierJigHeadItemViewModel("H2", recipeSelector.CurrentRecipe.SPDHead2_Recipe, recipeSelector.Save, processByName.GetValueOrDefault(EProcess.SPDHead2.ToString())),
-                new CarrierJigHeadItemViewModel("H3", recipeSelector.CurrentRecipe.SPDHead3_Recipe, recipeSelector.Save, processByName.GetValueOrDefault(EProcess.SPDHead3.ToString())),
-                new CarrierJigHeadItemViewModel("H4", recipeSelector.CurrentRecipe.SPDHead4_Recipe, recipeSelector.Save, processByName.GetValueOrDefault(EProcess.SPDHead4.ToString()))
+                new CarrierJigHeadItemViewModel("H1", recipeSelector.CurrentRecipe.SPDHead1_Recipe, recipeSelector.Save, ResolveHeadProcess(0, EProcess.SPDHead1.ToString())),
+                new CarrierJigHeadItemViewModel("H2", recipeSelector.CurrentRecipe.SPDHead2_Recipe, recipeSelector.Save, ResolveHeadProcess(1, EProcess.SPDHead2.ToString())),
+                new CarrierJigHeadItemViewModel("H3", recipeSelector.CurrentRecipe.SPDHead3_Recipe, recipeSelector.Save, ResolveHeadProcess(2, EProcess.SPDHead3.ToString())),
+                new CarrierJigHeadItemViewModel("H4", recipeSelector.CurrentRecipe.SPDHead4_Recipe, recipeSelector.Save, ResolveHeadProcess(3, EProcess.SPDHead4.ToString()))
             };
         }
 

@@ -25,7 +25,7 @@ namespace SDV_MoldingInjection.Defines.Devices
 
         public void ConsumeSyringeAmount(ESPDHead head, double weight)
         {
-            int index = (int)head;
+            int index = (int)head - 1;
             if (index < 0 || index >= SyringeAmounts.Count) return;
 
             var syringeAmount = SyringeAmounts[index];

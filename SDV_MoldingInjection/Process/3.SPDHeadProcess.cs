@@ -372,8 +372,6 @@ namespace SDV_MoldingInjection.Process
 
         public override bool ProcessRun()
         {
-            UpdateInjectSequenceTimer(Sequence);
-
             switch (Sequence)
             {
                 case ESequence.Stop:
@@ -797,6 +795,11 @@ namespace SDV_MoldingInjection.Process
                     PAxis.MoveAbs(_pAxisInject_Pos, _pAxisInject_Vel);
                     if (sequence == ESequence.ResinInject)
                     {
+                        if (_injectSequenceStartTick < 0)
+                        {
+                            _injectSequenceStartTick = Environment.TickCount64;
+                        }
+
                         Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout + _currentSPDHeadRecipe.InjectTime,
                             () => PAxis.IsOnPosition(_pAxisInject_Pos));
                     }
@@ -861,6 +864,7 @@ namespace SDV_MoldingInjection.Process
 
                     if (sequence == ESequence.ResinInject)
                     {
+                        ResetInjectSequenceTimer();
                         Log.Info($"Set next sequence DummyShot");
                         Sequence = ESequence.DummyShot_H1;
                     }
@@ -1266,21 +1270,9 @@ namespace SDV_MoldingInjection.Process
         #endregion
 
         #region Private Methods
-        private void UpdateInjectSequenceTimer(ESequence sequence)
+        private void ResetInjectSequenceTimer()
         {
-            if (sequence != ESequence.ResinInject)
-            {
-                _injectSequenceStartTick = -1;
-                InjectSequenceElapsedSeconds = 0;
-                return;
-            }
-
-            if (_injectSequenceStartTick < 0)
-            {
-                _injectSequenceStartTick = Environment.TickCount64;
-            }
-
-            InjectSequenceElapsedSeconds = Math.Max(0, (Environment.TickCount64 - _injectSequenceStartTick) / 1000.0);
+            _injectSequenceStartTick = -1;
         }
 
         private void RaiseHeadWarning(EWarning warning)
@@ -1301,7 +1293,10 @@ namespace SDV_MoldingInjection.Process
         private readonly MettlerToledoWKC204C _balanceRight;
         private readonly SyringAmountStatusList _syringeAmountStatusList;
         private readonly MachineStatus _machineStatus;
-        public double InjectSequenceElapsedSeconds { get; private set; }
+        public double InjectSequenceElapsedSeconds =>
+            _injectSequenceStartTick >= 0
+                ? Math.Max(0, (Environment.TickCount64 - _injectSequenceStartTick) / 1000.0)
+                : 0;
         public double PAxisInjectVelocity => _pAxisInject_Vel;
 
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;

@@ -32,7 +32,7 @@
         <Style x:Key="CellTextStyle"
                TargetType="TextBlock">
             <Setter Property="FontSize"
-                    Value="15" />
+                    Value="10" />
             <Setter Property="FontWeight"
                     Value="SemiBold" />
             <Setter Property="HorizontalAlignment"
@@ -59,7 +59,7 @@
                         <TextBlock Text="{Binding Name}"
                                    Style="{StaticResource CellTextStyle}" />
                          <TextBlock Style="{StaticResource CellTextStyle}"
-                                    Text="{Binding ResinWeight, StringFormat={}{0:0.0}}" />
+                                    Text="{Binding ResinWeight}" />
                         <Button Margin="0,6,0,0"
                                 Height="100"
                                 HorizontalAlignment="Stretch"
@@ -70,11 +70,12 @@
                         <TextBlock Style="{StaticResource CellTextStyle}"
                                        Text="Timer" />
                         <TextBlock Style="{StaticResource CellTextStyle}"
-                                    Text="{Binding ResinTimer, StringFormat={}{0:0.0} s}" />
+                                    Text="{Binding ResinTimer, StringFormat={}{0:0.00} s}" 
+                                   Margin="0 0 0 10"/>
                         <TextBlock Style="{StaticResource CellTextStyle}"
                                        Text="Vel-P" />
                         <TextBlock Style="{StaticResource CellTextStyle}"
-                                       Text="{Binding PAxisInjectVel, StringFormat={}{0:0.0}}" />
+                                       Text="{Binding PAxisInjectVel, StringFormat={}{0:0.00}}" />
                     </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
