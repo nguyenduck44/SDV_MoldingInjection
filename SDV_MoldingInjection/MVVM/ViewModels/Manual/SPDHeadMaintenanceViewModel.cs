@@ -597,59 +597,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     break;
             }
 
-            var bubbleRemoveGroup = new MultiPointPosition();
-            switch (Head)
-            {
-                case ESPDHead.SPDHead1:
-                    bubbleRemoveGroup = new MultiPointPosition
-                    {
-                        Name = $"Bubble Remove Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.XAxisDummyPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.YAxisDummyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisBubbleRemovePos, _devices.Motions.Z1Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead2:
-                    bubbleRemoveGroup = new MultiPointPosition
-                    {
-                        Name = $"Bubble Remove Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.XAxisDummyPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.YAxisDummyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisBubbleRemovePos, _devices.Motions.Z2Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead3:
-                    bubbleRemoveGroup = new MultiPointPosition
-                    {
-                        Name = $"Bubble Remove Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.XAxisDummyPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.YAxisDummyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisBubbleRemovePos, _devices.Motions.Z3Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead4:
-                    bubbleRemoveGroup = new MultiPointPosition
-                    {
-                        Name = $"Bubble Remove Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.XAxisDummyPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.YAxisDummyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisBubbleRemovePos, _devices.Motions.Z4Axis),
-                        }
-                    };
-                    break;
-            }
-
             var assembleDisassembleGroup = new MultiPointPosition();
             switch (Head)
             {
@@ -710,7 +657,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             positionManager.GroupedPositions.Add(cleaningGroup);
             positionManager.GroupedPositions.Add(dummyZSafetyGroup);
             positionManager.GroupedPositions.Add(dummyGroup);
-            positionManager.GroupedPositions.Add(bubbleRemoveGroup);
             positionManager.GroupedPositions.Add(assembleDisassembleGroup);
 
             return positionManager;

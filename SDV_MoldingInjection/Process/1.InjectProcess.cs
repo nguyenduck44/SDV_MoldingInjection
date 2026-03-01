@@ -779,32 +779,20 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcDummyShotStep.ZAxis_DummyPos_Move:
-                    if (sequence == ESequence.BubbleRemove_H1 ||
-                        sequence == ESequence.BubbleRemove_H2 ||
-                        sequence == ESequence.BubbleRemove_H3 ||
-                        sequence == ESequence.BubbleRemove_H4)
-                    {
-                        Log.Debug("ZAxis move bubble remove position");
-                        ZAxisBubbleRemovePosMove(head);
-                        Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
-                            () => ZAxisInBubbleRemovePos(head));
-                    }
-                    else if (sequence == ESequence.HeadAssemble_H1 || sequence == ESequence.HeadAssemble_H2 ||
-                             sequence == ESequence.HeadAssemble_H3 || sequence == ESequence.HeadAssemble_H4 ||
-                             sequence == ESequence.HeadDisassemble_H1 || sequence == ESequence.HeadDisassemble_H2 ||
-                             sequence == ESequence.HeadDisassemble_H3 || sequence == ESequence.HeadDisassemble_H4)
+                    if (sequence == ESequence.HeadAssemble_H1 || sequence == ESequence.HeadAssemble_H2 ||
+                        sequence == ESequence.HeadAssemble_H3 || sequence == ESequence.HeadAssemble_H4 ||
+                        sequence == ESequence.HeadDisassemble_H1 || sequence == ESequence.HeadDisassemble_H2 ||
+                        sequence == ESequence.HeadDisassemble_H3 || sequence == ESequence.HeadDisassemble_H4)
                     {
                         Log.Debug("ZAxis move assemble/disassemble position");
                         ZAxisAssembleDisassemblePosMove(head);
-                        Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
-                            () => ZAxisInAssembleDisassemblePos(head));
+                        Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => ZAxisInAssembleDisassemblePos(head));
                     }
                     else
                     {
                         Log.Debug("ZAxis move dummy position");
                         ZAxisDummyPosMove(head);
-                        Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
-                            () => ZAxisInDummyPos(head));
+                        Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => ZAxisInDummyPos(head));
                     }
 
                     Step.RunStep++;
@@ -1422,43 +1410,6 @@ namespace SDV_MoldingInjection.Process
             if (head == ESPDHead.SPDHead4)
             {
                 return _currentRecipe.SPDHead4_Recipe.HeadSkip || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisDummyPos);
-            }
-
-            return true;
-        }
-
-        private void ZAxisBubbleRemovePosMove(ESPDHead head)
-        {
-            if (_currentRecipe.SPDHead1_Recipe.HeadSkip == false && head == ESPDHead.SPDHead1)
-                Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisBubbleRemovePos);
-            if (_currentRecipe.SPDHead2_Recipe.HeadSkip == false && head == ESPDHead.SPDHead2)
-                Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisBubbleRemovePos);
-            if (_currentRecipe.SPDHead3_Recipe.HeadSkip == false && head == ESPDHead.SPDHead3)
-                Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisBubbleRemovePos);
-            if (_currentRecipe.SPDHead4_Recipe.HeadSkip == false && head == ESPDHead.SPDHead4)
-                Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisBubbleRemovePos);
-        }
-
-        private bool ZAxisInBubbleRemovePos(ESPDHead head)
-        {
-            if (head == ESPDHead.SPDHead1)
-            {
-                return _currentRecipe.SPDHead1_Recipe.HeadSkip || Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisBubbleRemovePos);
-            }
-
-            if (head == ESPDHead.SPDHead2)
-            {
-                return _currentRecipe.SPDHead2_Recipe.HeadSkip || Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisBubbleRemovePos);
-            }
-
-            if (head == ESPDHead.SPDHead3)
-            {
-                return _currentRecipe.SPDHead3_Recipe.HeadSkip || Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisBubbleRemovePos);
-            }
-
-            if (head == ESPDHead.SPDHead4)
-            {
-                return _currentRecipe.SPDHead4_Recipe.HeadSkip || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisBubbleRemovePos);
             }
 
             return true;

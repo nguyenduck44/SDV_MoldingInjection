@@ -5,7 +5,6 @@ namespace SDV_MoldingInjection.Recipe
 {
     public class SPDHeadRecipe : RecipeBase
     {
-        [SingleRecipeDescription(Description = "Skip Head", Detail = "Check to Skip Head")]
         public bool HeadSkip
         {
             get { return _headSkip; }
@@ -102,21 +101,6 @@ namespace SDV_MoldingInjection.Recipe
 
                 OnRecipeChanged(_zAxisDummyPos, value);
                 _zAxisDummyPos = value;
-                OnPropertyChanged();
-            }
-        }
-
-        [SingleRecipeDescription(Description = "Z-Axis Bubble Remove position", Unit = Unit.mm)]
-        [SinglePositionTeaching(Motion = "ZAxis")]
-        public double ZAxisBubbleRemovePos
-        {
-            get { return _zAxisBubbleRemove; }
-            set
-            {
-                if (_zAxisBubbleRemove == value) return;
-
-                OnRecipeChanged(_zAxisBubbleRemove, value);
-                _zAxisBubbleRemove = value;
                 OnPropertyChanged();
             }
         }

@@ -402,7 +402,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     else
                     {
-                        Sequence = ESequence.Stop;
+                        Sequence = ESequence.DummyShot_H2;
                     }
                     break;
                 case ESequence.DummyShot_H2:
@@ -413,7 +413,6 @@ namespace SDV_MoldingInjection.Process
                     else
                     {
                         Sequence = ESequence.DummyShot_H3;
-                        Log.Info($"Head2 skip, set next sequence: {Sequence}");
                     }
                     break;
                 case ESequence.DummyShot_H3:
@@ -424,7 +423,6 @@ namespace SDV_MoldingInjection.Process
                     else
                     {
                         Sequence = ESequence.DummyShot_H4;
-                        Log.Info($"Head3 skip, set next sequence: {Sequence}");
                     }
                     break;
                 case ESequence.DummyShot_H4:
@@ -434,8 +432,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     else
                     {
-                        Sequence = ESequence.ResinInject;
-                        Log.Info($"Head4 skip, set next sequence: {Sequence}");
+                        Sequence = ESequence.Stop;
                     }
                     break;
                 case ESequence.DotWeighting_H1:
