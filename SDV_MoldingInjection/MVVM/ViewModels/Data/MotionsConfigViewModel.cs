@@ -1,0 +1,97 @@
+using CommunityToolkit.Mvvm.Input;
+using EQX.Core.Common;
+using EQX.Core.Motion;
+using EQX.Motion;
+using EQX.Motion.ByVendor.Ajinextek;
+using EQX.UI.Controls;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using SDV_MoldingInjection.Defines;
+using SDV_MoldingInjection.Process;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Windows.Input;
+
+namespace SDV_MoldingInjection.MVVM.ViewModels
+{
+    public class MotionsConfigViewModel : ViewModelBase
+    {
+        public MotionsConfigViewModel(Motions motions, MachineStatus machineStatus, IConfiguration configuration)
+        {
+            Motions = motions;
+            MachineStatus = machineStatus;
+            _configuration = configuration;
+        }
+
+        public Motions Motions { get; }
+        public MachineStatus MachineStatus { get; }
+
+        public ObservableCollection<IMotion> MotionList => new ObservableCollection<IMotion>(Motions.All);
+
+        public ICommand SaveMotionConfigCommand => new RelayCommand(() =>
+        {
+            try
+            {
+                var result = MessageBoxEx.ShowDialog("Do you want to save the motion configurations?", true, "Confirm Save");
+                if (result == true)
+                {
+                    SaveMotionConfigurations();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBoxEx.ShowDialog($"Error saving motion configurations: {ex.Message}");
+            }
+        });
+
+        private void SaveMotionConfigurations()
+        {
+            SaveAjinMotionConfigurations();
+            SaveFastechMotionConfigurations();
+        }
+
+        private void SaveAjinMotionConfigurations()
+        {
+            var ajinConfigPath = _configuration["Files:MotionAjinParaConfigFile"];
+            if (string.IsNullOrWhiteSpace(ajinConfigPath) || !File.Exists(ajinConfigPath))
+            {
+                return;
+            }
+
+            var existingAjinParams = JsonConvert.DeserializeObject<List<MotionAjinParameter>>(File.ReadAllText(ajinConfigPath))
+                ?? new List<MotionAjinParameter>();
+
+            for (int i = 0; i < Motions.AjinMotions.Count && i < existingAjinParams.Count; i++)
+            {
+                existingAjinParams[i].Velocity = Motions.AjinMotions[i].Parameter.Velocity;
+                existingAjinParams[i].Acceleration = Motions.AjinMotions[i].Parameter.Acceleration;
+                existingAjinParams[i].Deceleration = Motions.AjinMotions[i].Parameter.Deceleration;
+            }
+
+            File.WriteAllText(ajinConfigPath, JsonConvert.SerializeObject(existingAjinParams, Formatting.Indented));
+        }
+
+        private void SaveFastechMotionConfigurations()
+        {
+            var fastechConfigPath = _configuration["Files:MotionFastechParaConfigFile"];
+            if (string.IsNullOrWhiteSpace(fastechConfigPath) || !File.Exists(fastechConfigPath))
+            {
+                return;
+            }
+
+            var existingFastechParams = JsonConvert.DeserializeObject<List<MotionParameter>>(File.ReadAllText(fastechConfigPath))
+                ?? new List<MotionParameter>();
+
+            for (int i = 0; i < Motions.FastechMotions.Count && i < existingFastechParams.Count; i++)
+            {
+                existingFastechParams[i].Velocity = Motions.FastechMotions[i].Parameter.Velocity;
+                existingFastechParams[i].Acceleration = Motions.FastechMotions[i].Parameter.Acceleration;
+                existingFastechParams[i].Deceleration = Motions.FastechMotions[i].Parameter.Deceleration;
+            }
+
+            File.WriteAllText(fastechConfigPath, JsonConvert.SerializeObject(existingFastechParams, Formatting.Indented));
+        }
+
+        private readonly IConfiguration _configuration;
+    }
+}

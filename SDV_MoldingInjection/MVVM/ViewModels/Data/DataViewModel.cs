@@ -24,6 +24,16 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
             if (result == true) _machineStatus.MachineRunMode = newMode;
         });
+        public ICommand MotionConfigNavigateCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    _navigationService.NavigateTo<MotionsConfigViewModel>();
+                });
+            }
+        }
         #endregion
 
         #region Constructor(s)
