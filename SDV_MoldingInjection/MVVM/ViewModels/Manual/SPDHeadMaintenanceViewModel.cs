@@ -1,29 +1,35 @@
-﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
 using EQX.Core.InOut;
 using EQX.Core.Motion;
 using EQX.Core.Recipe;
 using EQX.Core.Sequence;
 using EQX.Device.Balance;
+using EQX.UI.Controls;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Defines.Devices.Balance;
 using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
     public class SPDHeadMaintenanceViewModel : AppMaintenanceViewModel
     {
-        public SPDHeadMaintenanceViewModel(Devices devices, NavigationStore navigationStore,
+        public SPDHeadMaintenanceViewModel(
+            Devices devices,
+            NavigationStore navigationStore,
             Balances balances,
-            MachineStatus machineStatus, RecipeSelector recipeSelector)
+            MachineStatus machineStatus,
+            RecipeSelector recipeSelector)
             : base(navigationStore, machineStatus, recipeSelector)
         {
             _devices = devices;
             _balances = balances;
+            _machineStatus = machineStatus;
             _recipeSelector = recipeSelector;
 
             Motions = new ObservableCollection<IMotion>();
@@ -39,7 +45,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             if (Balance.WeightData != null)
             {
                 BalanceStableWeight = Balance.WeightData.Weight * (Balance.WeightData.Unit == "g" ? 1000 : 1);
-                if((MachineStatus as MachineStatus)!.IsStandByProcessMode)
+                if ((MachineStatus as MachineStatus)!.IsStandByProcessMode)
                 {
                     Balance.SendRequestImmediateWeightCommand();
                 }
@@ -49,7 +55,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public double BalanceStableWeight
         {
             get { return balanceStableWeight; }
-            set 
+            set
             {
                 balanceStableWeight = value;
                 OnPropertyChanged();
@@ -70,11 +76,26 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
         }
 
+        public ICommand SkipCalCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    if (MessageBoxEx.ShowDialog($"Do you want to Skip Cal?") == true)
+                    {
+                    _machineStatus.MachineCalibrationSkip[(int)(Head - ESPDHead.SPDHead1)] = true;
+                    }
+                });
+            }
+        }
+
+        public bool IsSkipCal => _machineStatus.MachineCalibrationSkip[(int)(Head - ESPDHead.SPDHead1)];
         private MettlerToledoWKC204C Balance
         {
             get
             {
-                if(Head == ESPDHead.SPDHead1 || Head == ESPDHead.SPDHead2)
+                if (Head == ESPDHead.SPDHead1 || Head == ESPDHead.SPDHead2)
                 {
                     return _balances.BalanceLeft;
                 }
@@ -698,6 +719,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         #region Privates
         private readonly Devices _devices;
         private readonly Balances _balances;
+        private readonly MachineStatus _machineStatus;
         private readonly RecipeSelector _recipeSelector;
         private double balanceStableWeight;
 

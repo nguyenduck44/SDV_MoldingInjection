@@ -8,6 +8,7 @@ namespace SDV_MoldingInjection.Defines
     public class MachineStatus : MachineStatusBase<ESemiSequence>
     {
         public bool[] MachineCalibration { get; set; } = new bool[4];
+        public bool[] MachineCalibrationSkip { get; set; } = new bool[4];
         public MultiPointPosition MultiPointPosition { get; set; }
         public bool MachineReadyDone { get; set; }
         public bool MachineTestMode { get; set; }
