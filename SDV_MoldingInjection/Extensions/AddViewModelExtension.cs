@@ -1,4 +1,4 @@
-﻿using EQX.Core.Common;
+using EQX.Core.Common;
 using EQX.InOut.InputSimulation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,6 +25,7 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddViewModel<HeaderViewModel>();
                 services.AddViewModel<FooterViewModel>();
                 services.AddViewModel<RightPanelViewModel>();
+                services.AddViewModel<CarrierJigStatusViewModel>();
                 services.AddViewModel<NavigateMenuViewModel>();
 
                 services.AddViewModel<InitDeinitViewModel>();

@@ -372,6 +372,8 @@ namespace SDV_MoldingInjection.Process
 
         public override bool ProcessRun()
         {
+            UpdateInjectSequenceTimer(Sequence);
+
             switch (Sequence)
             {
                 case ESequence.Stop:
@@ -1264,6 +1266,23 @@ namespace SDV_MoldingInjection.Process
         #endregion
 
         #region Private Methods
+        private void UpdateInjectSequenceTimer(ESequence sequence)
+        {
+            if (sequence != ESequence.ResinInject)
+            {
+                _injectSequenceStartTick = -1;
+                InjectSequenceElapsedSeconds = 0;
+                return;
+            }
+
+            if (_injectSequenceStartTick < 0)
+            {
+                _injectSequenceStartTick = Environment.TickCount64;
+            }
+
+            InjectSequenceElapsedSeconds = Math.Max(0, (Environment.TickCount64 - _injectSequenceStartTick) / 1000.0);
+        }
+
         private void RaiseHeadWarning(EWarning warning)
         {
             RaiseWarning(warning + 1000 * ((int)head - 1));
@@ -1282,6 +1301,8 @@ namespace SDV_MoldingInjection.Process
         private readonly MettlerToledoWKC204C _balanceRight;
         private readonly SyringAmountStatusList _syringeAmountStatusList;
         private readonly MachineStatus _machineStatus;
+        public double InjectSequenceElapsedSeconds { get; private set; }
+        public double PAxisInjectVelocity => _pAxisInject_Vel;
 
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
 
@@ -1335,6 +1356,7 @@ namespace SDV_MoldingInjection.Process
 
         public int _removeResinCount;
         private int _bubbleRemoveCount;
+        private long _injectSequenceStartTick = -1;
 
         private double _pAxisInjectCharge_Height;
         private double _pAxisInjectCharge_Pos => _pAxisBase_Pos - _pAxisInjectCharge_Height;

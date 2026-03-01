@@ -35,7 +35,7 @@
 
     <Grid Margin="2 0 0 0">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2.1*" />
+            <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="4*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -44,52 +44,57 @@
         </Grid.RowDefinitions>
 
         <!-- SYRINGE AMOUNT -->
-        <GroupBox Grid.Column="0"
-                  Header="Syringe Amount (g)"
-                  Margin="5"
-                  Style="{x:Null}">
-            <DockPanel>
-                <StackPanel DockPanel.Dock="Top"
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Center"
-                            Margin="5 5 5 0">
-                    <TextBlock Text="H1"
-                               Width="60"
-                               TextAlignment="Center"
-                               FontWeight="Bold" />
-                    <TextBlock Text="H2"
-                               Width="60"
-                               TextAlignment="Center"
-                               FontWeight="Bold" />
-                    <TextBlock Text="H3"
-                               Width="60"
-                               TextAlignment="Center"
-                               FontWeight="Bold" />
-                    <TextBlock Text="H4"
-                               Width="60"
-                               TextAlignment="Center"
-                               FontWeight="Bold" />
-                </StackPanel>
+        <StackPanel Grid.Column="0"
+                    Grid.Row="0"
+                    Margin="5">
+            <GroupBox Header="Syringe Amount (g)"
+                      Style="{x:Null}">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Margin="5 5 5 0">
+                        <TextBlock Text="H1"
+                                   Width="60"
+                                   TextAlignment="Center"
+                                   FontWeight="Bold" />
+                        <TextBlock Text="H2"
+                                   Width="60"
+                                   TextAlignment="Center"
+                                   FontWeight="Bold" />
+                        <TextBlock Text="H3"
+                                   Width="60"
+                                   TextAlignment="Center"
+                                   FontWeight="Bold" />
+                        <TextBlock Text="H4"
+                                   Width="60"
+                                   TextAlignment="Center"
+                                   FontWeight="Bold" />
+                    </StackPanel>
 
-                <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Center">
-                    <ItemsControl ItemsSource="{Binding SyringeAmountStatusList.SyringeAmounts}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <ContentControl Width="60" 
-                                                Content="{Binding .}"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-            </DockPanel>
-        </GroupBox>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center">
+                        <ItemsControl ItemsSource="{Binding SyringeAmountStatusList.SyringeAmounts}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <ContentControl Width="60"
+                                                    Content="{Binding .}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </DockPanel>
+            </GroupBox>
 
+        </StackPanel>
+        <local:CarrierJigStatusView Margin="0 6 0 0"
+                                    Grid.Row="1"
+                                    DataContext="{Binding CarrierJigStatus}" />
         <!-- Machine Image -->
         <Image Grid.Column="1"
                Grid.RowSpan="2"

@@ -392,7 +392,7 @@ namespace SDV_MoldingInjection.Process
                 RaiseAlarm((int)EAlarm.EmergencyStopActivated);
                 return;
             }
-
+#if !SIMULATION
             if (_devices.Inputs.MainCDACheck.Value == false)
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
@@ -400,7 +400,7 @@ namespace SDV_MoldingInjection.Process
                 RaiseAlarm((int)EAlarm.MainAirNotSupplied);
                 return;
             }
-
+#endif
             if (_devices.Motions.All.Count(motion => motion.Status.IsMotionOn != true) > 0 &&
                 (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run))
             {
@@ -609,6 +609,6 @@ namespace SDV_MoldingInjection.Process
 
         private Queue<IGrouping<uint, PositionPoint>> MoveMultiPointQueueSteps = new Queue<IGrouping<uint, PositionPoint>>();
         private List<PositionPoint> currentPoints = new List<PositionPoint>();
-        #endregion
+#endregion
     }
 }
