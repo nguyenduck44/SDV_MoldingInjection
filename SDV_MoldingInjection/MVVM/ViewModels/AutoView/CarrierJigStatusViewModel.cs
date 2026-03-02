@@ -74,7 +74,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 OnPropertyChanged(nameof(ResinWeight));
             }
-            else if (e.PropertyName == nameof(SPDHeadRecipe.InjectTime))
+            else if (e.PropertyName == nameof(InjectRecipe.InjectTime))
             {
             }
             else if (e.PropertyName == nameof(SPDHeadRecipe.HeadSkip))

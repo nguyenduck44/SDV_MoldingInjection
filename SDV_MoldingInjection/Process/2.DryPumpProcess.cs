@@ -311,24 +311,24 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_WaitVentTime:
-                    if (_currentSPDHeadRecipe.InjectTime - _machineStatus.TimeInject > _currentRecipe.DryPumpRecipe.VentTime)
+                    if (_currentRecipe.InjectRecipe.InjectTime - _machineStatus.TimeInject > _currentRecipe.InjectRecipe.VentTime)
                     {
                         Wait(10);
                         break;
                     }
 
                     Log.Debug("Vent start");
-                    procOutputs[EDryPumpProcOutput.ChamberVacuumSuccess].Value = false;
+                    Out_ChamberPurgeOn.Value = true;
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_PurgeAndWait:
-                    if (_machineStatus.TimeInject < _currentSPDHeadRecipe.InjectTime)
+                    if (_machineStatus.TimeInject < _currentRecipe.InjectRecipe.InjectTime)
                     {
                         Wait(10);
                         break;
                     }
 
-                    Log.Debug($"Vent Complete: {_currentRecipe.DryPumpRecipe.VentTime}s");
+                    Log.Debug($"Vent Complete: {_currentRecipe.InjectRecipe.VentTime}s");
                     Out_ChamberPurgeOn.Value = false;
                     Step.RunStep++;
                     break;

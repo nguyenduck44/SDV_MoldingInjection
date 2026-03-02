@@ -248,21 +248,6 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "Inject Time", Unit = Unit.Second)]
-        public double InjectTime
-        {
-            get { return _injectTime; }
-            set
-            {
-                if (_injectTime == value) return;
-                OnRecipeChanged(_injectTime, value);
-                _injectTime = value;
-                OnPropertyChanged();
-            }
-        }
-
-
-
         public double PAxisInjectChargePos
         {
             get { return _pAxisInjectChargePos; }
@@ -301,7 +286,6 @@ namespace SDV_MoldingInjection.Recipe
 
         private double _resinWeight;
         private double _resinWeightSpec;
-        private double _injectTime;
 
         #endregion
     }
