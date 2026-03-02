@@ -323,10 +323,11 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug("Vent start");
                     Out_ChamberPurgeOn.Value = true;
+                    _ventStartTick = Environment.TickCount;
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_PurgeAndWait:
-                    if (_machineStatus.TimeInject < _currentRecipe.InjectRecipe.InjectTime)
+                    if (((Environment.TickCount - _ventStartTick) / 1000.0) < _currentRecipe.InjectRecipe.InjectTime)
                     {
                         Wait(10);
                         break;
@@ -406,6 +407,7 @@ namespace SDV_MoldingInjection.Process
 
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
         private ESPDHead _failHead;
+        private double _ventStartTick;
         #endregion
     }
 }

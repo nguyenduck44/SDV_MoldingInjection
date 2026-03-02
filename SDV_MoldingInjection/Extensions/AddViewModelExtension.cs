@@ -25,7 +25,6 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddViewModel<HeaderViewModel>();
                 services.AddViewModel<FooterViewModel>();
                 services.AddViewModel<RightPanelViewModel>();
-                services.AddViewModel<CarrierJigStatusViewModel>();
                 services.AddViewModel<NavigateMenuViewModel>();
 
                 services.AddViewModel<InitDeinitViewModel>();

@@ -607,14 +607,11 @@ namespace SDV_MoldingInjection.Process
 
         public override bool PreProcess()
         {
-            if (_injectSequenceStartTick >= 0)
+            if (_injectSequenceStartTick >= 0 && EnableTimerInject)
             {
                 CarrierJigStatus.InjectTime = (Environment.TickCount64 - _injectSequenceStartTick) / 1000.0;
             }
-            else
-            {
-                CarrierJigStatus.InjectTime = 0;
-            }
+
             return base.PreProcess();
         }
         #endregion
@@ -650,7 +647,12 @@ namespace SDV_MoldingInjection.Process
 
                     Step.RunStep++;
                     break;
-                case ESPDHeadProcCommonStep.MachineCalibration_Check:
+                case ESPDHeadProcCommonStep.ResetInjectTime:
+                    if (sequence == ESequence.ResinInject)
+                    {
+                        CarrierJigStatus.InjectTime = 0;
+                    }
+
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.Gate_Close:
@@ -809,10 +811,9 @@ namespace SDV_MoldingInjection.Process
                     PAxis.MoveAbs(_pAxisInject_Pos, _pAxisInject_Vel);
                     if (sequence == ESequence.ResinInject)
                     {
-                        if (_injectSequenceStartTick < 0)
-                        {
-                            _injectSequenceStartTick = Environment.TickCount64;
-                        }
+                        Log.Debug("Start inject timer");
+                        EnableTimerInject = true;
+                        _injectSequenceStartTick = Environment.TickCount64;
 
                         Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout + _currentRecipe.InjectRecipe.InjectTime,
                             () => PAxis.IsOnPosition(_pAxisInject_Pos));
@@ -846,6 +847,7 @@ namespace SDV_MoldingInjection.Process
                         }
                     }
 
+                    EnableTimerInject = false;
                     Log.Debug($"{PAxis.Name} moving to InjectPos done");
                     Step.RunStep++;
                     break;
@@ -878,7 +880,6 @@ namespace SDV_MoldingInjection.Process
 
                     if (sequence == ESequence.ResinInject)
                     {
-                        ResetInjectSequenceTimer();
                         Log.Info($"Set next sequence DummyShot");
                         Sequence = ESequence.DummyShot_H1;
                     }
@@ -1284,11 +1285,6 @@ namespace SDV_MoldingInjection.Process
         #endregion
 
         #region Private Methods
-        private void ResetInjectSequenceTimer()
-        {
-            _injectTimeUpdateTimer.Stop();
-        }
-
         private void RaiseHeadWarning(EWarning warning)
         {
             RaiseWarning(warning + 1000 * ((int)head - 1));
@@ -1308,11 +1304,6 @@ namespace SDV_MoldingInjection.Process
         private readonly SyringAmountStatusList _syringeAmountStatusList;
         private readonly MachineStatus _machineStatus;
         private readonly CarrierJigStatusList _carrierJigStatusList;
-
-        public double InjectSequenceElapsedSeconds =>
-            _injectSequenceStartTick >= 0
-                ? Math.Max(0, (Environment.TickCount64 - _injectSequenceStartTick) / 1000.0)
-                : 0;
         public double PAxisInjectVelocity => _pAxisInject_Vel;
 
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
@@ -1376,10 +1367,11 @@ namespace SDV_MoldingInjection.Process
         public int _removeResinCount;
         private int _bubbleRemoveCount;
         private long _injectSequenceStartTick = -1;
-        private readonly System.Timers.Timer _injectTimeUpdateTimer;
 
         private double _pAxisInjectCharge_Height;
         private double _pAxisInjectCharge_Pos => _pAxisBase_Pos - _pAxisInjectCharge_Height;
+
+        private bool EnableTimerInject;
         #endregion
     }
 }

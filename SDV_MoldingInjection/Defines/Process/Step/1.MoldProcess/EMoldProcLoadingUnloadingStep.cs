@@ -13,6 +13,8 @@
         Transfer_Load_SendRequest,
         Transfer_Load_Wait,
 
+        Jig_Check,
+
         MCR_Read,
 
         Chamber_CoverClose,

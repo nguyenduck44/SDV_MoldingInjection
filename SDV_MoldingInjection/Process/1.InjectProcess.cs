@@ -665,16 +665,35 @@ namespace SDV_MoldingInjection.Process
                     if (isLoading) Log.Debug($"Request transfer to LOAD");
                     else Log.Debug($"Request transfer to UNLOAD");
 
-                    // Dryrun
-                    Wait(3000);
+                    if(_machineStatus.IsDryRunMode)
+                    {
+                        Wait(3000);
+                    }
+                    else
+                    {
+                        //TODO : Send request to transfer
+                    }
 
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Transfer_Load_Wait:
+                    if (isLoading)
+                    {
+                        if(_currentRecipe.SPDHead1_Recipe.HeadSkip == false && _currentRecipe.SPDHead2_Recipe.HeadSkip == false)
+                        {
+
+                        }
+                    }
+
                     if (isLoading) Log.Debug($"Transfer LOAD done");
                     else Log.Debug($"Transfer UNLOAD done");
 
                     UpdateBothJigStatus(EJigStatus.None);
+
+                    Step.RunStep++;
+                    break;
+                case EMoldProcLoadingUnloadingStep.Jig_Check:
+
 
                     Step.RunStep++;
                     break;
@@ -685,6 +704,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    //TODO : MCR read for loading
                     Log.Debug($"MCR_Read");
                     Step.RunStep++;
                     break;

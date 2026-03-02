@@ -39,8 +39,8 @@
             <ColumnDefinition Width="4*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*" />
-            <RowDefinition Height="3*" />
+            <RowDefinition Height="1.8*" />
+            <RowDefinition Height="3.1*" />
         </Grid.RowDefinitions>
 
         <!-- SYRINGE AMOUNT -->
@@ -92,14 +92,18 @@
             </GroupBox>
 
         </StackPanel>
-        <UniformGrid Margin="0 6 0 0"
-                     Rows="1"
-                     Grid.Row="1">
-            <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH1}"/>
-            <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH2}"/>
-            <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH3}"/>
-            <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH4}"/>
-        </UniformGrid>
+
+        <GroupBox Header="Carrier Jig Status"
+                  Style="{x:Null}"
+                  Grid.Row="1">
+            <UniformGrid Margin="0 6 0 0"
+                     Rows="1">
+                <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH1}"/>
+                <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH2}"/>
+                <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH3}"/>
+                <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH4}"/>
+            </UniformGrid>
+        </GroupBox>
         <!-- Machine Image -->
         <Image Grid.Column="1"
                Grid.RowSpan="2"

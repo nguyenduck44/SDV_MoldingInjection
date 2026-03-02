@@ -4,7 +4,7 @@
     {
         Start,
 
-        MachineCalibration_Check,
+        ResetInjectTime,
 
         // ----- CHARGING PHASE -----
         Gate_Close,
