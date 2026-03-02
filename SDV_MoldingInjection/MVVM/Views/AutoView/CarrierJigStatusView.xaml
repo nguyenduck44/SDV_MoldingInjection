@@ -32,7 +32,7 @@
         <Style x:Key="CellTextStyle"
                TargetType="TextBlock">
             <Setter Property="FontSize"
-                    Value="10" />
+                    Value="14" />
             <Setter Property="FontWeight"
                     Value="SemiBold" />
             <Setter Property="HorizontalAlignment"
@@ -57,9 +57,11 @@
                 <DataTemplate>
                     <StackPanel>
                         <TextBlock Text="{Binding Name}"
-                                   Style="{StaticResource CellTextStyle}" />
-                         <TextBlock Style="{StaticResource CellTextStyle}"
-                                    Text="{Binding ResinWeight}" />
+                                   Style="{StaticResource CellTextStyle}" 
+                                   FontSize="14"/>
+                        <TextBlock Style="{StaticResource CellTextStyle}"
+                                   Text="{Binding ResinWeight}" 
+                                   FontSize="14"/>
                         <Button Margin="0,6,0,0"
                                 Height="100"
                                 HorizontalAlignment="Stretch"
@@ -68,14 +70,18 @@
                                 Content="{Binding HeadSkip, Converter={StaticResource HeadSkipStatusTextConverter}}"
                                 Background="{Binding HeadSkip, Converter={StaticResource HeadSkipStatusBrushConverter}}" />
                         <TextBlock Style="{StaticResource CellTextStyle}"
-                                       Text="Timer" />
+                                   Text="Timer" 
+                                   FontSize="14"/>
                         <TextBlock Style="{StaticResource CellTextStyle}"
-                                    Text="{Binding ResinTimer, StringFormat={}{0:0.00} s}" 
-                                   Margin="0 0 0 10"/>
+                                   Text="{Binding ResinTimer, StringFormat={}{0:0.00} s}" 
+                                   Margin="0 0 0 10"
+                                   FontSize="14"/>
                         <TextBlock Style="{StaticResource CellTextStyle}"
-                                       Text="Vel-P" />
+                                   Text="Vel-P" 
+                                   FontSize="14"/>
                         <TextBlock Style="{StaticResource CellTextStyle}"
-                                       Text="{Binding PAxisInjectVel, StringFormat={}{0:0.00}}" />
+                                   Text="{Binding PAxisInjectVel, StringFormat={}{0:0.00}}" 
+                                   FontSize="14"/>
                     </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
