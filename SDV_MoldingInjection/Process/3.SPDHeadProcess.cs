@@ -719,6 +719,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"{PAxis.Name} moving to ChargePos done");
+                    Log.Debug("Wait inject request work");
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.WorkRequest_Wait:

@@ -274,7 +274,6 @@ namespace SDV_MoldingInjection.Process
 
                 _devices.Motions.All.ForEach(r => r.Stop());
                 _devices.Outputs.Lamp_Stop();
-                _devices.Outputs.EQPStop.Value = true;
                 Log.Info("ToStop Done, Stop");
             }
             else

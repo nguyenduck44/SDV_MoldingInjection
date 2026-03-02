@@ -545,7 +545,6 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    procOutputs[EInjectProcOutput.DryPump_VacuumRequest].Value = false;
                     Log.Debug($"Input detect {EInjectProcInput.DryPump_VacuumDone}");
                     Step.RunStep++;
                     break;
@@ -558,10 +557,10 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.SDPHead_Work_DoneWait:
-                    if ((IsSPDHeadWorkDone(ESPDHead.SPDHead1) == false ||
+                    if (IsSPDHeadWorkDone(ESPDHead.SPDHead1) == false ||
                         IsSPDHeadWorkDone(ESPDHead.SPDHead2) == false ||
                         IsSPDHeadWorkDone(ESPDHead.SPDHead3) == false ||
-                        IsSPDHeadWorkDone(ESPDHead.SPDHead4) == false) &&
+                        IsSPDHeadWorkDone(ESPDHead.SPDHead4) == false ||
                         procInputs[EInjectProcInput.VentComplete].Value == false)
                     {
                         Wait(100);
@@ -571,6 +570,7 @@ namespace SDV_MoldingInjection.Process
                     UpdateBothJigStatus(EJigStatus.MoldingFinish);
                     _needleCleanCount++;
 
+                    procOutputs[EInjectProcOutput.DryPump_VacuumRequest].Value = false;
                     procOutputs[EInjectProcOutput.SPDHeadWorkRequest].Value = false;
                     Log.Debug($"Input detect EInjectProcInput.SPDHead(1~4)_WorkDone");
                     Step.RunStep++;
@@ -602,7 +602,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Info("ResinInject end");
-                    Sequence = ESequence.DummyShot_H1;
+                    Sequence = ESequence.DummyShot;
                     break;
             }
         }
@@ -1044,17 +1044,11 @@ namespace SDV_MoldingInjection.Process
                     if (Parent?.Sequence != ESequence.AutoRun)
                     {
                         Sequence = ESequence.Stop;
+                        break;
                     }
 
-                    if (sequence == ESequence.DummyShot)
-                    {
-                        Log.Info("Set next sequence to unloading");
-                        Sequence = ESequence.Unloading;
-                    }
-                    else
-                    {
-                        Sequence = ESequence.Stop;
-                    }
+                    Log.Info("Set next sequence to unloading");
+                    Sequence = ESequence.Unloading;
                     break;
             }
         }
