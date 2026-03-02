@@ -379,6 +379,7 @@ namespace SDV_MoldingInjection.Process
             if (_devices.Inputs.DoorClose == false &&
                 (ProcessMode == EProcessMode.Run || ProcessMode == EProcessMode.Origin))
             {
+                Log.Error("Door Open");
                 RaiseAlarm((int)EAlarm.DoorOpen);
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
@@ -389,6 +390,7 @@ namespace SDV_MoldingInjection.Process
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                Log.Error("Emergency Stop Activated. MC OFF");
                 RaiseAlarm((int)EAlarm.EmergencyStopActivated);
                 return;
             }
@@ -397,6 +399,7 @@ namespace SDV_MoldingInjection.Process
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                Log.Error("Main Air Not Supplied");
                 RaiseAlarm((int)EAlarm.MainAirNotSupplied);
                 return;
             }
@@ -565,6 +568,7 @@ namespace SDV_MoldingInjection.Process
 
                     if (Sequence == ESequence.MoveMultiPoint)
                     {
+                        _devices.Outputs.EQPStop.Value = false;
                         Thread.Sleep(50);
                         ProcessMode = EProcessMode.Run;
                     }
@@ -608,6 +612,6 @@ namespace SDV_MoldingInjection.Process
 
         private Queue<IGrouping<uint, PositionPoint>> MoveMultiPointQueueSteps = new Queue<IGrouping<uint, PositionPoint>>();
         private List<PositionPoint> currentPoints = new List<PositionPoint>();
-#endregion
+        #endregion
     }
 }
