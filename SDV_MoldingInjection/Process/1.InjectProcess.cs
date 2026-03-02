@@ -558,10 +558,11 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.SDPHead_Work_DoneWait:
-                    if (IsSPDHeadWorkDone(ESPDHead.SPDHead1) == false ||
+                    if ((IsSPDHeadWorkDone(ESPDHead.SPDHead1) == false ||
                         IsSPDHeadWorkDone(ESPDHead.SPDHead2) == false ||
                         IsSPDHeadWorkDone(ESPDHead.SPDHead3) == false ||
-                        IsSPDHeadWorkDone(ESPDHead.SPDHead4) == false)
+                        IsSPDHeadWorkDone(ESPDHead.SPDHead4) == false) &&
+                        procInputs[EInjectProcInput.VentComplete].Value == false)
                     {
                         Wait(100);
                         break;
@@ -849,7 +850,7 @@ namespace SDV_MoldingInjection.Process
                     break;
 
                 case EMoldProcDummyShotStep.SPDHead_InjectResin_Done_And_VentComplete_Wait:
-                    if (IsSPDHeadWorkDone(head) == false && procInputs[EInjectProcInput.VentComplete].Value == false)
+                    if (IsSPDHeadWorkDone(head) == false)
                     {
                         Wait(50);
                         break;
@@ -1622,6 +1623,15 @@ namespace SDV_MoldingInjection.Process
 
         private bool IsSPDHeadWorkDone(ESPDHead head)
         {
+            if (head == ESPDHead.All)
+            {
+                return
+                    (procInputs[EInjectProcInput.SPDHead1_WorkDone].Value || _currentRecipe.SPDHead1_Recipe.HeadSkip) &&
+                    (procInputs[EInjectProcInput.SPDHead2_WorkDone].Value || _currentRecipe.SPDHead2_Recipe.HeadSkip) &&
+                    (procInputs[EInjectProcInput.SPDHead3_WorkDone].Value || _currentRecipe.SPDHead3_Recipe.HeadSkip) &&
+                    (procInputs[EInjectProcInput.SPDHead4_WorkDone].Value || _currentRecipe.SPDHead4_Recipe.HeadSkip);
+            }
+
             return head switch
             {
                 ESPDHead.SPDHead1 => procInputs[EInjectProcInput.SPDHead1_WorkDone].Value || _currentRecipe.SPDHead1_Recipe.HeadSkip,
