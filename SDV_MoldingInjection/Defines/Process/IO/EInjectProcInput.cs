@@ -18,5 +18,7 @@
         SPDHead2_RequestDotWaiting,
         SPDHead3_RequestDotWaiting,
         SPDHead4_RequestDotWaiting,
+
+        VentComplete,
     }
 }

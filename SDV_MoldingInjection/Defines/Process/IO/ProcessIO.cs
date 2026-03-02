@@ -88,7 +88,9 @@ namespace SDV_MoldingInjection.Defines
         {
             InjectProcInput[EInjectProcInput.DryPump_VacuumDone]
                 .MapTo(DryPumpProcOutput[EDryPumpProcOutput.ChamberVacuumSuccess]);
-            InjectProcInput[EInjectProcInput.SPDHead1_WorkDone]
+            InjectProcInput[EInjectProcInput.DryPump_VacuumDone]
+                .MapTo(DryPumpProcOutput[EDryPumpProcOutput.VentComplete]);
+            InjectProcInput[EInjectProcInput.VentComplete]
                 .MapTo(SPDHead1_ProcOutput[ESPDHeadProcOutput.InjectFinish]);
             InjectProcInput[EInjectProcInput.SPDHead2_WorkDone]
                 .MapTo(SPDHead2_ProcOutput[ESPDHeadProcOutput.InjectFinish]);
@@ -126,13 +128,13 @@ namespace SDV_MoldingInjection.Defines
             SPDHead4_ProcInput[ESPDHeadProcInput.WorkRequest]
                .MapTo(InjectProcOutput[EInjectProcOutput.SPDHeadWorkRequest]);
             SPDHead1_ProcInput[ESPDHeadProcInput.XYAxisInDummyPos]
-               .MapTo(InjectProcOutput[EInjectProcOutput.XYAxisInDummyPosH1]);
+               .MapTo(InjectProcOutput[EInjectProcOutput.XYAxisInDummyPos]);
             SPDHead2_ProcInput[ESPDHeadProcInput.XYAxisInDummyPos]
-               .MapTo(InjectProcOutput[EInjectProcOutput.XYAxisInDummyPosH2]);
+               .MapTo(InjectProcOutput[EInjectProcOutput.XYAxisInDummyPos]);
             SPDHead3_ProcInput[ESPDHeadProcInput.XYAxisInDummyPos]
-               .MapTo(InjectProcOutput[EInjectProcOutput.XYAxisInDummyPosH3]);
+               .MapTo(InjectProcOutput[EInjectProcOutput.XYAxisInDummyPos]);
             SPDHead4_ProcInput[ESPDHeadProcInput.XYAxisInDummyPos]
-               .MapTo(InjectProcOutput[EInjectProcOutput.XYAxisInDummyPosH4]);
+               .MapTo(InjectProcOutput[EInjectProcOutput.XYAxisInDummyPos]);
             SPDHead1_ProcInput[ESPDHeadProcInput.XYAxisInDotWeightingPos]
                .MapTo(InjectProcOutput[EInjectProcOutput.H1DotWeightingInPos]);
             SPDHead2_ProcInput[ESPDHeadProcInput.XYAxisInDotWeightingPos]

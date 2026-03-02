@@ -11,7 +11,7 @@
         ZAxis_DummyPos_Wait,
 
         SPDHead_InjectResin_Request,
-        SPDHead_InjectResin_DoneWait,
+        SPDHead_InjectResin_Done_And_VentComplete_Wait,
 
         ZAxis_SafetyPos_Move,
         ZAxis_SafetyPos_Wait,

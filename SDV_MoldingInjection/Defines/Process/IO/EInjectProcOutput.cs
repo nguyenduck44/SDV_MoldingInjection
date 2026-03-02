@@ -2,10 +2,7 @@
 {
     public enum EInjectProcOutput
     {
-        XYAxisInDummyPosH1,
-        XYAxisInDummyPosH2,
-        XYAxisInDummyPosH3,
-        XYAxisInDummyPosH4,
+        XYAxisInDummyPos,
 
         DryPump_VacuumRequest,
         SPDHeadWorkRequest,

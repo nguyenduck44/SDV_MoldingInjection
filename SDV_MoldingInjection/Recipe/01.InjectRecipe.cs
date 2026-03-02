@@ -86,6 +86,50 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        [SingleRecipeDescription(Description = "X-Axis Dummy Shot position", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "XAxis")]
+        public double XAxisDummyPos
+        {
+            get { return _xAxisDummyPos; }
+            set
+            {
+                if (_xAxisDummyPos == value) return;
+
+                OnRecipeChanged(_xAxisDummyPos, value);
+                _xAxisDummyPos = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "Y-Axis Dummy Shot position", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "YAxis")]
+        public double YAxisDummyPos
+        {
+            get { return _yAxisDummyPos; }
+            set
+            {
+                if (_yAxisDummyPos == value) return;
+
+                OnRecipeChanged(_yAxisDummyPos, value);
+                _yAxisDummyPos = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "X-Axis needle clean position", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "XAxis")]
+        public double XAxisNeedleCleanPos
+        {
+            get { return _xAxisNeedleCleanPos; }
+            set
+            {
+                if (_xAxisNeedleCleanPos == value) return;
+                OnRecipeChanged(_xAxisNeedleCleanPos, value);
+                _xAxisNeedleCleanPos = value;
+                OnPropertyChanged();
+            }
+        }
+
         [SingleRecipeDescription(Description = "Needle Clean Cycle Count")]
         public double NiddleCleanCycleCount
         {
@@ -135,6 +179,11 @@ namespace SDV_MoldingInjection.Recipe
 
         private double _yAxisReadyPos;
         private double _yAxisInjectPos;
+
+        private double _xAxisDummyPos;
+        private double _yAxisDummyPos;
+
+        private double _xAxisNeedleCleanPos;
 
         private double _niddleCleanCycleCount;
         private double _niddleCleanShiftDist;

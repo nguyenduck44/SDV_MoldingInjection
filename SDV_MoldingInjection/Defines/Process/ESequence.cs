@@ -22,6 +22,9 @@ namespace SDV_MoldingInjection.Defines
         ResinInject,
         [Description("Jig UNLOADING")]
         Unloading,
+
+        [Description("Dummy shot")]
+        DummyShot,
         [Description("Dummy shot H1")]
         DummyShot_H1,
         [Description("Dummy shot H2")]
@@ -31,6 +34,8 @@ namespace SDV_MoldingInjection.Defines
         [Description("Dummy shot H4")]
         DummyShot_H4,
 
+        [Description("Needle cleaning")]
+        NeedleCleaning,
         [Description("Needle cleaning H1")]
         NeedleCleaning_H1,
         [Description("Needle cleaning H2")]
@@ -39,6 +44,7 @@ namespace SDV_MoldingInjection.Defines
         NeedleCleaning_H3,
         [Description("Needle cleaning H4")]
         NeedleCleaning_H4,
+
         [Description("Dot weighting H1")]
         DotWeighting_H1,
         [Description("Dot weighting H2")]
@@ -93,6 +99,8 @@ namespace SDV_MoldingInjection.Defines
         ResinInject,
         [Description("Jig UNLOADING")]
         Unloading,
+        [Description("Dummy shot")]
+        DummyShot,
         [Description("Dummy shot H1")]
         DummyShot_H1,
         [Description("Dummy shot H2")]
@@ -101,6 +109,8 @@ namespace SDV_MoldingInjection.Defines
         DummyShot_H3,
         [Description("Dummy shot H4")]
         DummyShot_H4,
+        [Description("Needle cleaning")]
+        NeedleCleaning,
         [Description("Needle cleaning H1")]
         NeedleCleaning_H1,
         [Description("Needle cleaning H2")]
@@ -109,6 +119,7 @@ namespace SDV_MoldingInjection.Defines
         NeedleCleaning_H3,
         [Description("Needle cleaning H4")]
         NeedleCleaning_H4,
+
         [Description("Dot weighting H1")]
         DotWeighting_H1,
         [Description("Dot weighting H2")]

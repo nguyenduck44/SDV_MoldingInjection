@@ -334,6 +334,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"Vent Complete: {_currentRecipe.InjectRecipe.VentTime}s");
+                    procOutputs[EDryPumpProcOutput.VentComplete].Value = true;
                     Out_ChamberPurgeOn.Value = false;
                     Step.RunStep++;
                     break;
@@ -346,6 +347,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Info($"Clear output {EDryPumpProcOutput.ChamberVacuumSuccess}");
                     procOutputs[EDryPumpProcOutput.ChamberVacuumSuccess].Value = false;
+                    procOutputs[EDryPumpProcOutput.VentComplete].Value = false;
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.End:

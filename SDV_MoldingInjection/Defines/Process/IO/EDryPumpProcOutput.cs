@@ -3,5 +3,6 @@
     public enum EDryPumpProcOutput
     {
         ChamberVacuumSuccess,
+        VentComplete,
     }
 }
