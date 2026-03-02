@@ -88,9 +88,9 @@ namespace SDV_MoldingInjection.Defines
         {
             InjectProcInput[EInjectProcInput.DryPump_VacuumDone]
                 .MapTo(DryPumpProcOutput[EDryPumpProcOutput.ChamberVacuumSuccess]);
-            InjectProcInput[EInjectProcInput.DryPump_VacuumDone]
-                .MapTo(DryPumpProcOutput[EDryPumpProcOutput.VentComplete]);
             InjectProcInput[EInjectProcInput.VentComplete]
+                .MapTo(DryPumpProcOutput[EDryPumpProcOutput.VentComplete]);
+            InjectProcInput[EInjectProcInput.SPDHead1_WorkDone]
                 .MapTo(SPDHead1_ProcOutput[ESPDHeadProcOutput.InjectFinish]);
             InjectProcInput[EInjectProcInput.SPDHead2_WorkDone]
                 .MapTo(SPDHead2_ProcOutput[ESPDHeadProcOutput.InjectFinish]);

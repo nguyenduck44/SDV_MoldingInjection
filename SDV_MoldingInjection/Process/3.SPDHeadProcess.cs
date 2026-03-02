@@ -397,6 +397,9 @@ namespace SDV_MoldingInjection.Process
                     }
                     Sequence_SPDHeadCommon(ESequence.ResinInject);
                     break;
+                case ESequence.DummyShot:
+                    Sequence_SPDHeadCommon(ESequence.DummyShot);
+                    break;
                 case ESequence.DummyShot_H1:
                     if (head == ESPDHead.SPDHead1 && !_currentSPDHeadRecipe.HeadSkip)
                     {
@@ -404,7 +407,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     else
                     {
-                        Sequence = ESequence.DummyShot_H2;
+                        Sequence = ESequence.Stop;
                     }
                     break;
                 case ESequence.DummyShot_H2:
@@ -414,7 +417,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     else
                     {
-                        Sequence = ESequence.DummyShot_H3;
+                        Sequence = ESequence.Stop;
                     }
                     break;
                 case ESequence.DummyShot_H3:
@@ -424,7 +427,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     else
                     {
-                        Sequence = ESequence.DummyShot_H4;
+                        Sequence = ESequence.Stop;
                     }
                     break;
                 case ESequence.DummyShot_H4:
@@ -684,6 +687,7 @@ namespace SDV_MoldingInjection.Process
                         case ESequence.ResinInject:
                             _pAxisCharge_Pos = _currentSPDHeadRecipe.PAxisInjectChargePos;
                             break;
+                        case ESequence.DummyShot:
                         case ESequence.DummyShot_H1:
                         case ESequence.DummyShot_H2:
                         case ESequence.DummyShot_H3:
@@ -736,6 +740,7 @@ namespace SDV_MoldingInjection.Process
 
                             CarrierJigStatus.PAxisInjectVelocity = _pAxisInject_Vel; // Display UI
                             break;
+                        case ESequence.DummyShot:
                         case ESequence.DummyShot_H1:
                         case ESequence.DummyShot_H2:
                         case ESequence.DummyShot_H3:
@@ -881,16 +886,10 @@ namespace SDV_MoldingInjection.Process
                     if (sequence == ESequence.ResinInject)
                     {
                         Log.Info($"Set next sequence DummyShot");
-                        Sequence = ESequence.DummyShot_H1;
-                    }
-                    else if (sequence >= ESequence.DummyShot_H1 && sequence < ESequence.DummyShot_H4)
-                    {
-                        Sequence = (ESequence)((int)sequence + 1);
-                        Log.Info($"Set next sequence: {Sequence}");
+                        Sequence = ESequence.DummyShot;
                     }
                     else
                         Sequence = ESequence.ResinInject;
-
                     break;
             }
         }
