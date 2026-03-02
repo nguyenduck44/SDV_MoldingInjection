@@ -92,9 +92,14 @@
             </GroupBox>
 
         </StackPanel>
-        <local:CarrierJigStatusView Margin="0 6 0 0"
-                                    Grid.Row="1"
-                                    DataContext="{Binding CarrierJigStatus}" />
+        <UniformGrid Margin="0 6 0 0"
+                     Rows="1"
+                     Grid.Row="1">
+            <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH1}"/>
+            <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH2}"/>
+            <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH3}"/>
+            <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH4}"/>
+        </UniformGrid>
         <!-- Machine Image -->
         <Image Grid.Column="1"
                Grid.RowSpan="2"
@@ -163,7 +168,7 @@
                     <Rectangle Style="{StaticResource DoorIndicatorRectangleStyle}">
                         <Rectangle.Fill>
                             <Binding Path="Devices.Inputs.MainPanelCloseCheck.Value"
-                                         Converter="{StaticResource BooleanToOnOffBrushConverter}" />
+                                     Converter="{StaticResource BooleanToOnOffBrushConverter}" />
                         </Rectangle.Fill>
                     </Rectangle>
                     <TextBlock Text="MAIN PANEL DOOR CLOSE"
@@ -182,7 +187,8 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Top"
                         Width="11"
-                        Height="10" RenderTransformOrigin="1.243,1.841">
+                        Height="10"
+                        RenderTransformOrigin="1.243,1.841">
                     <Image.Visibility>
                         <Binding Path="Devices.Inputs.OPButtonStart.Value"
                                  Converter="{StaticResource BooleanToVisibilityConverter}" />
@@ -196,7 +202,8 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Width="11"
-                        Height="10" RenderTransformOrigin="1.243,1.841">
+                        Height="10"
+                        RenderTransformOrigin="1.243,1.841">
                     <Image.Visibility>
                         <Binding Path="Devices.Inputs.OPButtonStop.Value"
                                  Converter="{StaticResource BooleanToVisibilityConverter}" />
@@ -210,7 +217,8 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Width="11"
-                        Height="10" RenderTransformOrigin="1.243,1.841">
+                        Height="10"
+                        RenderTransformOrigin="1.243,1.841">
                     <Image.Visibility>
                         <Binding Path="Devices.Inputs.OPButtonReset.Value"
                                  Converter="{StaticResource BooleanToVisibilityConverter}" />
@@ -224,14 +232,15 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Width="22"
-                        Height="22" RenderTransformOrigin="1.243,1.841">
+                        Height="22"
+                        RenderTransformOrigin="1.243,1.841">
                     <Image.Visibility>
                         <Binding Path="Devices.Inputs.OPButtonReset.Value"
                                  Converter="{StaticResource BooleanToVisibilityConverter}" />
                     </Image.Visibility>
                 </Image>
             </Canvas>
-            <Canvas/>
+            <Canvas />
         </Grid>
         <Grid Grid.Row="1"
               Grid.Column="0"
@@ -329,7 +338,8 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Width="44"
-                        Height="28" RenderTransformOrigin="1.222,0.506">
+                        Height="28"
+                        RenderTransformOrigin="1.222,0.506">
                     <Image.Visibility>
                         <MultiBinding Converter="{StaticResource BooleanOrToVisibilityConverter}">
                             <Binding Path="Devices.Inputs.Jig1Detect.Value" />
@@ -345,7 +355,8 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Width="44"
-                        Height="28" RenderTransformOrigin="1.222,0.506">
+                        Height="28"
+                        RenderTransformOrigin="1.222,0.506">
                     <Image.Visibility>
                         <MultiBinding Converter="{StaticResource BooleanOrToVisibilityConverter}">
                             <Binding Path="Devices.Inputs.Jig3Detect.Value" />
@@ -396,7 +407,7 @@
                     </Image.Visibility>
                 </Image>
             </Canvas>
-            <Canvas/>
+            <Canvas />
             <Canvas>
                 <Image  Source="/SDV_MoldingInjection;component/Resource/Images/HEAD_RIGHT.png"
                         Canvas.Left="433"
@@ -418,7 +429,8 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Width="27"
-                        Height="29" RenderTransformOrigin="0.393,0.771">
+                        Height="29"
+                        RenderTransformOrigin="0.393,0.771">
                     <Image.Visibility>
                         <Binding Path="Devices.Inputs.BelowsUp.Value"
                                  Converter="{StaticResource BooleanToVisibilityConverter}" />
@@ -431,7 +443,9 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Top"
                         Width="108"
-                        Height="89" RenderTransformOrigin="0.393,0.771" Canvas.Left="28">
+                        Height="89"
+                        RenderTransformOrigin="0.393,0.771"
+                        Canvas.Left="28">
                     <Image.Visibility>
                         <Binding Path="Devices.Inputs.DryPumpRun.Value"
                                  Converter="{StaticResource BooleanToVisibilityConverter}" />

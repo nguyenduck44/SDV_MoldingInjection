@@ -88,8 +88,6 @@ namespace SDV_MoldingInjection.Defines
         {
             InjectProcInput[EInjectProcInput.DryPump_VacuumDone]
                 .MapTo(DryPumpProcOutput[EDryPumpProcOutput.ChamberVacuumSuccess]);
-            InjectProcInput[EInjectProcInput.DryPump_PurgeDone]
-                .MapTo(DryPumpProcOutput[EDryPumpProcOutput.ChamberPurgeSuccess]);
             InjectProcInput[EInjectProcInput.SPDHead1_WorkDone]
                 .MapTo(SPDHead1_ProcOutput[ESPDHeadProcOutput.InjectFinish]);
             InjectProcInput[EInjectProcInput.SPDHead2_WorkDone]
@@ -118,8 +116,6 @@ namespace SDV_MoldingInjection.Defines
 
             DryPumpProcInput[EDryPumpProcInput.Vacuum_WorkRequest]
                 .MapTo(InjectProcOutput[EInjectProcOutput.DryPump_VacuumRequest]);
-            DryPumpProcInput[EDryPumpProcInput.Purge_WorkRequest]
-                .MapTo(InjectProcOutput[EInjectProcOutput.DryPump_PurgeRequest]);
 
             SPDHead1_ProcInput[ESPDHeadProcInput.WorkRequest]
                .MapTo(InjectProcOutput[EInjectProcOutput.SPDHeadWorkRequest]);

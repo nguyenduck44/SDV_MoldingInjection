@@ -5,6 +5,27 @@ namespace SDV_MoldingInjection.Recipe
 {
     public class InjectRecipe : RecipeBase
     {
+        [SingleRecipeDescription(Description = "Inject Time", Unit = Unit.Second)]
+        public double InjectTime
+        {
+            get { return _injectTime; }
+            set
+            {
+                if (_injectTime == value) return;
+                OnRecipeChanged(_injectTime, value);
+                _injectTime = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "Vent Time", Unit = Unit.Second)]
+        public double VentTime
+        {
+            get { return _ventTime; }
+            set { _ventTime = value; }
+        }
+
+
         [SingleRecipeDescription(Description = "XAxis ready position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
         public double XAxisReadyPos
@@ -119,6 +140,9 @@ namespace SDV_MoldingInjection.Recipe
         private double _niddleCleanShiftDist;
 
         private double _yAxisNeedleClean;
+
+        private double _injectTime;
+        private double _ventTime;
         #endregion
     }
 }

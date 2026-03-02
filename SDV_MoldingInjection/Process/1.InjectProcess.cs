@@ -581,21 +581,6 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Input detect EInjectProcInput.SPDHead(1~4)_WorkDone");
                     Step.RunStep++;
                     break;
-                case EMoldProcResinInjectStep.DryPump_Purge_Request:
-                    Log.Debug($"Set Output {EInjectProcOutput.DryPump_PurgeRequest}");
-                    procOutputs[EInjectProcOutput.DryPump_PurgeRequest].Value = true;
-                    Step.RunStep++;
-                    break;
-                case EMoldProcResinInjectStep.DryPump_Purge_DoneWait:
-                    if (procInputs[EInjectProcInput.DryPump_PurgeDone].Value == false)
-                    {
-                        break;
-                    }
-
-                    procOutputs[EInjectProcOutput.DryPump_PurgeRequest].Value = false;
-                    Log.Debug($"Input detect {EInjectProcInput.DryPump_PurgeDone}");
-                    Step.RunStep++;
-                    break;
                 case EMoldProcResinInjectStep.ZAxis_SafetyPos_Move:
                     ZAxisSafetyPosMove();
                     BellowCyl.Down();

@@ -5,7 +5,9 @@ namespace SDV_MoldingInjection.Recipe
 {
     public class SPDHeadRecipe : RecipeBase
     {
-        public bool HeadSkip
+        public event Action<double> ResinWeightChanged;
+        public event Action<bool> HeadSkipChanged;
+        public bool HeadSkip 
         {
             get { return _headSkip; }
             set
@@ -13,6 +15,7 @@ namespace SDV_MoldingInjection.Recipe
                 if (_headSkip == value) return;
 
                 OnRecipeChanged(_headSkip, value);
+                HeadSkipChanged?.Invoke(value);
                 _headSkip = value;
                 OnPropertyChanged();
             }
@@ -228,6 +231,7 @@ namespace SDV_MoldingInjection.Recipe
             get { return _resinWeight; }
             set
             {
+                ResinWeightChanged?.Invoke(value);
                 if (_resinWeight == value) return;
                 OnRecipeChanged(_resinWeight, value);
                 _resinWeight = value;
@@ -247,21 +251,6 @@ namespace SDV_MoldingInjection.Recipe
                 OnPropertyChanged();
             }
         }
-
-        [SingleRecipeDescription(Description = "Inject Time", Unit = Unit.Second)]
-        public double InjectTime
-        {
-            get { return _injectTime; }
-            set
-            {
-                if (_injectTime == value) return;
-                OnRecipeChanged(_injectTime, value);
-                _injectTime = value;
-                OnPropertyChanged();
-            }
-        }
-
-
 
         public double PAxisInjectChargePos
         {
@@ -301,7 +290,6 @@ namespace SDV_MoldingInjection.Recipe
 
         private double _resinWeight;
         private double _resinWeightSpec;
-        private double _injectTime;
 
         #endregion
     }

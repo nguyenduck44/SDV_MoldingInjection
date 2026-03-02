@@ -42,12 +42,13 @@ namespace SDV_MoldingInjection.Process
 
         #region Constructors
         public DryPumpProcess(Devices devices, RecipeSelector recipeSelector,
-            ProcessIO processIO, MachineStatus machineStatus)
+            ProcessIO processIO, MachineStatus machineStatus,
+            CarrierJigStatusList carrierJigStatusList)
         {
             _devices = devices;
             _recipeSelector = recipeSelector;
             _machineStatus = machineStatus;
-
+            _carrierJigStatusList = carrierJigStatusList;
             procInputs = processIO.DryPumpProcInput;
             procOutputs = processIO.DryPumpProcOutput;
         }
@@ -238,6 +239,10 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"{Out_DryPumpRun.Name} run");
                     Out_DryPumpRun.Value = true;
                     Wait(10000, () => In_DryPumpRun.Value);
+#if SIMULATION
+                    SimulationInputSetter.SetSimInput(_devices.Inputs.DryPumpRun, true);
+#endif
+
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_RunWait:
@@ -303,38 +308,43 @@ namespace SDV_MoldingInjection.Process
                 case EDryPumpProcResinInjectStep.DryPump_VacuumDone_Send:
                     procOutputs[EDryPumpProcOutput.ChamberVacuumSuccess].Value = true;
                     Log.Info($"Set output {EDryPumpProcOutput.ChamberVacuumSuccess}");
+                    Log.Debug("Wait Vent");
                     Step.RunStep++;
                     break;
-                case EDryPumpProcResinInjectStep.DryPump_Purge_RequestWait:
-                    if (procInputs[EDryPumpProcInput.Purge_WorkRequest].Value == false)
+                case EDryPumpProcResinInjectStep.DryPump_WaitVentTime:
+                    if (_currentRecipe.InjectRecipe.InjectTime - _carrierJigStatusList.CarrierJigStatusH1.InjectTime > _currentRecipe.InjectRecipe.VentTime ||
+                        _currentRecipe.InjectRecipe.InjectTime - _carrierJigStatusList.CarrierJigStatusH2.InjectTime > _currentRecipe.InjectRecipe.VentTime ||
+                        _currentRecipe.InjectRecipe.InjectTime - _carrierJigStatusList.CarrierJigStatusH3.InjectTime > _currentRecipe.InjectRecipe.VentTime ||
+                        _currentRecipe.InjectRecipe.InjectTime - _carrierJigStatusList.CarrierJigStatusH4.InjectTime > _currentRecipe.InjectRecipe.VentTime)
                     {
-                        Wait(50);
+                        Wait(20);
                         break;
                     }
 
-                    procOutputs[EDryPumpProcOutput.ChamberVacuumSuccess].Value = false;
-                    Log.Info($"Input detect {EDryPumpProcInput.Purge_WorkRequest}");
+                    Log.Debug("Vent start");
+                    Out_ChamberPurgeOn.Value = true;
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_PurgeAndWait:
-                    Out_ChamberPurgeOn.Value = true;
-                    Wait(3000);
-                    Step.RunStep++;
-                    break;
-                case EDryPumpProcResinInjectStep.DryPump_PurgeDone_Send:
+                    if (_machineStatus.TimeInject < _currentRecipe.InjectRecipe.InjectTime)
+                    {
+                        Wait(10);
+                        break;
+                    }
+
+                    Log.Debug($"Vent Complete: {_currentRecipe.InjectRecipe.VentTime}s");
                     Out_ChamberPurgeOn.Value = false;
-                    procOutputs[EDryPumpProcOutput.ChamberPurgeSuccess].Value = true;
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.WaitToClear_ProcOutput:
-                    if (procInputs[EDryPumpProcInput.Purge_WorkRequest].Value == true)
+                    if (procInputs[EDryPumpProcInput.Vacuum_WorkRequest].Value == true)
                     {
-                        Wait(50);
+                        Wait(20);
                         break;
                     }
 
                     Log.Info($"Clear output {EDryPumpProcOutput.ChamberVacuumSuccess}");
-                    procOutputs[EDryPumpProcOutput.ChamberPurgeSuccess].Value = false;
+                    procOutputs[EDryPumpProcOutput.ChamberVacuumSuccess].Value = false;
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.End:
@@ -392,6 +402,7 @@ namespace SDV_MoldingInjection.Process
         private readonly Devices _devices;
         private readonly RecipeSelector _recipeSelector;
         private readonly MachineStatus _machineStatus;
+        private readonly CarrierJigStatusList _carrierJigStatusList;
 
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
         private ESPDHead _failHead;

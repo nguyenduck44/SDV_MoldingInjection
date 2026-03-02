@@ -18,8 +18,9 @@ namespace SDV_MoldingInjection.Recipe
             set { _vacuumPressureSpec = value; }
         }
 
+        
         #region Privates
-		private double _vacuumPressureSpec_Under;
+        private double _vacuumPressureSpec_Under;
         private double _vacuumPressureSpec;
         #endregion
     }

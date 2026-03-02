@@ -126,7 +126,8 @@ namespace SDV_MoldingInjection.Process
             [FromKeyedServices("BalanceLeft")] MettlerToledoWKC204C balanceLeft,
             [FromKeyedServices("BalanceRight")] MettlerToledoWKC204C balanceRight,
             SyringAmountStatusList syringeAmountStatusList,
-            MachineStatus machineStatus)
+            MachineStatus machineStatus,
+            CarrierJigStatusList carrierJigStatusList)
         {
             _devices = devices;
             _recipeSelector = recipeSelector;
@@ -135,6 +136,7 @@ namespace SDV_MoldingInjection.Process
             _balanceRight = balanceRight;
             _syringeAmountStatusList = syringeAmountStatusList;
             _machineStatus = machineStatus;
+            _carrierJigStatusList = carrierJigStatusList;
         }
 
         #region Process Methods
@@ -602,6 +604,19 @@ namespace SDV_MoldingInjection.Process
 
             return true;
         }
+
+        public override bool PreProcess()
+        {
+            if (_injectSequenceStartTick >= 0)
+            {
+                CarrierJigStatus.InjectTime = (Environment.TickCount64 - _injectSequenceStartTick) / 1000.0;
+            }
+            else
+            {
+                CarrierJigStatus.InjectTime = 0;
+            }
+            return base.PreProcess();
+        }
         #endregion
 
         #region Sequence Methods
@@ -715,7 +730,9 @@ namespace SDV_MoldingInjection.Process
                     switch (sequence)
                     {
                         case ESequence.ResinInject:
-                            _pAxisInject_Vel = Math.Abs(_currentSPDHeadRecipe.PAxisInjectChargePos - _pAxisBase_Pos) / _currentSPDHeadRecipe.InjectTime;
+                            _pAxisInject_Vel = Math.Abs(_currentSPDHeadRecipe.PAxisInjectChargePos - _pAxisBase_Pos) / _currentRecipe.InjectRecipe.InjectTime;
+
+                            CarrierJigStatus.PAxisInjectVelocity = _pAxisInject_Vel; // Display UI
                             break;
                         case ESequence.DummyShot_H1:
                         case ESequence.DummyShot_H2:
@@ -797,7 +814,7 @@ namespace SDV_MoldingInjection.Process
                             _injectSequenceStartTick = Environment.TickCount64;
                         }
 
-                        Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout + _currentSPDHeadRecipe.InjectTime,
+                        Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout + _currentRecipe.InjectRecipe.InjectTime,
                             () => PAxis.IsOnPosition(_pAxisInject_Pos));
                     }
                     else
@@ -1269,7 +1286,7 @@ namespace SDV_MoldingInjection.Process
         #region Private Methods
         private void ResetInjectSequenceTimer()
         {
-            _injectSequenceStartTick = -1;
+            _injectTimeUpdateTimer.Stop();
         }
 
         private void RaiseHeadWarning(EWarning warning)
@@ -1290,6 +1307,8 @@ namespace SDV_MoldingInjection.Process
         private readonly MettlerToledoWKC204C _balanceRight;
         private readonly SyringAmountStatusList _syringeAmountStatusList;
         private readonly MachineStatus _machineStatus;
+        private readonly CarrierJigStatusList _carrierJigStatusList;
+
         public double InjectSequenceElapsedSeconds =>
             _injectSequenceStartTick >= 0
                 ? Math.Max(0, (Environment.TickCount64 - _injectSequenceStartTick) / 1000.0)
@@ -1332,6 +1351,14 @@ namespace SDV_MoldingInjection.Process
             _ => throw new Exception($"Invalid process name: {Name}")
         };
 
+        private CarrierJigStatus CarrierJigStatus => Name switch
+        {
+            "SPDHead1" => _carrierJigStatusList.CarrierJigStatusH1,
+            "SPDHead2" => _carrierJigStatusList.CarrierJigStatusH2,
+            "SPDHead3" => _carrierJigStatusList.CarrierJigStatusH3,
+            "SPDHead4" => _carrierJigStatusList.CarrierJigStatusH4,
+            _ => throw new Exception($"Invalid process name: {Name}")
+        };
         private double V380Weight2mg(double weight, double constant = 1)
         {
             return Math.Round(weight / (Math.Pow(2.5, 2) * Math.PI), 3);
@@ -1349,6 +1376,7 @@ namespace SDV_MoldingInjection.Process
         public int _removeResinCount;
         private int _bubbleRemoveCount;
         private long _injectSequenceStartTick = -1;
+        private readonly System.Timers.Timer _injectTimeUpdateTimer;
 
         private double _pAxisInjectCharge_Height;
         private double _pAxisInjectCharge_Pos => _pAxisBase_Pos - _pAxisInjectCharge_Height;

@@ -85,7 +85,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             [FromKeyedServices("BalanceLeft")] MettlerToledoWKC204C balanceLeft,
             [FromKeyedServices("BalanceRight")] MettlerToledoWKC204C balanceRight,
             InterlockService interlockService,
-            SyringAmountStatusList syringAmountStatusList)
+            SyringAmountStatusList syringAmountStatusList,
+            CarrierJigStatusList carrierJigStatusList)
         {
             _devices = devices;
             _processes = processes;
@@ -98,7 +99,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _balanceRight = balanceRight;
             _interlockService = interlockService;
             _syringAmountStatusList = syringAmountStatusList;
-
+            _carrierJigStatusList = carrierJigStatusList;
             _task = new Task(() => { });
             ErrorMessages = new List<string>();
 
@@ -220,12 +221,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     case EHandleStep.RecipeHandle:
                         Log.Debug("Load Recipes");
                         MessageText = "Load Recipes";
+                        SubscibeResinWeightChanged();
+                        SubscribeSkipHeadChanged();
                         if (_recipeSelector.Load() == false)
                         {
                             ErrorMessages.Add("Recipes Load Fail.");
                             Log.Debug("Recipe Load Fail");
                         }
-
                         Thread.Sleep(50);
                         _step++;
                         break;
@@ -385,6 +387,66 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 Thread.Sleep(2);
             }
         }
+        private void SubscribeSkipHeadChanged()
+        {
+            _carrierJigStatusList.CarrierJigStatusH1.HeadSkipChanged += (isSkip) =>
+            {
+                _recipeSelector.CurrentRecipe.SPDHead1_Recipe.HeadSkip = isSkip;
+                _recipeSelector.Save();
+            };
+            _carrierJigStatusList.CarrierJigStatusH2.HeadSkipChanged += (isSkip) =>
+            {
+                _recipeSelector.CurrentRecipe.SPDHead2_Recipe.HeadSkip = isSkip;
+                _recipeSelector.Save();
+            };
+            _carrierJigStatusList.CarrierJigStatusH3.HeadSkipChanged += (isSkip) =>
+            {
+                _recipeSelector.CurrentRecipe.SPDHead3_Recipe.HeadSkip = isSkip;
+                _recipeSelector.Save();
+            };
+            _carrierJigStatusList.CarrierJigStatusH4.HeadSkipChanged += (isSkip) =>
+            {
+                _recipeSelector.CurrentRecipe.SPDHead4_Recipe.HeadSkip = isSkip;
+                _recipeSelector.Save();
+            };
+
+            _recipeSelector.CurrentRecipe.SPDHead1_Recipe.HeadSkipChanged += (isSkip) =>
+            {
+                _carrierJigStatusList.CarrierJigStatusH1.HeadSkip = isSkip;
+            };
+            _recipeSelector.CurrentRecipe.SPDHead2_Recipe.HeadSkipChanged += (isSkip) =>
+            {
+                _carrierJigStatusList.CarrierJigStatusH2.HeadSkip = isSkip;
+            };
+            _recipeSelector.CurrentRecipe.SPDHead3_Recipe.HeadSkipChanged += (isSkip) =>
+            {
+                _carrierJigStatusList.CarrierJigStatusH3.HeadSkip = isSkip;
+            };
+            _recipeSelector.CurrentRecipe.SPDHead4_Recipe.HeadSkipChanged += (isSkip) =>
+            {
+                _carrierJigStatusList.CarrierJigStatusH4.HeadSkip = isSkip;
+            };
+        }
+
+        private void SubscibeResinWeightChanged()
+        {
+            _recipeSelector.CurrentRecipe.SPDHead1_Recipe.ResinWeightChanged += (weight) =>
+            {
+                _carrierJigStatusList.CarrierJigStatusH1.ResinWeight = weight;
+            };
+            _recipeSelector.CurrentRecipe.SPDHead2_Recipe.ResinWeightChanged += (weight) =>
+            {
+                _carrierJigStatusList.CarrierJigStatusH2.ResinWeight = weight;
+            };
+            _recipeSelector.CurrentRecipe.SPDHead3_Recipe.ResinWeightChanged += (weight) =>
+            {
+                _carrierJigStatusList.CarrierJigStatusH3.ResinWeight = weight;
+            };
+            _recipeSelector.CurrentRecipe.SPDHead4_Recipe.ResinWeightChanged += (weight) =>
+            {
+                _carrierJigStatusList.CarrierJigStatusH4.ResinWeight = weight;
+            };
+        }
 
         private void CleanupOldLogs(string logRootPath, int keepDays = 15)
         {
@@ -461,6 +523,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly MettlerToledoWKC204C _balanceRight;
         private readonly InterlockService _interlockService;
         private readonly SyringAmountStatusList _syringAmountStatusList;
+        private readonly CarrierJigStatusList _carrierJigStatusList;
         private readonly ICamera _alignCamera1;
         private readonly IVisionFlowRepository _visionFlowRepository;
         private readonly Devices _devices;

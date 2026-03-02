@@ -16,9 +16,6 @@
         SDPHead_Work_Request,
         SDPHead_Work_DoneWait,
 
-        DryPump_Purge_Request,
-        DryPump_Purge_DoneWait,
-
         ZAxis_SafetyPos_Move,
         ZAxis_SafetyPos_MoveWait,
 

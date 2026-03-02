@@ -18,10 +18,8 @@
 
         DryPump_VacuumDone_Send,
 
-        DryPump_Purge_RequestWait,
+        DryPump_WaitVentTime,
         DryPump_PurgeAndWait,
-
-        DryPump_PurgeDone_Send,
 
         WaitToClear_ProcOutput,
 
