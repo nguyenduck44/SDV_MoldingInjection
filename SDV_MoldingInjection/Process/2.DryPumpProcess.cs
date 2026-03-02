@@ -42,12 +42,13 @@ namespace SDV_MoldingInjection.Process
 
         #region Constructors
         public DryPumpProcess(Devices devices, RecipeSelector recipeSelector,
-            ProcessIO processIO, MachineStatus machineStatus)
+            ProcessIO processIO, MachineStatus machineStatus,
+            CarrierJigStatusList carrierJigStatusList)
         {
             _devices = devices;
             _recipeSelector = recipeSelector;
             _machineStatus = machineStatus;
-
+            _carrierJigStatusList = carrierJigStatusList;
             procInputs = processIO.DryPumpProcInput;
             procOutputs = processIO.DryPumpProcOutput;
         }
@@ -311,9 +312,12 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_WaitVentTime:
-                    if (_currentRecipe.InjectRecipe.InjectTime - _machineStatus.TimeInject > _currentRecipe.InjectRecipe.VentTime)
+                    if (_currentRecipe.InjectRecipe.InjectTime - _carrierJigStatusList.CarrierJigStatusH1.InjectTime > _currentRecipe.InjectRecipe.VentTime ||
+                        _currentRecipe.InjectRecipe.InjectTime - _carrierJigStatusList.CarrierJigStatusH2.InjectTime > _currentRecipe.InjectRecipe.VentTime ||
+                        _currentRecipe.InjectRecipe.InjectTime - _carrierJigStatusList.CarrierJigStatusH3.InjectTime > _currentRecipe.InjectRecipe.VentTime ||
+                        _currentRecipe.InjectRecipe.InjectTime - _carrierJigStatusList.CarrierJigStatusH4.InjectTime > _currentRecipe.InjectRecipe.VentTime)
                     {
-                        Wait(10);
+                        Wait(20);
                         break;
                     }
 
@@ -394,19 +398,11 @@ namespace SDV_MoldingInjection.Process
             RaiseWarning(warning + ((int)(EWarning.Z2Axis_Origin_TimeOut - EWarning.Z1Axis_Origin_TimeOut)) * (_failHead - ESPDHead.SPDHead1));
         }
 
-        private SPDHeadRecipe _currentSPDHeadRecipe => Name switch
-        {
-            "SPDHead1" => _currentRecipe.SPDHead1_Recipe,
-            "SPDHead2" => _currentRecipe.SPDHead2_Recipe,
-            "SPDHead3" => _currentRecipe.SPDHead3_Recipe,
-            "SPDHead4" => _currentRecipe.SPDHead4_Recipe,
-            _ => throw new Exception($"Invalid process name: {Name}")
-        };
-
         #region Privates
         private readonly Devices _devices;
         private readonly RecipeSelector _recipeSelector;
         private readonly MachineStatus _machineStatus;
+        private readonly CarrierJigStatusList _carrierJigStatusList;
 
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
         private ESPDHead _failHead;

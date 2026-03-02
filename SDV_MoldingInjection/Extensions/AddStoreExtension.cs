@@ -30,6 +30,7 @@ namespace SDV_MoldingInjection.Extensions
             {
                 services.AddSingleton<CellStatusToColorConverter>();
                 services.AddSingleton<SyringAmountStatusList>();
+                services.AddSingleton<CarrierJigStatusList>();
 
                 services.AddKeyedScoped<IAlertService, AlarmService<EAlarm>>("AlarmService");
                 services.AddKeyedScoped<IAlertService, WarningService<EWarning>>("WarningService");

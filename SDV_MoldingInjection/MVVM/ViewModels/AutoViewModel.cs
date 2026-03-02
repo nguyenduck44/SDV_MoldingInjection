@@ -15,6 +15,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public Devices Devices { get; }
         public SyringAmountStatusList SyringeAmountStatusList { get; }
         public CarrierJigStatusViewModel CarrierJigStatus { get; }
+        public CarrierJigStatusList CarrierJigStatusList { get; }
         #endregion
 
         #region Contructors
@@ -23,14 +24,15 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             NavigationStore navigationStore,
             SyringAmountStatusList syringeAmountStatusList,
             RecipeSelector recipeSelector,
-            CarrierJigStatusViewModel carrierJigStatus)
+            CarrierJigStatusViewModel carrierJigStatus,
+            CarrierJigStatusList carrierJigStatusList)
         {
             Devices = devices;
             _navigationStore = navigationStore;
             SyringeAmountStatusList = syringeAmountStatusList;
             _recipeSelector = recipeSelector;
             CarrierJigStatus = carrierJigStatus;
-
+            CarrierJigStatusList = carrierJigStatusList;
             Log = LogManager.GetLogger("AutoVM");
 
             statusUpdateTimer = new System.Timers.Timer(100);

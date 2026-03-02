@@ -5,7 +5,9 @@ namespace SDV_MoldingInjection.Recipe
 {
     public class SPDHeadRecipe : RecipeBase
     {
-        public bool HeadSkip
+        public event Action<double> ResinWeightChanged;
+        public event Action<bool> HeadSkipChanged;
+        public bool HeadSkip 
         {
             get { return _headSkip; }
             set
@@ -13,6 +15,7 @@ namespace SDV_MoldingInjection.Recipe
                 if (_headSkip == value) return;
 
                 OnRecipeChanged(_headSkip, value);
+                HeadSkipChanged?.Invoke(value);
                 _headSkip = value;
                 OnPropertyChanged();
             }
@@ -228,6 +231,7 @@ namespace SDV_MoldingInjection.Recipe
             get { return _resinWeight; }
             set
             {
+                ResinWeightChanged?.Invoke(value);
                 if (_resinWeight == value) return;
                 OnRecipeChanged(_resinWeight, value);
                 _resinWeight = value;
