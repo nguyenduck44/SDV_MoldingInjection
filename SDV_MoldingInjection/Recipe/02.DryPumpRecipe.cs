@@ -18,9 +18,17 @@ namespace SDV_MoldingInjection.Recipe
             set { _vacuumPressureSpec = value; }
         }
 
+        [SingleRecipeDescription(Description = "Vent Time", Unit = Unit.Second)]
+        public double VentTime
+        {
+            get { return _ventTime; }
+            set { _ventTime = value; }
+        }
+
         #region Privates
-		private double _vacuumPressureSpec_Under;
+        private double _vacuumPressureSpec_Under;
         private double _vacuumPressureSpec;
+        private double _ventTime;
         #endregion
     }
 }

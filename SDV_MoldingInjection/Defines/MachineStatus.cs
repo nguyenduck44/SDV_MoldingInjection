@@ -16,7 +16,7 @@ namespace SDV_MoldingInjection.Defines
         public MachineStatus()
         {
         }
-        
+
         public bool OriginDone
         {
             get { return _originDone; }
@@ -28,9 +28,21 @@ namespace SDV_MoldingInjection.Defines
         public bool IsDotWeightingTest
         {
             get { return isDotWeightingTest; }
-            set 
+            set
             {
                 isDotWeightingTest = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private double timeInject;
+
+        public double TimeInject
+        {
+            get { return timeInject; }
+            set
+            {
+                timeInject = value;
                 OnPropertyChanged();
             }
         }

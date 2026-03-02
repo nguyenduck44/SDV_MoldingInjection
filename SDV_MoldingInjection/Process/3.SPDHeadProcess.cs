@@ -372,6 +372,9 @@ namespace SDV_MoldingInjection.Process
 
         public override bool ProcessRun()
         {
+            if (_injectSequenceStartTick >= 0)
+                _machineStatus.TimeInject = Math.Max(0, (Environment.TickCount64 - _injectSequenceStartTick) / 1000.0);
+
             switch (Sequence)
             {
                 case ESequence.Stop:
@@ -795,6 +798,7 @@ namespace SDV_MoldingInjection.Process
                         if (_injectSequenceStartTick < 0)
                         {
                             _injectSequenceStartTick = Environment.TickCount64;
+                            _machineStatus.TimeInject = 0;
                         }
 
                         Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout + _currentSPDHeadRecipe.InjectTime,
@@ -1290,10 +1294,7 @@ namespace SDV_MoldingInjection.Process
         private readonly MettlerToledoWKC204C _balanceRight;
         private readonly SyringAmountStatusList _syringeAmountStatusList;
         private readonly MachineStatus _machineStatus;
-        public double InjectSequenceElapsedSeconds =>
-            _injectSequenceStartTick >= 0
-                ? Math.Max(0, (Environment.TickCount64 - _injectSequenceStartTick) / 1000.0)
-                : 0;
+        public double InjectSequenceElapsedSeconds => _machineStatus.TimeInject;
         public double PAxisInjectVelocity => _pAxisInject_Vel;
 
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
