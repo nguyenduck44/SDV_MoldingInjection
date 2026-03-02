@@ -312,10 +312,10 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_WaitVentTime:
-                    if (_currentRecipe.InjectRecipe.InjectTime - _carrierJigStatusList.CarrierJigStatusH1.InjectTime > _currentRecipe.InjectRecipe.VentTime ||
-                        _currentRecipe.InjectRecipe.InjectTime - _carrierJigStatusList.CarrierJigStatusH2.InjectTime > _currentRecipe.InjectRecipe.VentTime ||
-                        _currentRecipe.InjectRecipe.InjectTime - _carrierJigStatusList.CarrierJigStatusH3.InjectTime > _currentRecipe.InjectRecipe.VentTime ||
-                        _currentRecipe.InjectRecipe.InjectTime - _carrierJigStatusList.CarrierJigStatusH4.InjectTime > _currentRecipe.InjectRecipe.VentTime)
+                    if (((_currentRecipe.InjectRecipe.InjectTime - _carrierJigStatusList.CarrierJigStatusH1.InjectTime > _currentRecipe.InjectRecipe.VentTime) && _currentRecipe.SPDHead1_Recipe.HeadSkip) ||
+                        ((_currentRecipe.InjectRecipe.InjectTime - _carrierJigStatusList.CarrierJigStatusH2.InjectTime > _currentRecipe.InjectRecipe.VentTime) && _currentRecipe.SPDHead2_Recipe.HeadSkip) ||
+                        ((_currentRecipe.InjectRecipe.InjectTime - _carrierJigStatusList.CarrierJigStatusH3.InjectTime > _currentRecipe.InjectRecipe.VentTime) && _currentRecipe.SPDHead3_Recipe.HeadSkip) ||
+                        ((_currentRecipe.InjectRecipe.InjectTime - _carrierJigStatusList.CarrierJigStatusH4.InjectTime > _currentRecipe.InjectRecipe.VentTime) && _currentRecipe.SPDHead4_Recipe.HeadSkip))
                     {
                         Wait(20);
                         break;
