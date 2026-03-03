@@ -55,6 +55,24 @@ namespace SDV_MoldingInjection.Process
         #endregion
 
         #region Process Methods
+        public override bool PreProcess()
+        {
+            if (EnablePressureHold)
+            {
+                if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec)
+                {
+                    AngleValve.Open();
+                }
+                
+                if(_devices.AnalogInputs.VacuumPressureInTorr <= _currentRecipe.DryPumpRecipe.VacuumPressureSpec)
+                {
+                    AngleValve.Close();
+                }
+            }
+
+            return base.PreProcess();
+        }
+
         public override bool ProcessToRun()
         {
             switch ((EDryPumpProcToRunStep)Step.ToRunStep)
@@ -292,7 +310,11 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.AngleValve_Close:
+                    Log.Debug($"Closing {AngleValve.Name} for pressure hold");
                     AngleValve.Close();
+
+                    Log.Debug($"Enable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
+                    EnablePressureHold = true;
                     Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, AngleValve.IsClose);
                     Step.RunStep++;
                     break;
@@ -320,6 +342,9 @@ namespace SDV_MoldingInjection.Process
                         Wait(20);
                         break;
                     }
+
+                    Log.Debug($"Disable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
+                    EnablePressureHold = false;
 
                     Log.Debug("Vent start");
                     _ventStartTick = Environment.TickCount;
@@ -410,6 +435,7 @@ namespace SDV_MoldingInjection.Process
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
         private ESPDHead _failHead;
         private double _ventStartTick;
+        private bool EnablePressureHold;
         #endregion
     }
 }
