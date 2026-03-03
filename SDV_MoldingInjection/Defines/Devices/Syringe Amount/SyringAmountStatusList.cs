@@ -23,8 +23,9 @@ namespace SDV_MoldingInjection.Defines.Devices
 
         public List<SyringeAmountStatus> SyringeAmounts { get; private set; }
 
-        public void ConsumeSyringeAmount(ESPDHead head, double weight)
+        public void ConsumeSyringeAmount(ESPDHead head, double height)
         {
+            double weight = Math.Pow(2.5,2) * Math.PI * Math.Abs(height); // mm^3 = mg
             int index = (int)head - 1;
             if (index < 0 || index >= SyringeAmounts.Count) return;
 
