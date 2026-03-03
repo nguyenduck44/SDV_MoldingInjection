@@ -18,6 +18,26 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        [SingleRecipeDescription(Description = "Delay Time", Unit = Unit.Second)]
+        public double DelayTime
+        {
+            get { return _delayTime; }
+            set
+            {
+                if (_delayTime == value) return;
+                OnRecipeChanged(_delayTime, value);
+                _delayTime = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "Vent Time After Inject", Unit = Unit.Second)]
+        public double VentTimeAfterInject
+        {
+            get { return _ventTimeAfterInject; }
+            set { _ventTimeAfterInject = value; }
+        }
+
         [SingleRecipeDescription(Description = "Vent Time", Unit = Unit.Second)]
         public double VentTime
         {
@@ -191,6 +211,8 @@ namespace SDV_MoldingInjection.Recipe
         private double _yAxisNeedleClean;
 
         private double _injectTime;
+        private double _delayTime;
+        private double _ventTimeAfterInject;
         private double _ventTime;
         #endregion
     }

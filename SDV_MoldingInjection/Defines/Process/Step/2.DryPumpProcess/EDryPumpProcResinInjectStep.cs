@@ -16,6 +16,8 @@
         AngleValve_Close,
         AngleValve_CloseWait,
 
+        Delay_BeforeInject,
+
         DryPump_VacuumDone_Send,
 
         DryPump_WaitVentTime,

@@ -307,14 +307,14 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Info($"DryPump vacuum in-spec {_devices.AnalogInputs.VacuumPressureInTorr} Torr");
+                    Log.Debug($"Enable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
+                    EnablePressureHold = true;
+                    _delayStartTick = Environment.TickCount;
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.AngleValve_Close:
                     Log.Debug($"Closing {AngleValve.Name} for pressure hold");
                     AngleValve.Close();
-
-                    Log.Debug($"Enable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
-                    EnablePressureHold = true;
                     Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, AngleValve.IsClose);
                     Step.RunStep++;
                     break;
@@ -327,6 +327,18 @@ namespace SDV_MoldingInjection.Process
 
                     Step.RunStep++;
                     break;
+                case EDryPumpProcResinInjectStep.Delay_BeforeInject:
+                    if (((Environment.TickCount - _delayStartTick) / 1000.0) < _currentRecipe.InjectRecipe.DelayTime)
+                    {
+                        Wait(10);
+                        break;
+                    }
+
+                    Log.Debug($"Delay before inject complete: {_currentRecipe.InjectRecipe.DelayTime}s");
+                    Log.Debug($"Disable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
+                    EnablePressureHold = false;
+                    Step.RunStep++;
+                    break;
                 case EDryPumpProcResinInjectStep.DryPump_VacuumDone_Send:
                     procOutputs[EDryPumpProcOutput.ChamberVacuumSuccess].Value = true;
                     Log.Info($"Set output {EDryPumpProcOutput.ChamberVacuumSuccess}");
@@ -334,17 +346,14 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_WaitVentTime:
-                    if (((_currentRecipe.InjectRecipe.InjectTime - _carrierJigStatusList.CarrierJigStatusH1.InjectTime > _currentRecipe.InjectRecipe.VentTime) && !_currentRecipe.SPDHead1_Recipe.HeadSkip) ||
-                        ((_currentRecipe.InjectRecipe.InjectTime - _carrierJigStatusList.CarrierJigStatusH2.InjectTime > _currentRecipe.InjectRecipe.VentTime) && !_currentRecipe.SPDHead2_Recipe.HeadSkip) ||
-                        ((_currentRecipe.InjectRecipe.InjectTime - _carrierJigStatusList.CarrierJigStatusH3.InjectTime > _currentRecipe.InjectRecipe.VentTime) && !_currentRecipe.SPDHead3_Recipe.HeadSkip) ||
-                        ((_currentRecipe.InjectRecipe.InjectTime - _carrierJigStatusList.CarrierJigStatusH4.InjectTime > _currentRecipe.InjectRecipe.VentTime) && !_currentRecipe.SPDHead4_Recipe.HeadSkip))
+                    if (((_carrierJigStatusList.CarrierJigStatusH1.InjectTime < _currentRecipe.InjectRecipe.VentTimeAfterInject) && !_currentRecipe.SPDHead1_Recipe.HeadSkip) ||
+                        ((_carrierJigStatusList.CarrierJigStatusH2.InjectTime < _currentRecipe.InjectRecipe.VentTimeAfterInject) && !_currentRecipe.SPDHead2_Recipe.HeadSkip) ||
+                        ((_carrierJigStatusList.CarrierJigStatusH3.InjectTime < _currentRecipe.InjectRecipe.VentTimeAfterInject) && !_currentRecipe.SPDHead3_Recipe.HeadSkip) ||
+                        ((_carrierJigStatusList.CarrierJigStatusH4.InjectTime < _currentRecipe.InjectRecipe.VentTimeAfterInject) && !_currentRecipe.SPDHead4_Recipe.HeadSkip))
                     {
-                        Wait(20);
+                        Wait(10);
                         break;
                     }
-
-                    Log.Debug($"Disable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
-                    EnablePressureHold = false;
 
                     Log.Debug("Vent start");
                     _ventStartTick = Environment.TickCount;
@@ -435,6 +444,7 @@ namespace SDV_MoldingInjection.Process
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
         private ESPDHead _failHead;
         private double _ventStartTick;
+        private double _delayStartTick;
         private bool EnablePressureHold;
         #endregion
     }

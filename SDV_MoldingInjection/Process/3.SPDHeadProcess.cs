@@ -730,16 +730,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Wait inject request work");
                     Step.RunStep++;
                     break;
-                case ESPDHeadProcCommonStep.WorkRequest_Wait:
-                    if (procInputs[ESPDHeadProcInput.WorkRequest].Value == false)
-                    {
-                        Wait(50);
-                        break;
-                    }
-
-                    Log.Debug($"Input detect {ESPDHeadProcInput.WorkRequest}");
-                    Step.RunStep++;
-                    break;
+                
                 case ESPDHeadProcCommonStep.Base_PosVel_Calculte:
                     _pAxisInject_Pos = _pAxisBase_Pos;
                     switch (sequence)
@@ -818,6 +809,16 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"{GAxis.Name} moving to OpenPos done");
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcCommonStep.WorkRequest_Wait:
+                    if (procInputs[ESPDHeadProcInput.WorkRequest].Value == false)
+                    {
+                        Wait(50);
+                        break;
+                    }
+
+                    Log.Debug($"Input detect {ESPDHeadProcInput.WorkRequest}");
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.PAxis_InjectPos_Move:

@@ -15,8 +15,6 @@
         PAxis_ChargePos_Move,
         PAxis_ChargePos_MoveWait,
 
-        WorkRequest_Wait,
-
         // ----- INJECT PHASE -----
         Base_PosVel_Calculte,
 
@@ -25,6 +23,8 @@
 
         Gate_Open,
         Gate_OpenWait,
+
+        WorkRequest_Wait,
 
         PAxis_InjectPos_Move,
         PAxis_InjectPos_MoveWait,
