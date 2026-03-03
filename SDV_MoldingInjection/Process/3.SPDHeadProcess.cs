@@ -924,6 +924,10 @@ namespace SDV_MoldingInjection.Process
                     {
                         _pAxisInjectCharge_Height = V380Weight2mg(_currentSPDHeadRecipe.ResinWeight);
                     }
+                    else
+                    {
+                        _pAxisInjectCharge_Height = _pAxisBase_Pos - _currentSPDHeadRecipe.PAxisInjectChargePos;
+                    }
 
                     Step.RunStep++;
                     break;

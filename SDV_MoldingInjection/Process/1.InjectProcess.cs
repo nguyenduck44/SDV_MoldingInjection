@@ -1130,7 +1130,7 @@ namespace SDV_MoldingInjection.Process
 
                     if (_machineStatus.MachineCalibration.All(x => x))
                     {
-                        Step.RunStep = (int)EMoldProcDotWeightingStep.End;
+                        //Step.RunStep = (int)EMoldProcDotWeightingStep.End;
                         break;
                     }
 
