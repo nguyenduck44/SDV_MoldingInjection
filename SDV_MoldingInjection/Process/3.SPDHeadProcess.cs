@@ -856,6 +856,9 @@ namespace SDV_MoldingInjection.Process
 
                     EnableTimerInject = false;
                     Log.Debug($"{PAxis.Name} moving to InjectPos done");
+
+                    // Consume syringe amount
+                    _syringeAmountStatusList.ConsumeSyringeAmount(head, _pAxisBase_Pos - _pAxisCharge_Pos);
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.WorkDone_Send:
@@ -874,7 +877,6 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.End:
-                    _syringeAmountStatusList.ConsumeSyringeAmount(head, _currentSPDHeadRecipe.ResinWeight);
 
                     if (Parent?.Sequence != ESequence.AutoRun)
                     {
@@ -1024,6 +1026,9 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    // Consume syringe amount for dot weighting
+                    _syringeAmountStatusList.ConsumeSyringeAmount(head, _pAxisBase_Pos - _pAxisCharge_Pos);
+
                     Log.Debug($"{PAxis.Name} moving to InjectPos turn {_removeResinCount} done");
 
                     if (_removeResinCount <= 1 && _machineStatus.IsDotWeightingTest == false)
@@ -1070,8 +1075,10 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    if (_calibWeight_mg <= _currentSPDHeadRecipe.ResinWeight + _currentSPDHeadRecipe.ResinWeightSpec &&
-                        _calibWeight_mg >= _currentSPDHeadRecipe.ResinWeight - _currentSPDHeadRecipe.ResinWeightSpec)
+                    double target = _currentSPDHeadRecipe.ResinWeight;
+                    double tolerance = target * (_currentSPDHeadRecipe.ResinWeightSpec / 100.0);
+
+                    if (Math.Abs(_calibWeight_mg - target) <= tolerance)
                     {
                         Log.Debug("DotWeighting Pass");
                         _currentSPDHeadRecipe.PAxisInjectChargePos = _pAxisInjectCharge_Pos;
@@ -1096,7 +1103,6 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.Stop;
                         break;
                     }
-                    _syringeAmountStatusList.ConsumeSyringeAmount(head, _currentSPDHeadRecipe.ResinWeight);
                     Sequence = ESequence.AutoRun;
                     break;
             }
