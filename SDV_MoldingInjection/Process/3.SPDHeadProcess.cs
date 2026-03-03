@@ -1,4 +1,4 @@
-using EQX.Core.InOut;
+﻿using EQX.Core.InOut;
 using EQX.Core.Motion;
 using EQX.Core.Sequence;
 using EQX.Device.Balance;
@@ -737,7 +737,6 @@ namespace SDV_MoldingInjection.Process
                     {
                         case ESequence.ResinInject:
                             _pAxisInject_Vel = Math.Abs(_currentSPDHeadRecipe.PAxisInjectChargePos - _pAxisBase_Pos) / _currentRecipe.InjectRecipe.InjectTime;
-
                             CarrierJigStatus.PAxisInjectVelocity = _pAxisInject_Vel; // Display UI
                             break;
                         case ESequence.DummyShot:
@@ -745,7 +744,7 @@ namespace SDV_MoldingInjection.Process
                         case ESequence.DummyShot_H2:
                         case ESequence.DummyShot_H3:
                         case ESequence.DummyShot_H4:
-                            _pAxisInject_Vel = PAxis.Parameter.Velocity;
+                            _pAxisInject_Vel = PAxis.Parameter.Velocity * 2;
                             break;
                         case ESequence.BubbleRemove_H1:
                         case ESequence.BubbleRemove_H2:
@@ -757,7 +756,7 @@ namespace SDV_MoldingInjection.Process
                             }
 
                             _gAxisBubbleRemove_Pos = GAxis.Status.ActualPosition + 180;
-                            _pAxisInject_Vel = PAxis.Parameter.Velocity;
+                            _pAxisInject_Vel = PAxis.Parameter.Velocity * 2;
                             break;
                         default: throw new NotImplementedException();
                     }
@@ -781,7 +780,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESPDHeadProcCommonStep.GAxis_BubbleRemove:
                     Log.Debug("GAxis bubble remove start");
-                    GAxis.MoveAbs(_gAxisBubbleRemove_Pos);
+                    GAxis.MoveAbs(_gAxisBubbleRemove_Pos, GAxis.Parameter.Velocity * 2);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () =>
                             GAxis.IsOnPosition(_gAxisBubbleRemove_Pos));
                     Step.RunStep++;

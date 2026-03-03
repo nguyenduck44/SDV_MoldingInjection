@@ -15,6 +15,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public Devices Devices { get; }
         public SyringAmountStatusList SyringeAmountStatusList { get; }
         public CarrierJigStatusList CarrierJigStatusList { get; }
+        public double PanelTemperature => Devices.PanelIndicator.Temperature;
+        public double PanelHumidity => Devices.PanelIndicator.Humidity;
+        public double PumpTemperature => Devices.PanelIndicator.Temperature;
+        public double PumpHumidity => Devices.PanelIndicator.Humidity;
         #endregion
 
         #region Contructors
