@@ -162,6 +162,7 @@ namespace SDV_MoldingInjection.Defines.Devices
             }
             else
             {
+                MessageBoxEx.Show(message, false);
                 LogManager.GetLogger("Interlock").Error(message);
             }
         }
