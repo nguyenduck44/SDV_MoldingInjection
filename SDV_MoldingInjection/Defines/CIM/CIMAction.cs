@@ -1,5 +1,6 @@
 ﻿using EQX.Core.Communication.CIM;
 using EQX.Core.Communication.CIM.Custom.WordArea;
+using EQX.Core.Sequence;
 using EQX.UI.Controls;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
@@ -74,7 +75,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                         cimArea.FromCIMData(obj.Buffer);
 
                         _machineStatus.IsInterlock = true;
-                        CIMScenarioDispatcher.ApplyEquipReportState(EquipReportStateKind.Interlock);
+                        _machineStatus.OPCommand = EOperationCommand.Stop;
 
                         // WRITE INTERLOCK MESSAGE
                         InterlockPlcToCimArea plcArea = new InterlockPlcToCimArea()
@@ -151,7 +152,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                     {
                         state = EquipReportStateKind.Down;
                     }
-                    else if (_machineStatus.IsInterlock)
+                    else if (_machineStatus.IsInterlock && _machineStatus.IsRunning == false)
                     {
                         state = EquipReportStateKind.Interlock;
                     }

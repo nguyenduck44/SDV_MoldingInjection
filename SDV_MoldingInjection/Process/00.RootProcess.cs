@@ -10,6 +10,7 @@ using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.MVVM.ViewModels;
 using SDV_MoldingInjection.Recipe;
 using System.Windows;
+using TOPENG_Device;
 
 namespace SDV_MoldingInjection.Process
 {
@@ -151,6 +152,18 @@ namespace SDV_MoldingInjection.Process
                 ProcessMode = EProcessMode.Alarm;
                 Log.Info("ToAlarm Done, Alarm");
                 AlertNotifyView.ShowDialog(_alarmService.GetById(raisedAlarmCode), true);
+
+                // TODO: CIM
+                CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmRelease, new CIMScenarioContext
+                {
+                    CIMAlarmData = new CIMAlarmData
+                    {
+                        ALCD = 2, // LIGHT ALARM
+                        ALID = raisedWarningCode,
+                        AlarmDescription = ((EAlarm)raisedWarningCode).ToString(),
+                    }
+                });
+
                 raisedAlarmCode = -1;
             }
             else
@@ -171,6 +184,18 @@ namespace SDV_MoldingInjection.Process
                 ProcessMode = EProcessMode.Warning;
                 Log.Info("ToWarning Done, Warning");
                 AlertNotifyView.ShowDialog(_warningService.GetById(raisedWarningCode), true);
+
+                // TODO: CIM
+                CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmRelease, new CIMScenarioContext
+                {
+                    CIMAlarmData = new CIMAlarmData
+                    {
+                        ALCD = 1, // LIGHT ALARM
+                        ALID = raisedWarningCode,
+                        AlarmDescription = ((EWarning)raisedWarningCode).ToString(),
+                    }
+                });
+
                 raisedWarningCode = -1;
             }
             else
@@ -187,7 +212,6 @@ namespace SDV_MoldingInjection.Process
             {
                 _machineStatus.OriginDone = true;
                 _machineStatus.MachineReadyDone = false;
-                _machineStatus.IsInterlock = false;
 
                 _devices.Outputs.Lamp_Stop();
                 //foreach (var motion in _devices.Motions.All!) { motion.ClearPosition(); }
@@ -271,6 +295,12 @@ namespace SDV_MoldingInjection.Process
         {
             if (Childs!.Count(child => child.ProcessStatus != EProcessStatus.ToStopDone) == 0)
             {
+                // TODO: CIM
+                if (_machineStatus.IsInterlock)
+                {
+                    CIMScenarioDispatcher.ApplyEquipReportState(EquipReportStateKind.Interlock);
+                }
+
                 ProcessMode = EProcessMode.Stop;
 
                 _devices.Motions.All.ForEach(r => r.Stop());
@@ -318,6 +348,10 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ERootProcToRunStep.End:
                     _devices.Outputs.Lamp_Run();
+
+                    // TODO: CIM
+                    _machineStatus.IsInterlock = false;
+
                     ProcessMode = EProcessMode.Run;
                     Log.Info("ToRun Done, Running");
                     break;
@@ -618,6 +652,17 @@ namespace SDV_MoldingInjection.Process
             {
                 if (this.IsInAlarmMode()) return;
 
+                // TODO: CIM
+                CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmOccur, new CIMScenarioContext
+                {
+                    CIMAlarmData = new CIMAlarmData
+                    {
+                        ALCD = 2, // LIGHT ALARM
+                        ALID = alarmId,
+                        AlarmDescription = ((EAlarm)alarmId).ToString(),
+                    }
+                });
+
                 Log.Error($"{alarmSource} raising alarm [#{(int)(EAlarm)alarmId}] {(EAlarm)alarmId}");
                 raisedAlarmCode = alarmId;
                 ProcessMode = EProcessMode.ToAlarm;
@@ -629,6 +674,17 @@ namespace SDV_MoldingInjection.Process
             lock (_lockAlarm)
             {
                 if (this.IsInWarningMode() || this.IsInAlarmMode()) return;
+
+                // TODO: CIM
+                CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmOccur, new CIMScenarioContext
+                {
+                    CIMAlarmData = new CIMAlarmData
+                    {
+                        ALCD = 2, // HEAVY ALARM
+                        ALID = warningId,
+                        AlarmDescription = ((EWarning)warningId).ToString(),
+                    }
+                });
 
                 Log.Warn($"{warningSource} raising warning [#{(int)(EWarning)warningId}] {(EWarning)warningId}");
 
