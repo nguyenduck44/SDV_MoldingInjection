@@ -615,10 +615,15 @@ namespace SDV_MoldingInjection.Process
             {
                 CarrierJigStatus.InjectTime = (Environment.TickCount64 - _injectSequenceStartTick) / 1000.0;
             }
-
+#if !SIMULATION
+            if (In_SyringeCheck.Value == false && _machineStatus.MachineTestMode == false)
+            {
+                RaiseHeadWarning(EWarning.H1_Syringe_Not_Detected);
+            }
+#endif
             return base.PreProcess();
         }
-        #endregion
+#endregion
 
         #region Sequence Methods
         private void Sequence_Ready()

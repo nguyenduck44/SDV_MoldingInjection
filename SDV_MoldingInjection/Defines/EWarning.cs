@@ -97,6 +97,7 @@
         H1_PAxis_BubbleRemove_Timeout,
         H1_GAxis_BubbleRemove_Timeout,
         H1_BubbleRemove_InjectPosOverBasePos,
+        H1_Syringe_Not_Detected,
 
         //--------- 4500 -> 4999 : SPD Head #2 Process Warning ---------
         P2Axis_Origin_Timeout = 4500,
@@ -115,6 +116,7 @@
         H2_PAxis_BubbleRemove_Timeout,
         H2_GAxis_BubbleRemove_Timeout,
         H2_BubbleRemove_InjectPosOverBasePos,
+        H2_Syringe_Not_Detected,
 
 
         //--------- 5500 -> 5999 : SPD Head #3 Process Warning ---------
@@ -134,6 +136,7 @@
         H3_PAxis_BubbleRemove_Timeout,
         H3_GAxis_BubbleRemove_Timeout,
         H3_BubbleRemove_InjectPosOverBasePos,
+        H3_Syringe_Not_Detected,
 
         //--------- 6500 -> 6999 : SPD Head #3 Process Warning ---------
         P4Axis_Origin_Timeout = 6500,
@@ -152,5 +155,6 @@
         H4_PAxis_BubbleRemove_Timeout,
         H4_GAxis_BubbleRemove_Timeout,
         H4_BubbleRemove_InjectPosOverBasePos,
+        H4_Syringe_Not_Detected,
     }
 }

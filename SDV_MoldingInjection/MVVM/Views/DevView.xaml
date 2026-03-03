@@ -21,6 +21,9 @@
             <CheckBox IsChecked="{Binding MachineStatus.IsDotWeightingTest}"
                       Content="Dot Weighting Test"
                       Tag="Check to Enable Dot Weighting Test Mode"/>
+            <CheckBox IsChecked="{Binding MachineStatus.MachineTestMode}"
+                      Content="Machine Test Mode"
+                      Tag="Check to Enable Test Mode"/>
         </StackPanel>
         <ui:LogDisplayer
             DockPanel.Dock="Right"
