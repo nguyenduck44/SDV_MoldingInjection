@@ -62,7 +62,7 @@ namespace SDV_MoldingInjection.Defines.Devices
             {
                 { "Door is not CLOSE", () => _devices.Inputs.DoorClose },
                 { "Chamber is not CLOSE", () => _devices.Cylinders.ChamberOpenClose.IsClose() },
-                { "Chamber is not DOWN", () => _devices.Cylinders.BellowCyl.IsDown() },
+                { "Bellow cylinder is not DOWN", () => _devices.Cylinders.BellowCyl.IsDown() },
                 { "Z1Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z1Axis) },
                 { "Z2Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z2Axis) },
                 { "Z3Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z3Axis) },
@@ -74,7 +74,7 @@ namespace SDV_MoldingInjection.Defines.Devices
             {
                 { "Door is not CLOSE", () => _devices.Inputs.DoorClose },
                 { "Chamber is not CLOSE", () => _devices.Cylinders.ChamberOpenClose.IsClose() },
-                { "Bellow is not DOWN", () => _devices.Cylinders.BellowCyl.IsDown() },
+                { "Bellow cylinder is not DOWN", () => _devices.Cylinders.BellowCyl.IsDown() },
                 { "Z1Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z1Axis) },
                 { "Z2Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z2Axis) },
                 { "Z3Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z3Axis) },

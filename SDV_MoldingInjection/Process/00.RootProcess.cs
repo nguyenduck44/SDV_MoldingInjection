@@ -119,7 +119,7 @@ namespace SDV_MoldingInjection.Process
                 else if (_machineStatus.OPCommand == EOperationCommand.Ready
                     || _machineStatus.OPCommand == EOperationCommand.Start
                     || _machineStatus.OPCommand == EOperationCommand.SemiAuto
-                    || ((_devices.Inputs.OPButtonStart.Value == true || _devices.Inputs.OPButtonReset.Value == true)
+                    || ((_devices.Inputs.OPButtonStart.Value == true)
                     && _viewModelavigationStore.CurrentViewModel is AutoViewModel))
                 {
                     MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_ResetAlarmBeforeRun"], (string)Application.Current.Resources["str_Confirm"]);

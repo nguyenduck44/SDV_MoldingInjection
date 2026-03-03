@@ -327,7 +327,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_PurgeAndWait:
-                    if (((Environment.TickCount - _ventStartTick) / 1000.0) < _currentRecipe.InjectRecipe.InjectTime)
+                    if (((Environment.TickCount - _ventStartTick) / 1000.0) < _currentRecipe.InjectRecipe.VentTime)
                     {
                         Wait(10);
                         break;

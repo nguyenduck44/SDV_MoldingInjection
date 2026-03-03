@@ -2,6 +2,7 @@ using EQX.Core.InOut;
 using EQX.Core.Motion;
 using EQX.Core.Sequence;
 using EQX.InOut;
+using EQX.UI.Controls;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Recipe;
@@ -889,6 +890,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Info($"{Sequence} for {head} end");
                     if (Parent?.Sequence != ESequence.AutoRun)
                     {
+                        MessageBoxEx.Show($"{sequence} Finish!", false);
                         Sequence = ESequence.Stop;
                     }
 
@@ -1043,6 +1045,7 @@ namespace SDV_MoldingInjection.Process
                     _nzlCleanCount++;
                     if (Parent?.Sequence != ESequence.AutoRun)
                     {
+                        MessageBoxEx.Show($"{head} Needle Clean Finish!", false);
                         Sequence = ESequence.Stop;
                         break;
                     }
@@ -1255,6 +1258,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("DotWeighting end");
                     if (Parent?.Sequence != ESequence.AutoRun)
                     {
+                        MessageBoxEx.Show($"{head} Dot Weighting Finish!", false);
                         Sequence = ESequence.Stop;
                         break;
                     }

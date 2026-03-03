@@ -130,6 +130,21 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        [SingleRecipeDescription(Description = "Y-Axis needle clean position", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "YAxis")]
+        public double YAxisNeddleClean
+        {
+            get { return _yAxisNeedleClean; }
+            set
+            {
+                if (_yAxisNeedleClean == value) return;
+
+                OnRecipeChanged(_yAxisNeedleClean, value);
+                _yAxisNeedleClean = value;
+                OnPropertyChanged();
+            }
+        }
+
         [SingleRecipeDescription(Description = "Needle Clean Cycle Count")]
         public double NiddleCleanCycleCount
         {
@@ -154,21 +169,6 @@ namespace SDV_MoldingInjection.Recipe
 
                 OnRecipeChanged(_niddleCleanShiftDist, value);
                 _niddleCleanShiftDist = value;
-                OnPropertyChanged();
-            }
-        }
-
-        [SingleRecipeDescription(Description = "Y-Axis Neddle Clean", Unit = Unit.mm)]
-        [SinglePositionTeaching(Motion = "YAxis")]
-        public double YAxisNeddleClean
-        {
-            get { return _yAxisNeedleClean; }
-            set
-            {
-                if (_yAxisNeedleClean == value) return;
-
-                OnRecipeChanged(_yAxisNeedleClean, value);
-                _yAxisNeedleClean = value;
                 OnPropertyChanged();
             }
         }

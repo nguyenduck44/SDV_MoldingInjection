@@ -3,6 +3,7 @@ using EQX.Core.Motion;
 using EQX.Core.Sequence;
 using EQX.Device.Balance;
 using EQX.InOut;
+using EQX.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
@@ -1278,6 +1279,8 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESPDHeadProcAssembleDisAssembleStep.End:
                     Log.Debug(isAssemble ? "Head Assemble End" : "Head DisAssemble End");
+                    string message = isAssemble ? $"{head} Assemble Finish!" : $"{head} DisAssemble Finish!";
+                    MessageBoxEx.Show(message, false);
                     Sequence = ESequence.Stop;
                     break;
             }
