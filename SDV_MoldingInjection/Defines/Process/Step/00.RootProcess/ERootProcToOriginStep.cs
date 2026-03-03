@@ -1,8 +1,9 @@
-﻿namespace SDV_MoldingInjection.Defines
+namespace SDV_MoldingInjection.Defines
 {
     public enum ERootProcToOriginStep
     {
         Start,
+        AutoModeSwitchCheck,
         DoorClose,
         DoorSensorCheck,
         Motion_AlarmReset,

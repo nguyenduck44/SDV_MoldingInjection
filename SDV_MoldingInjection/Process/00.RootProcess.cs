@@ -1,4 +1,4 @@
-﻿using EQX.Core.Common;
+using EQX.Core.Common;
 using EQX.Core.Recipe;
 using EQX.Core.Sequence;
 using EQX.Process;
@@ -237,6 +237,16 @@ namespace SDV_MoldingInjection.Process
                     Log.Info("To Origin started");
                     Step.OriginStep++;
                     break;
+                case ERootProcToOriginStep.AutoModeSwitchCheck:
+#if !SIMULATION
+                    if (_devices.Inputs.AutoSW.Value == false)
+                    {
+                        RaiseWarning(EWarning.OPSwitchKey_Not_In_AutoMode);
+                        break;
+                    }
+#endif
+                    Step.OriginStep++;
+                    break;
                 case ERootProcToOriginStep.DoorClose:
                     _devices.Outputs.EQPStop.Value = false;
                     Wait(5000, () => _devices.Inputs.DoorClose);
@@ -321,6 +331,16 @@ namespace SDV_MoldingInjection.Process
             {
                 case ERootProcToRunStep.Start:
                     Log.Debug("ToRun Start");
+                    Step.ToRunStep++;
+                    break;
+                case ERootProcToRunStep.AutoModeSwitchCheck:
+#if !SIMULATION
+                    if (_devices.Inputs.AutoSW.Value == false)
+                    {
+                        RaiseWarning(EWarning.OPSwitchKey_Not_In_AutoMode);
+                        break;
+                    }
+#endif
                     Step.ToRunStep++;
                     break;
                 case ERootProcToRunStep.DoorClose:

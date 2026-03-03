@@ -131,15 +131,45 @@
                             Command="{Binding MaintenanceCommand}"
                             IsEnabled="{Binding MachineStatus.IsStandByProcessMode}" />
 
-            <ui:ImageRadioButton
-                        Image="/EQX.UI;component/Resources/Images/Components/Common/auto_selected.png"
-                        DisabledImage="/EQX.UI;component/Resources/Images/Components/Common/auto_normal_light.png"
-                        Content="{DynamicResource str_AutoMode}"/>
-            
-            <ui:ImageRadioButton
-                        Image="/EQX.UI;component/Resources/Images/Components/Common/manual_selected.png"
-                        DisabledImage="/EQX.UI;component/Resources/Images/Components/Common/manual_normal_light.png"
-                        Content="{DynamicResource str_ManualMode}" IsChecked="True"/>
+            <ui:ImageButton Content="{DynamicResource str_AutoMode}">
+                <ui:ImageButton.Style>
+                    <Style TargetType="{x:Type ui:ImageButton}"
+                           BasedOn="{StaticResource {x:Type ui:ImageButton}}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsSwitchAuto}"
+                                         Value="True">
+                                <Setter Property="Image"
+                                        Value="/EQX.UI;component/Resources/Images/Components/Common/auto_selected.png" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsSwitchAuto}"
+                                         Value="False">
+                                <Setter Property="Image"
+                                        Value="/EQX.UI;component/Resources/Images/Components/Common/auto_normal_light.png" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ui:ImageButton.Style>
+            </ui:ImageButton>
+
+            <ui:ImageButton Content="{DynamicResource str_ManualMode}">
+                <ui:ImageButton.Style>
+                    <Style TargetType="{x:Type ui:ImageButton}"
+                           BasedOn="{StaticResource {x:Type ui:ImageButton}}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsSwitchTeach}"
+                                         Value="True">
+                                <Setter Property="Image"
+                                        Value="/EQX.UI;component/Resources/Images/Components/Common/manual_selected.png" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsSwitchTeach}"
+                                         Value="False">
+                                <Setter Property="Image"
+                                        Value="/EQX.UI;component/Resources/Images/Components/Common/manual_normal_light.png" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ui:ImageButton.Style>
+            </ui:ImageButton>
 
             <ui:ImageButton
                     Image="/EQX.UI;component/Resources/Images/Components/Common/model_change_Selected.png"
