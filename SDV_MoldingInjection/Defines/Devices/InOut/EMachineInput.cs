@@ -72,9 +72,9 @@
         CHAMBER_PURGE_ON = 50,
         CHAMBER_OPEN = 51,
         CHAMBER_CLOSE = 52,
-        SPARE_IN_53 = 53,
-        SPARE_IN_54 = 54,
-        SPARE_IN_55 = 55,
+        PANEL_CLOSE_CHECK_LEFT = 53,
+        OP_KEY_SW_LOCK_MONITOR = 54,
+        OP_KEY_SW_LOCK_KEY_CHECK = 55,
         SPARE_IN_56 = 56,
         SPARE_IN_57 = 57,
         SPARE_IN_58 = 58,
@@ -85,3 +85,4 @@
         PUMP_FAN_RUN2 = 63
     }
 }
+
