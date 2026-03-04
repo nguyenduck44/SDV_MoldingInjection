@@ -403,12 +403,21 @@ namespace SDV_MoldingInjection.Process
                 return;
             }
 
-            if (_devices.PanelIndicator.Temperature >= 35)
+            if (_devices.Inputs.TempHighWarning.Value == true)
+            {
+                Childs!.ToList().ForEach(p => p.IsAlarm = true);
+                Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                Log.Error("c (>=35)");
+                RaiseWarning((int)EWarning.Warning_OverTemperature_Detected);
+                return;
+            }
+
+            if (_devices.Inputs.TempHighAlarm.Value == true)
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
                 Log.Error("OverTemperature Detected (>=35)");
-                RaiseAlarm((int)EAlarm.OverTemperature_Detected);
+                RaiseAlarm((int)EAlarm.Alarm_OverTemperature_Detected);
                 return;
             }
 #if !SIMULATION
