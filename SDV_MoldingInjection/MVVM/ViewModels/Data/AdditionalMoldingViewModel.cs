@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
+using EQX.Core.Recipe;
 using EQX.UI.Controls;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -27,7 +28,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         {
             _configuration = configuration;
             _recipeSelector = recipeSelector;
-            RecipeList = recipeList;
+            RecipeList = _recipeSelector.CurrentRecipe;
             MachineStatus = machineStatus;
         }
 
@@ -37,22 +38,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    if (MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_SaveAllData"]) == false) return;
-
-                    string currentRecipeFolder = Path.Combine(recipeFolder, _recipeSelector.RecipeSetting.CurrentRecipe);
-                    if (Directory.Exists(currentRecipeFolder) == false)
+                    if (MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_SaveAllData"]) == true)
                     {
-                        Directory.CreateDirectory(currentRecipeFolder);
+                        _recipeSelector.Save();
+                        OnPropertyChanged();
                     }
-
-                    var settings = new JsonSerializerSettings
-                    {
-                        TypeNameHandling = TypeNameHandling.Auto
-                    };
-
-                    string propertyFile = Path.Combine(currentRecipeFolder, $"AdditionalMoldingRecipe.json");
-                    string serializeStr = JsonConvert.SerializeObject(RecipeList.AdditionalMolding_Recipe, Formatting.Indented, settings);
-                    File.WriteAllText(propertyFile, serializeStr);
                 });
             }
         }

@@ -229,14 +229,14 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     case EHandleStep.RecipeHandle:
                         Log.Debug("Load Recipes");
                         MessageText = "Load Recipes";
-                        SubscibeResinWeightChanged();
-                        SubscribeSkipHeadChanged();
                         if (_recipeSelector.Load() == false)
                         {
                             ErrorMessages.Add("Recipes Load Fail.");
                             Log.Debug("Recipe Load Fail");
                         }
                         Thread.Sleep(50);
+                        SubscibeResinWeightChanged();
+                        SubscribeSkipHeadChanged();
                         _step++;
                         break;
                     case EHandleStep.ProcessHandle:
