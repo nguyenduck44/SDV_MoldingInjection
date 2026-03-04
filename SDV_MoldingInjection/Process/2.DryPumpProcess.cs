@@ -57,14 +57,30 @@ namespace SDV_MoldingInjection.Process
         #region Process Methods
         public override bool PreProcess()
         {
+            if (_delayStartTick >= 0 && EnableTimerDelay)
+            {
+                _delayTime = (Environment.TickCount64 - _delayStartTick) / 1000.0;
+            }
+
+            if (_currentRecipe.SPDHead1_Recipe.HeadSkip == false && _currentRecipe.SPDHead2_Recipe.HeadSkip == false)
+            {
+                _carrierJigStatusList.CarrierJigStatusH1.DelayTime = _delayTime;
+                _carrierJigStatusList.CarrierJigStatusH2.DelayTime = _delayTime;
+            }
+            if (_currentRecipe.SPDHead3_Recipe.HeadSkip == false && _currentRecipe.SPDHead4_Recipe.HeadSkip == false)
+            {
+                _carrierJigStatusList.CarrierJigStatusH3.DelayTime = _delayTime;
+                _carrierJigStatusList.CarrierJigStatusH4.DelayTime = _delayTime;
+            }
+
             if (EnablePressureHold)
             {
                 if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec)
                 {
                     AngleValve.Open();
                 }
-                
-                if(_devices.AnalogInputs.VacuumPressureInTorr <= _currentRecipe.DryPumpRecipe.VacuumPressureSpec)
+
+                if (_devices.AnalogInputs.VacuumPressureInTorr <= _currentRecipe.DryPumpRecipe.VacuumPressureSpec)
                 {
                     AngleValve.Close();
                 }
@@ -73,12 +89,32 @@ namespace SDV_MoldingInjection.Process
             return base.PreProcess();
         }
 
+        public override bool ProcessToWarning()
+        {
+            EnableTimerDelay = false;
+            return base.ProcessToWarning();
+        }
+
+        public override bool ProcessToAlarm()
+        {
+            EnableTimerDelay = false;
+            return base.ProcessToAlarm();
+        }
+
+        public override bool ProcessToStop()
+        {
+            EnableTimerDelay = false;
+            return base.ProcessToStop();
+        }
+
+
         public override bool ProcessToRun()
         {
             switch ((EDryPumpProcToRunStep)Step.ToRunStep)
             {
                 case EDryPumpProcToRunStep.Start:
                     Log.Debug("ToRun start");
+                    EnableTimerDelay = false;
                     Step.ToRunStep++;
                     break;
                 case EDryPumpProcToRunStep.AngleValve_Close:
@@ -245,6 +281,7 @@ namespace SDV_MoldingInjection.Process
             {
                 case EDryPumpProcResinInjectStep.Start:
                     Log.Info("ResinInject start");
+                    _delayTime = 0;
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_Run:
@@ -309,6 +346,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Info($"DryPump vacuum in-spec {_devices.AnalogInputs.VacuumPressureInTorr} Torr");
                     Log.Debug($"Enable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
                     EnablePressureHold = true;
+                    EnableTimerDelay = true;
                     _delayStartTick = Environment.TickCount;
                     Step.RunStep++;
                     break;
@@ -337,6 +375,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Delay before inject complete: {_currentRecipe.InjectRecipe.DelayTime}s");
                     Log.Debug($"Disable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
                     EnablePressureHold = false;
+                    EnableTimerDelay = false;
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_VacuumDone_Send:
@@ -445,7 +484,11 @@ namespace SDV_MoldingInjection.Process
         private ESPDHead _failHead;
         private double _ventStartTick;
         private double _delayStartTick;
+        private double _delayTime;
         private bool EnablePressureHold;
+        private long _delayTimeStartTick = -1;
+
+        private bool EnableTimerDelay;
         #endregion
     }
 }

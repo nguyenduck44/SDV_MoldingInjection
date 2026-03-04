@@ -3,68 +3,61 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:SDV_MoldingInjection.Controls"
-             mc:Ignorable="d"
              xmlns:conv="clr-namespace:SDV_MoldingInjection.Converters"
-             d:DesignHeight="450" d:DesignWidth="800">
+             mc:Ignorable="d" d:DesignWidth="120">
+
     <UserControl.Resources>
-        <Style x:Key="ValueCellStyle"
-               TargetType="Border">
-            <Setter Property="CornerRadius"
-                    Value="5" />
-            <Setter Property="BorderBrush"
-                    Value="#4A4A4A" />
-            <Setter Property="Background"
-                    Value="#F2F2F2" />
-            <Setter Property="Padding"
-                    Value="6" />
-            <Setter Property="Margin"
-                    Value="2" />
+        <Style x:Key="TightCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="2"/>
+            <Setter Property="Margin" Value="0,1"/>
+            <Setter Property="Padding" Value="2"/>
         </Style>
-        <Style x:Key="HighlightCellStyle"
-               TargetType="Border"
-               BasedOn="{StaticResource ValueCellStyle}">
-            <Setter Property="Background"
-                    Value="#E9EB79" />
-        </Style>
-        <Style x:Key="CellTextStyle"
-               TargetType="TextBlock">
-            <Setter Property="FontSize"
-                    Value="14" />
-            <Setter Property="FontWeight"
-                    Value="SemiBold" />
-            <Setter Property="HorizontalAlignment"
-                    Value="Center" />
-            <Setter Property="VerticalAlignment"
-                    Value="Center" />
-            <Setter Property="TextAlignment"
-                    Value="Center" />
-        </Style>
+
         <conv:HeadSkipStatusTextConverter x:Key="HeadSkipStatusTextConverter" />
         <conv:HeadSkipStatusBrushConverter x:Key="HeadSkipStatusBrushConverter" />
     </UserControl.Resources>
-    <Grid>
-        <StackPanel>
-            <TextBlock Text="{Binding Name}"
-                       Style="{StaticResource CellTextStyle}" />
-            <TextBlock Style="{StaticResource CellTextStyle}"
-                       Text="{Binding ResinWeight}" />
-            <Button Margin="0,6,0,0"
-                    Height="100"
-                    Click="Button_Click"
-                    HorizontalAlignment="Stretch"
-                    FontWeight="SemiBold"
+
+    <Grid Background="White">
+        <StackPanel Margin="2">
+            <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="#1A237E" FontSize="12" HorizontalAlignment="Center"/>
+            <TextBlock Text="{Binding ResinWeight, StringFormat='W: {0}'}" Foreground="#78909C" FontSize="12" HorizontalAlignment="Center" Margin="0,0,0,2"/>
+
+            <Button Click="Button_Click"
+                    Height="80" 
+                    Margin="0,0,0,4"
                     Content="{Binding HeadSkip, Converter={StaticResource HeadSkipStatusTextConverter}}"
-                    Background="{Binding HeadSkip, Converter={StaticResource HeadSkipStatusBrushConverter}}" />
-            <TextBlock Style="{StaticResource CellTextStyle}"
-                       Text="Timer" />
-            <TextBlock Style="{StaticResource CellTextStyle}"
-                       Text="{Binding InjectTime, StringFormat={}{0:0.00} s}"
-                       Margin="0 0 0 10"/>
-            <TextBlock Style="{StaticResource CellTextStyle}"
-                       Text="Vel-P" />
-            <TextBlock Style="{StaticResource CellTextStyle}"
-                       Text="{Binding PAxisInjectVelocity, StringFormat={}{0:0.00}}" />
+                    Background="{Binding HeadSkip, Converter={StaticResource HeadSkipStatusBrushConverter}}"
+                    Foreground="White" FontSize="14" FontWeight="Bold">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="2"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+
+            <Border Style="{StaticResource TightCardStyle}">
+                <StackPanel>
+                    <TextBlock Text="DELAY" FontSize="9" Foreground="#9E9E9E" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding DelayTime, StringFormat={}{0:0.00}s}" FontSize="13" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,-2,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource TightCardStyle}" BorderBrush="#1976D2">
+                <StackPanel>
+                    <TextBlock Text="INJECT TIME" FontSize="9" Foreground="#1976D2" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding InjectTime, StringFormat={}{0:0.00}s}" FontSize="13" FontWeight="Bold" Foreground="#1976D2" HorizontalAlignment="Center" Margin="0,-2,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource TightCardStyle}" BorderBrush="#9E9E9E">
+                <StackPanel>
+                    <TextBlock Text="VEL-P" FontSize="9" Foreground="#9E9E9E" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding PAxisInjectVelocity, StringFormat={}{0:0.00}}" FontSize="13" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,-2,0,0"/>
+                </StackPanel>
+            </Border>
         </StackPanel>
     </Grid>
 </UserControl>
