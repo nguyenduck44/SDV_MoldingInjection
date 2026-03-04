@@ -1,11 +1,7 @@
-using EQX.Core.InOut;
-using EQX.Core.Motion;
-using EQX.Device.SpeedController;
+using EQX.Device.Indicator;
 using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Defines.Devices.Balance;
 using SDV_MoldingInjection.Defines.Devices.Cylinder;
-using SDV_MoldingInjection.Recipe;
-using System.Collections.ObjectModel;
 
 namespace SDV_MoldingInjection.Defines.Devices
 {
@@ -17,7 +13,8 @@ namespace SDV_MoldingInjection.Defines.Devices
             Cylinders cylinders,
             AnalogInputs analogInputs,
             Balances balances,
-            MachineStatus machineStatus)
+            MachineStatus machineStatus,
+            [FromKeyedServices("PanelIndicator")] NEOSHSDIndicator panelIndicator)
         {
             Inputs = inputs;
             Outputs = outputs;
@@ -25,6 +22,7 @@ namespace SDV_MoldingInjection.Defines.Devices
             Cylinders = cylinders;
             AnalogInputs = analogInputs;
             Balances = balances;
+            PanelIndicator = panelIndicator;
         }
 
         public Inputs Inputs { get; }
@@ -33,7 +31,7 @@ namespace SDV_MoldingInjection.Defines.Devices
         public Cylinders Cylinders { get; }
         public AnalogInputs AnalogInputs { get; }
         public Balances Balances { get; }
-
+        public NEOSHSDIndicator PanelIndicator { get; }
         #region Public Methods
         #endregion
     }

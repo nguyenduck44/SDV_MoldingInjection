@@ -393,6 +393,33 @@ namespace SDV_MoldingInjection.Process
                 RaiseAlarm((int)EAlarm.EmergencyStopActivated);
                 return;
             }
+
+            if (_devices.Inputs.SmokeDetectAlarm.Value == true)
+            {
+                Childs!.ToList().ForEach(p => p.IsAlarm = true);
+                Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                Log.Error("Panel Smoke Detected");
+                RaiseAlarm((int)EAlarm.Panel_Smoke_Detected);
+                return;
+            }
+
+            if (_devices.Inputs.TempHighWarning.Value == true)
+            {
+                Childs!.ToList().ForEach(p => p.IsAlarm = true);
+                Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                Log.Error("OverTemperature Detected (>=35)");
+                RaiseWarning((int)EWarning.Warning_OverTemperature_Detected);
+                return;
+            }
+
+            if (_devices.Inputs.TempHighAlarm.Value == true)
+            {
+                Childs!.ToList().ForEach(p => p.IsAlarm = true);
+                Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                Log.Error("OverTemperature Detected (>=40)");
+                RaiseAlarm((int)EAlarm.Alarm_OverTemperature_Detected);
+                return;
+            }
 #if !SIMULATION
             if (_devices.Inputs.MainCDACheck.Value == false)
             {

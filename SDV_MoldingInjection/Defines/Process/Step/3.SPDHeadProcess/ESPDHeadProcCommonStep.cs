@@ -32,6 +32,8 @@
         WorkDone_Send,
         WorkDone_Clear,
 
+        InjectAddTail_Check,
+
         End,
     }
 }

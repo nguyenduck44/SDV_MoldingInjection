@@ -15,6 +15,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public Devices Devices { get; }
         public SyringAmountStatusList SyringeAmountStatusList { get; }
         public CarrierJigStatusList CarrierJigStatusList { get; }
+        public double PanelTemperature => Devices.PanelIndicator.Temperature;
+        public double PanelHumidity => Devices.PanelIndicator.Humidity;
         #endregion
 
         #region Contructors
@@ -62,7 +64,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             Devices.Inputs.BelowsUp.RaiseValueUpdated();
             Devices.Inputs.DryPumpRun.RaiseValueUpdated();
             Devices.Inputs.MainPanelCloseCheck.RaiseValueUpdated();
-
             UpdateSyringeStatus();
         }
 

@@ -1,4 +1,4 @@
-<UserControl x:Class="SDV_MoldingInjection.MVVM.Views.AutoView"
+﻿<UserControl x:Class="SDV_MoldingInjection.MVVM.Views.AutoView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -109,6 +109,55 @@
                Grid.RowSpan="2"
                Margin="0 0 15 0"
                Source="/SDV_MoldingInjection;component/Resource/Images/MachineView.png" />
+
+        <!--Indicator-->
+        <Grid Grid.Column="1"
+              Grid.Row="1">
+            <Canvas>
+                <Border Canvas.Top="170"
+                        Canvas.Left="239"
+                        BorderBrush="{StaticResource SecondaryBackgroundColor}" 
+                        BorderThickness="1.5"
+                        CornerRadius="3"
+                        Background="White"
+                        Padding="1" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Border.RenderTransform>
+                        <ScaleTransform ScaleX="0.7" ScaleY="0.7" />
+                    </Border.RenderTransform>
+                    <StackPanel Width="190">
+                        <Border Background="{StaticResource SecondaryBackgroundColor}"
+                                Margin="0 0 0 2">
+                            <Label Content="PANEL"
+                                   Foreground="Wheat"
+                                   HorizontalAlignment="Center"
+                                   FontWeight="Bold" />
+                        </Border>
+                        <UniformGrid Rows="2"
+                                     Columns="2"
+                                     Margin="2 0 2 4">
+                            <Label Content="🌡 Temperature"
+                                   FontWeight="SemiBold"
+                                   FontSize="12"
+                                   VerticalContentAlignment="Center" />
+                            <TextBox Style="{StaticResource TextBoxWithDescriptionStyle}"
+                                     IsReadOnly="True"
+                                     FontWeight="Bold"
+                                     FontSize="14"
+                                     Text="{Binding PanelTemperature, Mode=OneWay, StringFormat='{}{0:0.###} °C'}" />
+                            <Label Content="💧 Humidity"
+                                   FontWeight="SemiBold"
+                                   FontSize="12"
+                                   VerticalContentAlignment="Center" />
+                            <TextBox Style="{StaticResource TextBoxWithDescriptionStyle}"
+                                     IsReadOnly="True"
+                                     FontWeight="Bold"
+                                     FontSize="14"
+                                     Text="{Binding PanelHumidity, Mode=OneWay, StringFormat='{}{0:0.###} %'}" />
+                        </UniformGrid>
+                    </StackPanel>
+                </Border>
+            </Canvas>
+        </Grid>
 
         <!-- DoorLock View -->
         <Grid Grid.Row="0"
@@ -230,18 +279,39 @@
                 </Image>
             </Canvas>
             <Canvas>
-                <Image  Source="/SDV_MoldingInjection;component/Resource/Images/EMS BUTTON.png"
-                        Canvas.Left="178"
-                        Canvas.Top="265"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        Width="22"
-                        Height="22"
-                        RenderTransformOrigin="1.243,1.841">
-                    <Image.Visibility>
-                        <Binding Path="Devices.Inputs.OPButtonReset.Value"
-                                 Converter="{StaticResource BooleanToVisibilityConverter}" />
-                    </Image.Visibility>
+                <Image Source="/SDV_MoldingInjection;component/Resource/Images/EMS BUTTON.png"
+                       Canvas.Left="172"
+                       Canvas.Top="257"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Width="40"
+                       Height="40"
+                       RenderTransformOrigin="1.243,1.841">
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Setter Property="Visibility" Value="Collapsed" />
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Devices.Inputs.Emergency.Value}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard Name="BlinkAnimation">
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                 From="1.0" To="0.0" 
+                                                 Duration="0:0:0.5" 
+                                                 AutoReverse="True" 
+                                                 RepeatBehavior="Forever" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <StopStoryboard BeginStoryboardName="BlinkAnimation" />
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
                 </Image>
             </Canvas>
             <Canvas />
@@ -257,14 +327,14 @@
                                 DisabledImage="/EQX.UI;component/Resources/Images/Components/Common/alarm_normal_dark.png"
                                 Content="{DynamicResource str_Buzzer_Off}"
                                 Command="{Binding BuzzerOffCommand}"
-                                Width="90"
+                                Width="85"
                                 Height="42"
                                 Margin="2" />
 
                 <ui:ImageButton Image="/EQX.UI;component/Resources/Images/Components/Common/lock_selected.png"
                                 DisabledImage="/EQX.UI;component/Resources/Images/Components/Common/lock_selected.png"
                                 Command="{Binding DoorOpenCommand}"
-                                Width="90"
+                                Width="85"
                                 Height="42"
                                 Margin="2">
                     <ui:ImageButton.Style>
@@ -290,7 +360,7 @@
                                 DisabledImage="/EQX.UI;component/Resources/Images/KEYGRAY.png"
                                 Content="SafetyKey"
                                 Command="{Binding SafetyKeyCommand}"
-                                Width="90"
+                                Width="85"
                                 Height="42"
                                 Margin="2">
                     <ui:ImageButton.Style>

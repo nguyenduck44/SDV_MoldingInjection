@@ -18,13 +18,9 @@ namespace SDV_MoldingInjection.Extensions
 
                 services.AddKeyedSingleton<NEOSHSDIndicator>("PanelIndicator", (serviceProvider, key) =>
                 {
-                    return new NEOSHSDIndicator(1, "PanelIndicator", serviceProvider.GetRequiredKeyedService<IModbusCommunication>("IndicatorModbusCommunication"));
+                    return new NEOSHSDIndicator(1,"PanelIndicator", serviceProvider.GetRequiredKeyedService<IModbusCommunication>("IndicatorModbusCommunication"));
                 });
 
-                services.AddKeyedSingleton<NEOSHSDIndicator>("PumpIndicator", (serviceProvider, key) =>
-                {
-                    return new NEOSHSDIndicator(2, "PumpIndicator", serviceProvider.GetRequiredKeyedService<IModbusCommunication>("IndicatorModbusCommunication"));
-                });
             });
 
             return hostBuilder;

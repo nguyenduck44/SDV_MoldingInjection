@@ -15,9 +15,11 @@
         Motion_Alarm_ResetFail,
         Motion_Driver_Off,
         Motion_Limit_Detected,
+        Panel_Smoke_Detected,
+        Alarm_OverTemperature_Detected,
 
         //--------- 1500 -> 1499 : Mold Process Alarm ---------
-        
+
 
         //--------- 2000 -> 2499 : Dry Pump Process Alarm ---------
 
