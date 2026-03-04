@@ -15,6 +15,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _navigationService.NavigateTo<RecipeViewModel>();
         });
 
+        public ICommand AdditionalMoldingDataNavigateCommand => new RelayCommand(() =>
+        {
+           _navigationService.NavigateTo<AdditionalMoldingViewModel>();
+        });
+
         public ICommand RunModeChangeCommand => new RelayCommand(() =>
         {
             EMachineRunMode currentMode = _machineStatus.MachineRunMode;

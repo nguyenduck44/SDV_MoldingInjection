@@ -80,6 +80,9 @@
             <DataTemplate DataType="{x:Type vm:MotionsConfigViewModel}">
                 <views:MotionsConfigView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:AdditionalMoldingViewModel}">
+                <views:AdditionalMoldingView />
+            </DataTemplate>
 
             <!-- MAINTENANCE DATATEMPLATE -->
             <DataTemplate x:Key="InjectManualView">

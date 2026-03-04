@@ -14,6 +14,11 @@
         SPDHead3_WorkDone,
         SPDHead4_WorkDone,
 
+        SPDHead1_InjectAddTailDone,
+        SPDHead2_InjectAddTailDone,
+        SPDHead3_InjectAddTailDone,
+        SPDHead4_InjectAddTailDone,
+
         SPDHead1_RequestDotWaiting,
         SPDHead2_RequestDotWaiting,
         SPDHead3_RequestDotWaiting,

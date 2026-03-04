@@ -6,6 +6,8 @@
 
         WorkRequest,
 
+        InjectAddTailRequest,
+
         XYAxisInDotWeightingPos,
     }
 }
