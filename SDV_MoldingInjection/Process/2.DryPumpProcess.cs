@@ -335,8 +335,6 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"Delay before inject complete: {_currentRecipe.InjectRecipe.DelayTime}s");
-                    Log.Debug($"Disable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
-                    EnablePressureHold = false;
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_VacuumDone_Send:
@@ -355,6 +353,8 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    Log.Debug($"Disable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
+                    EnablePressureHold = false;
                     Log.Debug("Vent start");
                     _ventStartTick = Environment.TickCount;
                     Out_ChamberPurgeOn.Value = true;

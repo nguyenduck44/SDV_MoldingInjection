@@ -407,7 +407,7 @@ namespace SDV_MoldingInjection.Process
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
-                Log.Error("c (>=35)");
+                Log.Error("OverTemperature Detected (>=35)");
                 RaiseWarning((int)EWarning.Warning_OverTemperature_Detected);
                 return;
             }
@@ -416,7 +416,7 @@ namespace SDV_MoldingInjection.Process
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
-                Log.Error("OverTemperature Detected (>=35)");
+                Log.Error("OverTemperature Detected (>=40)");
                 RaiseAlarm((int)EAlarm.Alarm_OverTemperature_Detected);
                 return;
             }
