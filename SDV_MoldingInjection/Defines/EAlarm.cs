@@ -16,7 +16,7 @@
         Motion_Driver_Off,
         Motion_Limit_Detected,
         Panel_Smoke_Detected,
-        OverTemperature_Detected,
+        Alarm_OverTemperature_Detected,
 
         //--------- 1500 -> 1499 : Mold Process Alarm ---------
 

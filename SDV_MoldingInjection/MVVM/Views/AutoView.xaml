@@ -280,8 +280,8 @@
             </Canvas>
             <Canvas>
                 <Image Source="/SDV_MoldingInjection;component/Resource/Images/EMS BUTTON.png"
-                       Canvas.Left="170"
-                       Canvas.Top="250"
+                       Canvas.Left="172"
+                       Canvas.Top="257"
                        HorizontalAlignment="Left"
                        VerticalAlignment="Top"
                        Width="40"

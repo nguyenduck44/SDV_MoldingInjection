@@ -7,6 +7,7 @@
         DoorOpen,
         DoorNotSafetyLock,
         MoveTargetPosition_Fail,
+        Warning_OverTemperature_Detected,
 
         //--------- 1500 -> 1999 : Mold Process Warning ---------
         Mold_Chamber_OpenWarning = 1500,
