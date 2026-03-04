@@ -1,4 +1,5 @@
 using EQX.Core.Common;
+using EQX.Core.Communication.Modbus;
 using EQX.Core.Vision.Algorithms;
 using EQX.Core.Vision.Grabber;
 using EQX.Device.Balance;
@@ -84,6 +85,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             IConfiguration configuration,
             [FromKeyedServices("BalanceLeft")] MettlerToledoWKC204C balanceLeft,
             [FromKeyedServices("BalanceRight")] MettlerToledoWKC204C balanceRight,
+            [FromKeyedServices("IndicatorModbusCommunication")] IModbusCommunication indicatorModbusCommunication,
             InterlockService interlockService,
             SyringAmountStatusList syringAmountStatusList,
             CarrierJigStatusList carrierJigStatusList)
@@ -97,6 +99,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _configuration = configuration;
             _balanceLeft = balanceLeft;
             _balanceRight = balanceRight;
+            _indicatorModbusCommunication = indicatorModbusCommunication;
             _interlockService = interlockService;
             _syringAmountStatusList = syringAmountStatusList;
             _carrierJigStatusList = carrierJigStatusList;
@@ -179,6 +182,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         if(_balanceLeft.IsConnected == false || _balanceRight.IsConnected == false)
                         {
                             ErrorMessages.Add("Balance Connection Failed.");
+                        }
+
+                        if (_indicatorModbusCommunication.Connect() == false)
+                        {
+                            ErrorMessages.Add("Indicator Connect Fail");
                         }
 
                         Thread.Sleep(50);
@@ -529,6 +537,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly IConfiguration _configuration;
         private readonly MettlerToledoWKC204C _balanceLeft;
         private readonly MettlerToledoWKC204C _balanceRight;
+        private readonly IModbusCommunication _indicatorModbusCommunication;
         private readonly InterlockService _interlockService;
         private readonly SyringAmountStatusList _syringAmountStatusList;
         private readonly CarrierJigStatusList _carrierJigStatusList;

@@ -114,63 +114,17 @@
         <Grid Grid.Column="1"
               Grid.Row="1">
             <Canvas>
-                <Border Canvas.Top="147"
-                        Canvas.Left="18"
+                <Border Canvas.Top="170"
+                        Canvas.Left="239"
                         BorderBrush="{StaticResource SecondaryBackgroundColor}" 
                         BorderThickness="1.5"
                         CornerRadius="3"
                         Background="White"
-                        Padding="1">
+                        Padding="1" HorizontalAlignment="Left" VerticalAlignment="Top">
                     <Border.RenderTransform>
                         <ScaleTransform ScaleX="0.7" ScaleY="0.7" />
                     </Border.RenderTransform>
-
-                    <StackPanel Width="175">
-                        <Border Background="{StaticResource SecondaryBackgroundColor}"
-                                Margin="0 0 0 2">
-                            <Label Content="PUMP"
-                                    Foreground="Wheat"
-                                    HorizontalAlignment="Center"
-                                    FontWeight="Bold" />
-                        </Border>
-                        <UniformGrid Rows="2"
-                                     Columns="2"
-                                     Margin="2 0 2 4">
-                            <Label Content="🌡 Temperature"
-                                   FontWeight="SemiBold"
-                                   FontSize="12"
-                                   VerticalContentAlignment="Center" />
-                            <TextBox Style="{StaticResource TextBoxWithDescriptionStyle}"
-                                     IsReadOnly="True"
-                                     FontSize="12"
-                                     Text="{Binding PumpTemperature, Mode=OneWay, StringFormat='{}{0:0.###} °C'}" />
-
-                            <Label Content="💧 Humidity"
-                                   FontWeight="SemiBold"
-                                   FontSize="12"
-                                   VerticalContentAlignment="Center" />
-                            <TextBox Style="{StaticResource TextBoxWithDescriptionStyle}"
-                                     IsReadOnly="True"
-                                     FontSize="12"
-                                     Text="{Binding PumpHumidity, Mode=OneWay, StringFormat='{}{0:0.###} %'}" />
-                        </UniformGrid>
-                    </StackPanel>
-                </Border>
-            </Canvas>
-
-            <Canvas>
-                <Border Canvas.Top="207"
-                        Canvas.Left="240"
-                        BorderBrush="{StaticResource SecondaryBackgroundColor}" 
-                        BorderThickness="1.5"
-                        CornerRadius="3"
-                        Background="White"
-                        Padding="1" HorizontalAlignment="Center" VerticalAlignment="Top">
-                    <Border.RenderTransform>
-                        <ScaleTransform ScaleX="0.7" ScaleY="0.7" />
-                    </Border.RenderTransform>
-
-                    <StackPanel Width="170">
+                    <StackPanel Width="190">
                         <Border Background="{StaticResource SecondaryBackgroundColor}"
                                 Margin="0 0 0 2">
                             <Label Content="PANEL"
@@ -187,7 +141,8 @@
                                    VerticalContentAlignment="Center" />
                             <TextBox Style="{StaticResource TextBoxWithDescriptionStyle}"
                                      IsReadOnly="True"
-                                     FontSize="12"
+                                     FontWeight="Bold"
+                                     FontSize="14"
                                      Text="{Binding PanelTemperature, Mode=OneWay, StringFormat='{}{0:0.###} °C'}" />
                             <Label Content="💧 Humidity"
                                    FontWeight="SemiBold"
@@ -195,7 +150,8 @@
                                    VerticalContentAlignment="Center" />
                             <TextBox Style="{StaticResource TextBoxWithDescriptionStyle}"
                                      IsReadOnly="True"
-                                     FontSize="12"
+                                     FontWeight="Bold"
+                                     FontSize="14"
                                      Text="{Binding PanelHumidity, Mode=OneWay, StringFormat='{}{0:0.###} %'}" />
                         </UniformGrid>
                     </StackPanel>
@@ -325,7 +281,7 @@
             <Canvas>
                 <Image Source="/SDV_MoldingInjection;component/Resource/Images/EMS BUTTON.png"
                        Canvas.Left="170"
-                       Canvas.Top="260"
+                       Canvas.Top="250"
                        HorizontalAlignment="Left"
                        VerticalAlignment="Top"
                        Width="40"

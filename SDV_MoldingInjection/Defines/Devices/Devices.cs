@@ -14,8 +14,7 @@ namespace SDV_MoldingInjection.Defines.Devices
             AnalogInputs analogInputs,
             Balances balances,
             MachineStatus machineStatus,
-            [FromKeyedServices("PanelIndicator")] NEOSHSDIndicator panelIndicator,
-            [FromKeyedServices("PumpIndicator")] NEOSHSDIndicator pumpIndicator)
+            [FromKeyedServices("PanelIndicator")] NEOSHSDIndicator panelIndicator)
         {
             Inputs = inputs;
             Outputs = outputs;
@@ -24,7 +23,6 @@ namespace SDV_MoldingInjection.Defines.Devices
             AnalogInputs = analogInputs;
             Balances = balances;
             PanelIndicator = panelIndicator;
-            PumpIndicator = pumpIndicator;
         }
 
         public Inputs Inputs { get; }
@@ -34,8 +32,6 @@ namespace SDV_MoldingInjection.Defines.Devices
         public AnalogInputs AnalogInputs { get; }
         public Balances Balances { get; }
         public NEOSHSDIndicator PanelIndicator { get; }
-        public NEOSHSDIndicator PumpIndicator { get; }
-
         #region Public Methods
         #endregion
     }

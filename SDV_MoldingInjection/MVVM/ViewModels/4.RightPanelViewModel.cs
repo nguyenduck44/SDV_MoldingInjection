@@ -21,10 +21,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
     {
         #region Properties
         public double Pressure => Devices.AnalogInputs.VacuumPressureInTorr;
-        public double PanelTemperature => _panelIndicator.Temperature;
-        public double PanelHumidity => _panelIndicator.Humidity;
-        public double PumpTemperature => _pumpIndicator.Temperature;
-        public double PumpHumidity => _pumpIndicator.Humidity;
 
         public MachineStatus MachineStatus { get; }
         public Devices Devices { get; }
@@ -37,17 +33,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             INavigationService navigationService,
             Devices devices,
             NavigationStore navigationStore,
-            ILanguageService languageService,
-            [FromKeyedServices("PanelIndicator")] NEOSHSDIndicator panelIndicator,
-            [FromKeyedServices("PumpIndicator")] NEOSHSDIndicator pumpIndicator)
+            ILanguageService languageService)
         {
             MachineStatus = machineStatus;
             _navigationService = navigationService;
             Devices = devices;
             _navigationStore = navigationStore;
             _languageService = languageService;
-            _panelIndicator = panelIndicator;
-            _pumpIndicator = pumpIndicator;
             MachineStatus.PropertyChanged += MachineStatusOnPropertyChanged;
 
             Log = LogManager.GetLogger("AutoVM");
@@ -66,10 +58,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 return;
 
             OnPropertyChanged(nameof(Pressure));
-            OnPropertyChanged(nameof(PanelTemperature));
-            OnPropertyChanged(nameof(PanelHumidity));
-            OnPropertyChanged(nameof(PumpTemperature));
-            OnPropertyChanged(nameof(PumpHumidity));
         }
 
         private void MachineStatusOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -198,8 +186,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         #region Privates
         private readonly INavigationService _navigationService;
-        private readonly NEOSHSDIndicator _panelIndicator;
-        private readonly NEOSHSDIndicator _pumpIndicator;
         private readonly NavigationStore _navigationStore;
         private readonly ILanguageService _languageService;
         System.Timers.Timer statusUpdateTimer;

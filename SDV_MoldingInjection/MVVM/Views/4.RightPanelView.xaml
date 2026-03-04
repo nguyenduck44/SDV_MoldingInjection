@@ -107,56 +107,6 @@
                     Text="{Binding Pressure, StringFormat={}{0:F3} Torr, Mode=OneWay}"/>
 
             </GroupBox>
-            <!--<GroupBox
-                Header="Temperature"
-                Margin="0 0 0 3">
-                <StackPanel>
-                    <Border Background="{StaticResource SecondaryBackgroundColor}"
-                            Margin="0 0 0 2">
-                        <Label Content="Panel"
-                               Foreground="Wheat"
-                               FontWeight="Bold" />
-                    </Border>
-                    <UniformGrid Rows="2"
-                                 Columns="2"
-                                 Margin="0 0 0 4">
-                        <Label Content="🌡 Temperature"
-                               FontWeight="SemiBold"
-                               VerticalContentAlignment="Center" />
-                        <TextBox Style="{StaticResource TextBoxWithDescriptionStyle}"
-                                 IsReadOnly="True"
-                                 Text="{Binding PanelTemperature,Mode=OneWay,StringFormat='{}{0:0.###} °C'}" />
-                        <Label Content="💧 Humidity"
-                               FontWeight="SemiBold"
-                               VerticalContentAlignment="Center" />
-                        <TextBox Style="{StaticResource TextBoxWithDescriptionStyle}"
-                                 IsReadOnly="True"
-                                 Text="{Binding PanelHumidity,Mode=OneWay,StringFormat='{}{0:0.###} %'}" />
-                    </UniformGrid>
-
-                    <Border Background="{StaticResource SecondaryBackgroundColor}"
-                            Margin="0 0 0 2">
-                        <Label Content="Pump"
-                               Foreground="Wheat"
-                               FontWeight="Bold" />
-                    </Border>
-                    <UniformGrid Rows="2"
-                                 Columns="2">
-                        <Label Content="🌡 Temperature"
-                               FontWeight="SemiBold"
-                               VerticalContentAlignment="Center" />
-                        <TextBox Style="{StaticResource TextBoxWithDescriptionStyle}"
-                                 IsReadOnly="True"
-                                 Text="{Binding PumpTemperature,Mode=OneWay,StringFormat='{}{0:0.###} °C'}" />
-                        <Label Content="💧 Humidity"
-                               FontWeight="SemiBold"
-                               VerticalContentAlignment="Center" />
-                        <TextBox Style="{StaticResource TextBoxWithDescriptionStyle}"
-                                 IsReadOnly="True"
-                                 Text="{Binding PumpHumidity,Mode=OneWay,StringFormat='{}{0:0.###} %'}" />
-                    </UniformGrid>
-                </StackPanel>
-            </GroupBox>-->
             <GroupBox Header="Chamber" FontSize="16">
                 <UniformGrid Rows="1">
                     <Button
