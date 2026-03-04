@@ -625,7 +625,25 @@ namespace SDV_MoldingInjection.Process
 #endif
             return base.PreProcess();
         }
-#endregion
+        #endregion
+
+        public override bool ProcessToAlarm()
+        {
+            EnableTimerInject = false;
+            return base.ProcessToAlarm();
+        }
+
+        public override bool ProcessToWarning()
+        {
+            EnableTimerInject = false;
+            return base.ProcessToAlarm();
+        }
+
+        public override bool ProcessToStop()
+        {
+            EnableTimerInject = false;
+            return base.ProcessToAlarm();
+        }
 
         #region Sequence Methods
         private void Sequence_Ready()
@@ -661,6 +679,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcCommonStep.ResetInjectTime:
                     if (sequence == ESequence.ResinInject)
                     {
+                        InjectAddTail = false;
                         CarrierJigStatus.InjectTime = 0;
                     }
 
@@ -693,7 +712,15 @@ namespace SDV_MoldingInjection.Process
                     switch (sequence)
                     {
                         case ESequence.ResinInject:
-                            _pAxisCharge_Pos = _currentSPDHeadRecipe.PAxisInjectChargePos;
+                            if (InjectAddTail == false)
+                            {
+                                _pAxisCharge_Pos = _currentSPDHeadRecipe.PAxisInjectChargePos;
+                            }
+                            else
+                            {
+                                _pAxisCharge_Pos = _currentSPDHeadRecipe.PAxisInjectChargePos * (_currentRecipe.AdditionalMolding_Recipe.AddTailWeight / 100);
+                            }
+
                             break;
                         case ESequence.DummyShot:
                         case ESequence.DummyShot_H1:
@@ -730,14 +757,23 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Wait inject request work");
                     Step.RunStep++;
                     break;
-                
+
                 case ESPDHeadProcCommonStep.Base_PosVel_Calculte:
+                    Log.Debug("Calculate InjectPos and Velocity");
                     _pAxisInject_Pos = _pAxisBase_Pos;
                     switch (sequence)
                     {
                         case ESequence.ResinInject:
-                            _pAxisInject_Vel = Math.Abs(_currentSPDHeadRecipe.PAxisInjectChargePos - _pAxisBase_Pos) / _currentRecipe.InjectRecipe.InjectTime;
-                            CarrierJigStatus.PAxisInjectVelocity = _pAxisInject_Vel; // Display UI
+                            if (InjectAddTail == false)
+                            {
+                                _pAxisInject_Vel = Math.Abs(_currentSPDHeadRecipe.PAxisInjectChargePos - _pAxisBase_Pos) / _currentRecipe.InjectRecipe.InjectTime;
+                                CarrierJigStatus.PAxisInjectVelocity = _pAxisInject_Vel; // Display UI
+                            }
+                            else
+                            {
+                                _pAxisInject_Vel = _currentRecipe.AdditionalMolding_Recipe.AddTailSpeed;
+                            }
+
                             break;
                         case ESequence.DummyShot:
                         case ESequence.DummyShot_H1:
@@ -811,13 +847,27 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.WorkRequest_Wait:
-                    if (procInputs[ESPDHeadProcInput.WorkRequest].Value == false)
+                    if (procInputs[ESPDHeadProcInput.InjectAddTailRequest].Value == false && InjectAddTail)
                     {
                         Wait(50);
                         break;
                     }
 
-                    Log.Debug($"Input detect {ESPDHeadProcInput.WorkRequest}");
+                    if (procInputs[ESPDHeadProcInput.WorkRequest].Value == false && InjectAddTail == false)
+                    {
+                        Wait(50);
+                        break;
+                    }
+
+                    if (InjectAddTail)
+                    {
+                        Log.Debug($"Input detect {ESPDHeadProcInput.InjectAddTailRequest}");
+                    }
+                    else
+                    {
+                        Log.Debug($"Input detect {ESPDHeadProcInput.WorkRequest}");
+                    }
+
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.PAxis_InjectPos_Move:
@@ -825,12 +875,21 @@ namespace SDV_MoldingInjection.Process
                     PAxis.MoveAbs(_pAxisInject_Pos, _pAxisInject_Vel);
                     if (sequence == ESequence.ResinInject)
                     {
-                        Log.Debug("Start inject timer");
-                        EnableTimerInject = true;
-                        _injectSequenceStartTick = Environment.TickCount64;
+                        if (InjectAddTail == false)
+                        {
+                            Log.Debug("Start inject timer");
+                            EnableTimerInject = true;
+                            _injectSequenceStartTick = Environment.TickCount64;
 
-                        Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout + _currentRecipe.InjectRecipe.InjectTime,
-                            () => PAxis.IsOnPosition(_pAxisInject_Pos));
+                            Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout + _currentRecipe.InjectRecipe.InjectTime,
+                                () => PAxis.IsOnPosition(_pAxisInject_Pos));
+                        }
+                        else
+                        {
+                            Log.Debug("Start inject tail");
+                            Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout + Math.Abs(_pAxisBase_Pos - _pAxisInject_Pos)/_currentRecipe.AdditionalMolding_Recipe.AddTailSpeed,
+                                () => PAxis.IsOnPosition(_pAxisInject_Pos));
+                        }
                     }
                     else
                     {
@@ -861,6 +920,7 @@ namespace SDV_MoldingInjection.Process
                         }
                     }
 
+                    
                     EnableTimerInject = false;
                     Log.Debug($"{PAxis.Name} moving to InjectPos done");
 
@@ -869,18 +929,61 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.WorkDone_Send:
-                    Log.Debug($"Set output {ESPDHeadProcOutput.InjectFinish}");
-                    procOutputs[ESPDHeadProcOutput.InjectFinish].Value = true;
+                    if (InjectAddTail)
+                    {
+                        Log.Debug($"Set output {ESPDHeadProcOutput.InjectAddTailFinish}");
+                        procOutputs[ESPDHeadProcOutput.InjectAddTailFinish].Value = true;
+                    }
+                    else
+                    {
+                        Log.Debug($"Set output {ESPDHeadProcOutput.InjectFinish}");
+                        procOutputs[ESPDHeadProcOutput.InjectFinish].Value = true;
+                    }
+
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.WorkDone_Clear:
-                    if (procInputs[ESPDHeadProcInput.WorkRequest].Value == true)
+                    if (procInputs[ESPDHeadProcInput.InjectAddTailRequest].Value == true && InjectAddTail)
                     {
                         Wait(10);
                         break;
                     }
 
-                    procOutputs[ESPDHeadProcOutput.InjectFinish].Value = false;
+                    if (procInputs[ESPDHeadProcInput.WorkRequest].Value == true && InjectAddTail == false)
+                    {
+                        Wait(10);
+                        break;
+                    }
+
+                    if (InjectAddTail)
+                    {
+                        procOutputs[ESPDHeadProcOutput.InjectAddTailFinish].Value = false;
+                        Log.Debug($"Clear output {ESPDHeadProcOutput.InjectAddTailFinish} done");
+                    }
+                    else
+                    {
+                        procOutputs[ESPDHeadProcOutput.InjectFinish].Value = false;
+                        Log.Debug($"Clear output {ESPDHeadProcOutput.InjectFinish} done");
+                    }
+
+                    if (sequence != ESequence.ResinInject)
+                    {
+                        Step.RunStep = (int)ESPDHeadProcCommonStep.End;
+                        break;
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcCommonStep.InjectAddTail_Check:
+                    Log.Debug("Check Add Tail");
+                    if (_currentRecipe.AdditionalMolding_Recipe.SkipAddTail == false && InjectAddTail == false)
+                    {
+                        Log.Debug("Set next step Gate Close for Add Tail");
+                        InjectAddTail = true;
+                        Step.RunStep = (int)ESPDHeadProcCommonStep.Gate_Close;
+                        break;
+                    }
+
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.End:
@@ -1392,6 +1495,7 @@ namespace SDV_MoldingInjection.Process
         private double _pAxisInjectCharge_Pos => _pAxisBase_Pos - _pAxisInjectCharge_Height;
 
         private bool EnableTimerInject;
+        private bool InjectAddTail;
         #endregion
     }
 }

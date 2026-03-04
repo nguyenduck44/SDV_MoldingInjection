@@ -16,6 +16,16 @@
         SDPHead_Work_Request,
         SDPHead_Work_DoneWait,
 
+        InjectAddTail_Check,
+
+        ZAxis_UpDistance_Move,
+        ZAxis_UpDistance_Wait,
+
+        SDPHead_AddTail_Request,
+        SDPHead_AddTail_DoneWait,
+
+        Update_BothJigStatus,
+
         ZAxis_SafetyPos_Move,
         ZAxis_SafetyPos_MoveWait,
 

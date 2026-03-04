@@ -37,6 +37,7 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddViewModel<DataViewModel>();
                 services.AddViewModel<RecipeViewModel>();
                 services.AddViewModel<MotionsConfigViewModel>();
+                services.AddViewModel<AdditionalMoldingViewModel>();
 
                 services.AddViewModel<MonitorViewModel>();
                 services.AddViewModel<MonitorIOViewModel>();
