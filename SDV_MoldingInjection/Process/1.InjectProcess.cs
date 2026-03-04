@@ -606,7 +606,10 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.SDPHead_AddTail_DoneWait:
-                    if (IsSPDHeadInjectAddTailDone(ESPDHead.All) == false)
+                    if (IsSPDHeadInjectAddTailDone(ESPDHead.SPDHead1) == false ||
+                        IsSPDHeadInjectAddTailDone(ESPDHead.SPDHead2) == false ||
+                        IsSPDHeadInjectAddTailDone(ESPDHead.SPDHead3) == false ||
+                        IsSPDHeadInjectAddTailDone(ESPDHead.SPDHead4) == false)
                     {
                         Wait(20);
                         break;
@@ -1726,15 +1729,6 @@ namespace SDV_MoldingInjection.Process
         
         private bool IsSPDHeadInjectAddTailDone(ESPDHead head)
         {
-            if (head == ESPDHead.All)
-            {
-                return
-                    (procInputs[EInjectProcInput.SPDHead1_InjectAddTailDone].Value || _currentRecipe.SPDHead1_Recipe.HeadSkip) &&
-                    (procInputs[EInjectProcInput.SPDHead2_InjectAddTailDone].Value || _currentRecipe.SPDHead2_Recipe.HeadSkip) &&
-                    (procInputs[EInjectProcInput.SPDHead3_InjectAddTailDone].Value || _currentRecipe.SPDHead3_Recipe.HeadSkip) &&
-                    (procInputs[EInjectProcInput.SPDHead4_InjectAddTailDone].Value || _currentRecipe.SPDHead4_Recipe.HeadSkip);
-            }
-
             return head switch
             {
                 ESPDHead.SPDHead1 => procInputs[EInjectProcInput.SPDHead1_InjectAddTailDone].Value || _currentRecipe.SPDHead1_Recipe.HeadSkip,

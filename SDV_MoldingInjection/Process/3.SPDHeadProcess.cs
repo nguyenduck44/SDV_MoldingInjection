@@ -350,6 +350,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcOriginStep.SetFlag_SPDHeadOriginDone:
                     Log.Debug($"Set flag {head} OriginDone");
                     procOutputs[ESPDHeadProcOutput.OriginDone].Value = true;
+                    _syringeAmountStatusList.ConsumeSyringeAmount(head, _pAxisBase_Pos);
                     Step.OriginStep++;
                     break;
                 case ESPDHeadProcOriginStep.ClearFlag_SPDHeadOriginDone:
@@ -636,13 +637,13 @@ namespace SDV_MoldingInjection.Process
         public override bool ProcessToWarning()
         {
             EnableTimerInject = false;
-            return base.ProcessToAlarm();
+            return base.ProcessToWarning();
         }
 
         public override bool ProcessToStop()
         {
             EnableTimerInject = false;
-            return base.ProcessToAlarm();
+            return base.ProcessToStop();
         }
 
         #region Sequence Methods
@@ -718,7 +719,8 @@ namespace SDV_MoldingInjection.Process
                             }
                             else
                             {
-                                _pAxisCharge_Pos = _currentSPDHeadRecipe.PAxisInjectChargePos * (_currentRecipe.AdditionalMolding_Recipe.AddTailWeight / 100);
+                                double height = (_pAxisBase_Pos - _currentSPDHeadRecipe.PAxisInjectChargePos) * (_currentRecipe.AdditionalMolding_Recipe.AddTailWeight / 100);
+                                _pAxisCharge_Pos = _pAxisBase_Pos - height;
                             }
 
                             break;
@@ -984,6 +986,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    InjectAddTail = false; // Clear add tail
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.End:

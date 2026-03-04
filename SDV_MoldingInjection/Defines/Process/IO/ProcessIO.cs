@@ -117,11 +117,11 @@ namespace SDV_MoldingInjection.Defines
             InjectProcInput[EInjectProcInput.SPDHead1_InjectAddTailDone]
                 .MapTo(SPDHead1_ProcOutput[ESPDHeadProcOutput.InjectAddTailFinish]);
             InjectProcInput[EInjectProcInput.SPDHead2_InjectAddTailDone]
-                .MapTo(SPDHead1_ProcOutput[ESPDHeadProcOutput.InjectAddTailFinish]);
+                .MapTo(SPDHead2_ProcOutput[ESPDHeadProcOutput.InjectAddTailFinish]);
             InjectProcInput[EInjectProcInput.SPDHead3_InjectAddTailDone]
-                .MapTo(SPDHead1_ProcOutput[ESPDHeadProcOutput.InjectAddTailFinish]);
+                .MapTo(SPDHead3_ProcOutput[ESPDHeadProcOutput.InjectAddTailFinish]);
             InjectProcInput[EInjectProcInput.SPDHead4_InjectAddTailDone]
-                .MapTo(SPDHead1_ProcOutput[ESPDHeadProcOutput.InjectAddTailFinish]);
+                .MapTo(SPDHead4_ProcOutput[ESPDHeadProcOutput.InjectAddTailFinish]);
            
 
 
