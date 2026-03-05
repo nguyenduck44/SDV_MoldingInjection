@@ -650,7 +650,7 @@ namespace SDV_MoldingInjection.Process
             }
 #if !SIMULATION
             if (In_SyringeCheck.Value == false &&
-                _currentSPDHeadRecipe.HeadSkip == false &&
+                CurrentHeadSkip == false &&
                 _machineStatus.MachineTestMode == false)
             {
                 RaiseHeadWarning(EWarning.H1_Syringe_Not_Detected);
@@ -1508,6 +1508,16 @@ namespace SDV_MoldingInjection.Process
             "SPDHead4" => _carrierJigStatusList.CarrierJigStatusH4,
             _ => throw new Exception($"Invalid process name: {Name}")
         };
+
+        private bool CurrentHeadSkip => Name switch
+        {
+            "SPDHead1" => OptionRecipe.SkipHead12,
+            "SPDHead2" => OptionRecipe.SkipHead12,
+            "SPDHead3" => OptionRecipe.SkipHead34,
+            "SPDHead4" => OptionRecipe.SkipHead34,
+            _ => throw new Exception($"Invalid process name: {Name}")
+        };
+
         private double V380Weight2mg(double weight, double constant = 1)
         {
             return Math.Round(weight / (Math.Pow(2.5, 2) * Math.PI), 3);
