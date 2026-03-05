@@ -66,6 +66,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 _devices.Outputs.VacChamberOpen,
                 _devices.Outputs.VacChamberClose,
             };
+            Sequences = new ObservableCollection<ESemiSequence>
+            {
+                ESemiSequence.Loading,
+                ESemiSequence.Unloading,
+            };
         }
 
         protected override RecipePositionManagerBase<RecipeList> UpdatePositionManager()
