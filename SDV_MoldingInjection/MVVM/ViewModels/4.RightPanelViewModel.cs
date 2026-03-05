@@ -69,6 +69,31 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         }
 
         #region Commands
+        public ICommand MaintenanceCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    ESemiSequence seq = ESemiSequence.Unloading;
+                    MachineStatus.OPCommand = EOperationCommand.SemiAuto;
+                    MachineStatus.SemiAutoSequence = seq;
+                });
+            }
+        }
+
+        public ICommand NeedleCleanCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    ESemiSequence seq = ESemiSequence.NeedleCleaning;
+                    MachineStatus.OPCommand = EOperationCommand.SemiAuto;
+                    MachineStatus.SemiAutoSequence = seq;
+                });
+            }
+        }
         public ICommand ChamberCloseCommand
         {
             get

@@ -112,11 +112,13 @@
                     <Button
                             Content="Chamber Open"
                             Height="50" Margin="2"
-                            Command="{Binding ChamberOpenCommand}"/>
+                            Command="{Binding ChamberOpenCommand}"
+                            IsEnabled="{Binding MachineStatus.IsStandByProcessMode}" />
                     <Button
                             Content="Chamber Close"
                             Height="50" Margin="2"
-                            Command="{Binding ChamberCloseCommand}"/>
+                            Command="{Binding ChamberCloseCommand}"
+                            IsEnabled="{Binding MachineStatus.IsStandByProcessMode}" />
                 </UniformGrid>
             </GroupBox>
         </StackPanel>
@@ -124,16 +126,20 @@
         <UniformGrid
                 Columns="1" Grid.Row="1"
                 VerticalAlignment="Bottom">
+            <ui:ImageButton Content="Maintenance"
+                            Image="/EQX.UI;component/Resources/Images/Components/Common/return_selected.png"
+                            Command="{Binding MaintenanceCommand}"
+                            IsEnabled="{Binding MachineStatus.IsStandByProcessMode}" />
+
             <ui:ImageRadioButton
                         Image="/EQX.UI;component/Resources/Images/Components/Common/auto_selected.png"
                         DisabledImage="/EQX.UI;component/Resources/Images/Components/Common/auto_normal_light.png"
                         Content="{DynamicResource str_AutoMode}"/>
-
+            
             <ui:ImageRadioButton
                         Image="/EQX.UI;component/Resources/Images/Components/Common/manual_selected.png"
                         DisabledImage="/EQX.UI;component/Resources/Images/Components/Common/manual_normal_light.png"
                         Content="{DynamicResource str_ManualMode}" IsChecked="True"/>
-
 
             <ui:ImageButton
                     Image="/EQX.UI;component/Resources/Images/Components/Common/model_change_Selected.png"
@@ -154,8 +160,8 @@
             <ui:ImageButton
                     Image="/EQX.UI;component/Resources/Images/Components/Common/return_origin_selected.png"
                     Content="{DynamicResource str_Origin}"
-                    Command="{Binding OriginCommand}" />
-
+                    Command="{Binding OriginCommand}"
+                    IsEnabled="{Binding MachineStatus.IsStandByProcessMode}" />
         </UniformGrid>
     </Grid>
 </UserControl>
