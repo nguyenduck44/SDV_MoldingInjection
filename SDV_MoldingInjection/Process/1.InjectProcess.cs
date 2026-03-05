@@ -394,6 +394,44 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Move {XAxis.Name} {YAxis.Name} to dummy position X: {Recipe.XAxisDummyPos}, Y: {Recipe.YAxisDummyPos} done");
                     Step.OriginStep++;
                     break;
+                case EMoldProcOriginStep.ZAxis_DummyPos_Move:
+                    Log.Debug("ZAxis move dummy position");
+                    Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisDummyPos);
+                    Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisDummyPos);
+                    Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisDummyPos);
+                    Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisDummyPos);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisDummyPos) &&
+                                                                              Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisDummyPos) &&
+                                                                              Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisDummyPos) &&
+                                                                              Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisDummyPos));
+                    Step.OriginStep++;
+                    break;
+                case EMoldProcOriginStep.ZAxis_DummyPos_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        if (!Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisDummyPos))
+                        {
+                            RaiseWarning(EWarning.Z1Axis_DummyPos_MoveTimeOut);
+                        }
+                        if (!Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisDummyPos))
+                        {
+                            RaiseWarning(EWarning.Z2Axis_DummyPos_MoveTimeOut);
+                        }
+                        if (!Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisDummyPos))
+                        {
+                            RaiseWarning(EWarning.Z3Axis_DummyPos_MoveTimeOut);
+                        }
+                        if (!Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisDummyPos))
+                        {
+                            RaiseWarning(EWarning.Z4Axis_DummyPos_MoveTimeOut);
+                        }
+
+                        break;
+                    }
+
+                    Log.Debug("ZAxis move dummy position done");
+                    Step.OriginStep++;
+                    break;
                 case EMoldProcOriginStep.SetFlag_MoveDummyPosDone:
                     procOutputs[EInjectProcOutput.XYAxisInDummyPos].Value = true;
                     Step.OriginStep++;
@@ -407,6 +445,22 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"Clear flag move dummy pos done");
                     procOutputs[EInjectProcOutput.XYAxisInDummyPos].Value = false;
+                    Step.OriginStep++;
+                    break;
+                case EMoldProcOriginStep.ZAxis_SafetyPos_Move:
+                    Log.Debug("Moving Z-Axes to safety position");
+                    ZAxisSafetyPosMove();
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => AllZAxisInSafetyPos(ref _failHead));
+                    Step.OriginStep++;
+                    break;
+                case EMoldProcOriginStep.ZAxis_SafetyPos_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseHeadWarning(EWarning.Z1Axis_SafetyPos_MoveTimeOut, _failHead);
+                        break;
+                    }
+
+                    Log.Debug("Z-Axes move to safety position done");
                     Step.OriginStep++;
                     break;
                 case EMoldProcOriginStep.End:

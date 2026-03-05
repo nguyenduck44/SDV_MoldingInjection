@@ -24,8 +24,14 @@ namespace SDV_MoldingInjection.Defines
         XYAxis_MoveDummyPos,
         XYAxis_MoveDummyPosWait,
 
+        ZAxis_DummyPos_Move,
+        ZAxis_DummyPos_Wait,
+
         SetFlag_MoveDummyPosDone,
         ClearFlag_MoveDummyPosDone,
+
+        ZAxis_SafetyPos_Move,
+        ZAxis_SafetyPos_Wait,
 
         End,
     }
