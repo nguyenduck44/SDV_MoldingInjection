@@ -83,6 +83,9 @@
             <DataTemplate DataType="{x:Type vm:AdditionalMoldingViewModel}">
                 <views:AdditionalMoldingView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:OptionViewModel}">
+                <views:OptionView />
+            </DataTemplate>
 
             <!-- MAINTENANCE DATATEMPLATE -->
             <DataTemplate x:Key="InjectManualView">

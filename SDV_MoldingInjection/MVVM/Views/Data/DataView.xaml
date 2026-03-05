@@ -32,7 +32,7 @@
         <GroupBox Header="Other Setting" Margin="5">
             <StackPanel Margin="0,10,0,0">
                 <Button Content="Option Enable/Disable"
-                        Command="{Binding RecipeDataNavigateCommand}" />
+                        Command="{Binding OptionNavigateCommand}" />
 
                 <Button Content="Run Mode"
                         Command="{Binding RunModeChangeCommand}" />
