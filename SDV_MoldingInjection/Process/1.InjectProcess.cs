@@ -92,10 +92,10 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug("Machine Calibration check");
-                    _machineStatus.MachineCalibration[0] |= _currentRecipe.SPDHead1_Recipe.HeadSkip || _machineStatus.MachineCalibrationSkip[0];
-                    _machineStatus.MachineCalibration[1] |= _currentRecipe.SPDHead2_Recipe.HeadSkip || _machineStatus.MachineCalibrationSkip[1];
-                    _machineStatus.MachineCalibration[2] |= _currentRecipe.SPDHead3_Recipe.HeadSkip || _machineStatus.MachineCalibrationSkip[2];
-                    _machineStatus.MachineCalibration[3] |= _currentRecipe.SPDHead4_Recipe.HeadSkip || _machineStatus.MachineCalibrationSkip[3];
+                    _machineStatus.MachineCalibration[0] |= _currentRecipe.OptionRecipe.SkipHead12 || _machineStatus.MachineCalibrationSkip[0];
+                    _machineStatus.MachineCalibration[1] |= _currentRecipe.OptionRecipe.SkipHead12 || _machineStatus.MachineCalibrationSkip[1];
+                    _machineStatus.MachineCalibration[2] |= _currentRecipe.OptionRecipe.SkipHead34 || _machineStatus.MachineCalibrationSkip[2];
+                    _machineStatus.MachineCalibration[3] |= _currentRecipe.OptionRecipe.SkipHead34 || _machineStatus.MachineCalibrationSkip[3];
 
                     if (_machineStatus.MachineCalibration.All(x => x) == false &&
                         _machineStatus.IsDryRunMode == false)
@@ -782,7 +782,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.Transfer_Load_Wait:
                     if (isLoading)
                     {
-                        if (_currentRecipe.SPDHead1_Recipe.HeadSkip == false && _currentRecipe.SPDHead2_Recipe.HeadSkip == false)
+                        if (_currentRecipe.OptionRecipe.SkipHead12 == false)
                         {
 
                         }
@@ -853,10 +853,10 @@ namespace SDV_MoldingInjection.Process
             switch ((EMoldProcDummyShotStep)Step.RunStep)
             {
                 case EMoldProcDummyShotStep.Start:
-                    if (head == ESPDHead.SPDHead1 && _currentRecipe.SPDHead1_Recipe.HeadSkip ||
-                        head == ESPDHead.SPDHead2 && _currentRecipe.SPDHead2_Recipe.HeadSkip ||
-                        head == ESPDHead.SPDHead3 && _currentRecipe.SPDHead3_Recipe.HeadSkip ||
-                        head == ESPDHead.SPDHead4 && _currentRecipe.SPDHead4_Recipe.HeadSkip)
+                    if (head == ESPDHead.SPDHead1 && _currentRecipe.OptionRecipe.SkipHead12 ||
+                        head == ESPDHead.SPDHead2 && _currentRecipe.OptionRecipe.SkipHead12 ||
+                        head == ESPDHead.SPDHead3 && _currentRecipe.OptionRecipe.SkipHead34 ||
+                        head == ESPDHead.SPDHead4 && _currentRecipe.OptionRecipe.SkipHead34)
                     {
                         Log.Debug("SKIP dummy shot for head " + head);
                         Step.RunStep = (int)EMoldProcDummyShotStep.End;
@@ -910,19 +910,19 @@ namespace SDV_MoldingInjection.Process
                     {
                         if (sequence == ESequence.DummyShot)
                         {
-                            if (_currentRecipe.SPDHead1_Recipe.HeadSkip == false && !Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisDummyPos))
+                            if (_currentRecipe.OptionRecipe.SkipHead12 == false && !Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisDummyPos))
                             {
                                 RaiseWarning(EWarning.Z1Axis_DummyPos_MoveTimeOut);
                             }
-                            if (_currentRecipe.SPDHead2_Recipe.HeadSkip == false && !Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisDummyPos))
+                            if (_currentRecipe.OptionRecipe.SkipHead12 == false && !Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisDummyPos))
                             {
                                 RaiseWarning(EWarning.Z2Axis_DummyPos_MoveTimeOut);
                             }
-                            if (_currentRecipe.SPDHead3_Recipe.HeadSkip == false && !Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisDummyPos))
+                            if (_currentRecipe.OptionRecipe.SkipHead34 == false && !Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisDummyPos))
                             {
                                 RaiseWarning(EWarning.Z3Axis_DummyPos_MoveTimeOut);
                             }
-                            if (_currentRecipe.SPDHead4_Recipe.HeadSkip == false && !Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisDummyPos))
+                            if (_currentRecipe.OptionRecipe.SkipHead34 == false && !Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisDummyPos))
                             {
                                 RaiseWarning(EWarning.Z4Axis_DummyPos_MoveTimeOut);
                             }
@@ -1020,10 +1020,10 @@ namespace SDV_MoldingInjection.Process
             switch ((EMoldProcNeedleCleaningStep)Step.RunStep)
             {
                 case EMoldProcNeedleCleaningStep.Start:
-                    if (head == ESPDHead.SPDHead1 && _currentRecipe.SPDHead1_Recipe.HeadSkip ||
-                        head == ESPDHead.SPDHead2 && _currentRecipe.SPDHead2_Recipe.HeadSkip ||
-                        head == ESPDHead.SPDHead3 && _currentRecipe.SPDHead3_Recipe.HeadSkip ||
-                        head == ESPDHead.SPDHead4 && _currentRecipe.SPDHead4_Recipe.HeadSkip)
+                    if (head == ESPDHead.SPDHead1 && _currentRecipe.OptionRecipe.SkipHead12 ||
+                        head == ESPDHead.SPDHead2 && _currentRecipe.OptionRecipe.SkipHead12 ||
+                        head == ESPDHead.SPDHead3 && _currentRecipe.OptionRecipe.SkipHead34 ||
+                        head == ESPDHead.SPDHead4 && _currentRecipe.OptionRecipe.SkipHead34)
                     {
                         Step.RunStep = (int)EMoldProcNeedleCleaningStep.End;
                         break;
@@ -1449,13 +1449,13 @@ namespace SDV_MoldingInjection.Process
 
         private void ZAxisInjectPosMove()
         {
-            if (!_currentRecipe.SPDHead1_Recipe.HeadSkip)
+            if (!_currentRecipe.OptionRecipe.SkipHead12)
                 Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisInjectPos);
-            if (!_currentRecipe.SPDHead2_Recipe.HeadSkip)
+            if (!_currentRecipe.OptionRecipe.SkipHead12)
                 Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisInjectPos);
-            if (!_currentRecipe.SPDHead3_Recipe.HeadSkip)
+            if (!_currentRecipe.OptionRecipe.SkipHead34)
                 Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisInjectPos);
-            if (!_currentRecipe.SPDHead4_Recipe.HeadSkip)
+            if (!_currentRecipe.OptionRecipe.SkipHead34)
                 Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisInjectPos);
         }
 
@@ -1464,19 +1464,19 @@ namespace SDV_MoldingInjection.Process
             bool result = true;
             bool ret = false;
 
-            ret = _currentRecipe.SPDHead1_Recipe.HeadSkip || Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisInjectPos);
+            ret = _currentRecipe.OptionRecipe.SkipHead12 || Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisInjectPos);
             result &= ret;
             if (!ret) failHead = ESPDHead.SPDHead1;
 
-            ret = _currentRecipe.SPDHead2_Recipe.HeadSkip || Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisInjectPos);
+            ret = _currentRecipe.OptionRecipe.SkipHead12 || Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisInjectPos);
             result &= ret;
             if (!ret) failHead = ESPDHead.SPDHead2;
 
-            ret = _currentRecipe.SPDHead3_Recipe.HeadSkip || Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisInjectPos);
+            ret = _currentRecipe.OptionRecipe.SkipHead34 || Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisInjectPos);
             result &= ret;
             if (!ret) failHead = ESPDHead.SPDHead3;
 
-            ret = _currentRecipe.SPDHead4_Recipe.HeadSkip || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisInjectPos);
+            ret = _currentRecipe.OptionRecipe.SkipHead34 || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisInjectPos);
             result &= ret;
             if (!ret) failHead = ESPDHead.SPDHead4;
 
@@ -1485,13 +1485,13 @@ namespace SDV_MoldingInjection.Process
 
         private void ZAxisAddTailPosMove()
         {
-            if (!_currentRecipe.SPDHead1_Recipe.HeadSkip)
+            if (!_currentRecipe.OptionRecipe.SkipHead12)
                 Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
-            if (!_currentRecipe.SPDHead2_Recipe.HeadSkip)
+            if (!_currentRecipe.OptionRecipe.SkipHead12)
                 Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
-            if (!_currentRecipe.SPDHead3_Recipe.HeadSkip)
+            if (!_currentRecipe.OptionRecipe.SkipHead34)
                 Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
-            if (!_currentRecipe.SPDHead4_Recipe.HeadSkip)
+            if (!_currentRecipe.OptionRecipe.SkipHead34)
                 Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
         }
 
@@ -1500,19 +1500,19 @@ namespace SDV_MoldingInjection.Process
             bool result = true;
             bool ret = false;
 
-            ret = _currentRecipe.SPDHead1_Recipe.HeadSkip || Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
+            ret = _currentRecipe.OptionRecipe.SkipHead12 || Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
             result &= ret;
             if (!ret) failHead = ESPDHead.SPDHead1;
 
-            ret = _currentRecipe.SPDHead2_Recipe.HeadSkip || Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
+            ret = _currentRecipe.OptionRecipe.SkipHead12 || Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
             result &= ret;
             if (!ret) failHead = ESPDHead.SPDHead2;
 
-            ret = _currentRecipe.SPDHead3_Recipe.HeadSkip || Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
+            ret = _currentRecipe.OptionRecipe.SkipHead34 || Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
             result &= ret;
             if (!ret) failHead = ESPDHead.SPDHead3;
 
-            ret = _currentRecipe.SPDHead4_Recipe.HeadSkip || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
+            ret = _currentRecipe.OptionRecipe.SkipHead34 || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
             result &= ret;
             if (!ret) failHead = ESPDHead.SPDHead4;
 
@@ -1521,13 +1521,13 @@ namespace SDV_MoldingInjection.Process
 
         private void ZAxisNeedleCleanPosMove(ESPDHead head)
         {
-            if (_currentRecipe.SPDHead1_Recipe.HeadSkip == false && (head == ESPDHead.SPDHead1 || head == ESPDHead.All))
+            if (_currentRecipe.OptionRecipe.SkipHead12 == false && (head == ESPDHead.SPDHead1 || head == ESPDHead.All))
                 Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisNeedleCleanPos);
-            if (_currentRecipe.SPDHead2_Recipe.HeadSkip == false && (head == ESPDHead.SPDHead2 || head == ESPDHead.All))
+            if (_currentRecipe.OptionRecipe.SkipHead12 == false && (head == ESPDHead.SPDHead2 || head == ESPDHead.All))
                 Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisNeedleCleanPos);
-            if (_currentRecipe.SPDHead3_Recipe.HeadSkip == false && (head == ESPDHead.SPDHead3 || head == ESPDHead.All))
+            if (_currentRecipe.OptionRecipe.SkipHead34 == false && (head == ESPDHead.SPDHead3 || head == ESPDHead.All))
                 Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisNeedleCleanPos);
-            if (_currentRecipe.SPDHead4_Recipe.HeadSkip == false && (head == ESPDHead.SPDHead4 || head == ESPDHead.All))
+            if (_currentRecipe.OptionRecipe.SkipHead34 == false && (head == ESPDHead.SPDHead4 || head == ESPDHead.All))
                 Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisNeedleCleanPos);
         }
 
@@ -1535,19 +1535,19 @@ namespace SDV_MoldingInjection.Process
         {
             if (head == ESPDHead.SPDHead1)
             {
-                return _currentRecipe.SPDHead1_Recipe.HeadSkip || Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisNeedleCleanPos);
+                return _currentRecipe.OptionRecipe.SkipHead12 || Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisNeedleCleanPos);
             }
             if (head == ESPDHead.SPDHead2)
             {
-                return _currentRecipe.SPDHead2_Recipe.HeadSkip || Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisNeedleCleanPos);
+                return _currentRecipe.OptionRecipe.SkipHead12 || Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisNeedleCleanPos);
             }
             if (head == ESPDHead.SPDHead3)
             {
-                return _currentRecipe.SPDHead3_Recipe.HeadSkip || Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisNeedleCleanPos);
+                return _currentRecipe.OptionRecipe.SkipHead34 || Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisNeedleCleanPos);
             }
             if (head == ESPDHead.SPDHead4)
             {
-                return _currentRecipe.SPDHead4_Recipe.HeadSkip || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisNeedleCleanPos);
+                return _currentRecipe.OptionRecipe.SkipHead34 || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisNeedleCleanPos);
             }
             return true;
         }
@@ -1557,19 +1557,19 @@ namespace SDV_MoldingInjection.Process
             bool result = true;
             bool ret = false;
 
-            ret = _currentRecipe.SPDHead1_Recipe.HeadSkip || Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisNeedleCleanPos);
+            ret = _currentRecipe.OptionRecipe.SkipHead12 || Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisNeedleCleanPos);
             result &= ret;
             if (!ret) failHead = ESPDHead.SPDHead1;
 
-            ret = _currentRecipe.SPDHead2_Recipe.HeadSkip || Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisNeedleCleanPos);
+            ret = _currentRecipe.OptionRecipe.SkipHead12 || Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisNeedleCleanPos);
             result &= ret;
             if (!ret) failHead = ESPDHead.SPDHead2;
 
-            ret = _currentRecipe.SPDHead3_Recipe.HeadSkip || Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisNeedleCleanPos);
+            ret = _currentRecipe.OptionRecipe.SkipHead34 || Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisNeedleCleanPos);
             result &= ret;
             if (!ret) failHead = ESPDHead.SPDHead3;
 
-            ret = _currentRecipe.SPDHead4_Recipe.HeadSkip || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisNeedleCleanPos);
+            ret = _currentRecipe.OptionRecipe.SkipHead34 || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisNeedleCleanPos);
             result &= ret;
             if (!ret) failHead = ESPDHead.SPDHead4;
 
@@ -1578,13 +1578,13 @@ namespace SDV_MoldingInjection.Process
 
         private void ZAxisDummyPosMove(ESPDHead head)
         {
-            if (_currentRecipe.SPDHead1_Recipe.HeadSkip == false && (head == ESPDHead.SPDHead1 || head == ESPDHead.All))
+            if (_currentRecipe.OptionRecipe.SkipHead12 == false && (head == ESPDHead.SPDHead1 || head == ESPDHead.All))
                 Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisDummyPos);
-            if (_currentRecipe.SPDHead2_Recipe.HeadSkip == false && (head == ESPDHead.SPDHead2 || head == ESPDHead.All))
+            if (_currentRecipe.OptionRecipe.SkipHead12 == false && (head == ESPDHead.SPDHead2 || head == ESPDHead.All))
                 Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisDummyPos);
-            if (_currentRecipe.SPDHead3_Recipe.HeadSkip == false && (head == ESPDHead.SPDHead3 || head == ESPDHead.All))
+            if (_currentRecipe.OptionRecipe.SkipHead34 == false && (head == ESPDHead.SPDHead3 || head == ESPDHead.All))
                 Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisDummyPos);
-            if (_currentRecipe.SPDHead4_Recipe.HeadSkip == false && (head == ESPDHead.SPDHead4 || head == ESPDHead.All))
+            if (_currentRecipe.OptionRecipe.SkipHead34 == false && (head == ESPDHead.SPDHead4 || head == ESPDHead.All))
                 Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisDummyPos);
         }
 
@@ -1593,30 +1593,30 @@ namespace SDV_MoldingInjection.Process
             if (head == ESPDHead.All)
             {
                 return
-                    (_currentRecipe.SPDHead1_Recipe.HeadSkip || Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisDummyPos)) &&
-                    (_currentRecipe.SPDHead2_Recipe.HeadSkip || Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisDummyPos)) &&
-                    (_currentRecipe.SPDHead3_Recipe.HeadSkip || Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisDummyPos)) &&
-                    (_currentRecipe.SPDHead4_Recipe.HeadSkip || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisDummyPos));
+                    (_currentRecipe.OptionRecipe.SkipHead12 || Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisDummyPos)) &&
+                    (_currentRecipe.OptionRecipe.SkipHead12 || Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisDummyPos)) &&
+                    (_currentRecipe.OptionRecipe.SkipHead34 || Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisDummyPos)) &&
+                    (_currentRecipe.OptionRecipe.SkipHead34 || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisDummyPos));
             }
 
             if (head == ESPDHead.SPDHead1)
             {
-                return _currentRecipe.SPDHead1_Recipe.HeadSkip || Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisDummyPos);
+                return _currentRecipe.OptionRecipe.SkipHead12 || Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisDummyPos);
             }
 
             if (head == ESPDHead.SPDHead2)
             {
-                return _currentRecipe.SPDHead2_Recipe.HeadSkip || Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisDummyPos);
+                return _currentRecipe.OptionRecipe.SkipHead12 || Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisDummyPos);
             }
 
             if (head == ESPDHead.SPDHead3)
             {
-                return _currentRecipe.SPDHead3_Recipe.HeadSkip || Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisDummyPos);
+                return _currentRecipe.OptionRecipe.SkipHead34 || Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisDummyPos);
             }
 
             if (head == ESPDHead.SPDHead4)
             {
-                return _currentRecipe.SPDHead4_Recipe.HeadSkip || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisDummyPos);
+                return _currentRecipe.OptionRecipe.SkipHead34 || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisDummyPos);
             }
 
             return true;
@@ -1624,13 +1624,13 @@ namespace SDV_MoldingInjection.Process
 
         private void ZAxisAssembleDisassemblePosMove(ESPDHead head)
         {
-            if (_currentRecipe.SPDHead1_Recipe.HeadSkip == false && head == ESPDHead.SPDHead1)
+            if (_currentRecipe.OptionRecipe.SkipHead12 == false && head == ESPDHead.SPDHead1)
                 Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisAssembleDisassemblePos);
-            if (_currentRecipe.SPDHead2_Recipe.HeadSkip == false && head == ESPDHead.SPDHead2)
+            if (_currentRecipe.OptionRecipe.SkipHead12 == false && head == ESPDHead.SPDHead2)
                 Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisAssembleDisassemblePos);
-            if (_currentRecipe.SPDHead3_Recipe.HeadSkip == false && head == ESPDHead.SPDHead3)
+            if (_currentRecipe.OptionRecipe.SkipHead34 == false && head == ESPDHead.SPDHead3)
                 Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisAssembleDisassemblePos);
-            if (_currentRecipe.SPDHead4_Recipe.HeadSkip == false && head == ESPDHead.SPDHead4)
+            if (_currentRecipe.OptionRecipe.SkipHead34 == false && head == ESPDHead.SPDHead4)
                 Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisAssembleDisassemblePos);
         }
 
@@ -1638,22 +1638,22 @@ namespace SDV_MoldingInjection.Process
         {
             if (head == ESPDHead.SPDHead1)
             {
-                return _currentRecipe.SPDHead1_Recipe.HeadSkip || Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisAssembleDisassemblePos);
+                return _currentRecipe.OptionRecipe.SkipHead12 || Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisAssembleDisassemblePos);
             }
 
             if (head == ESPDHead.SPDHead2)
             {
-                return _currentRecipe.SPDHead2_Recipe.HeadSkip || Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisAssembleDisassemblePos);
+                return _currentRecipe.OptionRecipe.SkipHead12 || Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisAssembleDisassemblePos);
             }
 
             if (head == ESPDHead.SPDHead3)
             {
-                return _currentRecipe.SPDHead3_Recipe.HeadSkip || Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisAssembleDisassemblePos);
+                return _currentRecipe.OptionRecipe.SkipHead34 || Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisAssembleDisassemblePos);
             }
 
             if (head == ESPDHead.SPDHead4)
             {
-                return _currentRecipe.SPDHead4_Recipe.HeadSkip || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisAssembleDisassemblePos);
+                return _currentRecipe.OptionRecipe.SkipHead34 || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisAssembleDisassemblePos);
             }
 
             return true;
@@ -1661,13 +1661,13 @@ namespace SDV_MoldingInjection.Process
 
         private void ZAxisDotWeightingPosMove(ESPDHead head)
         {
-            if (_currentRecipe.SPDHead1_Recipe.HeadSkip == false && head == ESPDHead.SPDHead1)
+            if (_currentRecipe.OptionRecipe.SkipHead12 == false && head == ESPDHead.SPDHead1)
                 Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisWeightingPos);
-            if (_currentRecipe.SPDHead2_Recipe.HeadSkip == false && head == ESPDHead.SPDHead2)
+            if (_currentRecipe.OptionRecipe.SkipHead12 == false && head == ESPDHead.SPDHead2)
                 Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisWeightingPos);
-            if (_currentRecipe.SPDHead3_Recipe.HeadSkip == false && head == ESPDHead.SPDHead3)
+            if (_currentRecipe.OptionRecipe.SkipHead34 == false && head == ESPDHead.SPDHead3)
                 Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisWeightingPos);
-            if (_currentRecipe.SPDHead4_Recipe.HeadSkip == false && head == ESPDHead.SPDHead4)
+            if (_currentRecipe.OptionRecipe.SkipHead34 == false && head == ESPDHead.SPDHead4)
                 Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisWeightingPos);
         }
 
@@ -1675,22 +1675,22 @@ namespace SDV_MoldingInjection.Process
         {
             if (head == ESPDHead.SPDHead1)
             {
-                return _currentRecipe.SPDHead1_Recipe.HeadSkip || Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisWeightingPos);
+                return _currentRecipe.OptionRecipe.SkipHead12 || Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisWeightingPos);
 
             }
             if (head == ESPDHead.SPDHead2)
             {
-                return _currentRecipe.SPDHead2_Recipe.HeadSkip || Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisWeightingPos);
+                return _currentRecipe.OptionRecipe.SkipHead12 || Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisWeightingPos);
 
             }
             if (head == ESPDHead.SPDHead3)
             {
-                return _currentRecipe.SPDHead3_Recipe.HeadSkip || Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisWeightingPos);
+                return _currentRecipe.OptionRecipe.SkipHead34 || Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisWeightingPos);
 
             }
             if (head == ESPDHead.SPDHead4)
             {
-                return _currentRecipe.SPDHead4_Recipe.HeadSkip || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisWeightingPos);
+                return _currentRecipe.OptionRecipe.SkipHead34 || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisWeightingPos);
 
             }
 
@@ -1699,13 +1699,13 @@ namespace SDV_MoldingInjection.Process
 
         private void NozzleCleanCyl_Grip(ESPDHead head)
         {
-            if (_currentRecipe.SPDHead1_Recipe.HeadSkip == false && (head == ESPDHead.SPDHead1 || head == ESPDHead.All))
+            if (_currentRecipe.OptionRecipe.SkipHead12 == false && (head == ESPDHead.SPDHead1 || head == ESPDHead.All))
                 NozzleClean_H1.Grip();
-            if (_currentRecipe.SPDHead2_Recipe.HeadSkip == false && (head == ESPDHead.SPDHead2 || head == ESPDHead.All))
+            if (_currentRecipe.OptionRecipe.SkipHead12 == false && (head == ESPDHead.SPDHead2 || head == ESPDHead.All))
                 NozzleClean_H2.Grip();
-            if (_currentRecipe.SPDHead3_Recipe.HeadSkip == false && (head == ESPDHead.SPDHead3 || head == ESPDHead.All))
+            if (_currentRecipe.OptionRecipe.SkipHead34 == false && (head == ESPDHead.SPDHead3 || head == ESPDHead.All))
                 NozzleClean_H3.Grip();
-            if (_currentRecipe.SPDHead4_Recipe.HeadSkip == false && (head == ESPDHead.SPDHead4 || head == ESPDHead.All))
+            if (_currentRecipe.OptionRecipe.SkipHead34 == false && (head == ESPDHead.SPDHead4 || head == ESPDHead.All))
                 NozzleClean_H4.Grip();
         }
 
@@ -1713,26 +1713,26 @@ namespace SDV_MoldingInjection.Process
         {
             if (head == ESPDHead.All)
             {
-                return (_currentRecipe.SPDHead1_Recipe.HeadSkip || NozzleClean_H1.IsGrip()) &&
-                    (_currentRecipe.SPDHead2_Recipe.HeadSkip || NozzleClean_H2.IsGrip()) &&
-                    (_currentRecipe.SPDHead3_Recipe.HeadSkip || NozzleClean_H3.IsGrip()) &&
-                    (_currentRecipe.SPDHead4_Recipe.HeadSkip || NozzleClean_H4.IsGrip());
+                return (_currentRecipe.OptionRecipe.SkipHead12 || NozzleClean_H1.IsGrip()) &&
+                    (_currentRecipe.OptionRecipe.SkipHead12 || NozzleClean_H2.IsGrip()) &&
+                    (_currentRecipe.OptionRecipe.SkipHead34 || NozzleClean_H3.IsGrip()) &&
+                    (_currentRecipe.OptionRecipe.SkipHead34 || NozzleClean_H4.IsGrip());
             }
             if (head == ESPDHead.SPDHead1)
             {
-                return _currentRecipe.SPDHead1_Recipe.HeadSkip || NozzleClean_H1.IsGrip();
+                return _currentRecipe.OptionRecipe.SkipHead12 || NozzleClean_H1.IsGrip();
             }
             if (head == ESPDHead.SPDHead2)
             {
-                return _currentRecipe.SPDHead2_Recipe.HeadSkip || NozzleClean_H2.IsGrip();
+                return _currentRecipe.OptionRecipe.SkipHead12 || NozzleClean_H2.IsGrip();
             }
             if (head == ESPDHead.SPDHead3)
             {
-                return _currentRecipe.SPDHead3_Recipe.HeadSkip || NozzleClean_H3.IsGrip();
+                return _currentRecipe.OptionRecipe.SkipHead34 || NozzleClean_H3.IsGrip();
             }
             if (head == ESPDHead.SPDHead4)
             {
-                return _currentRecipe.SPDHead4_Recipe.HeadSkip || NozzleClean_H4.IsGrip();
+                return _currentRecipe.OptionRecipe.SkipHead34 || NozzleClean_H4.IsGrip();
             }
 
             return true;
@@ -1740,13 +1740,13 @@ namespace SDV_MoldingInjection.Process
 
         private void NozzleCleanCyl_UnGrip(ESPDHead head)
         {
-            if (_currentRecipe.SPDHead1_Recipe.HeadSkip == false && (head == ESPDHead.SPDHead1 || head == ESPDHead.All))
+            if (_currentRecipe.OptionRecipe.SkipHead12 == false && (head == ESPDHead.SPDHead1 || head == ESPDHead.All))
                 NozzleClean_H1.Ungrip();
-            if (_currentRecipe.SPDHead2_Recipe.HeadSkip == false && (head == ESPDHead.SPDHead2 || head == ESPDHead.All))
+            if (_currentRecipe.OptionRecipe.SkipHead12 == false && (head == ESPDHead.SPDHead2 || head == ESPDHead.All))
                 NozzleClean_H2.Ungrip();
-            if (_currentRecipe.SPDHead3_Recipe.HeadSkip == false && (head == ESPDHead.SPDHead3 || head == ESPDHead.All))
+            if (_currentRecipe.OptionRecipe.SkipHead34 == false && (head == ESPDHead.SPDHead3 || head == ESPDHead.All))
                 NozzleClean_H3.Ungrip();
-            if (_currentRecipe.SPDHead4_Recipe.HeadSkip == false && (head == ESPDHead.SPDHead4 || head == ESPDHead.All))
+            if (_currentRecipe.OptionRecipe.SkipHead34 == false && (head == ESPDHead.SPDHead4 || head == ESPDHead.All))
                 NozzleClean_H4.Ungrip();
         }
 
@@ -1754,16 +1754,16 @@ namespace SDV_MoldingInjection.Process
         {
             if (head == ESPDHead.All)
             {
-                return (_currentRecipe.SPDHead1_Recipe.HeadSkip || NozzleClean_H1.IsUngrip()) &&
-                    (_currentRecipe.SPDHead2_Recipe.HeadSkip || NozzleClean_H2.IsUngrip()) &&
-                    (_currentRecipe.SPDHead3_Recipe.HeadSkip || NozzleClean_H3.IsUngrip()) &&
-                    (_currentRecipe.SPDHead4_Recipe.HeadSkip || NozzleClean_H4.IsUngrip());
+                return (_currentRecipe.OptionRecipe.SkipHead12 || NozzleClean_H1.IsUngrip()) &&
+                    (_currentRecipe.OptionRecipe.SkipHead12 || NozzleClean_H2.IsUngrip()) &&
+                    (_currentRecipe.OptionRecipe.SkipHead34 || NozzleClean_H3.IsUngrip()) &&
+                    (_currentRecipe.OptionRecipe.SkipHead34 || NozzleClean_H4.IsUngrip());
             }
 
-            if (head == ESPDHead.SPDHead1) return _currentRecipe.SPDHead1_Recipe.HeadSkip || NozzleClean_H1.IsUngrip();
-            if (head == ESPDHead.SPDHead2) return _currentRecipe.SPDHead2_Recipe.HeadSkip || NozzleClean_H2.IsUngrip();
-            if (head == ESPDHead.SPDHead3) return _currentRecipe.SPDHead3_Recipe.HeadSkip || NozzleClean_H3.IsUngrip();
-            return _currentRecipe.SPDHead4_Recipe.HeadSkip || NozzleClean_H4.IsUngrip();
+            if (head == ESPDHead.SPDHead1) return _currentRecipe.OptionRecipe.SkipHead12 || NozzleClean_H1.IsUngrip();
+            if (head == ESPDHead.SPDHead2) return _currentRecipe.OptionRecipe.SkipHead12 || NozzleClean_H2.IsUngrip();
+            if (head == ESPDHead.SPDHead3) return _currentRecipe.OptionRecipe.SkipHead34 || NozzleClean_H3.IsUngrip();
+            return _currentRecipe.OptionRecipe.SkipHead34 || NozzleClean_H4.IsUngrip();
         }
 
         private bool IsSPDHeadWorkDone(ESPDHead head)
@@ -1771,18 +1771,18 @@ namespace SDV_MoldingInjection.Process
             if (head == ESPDHead.All)
             {
                 return
-                    (procInputs[EInjectProcInput.SPDHead1_WorkDone].Value || _currentRecipe.SPDHead1_Recipe.HeadSkip) &&
-                    (procInputs[EInjectProcInput.SPDHead2_WorkDone].Value || _currentRecipe.SPDHead2_Recipe.HeadSkip) &&
-                    (procInputs[EInjectProcInput.SPDHead3_WorkDone].Value || _currentRecipe.SPDHead3_Recipe.HeadSkip) &&
-                    (procInputs[EInjectProcInput.SPDHead4_WorkDone].Value || _currentRecipe.SPDHead4_Recipe.HeadSkip);
+                    (procInputs[EInjectProcInput.SPDHead1_WorkDone].Value || _currentRecipe.OptionRecipe.SkipHead12) &&
+                    (procInputs[EInjectProcInput.SPDHead2_WorkDone].Value || _currentRecipe.OptionRecipe.SkipHead12) &&
+                    (procInputs[EInjectProcInput.SPDHead3_WorkDone].Value || _currentRecipe.OptionRecipe.SkipHead34) &&
+                    (procInputs[EInjectProcInput.SPDHead4_WorkDone].Value || _currentRecipe.OptionRecipe.SkipHead34);
             }
 
             return head switch
             {
-                ESPDHead.SPDHead1 => procInputs[EInjectProcInput.SPDHead1_WorkDone].Value || _currentRecipe.SPDHead1_Recipe.HeadSkip,
-                ESPDHead.SPDHead2 => procInputs[EInjectProcInput.SPDHead2_WorkDone].Value || _currentRecipe.SPDHead2_Recipe.HeadSkip,
-                ESPDHead.SPDHead3 => procInputs[EInjectProcInput.SPDHead3_WorkDone].Value || _currentRecipe.SPDHead3_Recipe.HeadSkip,
-                ESPDHead.SPDHead4 => procInputs[EInjectProcInput.SPDHead4_WorkDone].Value || _currentRecipe.SPDHead4_Recipe.HeadSkip,
+                ESPDHead.SPDHead1 => procInputs[EInjectProcInput.SPDHead1_WorkDone].Value || _currentRecipe.OptionRecipe.SkipHead12,
+                ESPDHead.SPDHead2 => procInputs[EInjectProcInput.SPDHead2_WorkDone].Value || _currentRecipe.OptionRecipe.SkipHead12,
+                ESPDHead.SPDHead3 => procInputs[EInjectProcInput.SPDHead3_WorkDone].Value || _currentRecipe.OptionRecipe.SkipHead34,
+                ESPDHead.SPDHead4 => procInputs[EInjectProcInput.SPDHead4_WorkDone].Value || _currentRecipe.OptionRecipe.SkipHead34,
                 _ => throw new Exception($"Invalid head: {head}")
             };
         }
@@ -1791,10 +1791,10 @@ namespace SDV_MoldingInjection.Process
         {
             return head switch
             {
-                ESPDHead.SPDHead1 => procInputs[EInjectProcInput.SPDHead1_InjectAddTailDone].Value || _currentRecipe.SPDHead1_Recipe.HeadSkip,
-                ESPDHead.SPDHead2 => procInputs[EInjectProcInput.SPDHead2_InjectAddTailDone].Value || _currentRecipe.SPDHead2_Recipe.HeadSkip,
-                ESPDHead.SPDHead3 => procInputs[EInjectProcInput.SPDHead3_InjectAddTailDone].Value || _currentRecipe.SPDHead3_Recipe.HeadSkip,
-                ESPDHead.SPDHead4 => procInputs[EInjectProcInput.SPDHead4_InjectAddTailDone].Value || _currentRecipe.SPDHead4_Recipe.HeadSkip,
+                ESPDHead.SPDHead1 => procInputs[EInjectProcInput.SPDHead1_InjectAddTailDone].Value || _currentRecipe.OptionRecipe.SkipHead12,
+                ESPDHead.SPDHead2 => procInputs[EInjectProcInput.SPDHead2_InjectAddTailDone].Value || _currentRecipe.OptionRecipe.SkipHead12,
+                ESPDHead.SPDHead3 => procInputs[EInjectProcInput.SPDHead3_InjectAddTailDone].Value || _currentRecipe.OptionRecipe.SkipHead34,
+                ESPDHead.SPDHead4 => procInputs[EInjectProcInput.SPDHead4_InjectAddTailDone].Value || _currentRecipe.OptionRecipe.SkipHead34,
                 _ => throw new Exception($"Invalid head: {head}")
             };
         }

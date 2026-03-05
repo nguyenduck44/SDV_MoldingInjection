@@ -5,65 +5,37 @@ namespace SDV_MoldingInjection.Recipe
     public class OptionRecipe : RecipeBase
     {
         #region Privates
-        private bool _skipHead1;
-        private bool _skipHead2;
-        private bool _skipHead3;
-        private bool _skipHead4;
+        public event Action<bool> Head12SkipChanged;
+        public event Action<bool> Head34SkipChanged;
+        private bool _skipHead12;
+        private bool _skipHead34;
 
         #endregion
 
-        [SingleRecipeDescription(Description = "Skip Head 1", Detail = "Check to Skip Head 1")]
-        public bool SkipHead1
+        [SingleRecipeDescription(Description = "Skip Head 1 & 2", Detail = "Check to Skip Head 1 & Head 2")]
+        public bool SkipHead12
         {
-            get { return _skipHead1; }
+            get { return _skipHead12; }
             set
             {
-                OnRecipeChanged(_skipHead1, value);
-                OnRecipeChanged(_skipHead2, value);
-                _skipHead1 = value;
-                _skipHead2 = value;
+                if (_skipHead12 == value) return;
+                OnRecipeChanged(_skipHead12, value);
+                Head12SkipChanged?.Invoke(value);
+                _skipHead12 = value;
                 OnPropertyChanged();
             }
         }
 
-        [SingleRecipeDescription(Description = "Skip Head 2", Detail = "Check to Skip Head 2")]
-        public bool SkipHead2
+        [SingleRecipeDescription(Description = "Skip Head 3 & 4", Detail = "Check to Skip Head 3 & Head 4")]
+        public bool SkipHead34
         {
-            get { return _skipHead2; }
+            get { return _skipHead34; }
             set
             {
-                OnRecipeChanged(_skipHead1, value);
-                OnRecipeChanged(_skipHead2, value);
-                _skipHead1 = value;
-                _skipHead2 = value;
-                OnPropertyChanged();
-            }
-        }
-
-        [SingleRecipeDescription(Description = "Skip Head 3", Detail = "Check to Skip Head 3")]
-        public bool SkipHead3
-        {
-            get { return _skipHead3; }
-            set
-            {
-                OnRecipeChanged(_skipHead3, value);
-                OnRecipeChanged(_skipHead4, value);
-                _skipHead3 = value;
-                _skipHead4 = value;
-                OnPropertyChanged();
-            }
-        }
-
-        [SingleRecipeDescription(Description = "Skip Head 4", Detail = "Check to Skip Head 4")]
-        public bool SkipHead4
-        {
-            get { return _skipHead4; }
-            set
-            {
-                OnRecipeChanged(_skipHead3, value);
-                OnRecipeChanged(_skipHead4, value);
-                _skipHead3 = value;
-                _skipHead4 = value;
+                if (_skipHead34 == value) return;
+                OnRecipeChanged(_skipHead34, value);
+                Head34SkipChanged?.Invoke(value);
+                _skipHead34 = value;
                 OnPropertyChanged();
             }
         }
