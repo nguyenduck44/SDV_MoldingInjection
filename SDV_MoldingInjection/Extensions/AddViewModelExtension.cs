@@ -38,6 +38,7 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddViewModel<RecipeViewModel>();
                 services.AddViewModel<MotionsConfigViewModel>();
                 services.AddViewModel<AdditionalMoldingViewModel>();
+                services.AddViewModel<OptionViewModel>();
 
                 services.AddViewModel<MonitorViewModel>();
                 services.AddViewModel<MonitorIOViewModel>();

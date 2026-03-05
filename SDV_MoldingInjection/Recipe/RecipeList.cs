@@ -15,6 +15,7 @@ namespace SDV_MoldingInjection.Recipe
             SPDHead3_Recipe = new();
             SPDHead4_Recipe = new();
             AdditionalMolding_Recipe = new();
+            OptionRecipe = new();
         }
 
         public CommonRecipe CommonRecipe { get; }
@@ -25,6 +26,7 @@ namespace SDV_MoldingInjection.Recipe
         public SPDHeadRecipe SPDHead3_Recipe { get; }
         public SPDHeadRecipe SPDHead4_Recipe { get; }
         public AdditionalMoldingRecipe AdditionalMolding_Recipe { get; }
+        public OptionRecipe OptionRecipe { get; }
 
         public void CloneFrom(RecipeList source)
         {
@@ -38,6 +40,7 @@ namespace SDV_MoldingInjection.Recipe
             SPDHead3_Recipe.Clone(source.SPDHead3_Recipe);
             SPDHead4_Recipe.Clone(source.SPDHead4_Recipe);
             AdditionalMolding_Recipe.Clone(source.AdditionalMolding_Recipe);
+            OptionRecipe.Clone(source.OptionRecipe);
         }
     }
 }

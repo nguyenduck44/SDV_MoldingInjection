@@ -1,4 +1,4 @@
-﻿using EQX.Core.InOut;
+using EQX.Core.InOut;
 using EQX.Core.Motion;
 using EQX.Core.Sequence;
 using EQX.Device.Balance;
@@ -328,6 +328,20 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"{GAxis.Name} moved to GateOpenPos [{_currentSPDHeadRecipe.GateOpenPos}°] done");
+                    Log.Debug("Wait All P Axis Origin Done");
+                    Step.OriginStep++;
+                    break;
+                case ESPDHeadProcOriginStep.Wait_All_PAxis_OriginDone:
+                    if (_devices.Motions.P1Axis.Status.IsHomeDone == false ||
+                        _devices.Motions.P2Axis.Status.IsHomeDone == false ||
+                        _devices.Motions.P3Axis.Status.IsHomeDone == false ||
+                        _devices.Motions.P4Axis.Status.IsHomeDone == false)
+                    {
+                        Wait(20);
+                        break;
+                    }
+
+                    Log.Debug("PAxis All Head Origin Done");
                     Step.OriginStep++;
                     break;
                 case ESPDHeadProcOriginStep.PAxis_BasePosition_Move:
@@ -889,7 +903,7 @@ namespace SDV_MoldingInjection.Process
                         else
                         {
                             Log.Debug("Start inject tail");
-                            Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout + Math.Abs(_pAxisBase_Pos - _pAxisInject_Pos)/_currentRecipe.AdditionalMolding_Recipe.AddTailSpeed,
+                            Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout + Math.Abs(_pAxisBase_Pos - _pAxisInject_Pos) / _currentRecipe.AdditionalMolding_Recipe.AddTailSpeed,
                                 () => PAxis.IsOnPosition(_pAxisInject_Pos));
                         }
                     }
@@ -922,7 +936,7 @@ namespace SDV_MoldingInjection.Process
                         }
                     }
 
-                    
+
                     EnableTimerInject = false;
                     Log.Debug($"{PAxis.Name} moving to InjectPos done");
 

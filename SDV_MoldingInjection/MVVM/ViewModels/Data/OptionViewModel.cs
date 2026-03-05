@@ -1,25 +1,22 @@
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
-using EQX.Core.Recipe;
 using EQX.UI.Controls;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Recipe;
-using System.IO;
 using System.Windows;
 using System.Windows.Input;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
-    public class AdditionalMoldingViewModel : ViewModelBase
+    public class OptionViewModel : ViewModelBase
     {
         private readonly RecipeSelector _recipeSelector;
 
         public RecipeList RecipeList { get; }
         public MachineStatus MachineStatus { get; }
 
-        public AdditionalMoldingViewModel(
+        public OptionViewModel(
             RecipeSelector recipeSelector,
             RecipeList recipeList,
             MachineStatus machineStatus)

@@ -160,6 +160,7 @@ namespace SDV_MoldingInjection.Defines
                .MapTo(InjectProcOutput[EInjectProcOutput.SPDHeadInjectAddTailRequest]);
             SPDHead4_ProcInput[ESPDHeadProcInput.InjectAddTailRequest]
                .MapTo(InjectProcOutput[EInjectProcOutput.SPDHeadInjectAddTailRequest]);
+            
         }
     }
 }
