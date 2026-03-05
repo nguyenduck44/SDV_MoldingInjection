@@ -4,7 +4,7 @@ namespace SDV_MoldingInjection.Defines
     {
         Start,
 
-        CleanCount_Check,
+        YAxis_CleanPos_Calculator,
 
         XY_Axis_NeedleCleanPos_Move,
         XY_Axis_NeedleCleanPos_MoveWait,

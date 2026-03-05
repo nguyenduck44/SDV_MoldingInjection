@@ -126,11 +126,6 @@
         <UniformGrid
                 Columns="1" Grid.Row="1"
                 VerticalAlignment="Bottom">
-            <ui:ImageButton Image="/EQX.UI;component/Resources/Images/Components/Common/clean_selected.png"
-                            Content="Needle Clean"
-                            Command="{Binding NeedleCleanCommand}"
-                            IsEnabled="{Binding MachineStatus.IsStandByProcessMode}" />
-           
             <ui:ImageButton Content="Maintenance"
                             Image="/EQX.UI;component/Resources/Images/Components/Common/return_selected.png"
                             Command="{Binding MaintenanceCommand}"

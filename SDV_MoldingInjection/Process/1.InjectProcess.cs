@@ -655,7 +655,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Info("ResinInject end");
                     Sequence = ESequence.DummyShot;
                     break;
-                
+
             }
         }
 
@@ -975,22 +975,25 @@ namespace SDV_MoldingInjection.Process
                     Log.Info("NeedleClean start");
                     Step.RunStep++;
                     break;
-                case EMoldProcNeedleCleaningStep.CleanCount_Check:
-                    if (_nzlCleanCount < 0 || _nzlCleanCount >= ((130 / _currentRecipe.InjectRecipe.NiddleCleanShiftDist) - 1))
+                case EMoldProcNeedleCleaningStep.YAxis_CleanPos_Calculator:
+                    _yAxisCleaningTargetMm = Recipe.YAxisNeddleClean - _nzlCleanCount * Recipe.NiddleCleanShiftDist;
+                    if (_yAxisCleaningTargetMm < -19 || //Limit sensor
+                       (Recipe.YAxisNeddleClean - _yAxisCleaningTargetMm) > 130) //Distance clean
                     {
                         Log.Debug("Reset nozzle clean count");
                         _nzlCleanCount = 0;
+                        _yAxisCleaningTargetMm = Recipe.YAxisNeddleClean;
                     }
 
                     Step.RunStep++;
                     break;
                 case EMoldProcNeedleCleaningStep.XY_Axis_NeedleCleanPos_Move:
-                    Log.Debug($"XY axis move to needle clean position");
+                    Log.Debug($"XY axis move to needle clean position X: {Recipe.XAxisNeedleCleanPos}, Y: {_yAxisCleaningTargetMm}");
                     XAxis.MoveAbs(Recipe.XAxisNeedleCleanPos);
-                    YAxis.MoveAbs(Recipe.YAxisNeddleClean + _nzlCleanCount * _currentRecipe.InjectRecipe.NiddleCleanShiftDist);
+                    YAxis.MoveAbs(_yAxisCleaningTargetMm);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () =>
                         XAxis.IsOnPosition(Recipe.XAxisNeedleCleanPos) &&
-                        YAxis.IsOnPosition(Recipe.YAxisNeddleClean + _nzlCleanCount * _currentRecipe.InjectRecipe.NiddleCleanShiftDist));
+                        YAxis.IsOnPosition(_yAxisCleaningTargetMm));
                     Step.RunStep++;
                     break;
                 case EMoldProcNeedleCleaningStep.XY_Axis_NeedleCleanPos_MoveWait:
@@ -1726,7 +1729,7 @@ namespace SDV_MoldingInjection.Process
                 _ => throw new Exception($"Invalid head: {head}")
             };
         }
-        
+
         private bool IsSPDHeadInjectAddTailDone(ESPDHead head)
         {
             return head switch
@@ -1785,7 +1788,7 @@ namespace SDV_MoldingInjection.Process
         private InjectRecipe Recipe => _currentRecipe.InjectRecipe;
         private int _needleCleanCount = 0;
         private int _nzlCleanCount = 0;
-        private double? _yAxisCleaningTargetMm;
+        private double _yAxisCleaningTargetMm;
         private long _yAxisCleaningMoveStartTicks;
         private int _yAxisCleaningPhase; // 0=chưa bắt đầu, 1=đang chờ tiến xong, 2=đang chờ lùi xong
 
