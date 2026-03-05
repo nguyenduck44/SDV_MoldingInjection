@@ -9,7 +9,5 @@ namespace SDV_MoldingInjection.Defines
         InjectAddTailFinish,
 
         SPDHeadRequestDotWeighting,
-
-        PAxis_ReadyDone,
     }
 }

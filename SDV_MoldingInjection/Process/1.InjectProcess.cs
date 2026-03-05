@@ -437,7 +437,10 @@ namespace SDV_MoldingInjection.Process
                     Step.OriginStep++;
                     break;
                 case EMoldProcOriginStep.ClearFlag_MoveDummyPosDone:
-                    if (IsHeadOriginDone(currentHead) == false)
+                    if (procInputs[EInjectProcInput.SPDHead1_OriginDone].Value == false || 
+                        procInputs[EInjectProcInput.SPDHead2_OriginDone].Value == false || 
+                        procInputs[EInjectProcInput.SPDHead3_OriginDone].Value == false || 
+                        procInputs[EInjectProcInput.SPDHead4_OriginDone].Value == false )
                     {
                         Wait(20);
                         break;

@@ -27,9 +27,7 @@ namespace SDV_MoldingInjection.Defines
         GAxis_OpenPosition_Move,
         GAxis_OpenPosition_MoveWait,
 
-
-        SetFlag_PAxis_Ready,
-        Wait_All_PAxis_ReadyDone,
+        Wait_All_PAxis_OriginDone,
 
         PAxis_BasePosition_Move,
         PAxis_BasePosition_Wait,

@@ -328,24 +328,20 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"{GAxis.Name} moved to GateOpenPos [{_currentSPDHeadRecipe.GateOpenPos}°] done");
+                    Log.Debug("Wait All P Axis Origin Done");
                     Step.OriginStep++;
                     break;
-                case ESPDHeadProcOriginStep.SetFlag_PAxis_Ready:
-                    Log.Debug($"Set flag {procOutputs[ESPDHeadProcOutput.PAxis_ReadyDone]}");
-                    procOutputs[ESPDHeadProcOutput.PAxis_ReadyDone].Value = true;
-                    Step.OriginStep++;
-                    break;
-                case ESPDHeadProcOriginStep.Wait_All_PAxis_ReadyDone:
-                    if (_processIO.SPDHead1_ProcInput[ESPDHeadProcInput.PAxis_Ready].Value == false &&
-                        _processIO.SPDHead2_ProcInput[ESPDHeadProcInput.PAxis_Ready].Value == false &&
-                        _processIO.SPDHead3_ProcInput[ESPDHeadProcInput.PAxis_Ready].Value == false &&
-                        _processIO.SPDHead4_ProcInput[ESPDHeadProcInput.PAxis_Ready].Value == false)
+                case ESPDHeadProcOriginStep.Wait_All_PAxis_OriginDone:
+                    if (_devices.Motions.P1Axis.Status.IsHomeDone == false ||
+                        _devices.Motions.P2Axis.Status.IsHomeDone == false ||
+                        _devices.Motions.P3Axis.Status.IsHomeDone == false ||
+                        _devices.Motions.P4Axis.Status.IsHomeDone == false)
                     {
                         Wait(20);
                         break;
                     }
 
-                    procOutputs[ESPDHeadProcOutput.PAxis_ReadyDone].Value = false;
+                    Log.Debug("PAxis All Head Origin Done");
                     Step.OriginStep++;
                     break;
                 case ESPDHeadProcOriginStep.PAxis_BasePosition_Move:
