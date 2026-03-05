@@ -3,6 +3,7 @@ using EQX.Process;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SDV_MoldingInjection.Defines;
+using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Process;
 using System;
@@ -29,6 +30,8 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddSingleton<IProcess<ESequence>, MonitoringProcess>();
 
                 services.AddSingleton<Processes>();
+
+                services.AddSingleton<CIMAction>();
             });
             return hostBuilder;
         }

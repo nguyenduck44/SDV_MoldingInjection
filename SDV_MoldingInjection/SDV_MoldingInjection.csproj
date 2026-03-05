@@ -9,6 +9,7 @@
     <Configurations>Debug;Release;Simulation</Configurations>
     <BaseOutputPath></BaseOutputPath>
     <ApplicationIcon>TopIcon.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Simulation|AnyCPU'">
