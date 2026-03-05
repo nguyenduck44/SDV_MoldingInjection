@@ -227,6 +227,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         _step++;
                         break;
                     case EHandleStep.RecipeHandle:
+                        SubscibeResinWeightChanged();
+                        SubscribeSkipHeadChanged();
                         Log.Debug("Load Recipes");
                         MessageText = "Load Recipes";
                         if (_recipeSelector.Load() == false)
@@ -235,8 +237,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                             Log.Debug("Recipe Load Fail");
                         }
                         Thread.Sleep(50);
-                        SubscibeResinWeightChanged();
-                        SubscribeSkipHeadChanged();
                         _step++;
                         break;
                     case EHandleStep.ProcessHandle:
@@ -401,25 +401,21 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 _recipeSelector.CurrentRecipe.SPDHead1_Recipe.HeadSkip = isSkip;
                 _recipeSelector.CurrentRecipe.SPDHead2_Recipe.HeadSkip = isSkip;
-                _recipeSelector.Save();
             };
             _carrierJigStatusList.CarrierJigStatusH2.HeadSkipChanged += (isSkip) =>
             {
                 _recipeSelector.CurrentRecipe.SPDHead1_Recipe.HeadSkip = isSkip;
                 _recipeSelector.CurrentRecipe.SPDHead2_Recipe.HeadSkip = isSkip;
-                _recipeSelector.Save();
             };
             _carrierJigStatusList.CarrierJigStatusH3.HeadSkipChanged += (isSkip) =>
             {
                 _recipeSelector.CurrentRecipe.SPDHead3_Recipe.HeadSkip = isSkip;
                 _recipeSelector.CurrentRecipe.SPDHead4_Recipe.HeadSkip = isSkip;
-                _recipeSelector.Save();
             };
             _carrierJigStatusList.CarrierJigStatusH4.HeadSkipChanged += (isSkip) =>
             {
                 _recipeSelector.CurrentRecipe.SPDHead3_Recipe.HeadSkip = isSkip;
                 _recipeSelector.CurrentRecipe.SPDHead4_Recipe.HeadSkip = isSkip;
-                _recipeSelector.Save();
             };
 
             _recipeSelector.CurrentRecipe.SPDHead1_Recipe.HeadSkipChanged += (isSkip) =>

@@ -20,7 +20,7 @@
                    VerticalAlignment="Center"
                    FontSize="16"
                    FontWeight="Bold"
-                   Margin="2" />
+                   Margin="2 5" />
 
         <Grid Grid.Row="1"
               HorizontalAlignment="Center"
@@ -60,6 +60,6 @@
                    Text="{Binding ElapsedTime, StringFormat='{}{0:hh\\:mm\\:ss}'}"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
-                   FontSize="13" />
+                   FontSize="14" />
     </Grid>
 </UserControl>
