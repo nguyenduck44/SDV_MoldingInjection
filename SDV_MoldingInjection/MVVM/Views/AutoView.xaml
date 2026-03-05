@@ -63,8 +63,9 @@
         <Grid Grid.Column="1"
               Width="215"
               HorizontalAlignment="Left" >
-            <StackPanel Margin="5">
+            <StackPanel Margin="5 1">
                 <GroupBox Header="Syringe Amount (g)"
+                          FontSize="14"
                           Style="{x:Null}">
                     <GroupBox.LayoutTransform>
                         <ScaleTransform ScaleX="0.8" ScaleY="0.8" />

@@ -63,7 +63,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             Devices.Inputs.H4_CylDown.RaiseValueUpdated();
             Devices.Inputs.BelowsUp.RaiseValueUpdated();
             Devices.Inputs.DryPumpRun.RaiseValueUpdated();
-            Devices.Inputs.MainPanelCloseCheck.RaiseValueUpdated();
+            Devices.Inputs.PanelClodeCheck.RaiseValueUpdated();
             UpdateSyringeStatus();
         }
 
