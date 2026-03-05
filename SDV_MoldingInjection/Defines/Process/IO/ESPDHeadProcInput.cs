@@ -9,5 +9,8 @@
         InjectAddTailRequest,
 
         XYAxisInDotWeightingPos,
+
+        PAxis_Ready,
+
     }
 }

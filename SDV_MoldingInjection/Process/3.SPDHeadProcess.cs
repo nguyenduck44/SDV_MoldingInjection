@@ -1,4 +1,4 @@
-﻿using EQX.Core.InOut;
+using EQX.Core.InOut;
 using EQX.Core.Motion;
 using EQX.Core.Sequence;
 using EQX.Device.Balance;
@@ -328,6 +328,24 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"{GAxis.Name} moved to GateOpenPos [{_currentSPDHeadRecipe.GateOpenPos}°] done");
+                    Step.OriginStep++;
+                    break;
+                case ESPDHeadProcOriginStep.SetFlag_PAxis_Ready:
+                    Log.Debug($"Set flag {procOutputs[ESPDHeadProcOutput.PAxis_ReadyDone]}");
+                    procOutputs[ESPDHeadProcOutput.PAxis_ReadyDone].Value = true;
+                    Step.OriginStep++;
+                    break;
+                case ESPDHeadProcOriginStep.Wait_All_PAxis_ReadyDone:
+                    if (_processIO.SPDHead1_ProcInput[ESPDHeadProcInput.PAxis_Ready].Value == false &&
+                        _processIO.SPDHead2_ProcInput[ESPDHeadProcInput.PAxis_Ready].Value == false &&
+                        _processIO.SPDHead3_ProcInput[ESPDHeadProcInput.PAxis_Ready].Value == false &&
+                        _processIO.SPDHead4_ProcInput[ESPDHeadProcInput.PAxis_Ready].Value == false)
+                    {
+                        Wait(20);
+                        break;
+                    }
+
+                    procOutputs[ESPDHeadProcOutput.PAxis_ReadyDone].Value = false;
                     Step.OriginStep++;
                     break;
                 case ESPDHeadProcOriginStep.PAxis_BasePosition_Move:
@@ -889,7 +907,7 @@ namespace SDV_MoldingInjection.Process
                         else
                         {
                             Log.Debug("Start inject tail");
-                            Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout + Math.Abs(_pAxisBase_Pos - _pAxisInject_Pos)/_currentRecipe.AdditionalMolding_Recipe.AddTailSpeed,
+                            Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout + Math.Abs(_pAxisBase_Pos - _pAxisInject_Pos) / _currentRecipe.AdditionalMolding_Recipe.AddTailSpeed,
                                 () => PAxis.IsOnPosition(_pAxisInject_Pos));
                         }
                     }
@@ -922,7 +940,7 @@ namespace SDV_MoldingInjection.Process
                         }
                     }
 
-                    
+
                     EnableTimerInject = false;
                     Log.Debug($"{PAxis.Name} moving to InjectPos done");
 

@@ -160,6 +160,15 @@ namespace SDV_MoldingInjection.Defines
                .MapTo(InjectProcOutput[EInjectProcOutput.SPDHeadInjectAddTailRequest]);
             SPDHead4_ProcInput[ESPDHeadProcInput.InjectAddTailRequest]
                .MapTo(InjectProcOutput[EInjectProcOutput.SPDHeadInjectAddTailRequest]);
+            SPDHead1_ProcInput[ESPDHeadProcInput.PAxis_Ready]
+               .MapTo(SPDHead1_ProcOutput[ESPDHeadProcOutput.PAxis_ReadyDone]);
+            SPDHead2_ProcInput[ESPDHeadProcInput.PAxis_Ready]
+               .MapTo(SPDHead1_ProcOutput[ESPDHeadProcOutput.PAxis_ReadyDone]);
+            SPDHead3_ProcInput[ESPDHeadProcInput.PAxis_Ready]
+               .MapTo(SPDHead1_ProcOutput[ESPDHeadProcOutput.PAxis_ReadyDone]);
+            SPDHead4_ProcInput[ESPDHeadProcInput.PAxis_Ready]
+               .MapTo(SPDHead1_ProcOutput[ESPDHeadProcOutput.PAxis_ReadyDone]);
+            
         }
     }
 }
