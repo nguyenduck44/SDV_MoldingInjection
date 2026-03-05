@@ -19,8 +19,16 @@ namespace SDV_MoldingInjection.Recipe
             set { _vacuumPressureHoldUnderSpec = value; }
         }
 
+        [SingleRecipeDescription(Description = "Chamber vacuum pressure spec firsr", Unit = Unit.Torr)]
+        public double VacuumPressureSpecFirst
+        {
+            get { return _vacuumPressureSpecFirst; }
+            set { _vacuumPressureSpecFirst = value; }
+        }
+
         #region Privates
         private double _vacuumPressureSpec;
+        private double _vacuumPressureSpecFirst;
         private double _vacuumPressureHoldUnderSpec;
         #endregion
     }
