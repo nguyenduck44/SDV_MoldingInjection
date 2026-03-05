@@ -42,7 +42,7 @@
             <RowDefinition Height="4.25*" />
             <RowDefinition Height="5.75*" />
         </Grid.RowDefinitions>
-        
+
         <GroupBox Header="Carrier Jig Status"
                   Style="{x:Null}">
             <UniformGrid Margin="0 6 0 0"
@@ -112,18 +112,18 @@
                 </GroupBox>
             </StackPanel>
         </Grid>
-        
+
         <!--Indicator-->
         <Grid Grid.Column="1"
               Grid.Row="1">
             <Canvas>
-                <Border Canvas.Top="170"
+                <Border Canvas.Top="136"
                         Canvas.Left="239"
                         BorderBrush="{StaticResource SecondaryBackgroundColor}" 
                         BorderThickness="1.5"
                         CornerRadius="3"
                         Background="White"
-                        Padding="1" HorizontalAlignment="Left" VerticalAlignment="Top">
+                        Padding="1" HorizontalAlignment="Center" VerticalAlignment="Top">
                     <Border.RenderTransform>
                         <ScaleTransform ScaleX="0.7" ScaleY="0.7" />
                     </Border.RenderTransform>

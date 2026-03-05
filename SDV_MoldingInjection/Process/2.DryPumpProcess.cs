@@ -86,6 +86,19 @@ namespace SDV_MoldingInjection.Process
                 }
             }
 
+            if (EnablePressureHoldInDelayTime)
+            {
+                if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureSpec)
+                {
+                    AngleValve.Open();
+                }
+
+                if (_devices.AnalogInputs.VacuumPressureInTorr <= _currentRecipe.DryPumpRecipe.VacuumPressureSpec)
+                {
+                    AngleValve.Close();
+                }
+            }
+
             return base.PreProcess();
         }
 
@@ -346,6 +359,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Info($"DryPump vacuum in-spec {_devices.AnalogInputs.VacuumPressureInTorr} Torr");
                     Log.Debug($"Enable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
                     EnablePressureHold = true;
+                    EnablePressureHoldInDelayTime = true;
                     EnableTimerDelay = true;
                     _delayStartTick = Environment.TickCount;
                     Step.RunStep++;
@@ -374,6 +388,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"Delay before inject complete: {_currentRecipe.InjectRecipe.DelayTime}s");
                     EnableTimerDelay = false;
+                    EnablePressureHoldInDelayTime = false;
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_VacuumDone_Send:
@@ -489,6 +504,7 @@ namespace SDV_MoldingInjection.Process
         private long _delayTimeStartTick = -1;
 
         private bool EnableTimerDelay;
+        private bool EnablePressureHoldInDelayTime;
         #endregion
     }
 }
