@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using SDV_MoldingInjection.Defines;
+using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;
@@ -88,7 +89,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             [FromKeyedServices("IndicatorModbusCommunication")] IModbusCommunication indicatorModbusCommunication,
             InterlockService interlockService,
             SyringAmountStatusList syringAmountStatusList,
-            CarrierJigStatusList carrierJigStatusList)
+            CarrierJigStatusList carrierJigStatusList,
+            CIMAction cimAction)
         {
             _devices = devices;
             _processes = processes;
@@ -103,6 +105,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _interlockService = interlockService;
             _syringAmountStatusList = syringAmountStatusList;
             _carrierJigStatusList = carrierJigStatusList;
+            _cimAction = cimAction;
             _task = new Task(() => { });
             ErrorMessages = new List<string>();
 
@@ -165,6 +168,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 {
                     case EHandleStep.Start:
                         MessageText = "Init Start";
+
+                        _cimAction.Start();
 
                         Thread.Sleep(50);
                         _step++;
@@ -537,6 +542,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly InterlockService _interlockService;
         private readonly SyringAmountStatusList _syringAmountStatusList;
         private readonly CarrierJigStatusList _carrierJigStatusList;
+        private readonly CIMAction _cimAction;
         private readonly ICamera _alignCamera1;
         private readonly IVisionFlowRepository _visionFlowRepository;
         private readonly Devices _devices;
