@@ -187,6 +187,7 @@ namespace SDV_MoldingInjection.Process
             {
                 _machineStatus.OriginDone = true;
                 _machineStatus.MachineReadyDone = false;
+                _machineStatus.IsInterlock = false;
 
                 _devices.Outputs.Lamp_Stop();
                 //foreach (var motion in _devices.Motions.All!) { motion.ClearPosition(); }
