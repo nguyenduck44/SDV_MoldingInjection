@@ -26,6 +26,9 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public Devices Devices { get; }
 
         public string MachineRunModeDisplay => MachineStatus.MachineRunMode.ToString();
+
+        public bool IsSwitchAuto => Devices.Inputs.AutoSW.Value;
+        public bool IsSwitchTeach => Devices.Inputs.TeachSW.Value;
         #endregion
 
         #region Constructor
@@ -58,6 +61,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 return;
 
             OnPropertyChanged(nameof(Pressure));
+            OnPropertyChanged(nameof(IsSwitchAuto));
+            OnPropertyChanged(nameof(IsSwitchTeach));
         }
 
         private void MachineStatusOnPropertyChanged(object? sender, PropertyChangedEventArgs e)

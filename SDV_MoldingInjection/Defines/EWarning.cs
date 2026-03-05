@@ -1,4 +1,4 @@
-﻿﻿namespace SDV_MoldingInjection.Defines
+namespace SDV_MoldingInjection.Defines
 {
     public enum EWarning
     {
@@ -8,6 +8,7 @@
         DoorNotSafetyLock,
         MoveTargetPosition_Fail,
         Warning_OverTemperature_Detected,
+        OPSwitchKey_Not_In_AutoMode,
 
         //--------- 1500 -> 1999 : Mold Process Warning ---------
         Mold_Chamber_OpenWarning = 1500,
