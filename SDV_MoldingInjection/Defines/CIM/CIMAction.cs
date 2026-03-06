@@ -3,6 +3,7 @@ using EQX.Core.Communication.CIM.Custom.WordArea;
 using EQX.Core.Sequence;
 using EQX.UI.Controls;
 using EQX.UI.MVVM;
+using System.Diagnostics;
 using TOPENG_Device;
 
 namespace SDV_MoldingInjection.Defines.CIM
@@ -17,8 +18,8 @@ namespace SDV_MoldingInjection.Defines.CIM
 
             for (int i = 0; i < MaterialPorts.Count(); i++)
             {
-                MaterialPorts[i].Id = i;
-                MaterialPorts[i].Name = $"Material Port Head {i}";
+                MaterialPorts[i].Id = i + 1;
+                MaterialPorts[i].Name = $"Material Port Head {i + 1}";
                 MaterialPorts[i].Type = "RESIN";
             }
         }
@@ -205,8 +206,13 @@ namespace SDV_MoldingInjection.Defines.CIM
                 bool bitOn = cimMap.IsCIMBitOn();
                 if (bitOn)
                 {
-                    if (_commandHandling.ContainsKey(cimMap.Command)) return;
-                    _commandHandling.Add(cimMap.Command, true);
+                    lock(_locker)
+                    {
+                        if (_commandHandling.ContainsKey(cimMap.Command)) continue;
+                        _commandHandling.Add(cimMap.Command, true);
+                    }
+
+                    Debug.WriteLine($"{cimMap.Command} CIM bit {cimMap.CIMAddress} ON");
 
                     CIMCommandDetail commandDetail = cimMap;
                     _ = Task.Run(() =>
@@ -222,10 +228,20 @@ namespace SDV_MoldingInjection.Defines.CIM
                             FromCIMCommandAction?.Invoke(new CIMCommandArgs(tmpDetail.Command, tmpDetail.FromCIMDataBuffer));
                         });
 
+                        Debug.WriteLine($"{cimMap.Command} LOCAL bit {cimMap.PLCAddress} ON then OFF");
+
                         commandDetail.SetLocalPLCBitOn();
 
+                        // TODO : Clear _commandHandling for Display Command
+
                         commandDetail.WaitForCIMBitOff();
-                        _commandHandling.Remove(commandDetail.Command);
+
+                        lock (_locker)
+                        {
+                            _commandHandling.Remove(commandDetail.Command);
+                        }
+
+                        Debug.WriteLine($"{cimMap.Command} CIM bit {cimMap.CIMAddress} OFF");
                     });
                 }
             }
@@ -240,6 +256,7 @@ namespace SDV_MoldingInjection.Defines.CIM
         private ICIMMapHelper _mapHelper;
         private Dictionary<CIMCommand, bool> _commandHandling = new Dictionary<CIMCommand, bool>();
         private readonly MachineStatus _machineStatus;
+        private object _locker = new object();
         #endregion
     }
 }
