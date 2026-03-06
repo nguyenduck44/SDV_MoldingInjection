@@ -28,6 +28,7 @@ namespace SDV_MoldingInjection
             AppHost = Host.CreateDefaultBuilder()
                 .AddConfigs()
                 .AddViews()
+                .AddCIM()
                 .AddViewModels()
                 .AddMaintenanceViewModels()
                 .AddNavigations()

@@ -2,24 +2,37 @@
 using EQX.Core.Communication.CIM.Custom.WordArea;
 using EQX.Core.Sequence;
 using EQX.UI.Controls;
-using Newtonsoft.Json.Linq;
-using System.Diagnostics;
-using System.Text;
-using System.Windows;
+using EQX.UI.MVVM;
 using TOPENG_Device;
-using Windows.Storage.Streams;
 
 namespace SDV_MoldingInjection.Defines.CIM
 {
+    public class CIMCollection
+    {
+        public List<MaterialPort> MaterialPorts { get; }
+
+        public CIMCollection(IEnumerable<MaterialPort> materialPorts)
+        {
+            MaterialPorts = materialPorts.ToList();
+
+            for (int i = 0; i < MaterialPorts.Count(); i++)
+            {
+                MaterialPorts[i].Id = i;
+                MaterialPorts[i].Name = $"Material Port Head {i}";
+                MaterialPorts[i].Type = "RESIN";
+            }
+        }
+    }
+
     public class CIMAction
     {
         #region Events
         public event Action<CIMCommandArgs> FromCIMCommandAction;
         #endregion
 
-        public CIMAction(MachineStatus machineStatus)
+        public CIMAction(MachineStatus machineStatus, ICIMMapHelper mapHelper)
         {
-            _mapHelper = new SDVCIMMapHeler();
+            _mapHelper = mapHelper;
             _machineStatus = machineStatus;
 
             FromCIMCommandAction += CIMAction_FromCIMCommandAction;
@@ -198,18 +211,15 @@ namespace SDV_MoldingInjection.Defines.CIM
                     CIMCommandDetail commandDetail = cimMap;
                     _ = Task.Run(() =>
                     {
-                        var buf = new short[commandDetail.CIMWordLength];
-
                         if (commandDetail.CIMWordLength > 0)
                         {
-                            CIMAddressMap.ReadWords(CIMAddressMap.GetReadWordIndexFromDAddress(commandDetail.CIMWordAddress), commandDetail.CIMWordLength, buf);
+                            commandDetail.ReadCIMWords();
                         }
 
                         CIMCommandDetail tmpDetail = commandDetail;
-                        short[] tmpBuf = buf;
                         Task.Run(() =>
                         {
-                            FromCIMCommandAction?.Invoke(new CIMCommandArgs(tmpDetail.Command, tmpBuf));
+                            FromCIMCommandAction?.Invoke(new CIMCommandArgs(tmpDetail.Command, tmpDetail.FromCIMDataBuffer));
                         });
 
                         commandDetail.SetLocalPLCBitOn();

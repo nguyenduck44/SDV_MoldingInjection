@@ -36,6 +36,9 @@
 
                 <Button Content="Run Mode"
                         Command="{Binding RunModeChangeCommand}" />
+
+                <Button Content="Material Ports"
+                        Command="{Binding MaterialPortsViewNavigateCommand}" />
             </StackPanel>
         </GroupBox>
 

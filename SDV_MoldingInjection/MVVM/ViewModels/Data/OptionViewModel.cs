@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
 using EQX.UI.Controls;
+using EQX.UI.MVVM;
 using Microsoft.Extensions.Configuration;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Recipe;

@@ -86,6 +86,9 @@
             <DataTemplate DataType="{x:Type vm:OptionViewModel}">
                 <views:OptionView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:MaterialPortsViewModel}">
+                <views:MaterialPortsView />
+            </DataTemplate>
 
             <!-- MAINTENANCE DATATEMPLATE -->
             <DataTemplate x:Key="InjectManualView">
@@ -164,6 +167,10 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type inout:CylinderBase}">
                 <viewsLib:CylinderSimpleView />
+            </DataTemplate>
+            <!-- TODO: CIM -->
+            <DataTemplate DataType="{x:Type uiMVVM:MaterialPort}">
+                <uiMVVM:MaterialPortView />
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>

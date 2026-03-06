@@ -25,6 +25,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
            _navigationService.NavigateTo<OptionViewModel>();
         });
 
+        public ICommand MaterialPortsViewNavigateCommand => new RelayCommand(() =>
+        {
+            _navigationService.NavigateTo<MaterialPortsViewModel>();
+        });
+
         public ICommand RunModeChangeCommand => new RelayCommand(() =>
         {
             EMachineRunMode currentMode = _machineStatus.MachineRunMode;
