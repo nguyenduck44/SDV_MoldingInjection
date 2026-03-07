@@ -1,3 +1,5 @@
+using EQX.Core.Communication.CIM;
+using EQX.Core.Communication.CIM.Custom.WordArea;
 using EQX.Core.InOut;
 using EQX.Core.Motion;
 using EQX.Core.Sequence;
@@ -6,6 +8,7 @@ using EQX.UI.Controls;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Recipe;
+using TOPENG_Device;
 
 namespace SDV_MoldingInjection.Process
 {
@@ -58,12 +61,13 @@ namespace SDV_MoldingInjection.Process
         public InjectProcess(Devices devices,
             ProcessIO processIO,
             MachineStatus machineStatus,
-            RecipeSelector recipeSelector)
+            RecipeSelector recipeSelector,
+            ICIMMapHelper mapHelper)
         {
             _devices = devices;
             _machineStatus = machineStatus;
             _recipeSelector = recipeSelector;
-
+            _mapHelper = mapHelper;
             procInputs = processIO.InjectProcInput;
             procOutputs = processIO.InjectProcOutput;
 
@@ -1841,6 +1845,8 @@ namespace SDV_MoldingInjection.Process
         private readonly Devices _devices;
         private readonly MachineStatus _machineStatus;
         private readonly RecipeSelector _recipeSelector;
+        private readonly ICIMMapHelper _mapHelper;
+
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
         private InjectRecipe Recipe => _currentRecipe.InjectRecipe;
         private int _needleCleanCount = 0;

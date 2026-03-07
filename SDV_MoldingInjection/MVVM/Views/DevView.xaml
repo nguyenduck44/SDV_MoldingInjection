@@ -24,6 +24,11 @@
             <CheckBox IsChecked="{Binding MachineStatus.MachineTestMode}"
                       Content="Machine Test Mode"
                       Tag="Check to Enable Test Mode"/>
+            <Button
+                Height="50" Width="200"
+                Content="CIM Test View"
+                Command="{Binding CIMTetstViewNavigate}"
+                />
         </StackPanel>
         <ui:LogDisplayer
             DockPanel.Dock="Right"

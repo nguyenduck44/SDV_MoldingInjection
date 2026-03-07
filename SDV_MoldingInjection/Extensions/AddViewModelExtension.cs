@@ -51,6 +51,8 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddViewModel<MonitorIOViewModel>();
                 services.AddViewModel<MonitorMotionViewModel>();
 
+                services.AddViewModel<CIMTestViewModel>();
+
                 services.AddSingleton<IViewModelFactory, ViewModelFactory>();
 
                 services.AddSingleton<IInputSimulationViewModel>(new MMFInputSimulationViewModel<EMachineInput>(
