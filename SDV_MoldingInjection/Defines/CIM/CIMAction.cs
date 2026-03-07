@@ -3,6 +3,8 @@ using EQX.Core.Communication.CIM.Custom.WordArea;
 using EQX.Core.Sequence;
 using EQX.UI.Controls;
 using EQX.UI.MVVM;
+using log4net;
+using log4net.Repository.Hierarchy;
 using System.Diagnostics;
 using TOPENG_Device;
 
@@ -213,7 +215,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                         _commandHandling.Add(cimMap.Command, true);
                     }
 
-                    Debug.WriteLine($"{cimMap.Command} CIM bit {cimMap.CIMAddress} ON");
+                    LogManager.GetLogger("CIM").Info($"{cimMap.Command} CIM bit {cimMap.CIMAddress} ON");
 
                     CIMCommandDetail commandDetail = cimMap;
                     _ = Task.Run(() =>
@@ -229,7 +231,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                             FromCIMCommandAction?.Invoke(new CIMCommandArgs(tmpDetail.Command, tmpDetail.FromCIMDataBuffer));
                         });
 
-                        Debug.WriteLine($"{cimMap.Command} LOCAL bit {cimMap.PLCAddress} ON then OFF");
+                        LogManager.GetLogger("CIM").Info($"{cimMap.Command} LOCAL bit {cimMap.PLCAddress} ON then OFF");
 
                         commandDetail.SetLocalPLCBitOn();
 
@@ -242,7 +244,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                             _commandHandling.Remove(commandDetail.Command);
                         }
 
-                        Debug.WriteLine($"{cimMap.Command} CIM bit {cimMap.CIMAddress} OFF");
+                        LogManager.GetLogger("CIM").Info($"{cimMap.Command} CIM bit {cimMap.CIMAddress} OFF");
                     });
                 }
             }
