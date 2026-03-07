@@ -62,12 +62,12 @@ namespace SDV_MoldingInjection.Process
                 _delayTime = (Environment.TickCount64 - _delayStartTick) / 1000.0;
             }
 
-            if (_currentRecipe.SPDHead1_Recipe.HeadSkip == false && _currentRecipe.SPDHead2_Recipe.HeadSkip == false)
+            if (_currentRecipe.OptionRecipe.SkipHead12 == false && _currentRecipe.OptionRecipe.SkipHead12 == false)
             {
                 _carrierJigStatusList.CarrierJigStatusH1.DelayTime = _delayTime;
                 _carrierJigStatusList.CarrierJigStatusH2.DelayTime = _delayTime;
             }
-            if (_currentRecipe.SPDHead3_Recipe.HeadSkip == false && _currentRecipe.SPDHead4_Recipe.HeadSkip == false)
+            if (_currentRecipe.OptionRecipe.SkipHead34 == false && _currentRecipe.OptionRecipe.SkipHead34 == false)
             {
                 _carrierJigStatusList.CarrierJigStatusH3.DelayTime = _delayTime;
                 _carrierJigStatusList.CarrierJigStatusH4.DelayTime = _delayTime;
@@ -439,10 +439,10 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_WaitVentTime:
-                    if (((_carrierJigStatusList.CarrierJigStatusH1.InjectTime < _currentRecipe.InjectRecipe.VentTimeAfterInject) && !_currentRecipe.SPDHead1_Recipe.HeadSkip) ||
-                        ((_carrierJigStatusList.CarrierJigStatusH2.InjectTime < _currentRecipe.InjectRecipe.VentTimeAfterInject) && !_currentRecipe.SPDHead2_Recipe.HeadSkip) ||
-                        ((_carrierJigStatusList.CarrierJigStatusH3.InjectTime < _currentRecipe.InjectRecipe.VentTimeAfterInject) && !_currentRecipe.SPDHead3_Recipe.HeadSkip) ||
-                        ((_carrierJigStatusList.CarrierJigStatusH4.InjectTime < _currentRecipe.InjectRecipe.VentTimeAfterInject) && !_currentRecipe.SPDHead4_Recipe.HeadSkip))
+                    if (((_carrierJigStatusList.CarrierJigStatusH1.InjectTime < _currentRecipe.InjectRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead12) ||
+                        ((_carrierJigStatusList.CarrierJigStatusH2.InjectTime < _currentRecipe.InjectRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead12) ||
+                        ((_carrierJigStatusList.CarrierJigStatusH3.InjectTime < _currentRecipe.InjectRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead34) ||
+                        ((_carrierJigStatusList.CarrierJigStatusH4.InjectTime < _currentRecipe.InjectRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead34))
                     {
                         Wait(10);
                         break;

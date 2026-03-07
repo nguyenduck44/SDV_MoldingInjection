@@ -398,26 +398,44 @@ namespace SDV_MoldingInjection.Process
                     Sequence_Ready();
                     break;
                 case ESequence.AutoRun:
-                    if (_currentSPDHeadRecipe.HeadSkip)
+                    if ((head == ESPDHead.SPDHead1 || head == ESPDHead.SPDHead2) && 
+                        OptionRecipe.SkipHead12)
                     {
                         Sequence = ESequence.Stop;
                         break;
                     }
+
+                    if ((head == ESPDHead.SPDHead3 || head == ESPDHead.SPDHead4) &&
+                        OptionRecipe.SkipHead34)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
+
                     Sequence_AutoRun();
                     break;
                 case ESequence.ResinInject:
-                    if (_currentSPDHeadRecipe.HeadSkip)
+                    if ((head == ESPDHead.SPDHead1 || head == ESPDHead.SPDHead2) &&
+                        OptionRecipe.SkipHead12)
                     {
                         Sequence = ESequence.Stop;
                         break;
                     }
+
+                    if ((head == ESPDHead.SPDHead3 || head == ESPDHead.SPDHead4) &&
+                        OptionRecipe.SkipHead34)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
+
                     Sequence_SPDHeadCommon(ESequence.ResinInject);
                     break;
                 case ESequence.DummyShot:
                     Sequence_SPDHeadCommon(ESequence.DummyShot);
                     break;
                 case ESequence.DummyShot_H1:
-                    if (head == ESPDHead.SPDHead1 && !_currentSPDHeadRecipe.HeadSkip)
+                    if (head == ESPDHead.SPDHead1 && !OptionRecipe.SkipHead12)
                     {
                         Sequence_SPDHeadCommon(ESequence.DummyShot_H1);
                     }
@@ -427,7 +445,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.DummyShot_H2:
-                    if (head == ESPDHead.SPDHead2 && !_currentSPDHeadRecipe.HeadSkip)
+                    if (head == ESPDHead.SPDHead2 && !OptionRecipe.SkipHead12)
                     {
                         Sequence_SPDHeadCommon(ESequence.DummyShot_H2);
                     }
@@ -437,7 +455,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.DummyShot_H3:
-                    if (head == ESPDHead.SPDHead3 && !_currentSPDHeadRecipe.HeadSkip)
+                    if (head == ESPDHead.SPDHead3 && !OptionRecipe.SkipHead34)
                     {
                         Sequence_SPDHeadCommon(ESequence.DummyShot_H3);
                     }
@@ -447,7 +465,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.DummyShot_H4:
-                    if (head == ESPDHead.SPDHead4 && !_currentSPDHeadRecipe.HeadSkip)
+                    if (head == ESPDHead.SPDHead4 && !OptionRecipe.SkipHead34)
                     {
                         Sequence_SPDHeadCommon(ESequence.DummyShot_H4);
                     }
@@ -497,7 +515,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.BubbleRemove_H1:
-                    if (head == ESPDHead.SPDHead1 && !_currentSPDHeadRecipe.HeadSkip)
+                    if (head == ESPDHead.SPDHead1 && !OptionRecipe.SkipHead12)
                     {
                         Sequence_SPDHeadCommon(ESequence.BubbleRemove_H1);
                     }
@@ -507,7 +525,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.BubbleRemove_H2:
-                    if (head == ESPDHead.SPDHead2 && !_currentSPDHeadRecipe.HeadSkip)
+                    if (head == ESPDHead.SPDHead2 && !OptionRecipe.SkipHead12)
                     {
                         Sequence_SPDHeadCommon(ESequence.BubbleRemove_H2);
                     }
@@ -517,7 +535,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.BubbleRemove_H3:
-                    if (head == ESPDHead.SPDHead3 && !_currentSPDHeadRecipe.HeadSkip)
+                    if (head == ESPDHead.SPDHead3 && !OptionRecipe.SkipHead34)
                     {
                         Sequence_SPDHeadCommon(ESequence.BubbleRemove_H3);
                     }
@@ -527,7 +545,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.BubbleRemove_H4:
-                    if (head == ESPDHead.SPDHead4 && !_currentSPDHeadRecipe.HeadSkip)
+                    if (head == ESPDHead.SPDHead4 && !OptionRecipe.SkipHead34)
                     {
                         Sequence_SPDHeadCommon(ESequence.BubbleRemove_H4);
                     }
@@ -537,7 +555,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.HeadAssemble_H1:
-                    if (head == ESPDHead.SPDHead1 && !_currentSPDHeadRecipe.HeadSkip)
+                    if (head == ESPDHead.SPDHead1 && !OptionRecipe.SkipHead12)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: true);
                     }
@@ -547,7 +565,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.HeadAssemble_H2:
-                    if (head == ESPDHead.SPDHead2 && !_currentSPDHeadRecipe.HeadSkip)
+                    if (head == ESPDHead.SPDHead2 && !OptionRecipe.SkipHead12)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: true);
                     }
@@ -557,7 +575,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.HeadAssemble_H3:
-                    if (head == ESPDHead.SPDHead3 && !_currentSPDHeadRecipe.HeadSkip)
+                    if (head == ESPDHead.SPDHead3 && !OptionRecipe.SkipHead34)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: true);
                     }
@@ -567,7 +585,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.HeadAssemble_H4:
-                    if (head == ESPDHead.SPDHead4 && !_currentSPDHeadRecipe.HeadSkip)
+                    if (head == ESPDHead.SPDHead4 && !OptionRecipe.SkipHead34)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: true);
                     }
@@ -577,7 +595,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.HeadDisassemble_H1:
-                    if (head == ESPDHead.SPDHead1 && !_currentSPDHeadRecipe.HeadSkip)
+                    if (head == ESPDHead.SPDHead1 && !_currentRecipe.OptionRecipe.SkipHead12)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: false);
                     }
@@ -587,7 +605,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.HeadDisassemble_H2:
-                    if (head == ESPDHead.SPDHead2 && !_currentSPDHeadRecipe.HeadSkip)
+                    if (head == ESPDHead.SPDHead2 && !_currentRecipe.OptionRecipe.SkipHead12)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: false);
                     }
@@ -597,7 +615,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.HeadDisassemble_H3:
-                    if (head == ESPDHead.SPDHead3 && !_currentSPDHeadRecipe.HeadSkip)
+                    if (head == ESPDHead.SPDHead3 && !_currentRecipe.OptionRecipe.SkipHead34)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: false);
                     }
@@ -607,7 +625,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.HeadDisassemble_H4:
-                    if (head == ESPDHead.SPDHead4 && !_currentSPDHeadRecipe.HeadSkip)
+                    if (head == ESPDHead.SPDHead4 && !_currentRecipe.OptionRecipe.SkipHead34)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: false);
                     }
@@ -632,7 +650,7 @@ namespace SDV_MoldingInjection.Process
             }
 #if !SIMULATION
             if (In_SyringeCheck.Value == false &&
-                _currentSPDHeadRecipe.HeadSkip == false &&
+                CurrentHeadSkip == false &&
                 _machineStatus.MachineTestMode == false)
             {
                 RaiseHeadWarning(EWarning.H1_Syringe_Not_Detected);
@@ -1490,10 +1508,22 @@ namespace SDV_MoldingInjection.Process
             "SPDHead4" => _carrierJigStatusList.CarrierJigStatusH4,
             _ => throw new Exception($"Invalid process name: {Name}")
         };
+
+        private bool CurrentHeadSkip => Name switch
+        {
+            "SPDHead1" => OptionRecipe.SkipHead12,
+            "SPDHead2" => OptionRecipe.SkipHead12,
+            "SPDHead3" => OptionRecipe.SkipHead34,
+            "SPDHead4" => OptionRecipe.SkipHead34,
+            _ => throw new Exception($"Invalid process name: {Name}")
+        };
+
         private double V380Weight2mg(double weight, double constant = 1)
         {
             return Math.Round(weight / (Math.Pow(2.5, 2) * Math.PI), 3);
         }
+
+        private OptionRecipe OptionRecipe => _recipeSelector.CurrentRecipe.OptionRecipe;
 
         private double _pAxisCharge_Pos;
         private double _pAxisCharge_Vel;

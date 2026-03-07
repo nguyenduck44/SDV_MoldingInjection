@@ -6,20 +6,6 @@ namespace SDV_MoldingInjection.Recipe
     public class SPDHeadRecipe : RecipeBase
     {
         public event Action<double> ResinWeightChanged;
-        public event Action<bool> HeadSkipChanged;
-        public bool HeadSkip 
-        {
-            get { return _headSkip; }
-            set
-            {
-                if (_headSkip == value) return;
-
-                OnRecipeChanged(_headSkip, value);
-                HeadSkipChanged?.Invoke(value);
-                _headSkip = value;
-                OnPropertyChanged();
-            }
-        }
 
         [SingleRecipeDescription(Description = "Z-Axis SAFETY position (ready position)", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "ZAxis")]
