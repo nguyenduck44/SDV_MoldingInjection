@@ -104,7 +104,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 MaterialPortStateItemArea area = new MaterialPortStateItemArea()
                 {
                     Type = mp.Type,
-                    LST = "3",  // MOUNT
+                    LST = "3",  // UNMOUNT
                     ID = "",
                     LoaderNo = (short)mp.Id,
                     Usage = 0,

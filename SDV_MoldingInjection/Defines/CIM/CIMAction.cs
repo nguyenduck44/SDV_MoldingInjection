@@ -231,20 +231,20 @@ namespace SDV_MoldingInjection.Defines.CIM
                             FromCIMCommandAction?.Invoke(new CIMCommandArgs(tmpDetail.Command, tmpDetail.FromCIMDataBuffer));
                         });
 
-                        LogManager.GetLogger("CIM").Info($"{cimMap.Command} LOCAL bit {cimMap.PLCAddress} ON then OFF");
+                        LogManager.GetLogger("CIM").Info($"{commandDetail.Command} LOCAL bit {commandDetail.PLCAddress} ON then OFF");
 
                         commandDetail.SetLocalPLCBitOn();
 
                         // TODO : Clear _commandHandling for Display Command
 
-                        commandDetail.WaitForCIMBitOff();
+                        commandDetail.WaitForCIMBitOff(10000);
 
                         lock (_locker)
                         {
                             _commandHandling.Remove(commandDetail.Command);
                         }
 
-                        LogManager.GetLogger("CIM").Info($"{cimMap.Command} CIM bit {cimMap.CIMAddress} OFF");
+                        LogManager.GetLogger("CIM").Info($"{commandDetail.Command} CIM bit {commandDetail.CIMAddress} OFF");
                     });
                 }
             }
