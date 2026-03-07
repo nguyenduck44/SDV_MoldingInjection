@@ -73,7 +73,7 @@ namespace SDV_MoldingInjection.Process
                 _carrierJigStatusList.CarrierJigStatusH4.DelayTime = _delayTime;
             }
 
-            if (EnablePressureHold)
+            if (EnablePressureHold && _machineStatus.IsDryRunMode == false)
             {
                 if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec)
                 {
@@ -103,6 +103,7 @@ namespace SDV_MoldingInjection.Process
 
         public override bool ProcessToStop()
         {
+            EnablePressureHold = false;
             EnableTimerDelay = false;
             return base.ProcessToStop();
         }
