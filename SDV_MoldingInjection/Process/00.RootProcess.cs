@@ -23,8 +23,8 @@ namespace SDV_MoldingInjection.Process
         private readonly MachineStatus _machineStatus;
         private readonly NavigationStore _viewModelavigationStore;
         private readonly RecipeSelector _recipeSelector;
-        private int raisedAlarmCode = -1;
-        private int raisedWarningCode = -1;
+        private int raisedAlarmCode = 2;
+        private int raisedWarningCode = 2;
         private readonly IAlertService _alarmService;
         private readonly IAlertService _warningService;
         private readonly object _lockAlarm = new object();
@@ -164,7 +164,7 @@ namespace SDV_MoldingInjection.Process
                     }
                 });
 
-                raisedAlarmCode = -1;
+                raisedAlarmCode = 2;
             }
             else
             {
@@ -196,7 +196,7 @@ namespace SDV_MoldingInjection.Process
                     }
                 });
 
-                raisedWarningCode = -1;
+                raisedWarningCode = 2;
             }
             else
             {
