@@ -68,6 +68,20 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     Event = EquipEvent.MaterialLocationUpdate1
                 };
                 equipEvent.Write(mp.ToCIMData());
+
+                EquipEventDetail materialPortState = new EquipEventDetail(_mapHelper)
+                {
+                    Event = EquipEvent.MaterialPortState1 + mp.Id - 1
+                };
+                MaterialPortStateItemArea area = new MaterialPortStateItemArea()
+                {
+                    Type = mp.Type,
+                    LST = "1",  // MOUNT
+                    ID = mp.BatchID,
+                    LoaderNo = (short)mp.Id,
+                    Usage = (short)mp.RemainQty,
+                };
+                materialPortState.Write(area.ToCIMData());
             }
             if (mp.LastKittingCEID == EMaterialKittingCEID.KITTING_CANCEL)
             {
@@ -82,6 +96,20 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     Event = EquipEvent.MaterialShortage1
                 };
                 equipEvent.Write(mp.ToCIMData());
+
+                EquipEventDetail materialPortState = new EquipEventDetail(_mapHelper)
+                {
+                    Event = EquipEvent.MaterialPortState1 + mp.Id - 1
+                };
+                MaterialPortStateItemArea area = new MaterialPortStateItemArea()
+                {
+                    Type = mp.Type,
+                    LST = "3",  // MOUNT
+                    ID = "",
+                    LoaderNo = (short)mp.Id,
+                    Usage = 0,
+                };
+                materialPortState.Write(area.ToCIMData());
             }
         }
 
