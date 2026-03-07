@@ -22,6 +22,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                 MaterialPorts[i].Name = $"Material Port Head {i + 1}";
                 MaterialPorts[i].Type = "RESIN";
             }
+            MaterialPorts.First().IsCurrentActived = true;
         }
     }
 

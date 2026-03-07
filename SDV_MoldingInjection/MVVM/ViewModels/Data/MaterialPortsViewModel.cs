@@ -1,4 +1,5 @@
 ﻿using EQX.Core.Common;
+using EQX.Core.Communication.CIM;
 using EQX.Core.Communication.CIM.Custom.WordArea;
 using EQX.UI.MVVM;
 using SDV_MoldingInjection.Defines.CIM;
@@ -13,12 +14,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         private readonly CIMCollection _cimCollection;
         private readonly CIMAction _cimAction;
+        private readonly ICIMMapHelper _mapHelper;
 
-        public MaterialPortsViewModel(CIMCollection cimCollection, CIMAction cimAction)
+        public MaterialPortsViewModel(CIMCollection cimCollection, CIMAction cimAction, ICIMMapHelper mapHelper)
         {
             _cimCollection = cimCollection;
             _cimAction = cimAction;
-
+            _mapHelper = mapHelper;
             _cimAction.FromCIMCommandAction += _cimAction_FromCIMCommandAction;
         }
 
@@ -39,7 +41,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
             mp.Result = cimArea.MaterialReplyStatus;
 
-            if (mp.Result.ToUpper() == "PASS")
+            if (mp.Result.ToUpper() != "PASS")
+            {
+                mp.UIUpdate();
+                return;
+            }
+
+            if (mp.LastKittingCEID == EMaterialKittingCEID.KITTING)
             {
                 mp.MaterialState = cimArea.MaterialST;
                 mp.PortState = cimArea.MaterialState;
@@ -47,8 +55,20 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 mp.RemainQty = cimArea.MaterialTotalQTY;
                 mp.UseQty = cimArea.MaterialUseQTY;
             }
+            if (mp.LastKittingCEID == EMaterialKittingCEID.KITTING_CANCEL)
+            {
+                mp.MaterialState = "";
+                mp.PortState = "";
+                mp.TotalQty = 0;
+                mp.RemainQty = 0;
+                mp.UseQty = 0;
+            }
 
-            mp.UIUpdate();
+            EquipEventDetail equipEvent = new EquipEventDetail(_mapHelper)
+            {
+                Event = EquipEvent.MaterialLocationUpdate1
+            };
+            equipEvent.Write(mp.ToCIMData());
 
             Debug.WriteLine($"{cimArea.MaterialReplyText} {cimArea.MaterialTotalQTY} {cimArea.MaterialProtID}");
         }
