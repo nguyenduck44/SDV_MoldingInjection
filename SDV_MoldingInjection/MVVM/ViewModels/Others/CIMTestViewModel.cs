@@ -3,7 +3,9 @@ using EQX.Core.Common;
 using EQX.Core.Communication.CIM;
 using EQX.Core.Communication.CIM.Custom.WordArea;
 using EQX.UI.Controls;
+using EQX.UI.MVVM;
 using log4net;
+using SDV_MoldingInjection.MVVM.Views;
 using SDV_MoldingInjection.Recipe;
 using System;
 using System.Collections.Generic;
@@ -31,6 +33,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
         }
 
+        #region Commands
         public ICommand SpecificValidationRequest1
         {
             get
@@ -52,6 +55,42 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 });
             }
         }
+
+        public ICommand TPMLostTest
+        {
+            get
+            {
+                return new RelayCommand(async () =>
+                {
+                    EquipEventDetail tmpLossReady = new EquipEventDetail(_mapHelper)
+                    {
+                        Event = EquipEvent.TPMLossReady
+                    }; tmpLossReady.SetLocalPLCBitOnFireAndForget();
+
+                    TPMLossWindow tpmLossWindow = new TPMLossWindow();
+                    tpmLossWindow.ShowDialog();
+
+                    TPMLossArea tmpLossArea = new TPMLossArea
+                    {
+                        TPMLossCode = (int)tpmLossWindow.SelectedTPMMode,
+                        TPMLossDescp = tpmLossWindow.SelectedTPMMode.ToString()
+                    };
+
+                    EquipEventDetail tmpLossEvent = new EquipEventDetail(_mapHelper)
+                    {
+                        Event = EquipEvent.TPMLoss
+                    };
+                    tmpLossEvent.WritePLCWordsToCIM(tmpLossArea.ToCIMData());
+                    tmpLossEvent.SetLocalPLCBitOnFireAndForget();
+                    tmpLossEvent.WaitForCIMBitOn(3000);
+
+                    tmpLossEvent.SetLocalReplyBitOff();
+
+                    tmpLossReady.SetLocalReplyBitOff();
+                });
+            }
+        }
+        #endregion
 
         public CIMTestViewModel(ICIMMapHelper mapHelper, RecipeSelector recipeSelector)
         {
