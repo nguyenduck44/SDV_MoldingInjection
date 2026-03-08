@@ -47,9 +47,18 @@ namespace SDV_MoldingInjection.Recipe
             get { return _inputTypeManual; }
             set
             {
-                OnRecipeChanged(_inputTypeManual, value);
-                _inputTypeManual = value;
-                OnPropertyChanged();
+                if (_inputTypeManual != value)
+                {
+                    OnRecipeChanged(_inputTypeManual, value);
+                    _inputTypeManual = value;
+                    OnPropertyChanged();
+
+                    if (value == true && InputTypeAuto == true)
+                    {
+                        _inputTypeAuto = false;
+                        OnPropertyChanged(nameof(InputTypeAuto));
+                    }
+                }
             }
         }
 
@@ -58,9 +67,18 @@ namespace SDV_MoldingInjection.Recipe
             get { return _inputTypeAuto; }
             set
             {
-                OnRecipeChanged(_inputTypeAuto, value);
-                _inputTypeAuto = value;
-                OnPropertyChanged();
+                if (_inputTypeAuto != value)
+                {
+                    OnRecipeChanged(_inputTypeAuto, value);
+                    _inputTypeAuto = value;
+                    OnPropertyChanged();
+
+                    if (value == true && InputTypeManual == true)
+                    {
+                        _inputTypeManual = false;
+                        OnPropertyChanged(nameof(InputTypeManual));
+                    }
+                }
             }
         }
     }
