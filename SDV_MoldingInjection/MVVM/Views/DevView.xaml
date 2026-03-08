@@ -21,9 +21,9 @@
             <CheckBox IsChecked="{Binding MachineStatus.IsDotWeightingTest}"
                       Content="Dot Weighting Test"
                       Tag="Check to Enable Dot Weighting Test Mode"/>
-            <CheckBox IsChecked="{Binding MachineStatus.MachineTestMode}"
-                      Content="Machine Test Mode"
-                      Tag="Check to Enable Test Mode"/>
+            <CheckBox IsChecked="{Binding MachineStatus.DisableSyringeCheck}"
+                      Content="Disable Syringe Check"
+                      Tag="Check to Disable Syringe Check"/>
             <Button
                 Height="50" Width="200"
                 Content="CIM Test View"

@@ -85,6 +85,11 @@ namespace SDV_MoldingInjection.Defines
         AngleValve_OpenFail,
         DryPump_Run_Timeout,
         Machine_Need_Calibration,
+        Jig_Detected_Unload_Fail,
+        Left_Jig_Tilt_State,
+        Left_Jig_Not_Detect,
+        Right_Jig_Tilt_State,
+        Right_Jig_Not_Detect,
 
         //--------- 1500 -> 1999 : SPD Head #1 Process Warning ---------
         P1Axis_Origin_Timeout = 1500,

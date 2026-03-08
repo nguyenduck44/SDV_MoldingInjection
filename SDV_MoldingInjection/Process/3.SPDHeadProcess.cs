@@ -499,7 +499,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.BubbleRemove_H1:
-                    if (head == ESPDHead.SPDHead1 && CurrentHeadSkip == false)
+                    if (head == ESPDHead.SPDHead1)
                     {
                         Sequence_SPDHeadCommon(ESequence.BubbleRemove_H1);
                     }
@@ -509,7 +509,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.BubbleRemove_H2:
-                    if (head == ESPDHead.SPDHead2 && CurrentHeadSkip == false)
+                    if (head == ESPDHead.SPDHead2)
                     {
                         Sequence_SPDHeadCommon(ESequence.BubbleRemove_H2);
                     }
@@ -519,7 +519,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.BubbleRemove_H3:
-                    if (head == ESPDHead.SPDHead3 && CurrentHeadSkip == false)
+                    if (head == ESPDHead.SPDHead3)
                     {
                         Sequence_SPDHeadCommon(ESequence.BubbleRemove_H3);
                     }
@@ -529,7 +529,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.BubbleRemove_H4:
-                    if (head == ESPDHead.SPDHead4 && CurrentHeadSkip == false)
+                    if (head == ESPDHead.SPDHead4)
                     {
                         Sequence_SPDHeadCommon(ESequence.BubbleRemove_H4);
                     }
@@ -539,7 +539,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.HeadAssemble_H1:
-                    if (head == ESPDHead.SPDHead1 && CurrentHeadSkip == false)
+                    if (head == ESPDHead.SPDHead1)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: true);
                     }
@@ -549,7 +549,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.HeadAssemble_H2:
-                    if (head == ESPDHead.SPDHead2 && CurrentHeadSkip == false)
+                    if (head == ESPDHead.SPDHead2)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: true);
                     }
@@ -559,7 +559,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.HeadAssemble_H3:
-                    if (head == ESPDHead.SPDHead3 && CurrentHeadSkip == false)
+                    if (head == ESPDHead.SPDHead3)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: true);
                     }
@@ -569,7 +569,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.HeadAssemble_H4:
-                    if (head == ESPDHead.SPDHead4 && CurrentHeadSkip == false)
+                    if (head == ESPDHead.SPDHead4)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: true);
                     }
@@ -579,7 +579,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.HeadDisassemble_H1:
-                    if (head == ESPDHead.SPDHead1 && CurrentHeadSkip == false)
+                    if (head == ESPDHead.SPDHead1)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: false);
                     }
@@ -589,7 +589,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.HeadDisassemble_H2:
-                    if (head == ESPDHead.SPDHead2 && CurrentHeadSkip == false)
+                    if (head == ESPDHead.SPDHead2)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: false);
                     }
@@ -599,7 +599,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.HeadDisassemble_H3:
-                    if (head == ESPDHead.SPDHead3 && CurrentHeadSkip == false)
+                    if (head == ESPDHead.SPDHead3)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: false);
                     }
@@ -609,7 +609,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.HeadDisassemble_H4:
-                    if (head == ESPDHead.SPDHead4 && CurrentHeadSkip == false)
+                    if (head == ESPDHead.SPDHead4)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: false);
                     }
@@ -635,7 +635,7 @@ namespace SDV_MoldingInjection.Process
 #if !SIMULATION
             if (In_SyringeCheck.Value == false &&
                 CurrentHeadSkip == false &&
-                _machineStatus.MachineTestMode == false)
+                _machineStatus.DisableSyringeCheck == false)
             {
                 RaiseHeadWarning(EWarning.H1_Syringe_Not_Detected);
             }
