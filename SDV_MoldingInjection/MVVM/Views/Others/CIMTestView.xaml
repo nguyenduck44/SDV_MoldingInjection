@@ -38,6 +38,10 @@
                 <Button
                     Content="SpecificValidationRequest2"
                     Command="{Binding SpecificValidationRequest2}"/>
+                <Button
+                    Content="TMPLostTest"
+                    Command="{Binding TPMLostTest}"/>
+
             </WrapPanel>
 
             <TextBox

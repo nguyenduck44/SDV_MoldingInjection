@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.MVVM.ViewModels;
+using SDV_MoldingInjection.MVVM.Views;
 using SDV_MoldingInjection.Recipe;
 using System.Windows;
 using TOPENG_Device;
@@ -58,6 +59,8 @@ namespace SDV_MoldingInjection.Process
             {
                 RootProcess_WarningRaised(warningId, warningSource);
             };
+
+            _machineStatus.EquipReportState = EquipReportStateKind.IdleNormal;
         }
 
         #endregion
@@ -147,6 +150,8 @@ namespace SDV_MoldingInjection.Process
 
                 _machineStatus.OriginDone = false;
 
+                _machineStatus.EquipReportState = EquipReportStateKind.Down;
+
                 _devices.Outputs.Lamp_Alarm(true);
 
                 ProcessMode = EProcessMode.Alarm;
@@ -184,6 +189,8 @@ namespace SDV_MoldingInjection.Process
                 ProcessMode = EProcessMode.Warning;
                 Log.Info("ToWarning Done, Warning");
                 AlertNotifyView.ShowDialog(_warningService.GetById(raisedWarningCode), true);
+
+                _machineStatus.EquipReportState = EquipReportStateKind.Down;
 
                 // TODO: CIM
                 CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmRelease, new CIMScenarioContext
@@ -310,6 +317,16 @@ namespace SDV_MoldingInjection.Process
                 {
                     CIMScenarioDispatcher.ApplyEquipReportState(EquipReportStateKind.Interlock);
                 }
+                else
+                {
+                    // Stop after AutoRun -> TPMLoss Report
+                    if (Sequence == ESequence.AutoRun)
+                    {
+                        // TPMLoss Report
+                    }
+
+                    _machineStatus.EquipReportState = EquipReportStateKind.IdleNormal;
+                }
 
                 ProcessMode = EProcessMode.Stop;
 
@@ -371,6 +388,7 @@ namespace SDV_MoldingInjection.Process
 
                     // TODO: CIM
                     _machineStatus.IsInterlock = false;
+                    _machineStatus.EquipReportState = EquipReportStateKind.Running;
 
                     ProcessMode = EProcessMode.Run;
                     Log.Info("ToRun Done, Running");

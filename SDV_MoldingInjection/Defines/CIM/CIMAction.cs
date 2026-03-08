@@ -92,6 +92,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                         cimArea.FromCIMData(obj.Buffer);
 
                         _machineStatus.IsInterlock = true;
+                        _machineStatus.EquipReportState = EquipReportStateKind.Interlock;
                         _machineStatus.OPCommand = EOperationCommand.Stop;
 
                         // WRITE INTERLOCK MESSAGE
@@ -160,25 +161,7 @@ namespace SDV_MoldingInjection.Defines.CIM
             {
                 while (true)
                 {
-                    EquipReportStateKind state;
-                    if (_machineStatus.IsRunning)
-                    {
-                        state = EquipReportStateKind.Running;
-                    }
-                    else if (_machineStatus.IsError)
-                    {
-                        state = EquipReportStateKind.Down;
-                    }
-                    else if (_machineStatus.IsInterlock && _machineStatus.IsRunning == false)
-                    {
-                        state = EquipReportStateKind.Interlock;
-                    }
-                    else
-                    {
-                        state = EquipReportStateKind.IdleNormal;
-                    }
-
-                    CIMScenarioDispatcher.ApplyEquipReportState(state);
+                    CIMScenarioDispatcher.ApplyEquipReportState(_machineStatus.EquipReportState);
 
                     await Task.Delay(50);
                 }
