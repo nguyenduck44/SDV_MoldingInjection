@@ -110,18 +110,32 @@ namespace SDV_MoldingInjection.Process
 
                     Step.ToRunStep++;
                     break;
-                case EMoldProcToRunStep.CheckIfChamberOpen:
-                    if (ChamberOpenClose.IsOpen())
+                case EMoldProcToRunStep.ChamberClose:
+                    if (ChamberOpenClose.IsClose())
                     {
-                        RaiseWarning(EWarning.Mold_Chamber_OpenWarning);
-                        return false;
+                        Log.Debug("Chamber is closed");
+                        Step.ToRunStep = (int)EMoldProcToRunStep.Bellow_Down;
+                        break;
                     }
 
-                    Log.Debug("Chamber is closed");
+                    Log.Debug($"{ChamberOpenClose} moving close");
+                    ChamberOpenClose.Close();
+                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout,
+                        () => ChamberOpenClose.IsClose());
+                    Step.ToRunStep++;
+                    break;
+                case EMoldProcToRunStep.ChamberClose_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseWarning(EWarning.Mold_Chamber_CloseFail);
+                        break;
+                    }
+
+                    Log.Debug($"Move {ChamberOpenClose} close done");
                     Step.ToRunStep++;
                     break;
                 case EMoldProcToRunStep.Bellow_Down:
-                    if (BellowCyl.IsDown())
+                    if (BellowCyl.IsDown()) 
                     {
                         Log.Debug($"{BellowCyl} is down already");
                         Step.ToRunStep = (int)EMoldProcToRunStep.ZAxis_SafetyPos_Move;
@@ -506,8 +520,8 @@ namespace SDV_MoldingInjection.Process
                         RaiseWarning(EWarning.Chamber_RightJig_TiltDetect);
                         break;
                     }
-                    if ((!LeftJigDetect && _optionRecipe.SkipHead12) || 
-                        (!RightJigDetect && _optionRecipe.SkipHead34))
+                    if ((!LeftJigDetect && _optionRecipe.SkipHead12 == false) || 
+                        (!RightJigDetect && _optionRecipe.SkipHead34 == false))
                     {
                         Log.Info($"Sequence set to {ESequence.Loading}");
                         Sequence = ESequence.Loading;
@@ -767,6 +781,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    Log.Debug($"{ChamberOpenClose} Open finish");
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Transfer_Load_SendRequest:
@@ -777,11 +792,20 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    if (_optionRecipe.InputTypeManual && _machineStatus.ConfirmLoadingFinish)
+                    if (_optionRecipe.InputTypeManual)
                     {
-                        Log.Debug("Loading manual done");
-                        Step.RunStep = Step.RunStep = (int)EMoldProcLoadingUnloadingStep.MCR_Read;
-                        break;
+                        if (isLoading && _machineStatus.ConfirmLoadingFinish)
+                        {
+                            Log.Debug("Loading manual done");
+                            _machineStatus.ConfirmLoadingFinish = false;
+                            Step.RunStep = Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Jig_Check;
+                            break;
+                        }
+                        if (isLoading == false)
+                        {
+                            Step.RunStep = Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
+                            break;
+                        }
                     }
 
                     if (_optionRecipe.InputTypeAuto)
@@ -814,6 +838,7 @@ namespace SDV_MoldingInjection.Process
                     break;
 
                 case EMoldProcLoadingUnloadingStep.Jig_Check:
+                    Log.Debug("Jig check");
                     if (isLoading == false)
                     {
                         if ((_optionRecipe.SkipHead12 == false && (In_Jig1Detect.Value || In_Jig2Detect.Value)) ||
@@ -831,10 +856,12 @@ namespace SDV_MoldingInjection.Process
                             if (LeftJigTiltState)
                             {
                                 RaiseWarning(EWarning.Left_Jig_Tilt_State);
+                                break;
                             }
                             if (LeftJigDetect == false)
                             {
                                 RaiseWarning(EWarning.Left_Jig_Not_Detect);
+                                break;
                             }
                         }
 
@@ -842,18 +869,24 @@ namespace SDV_MoldingInjection.Process
                         {
                             if (RightJigTiltState)
                             {
-                                RaiseWarning(EWarning.Left_Jig_Tilt_State);
+                                RaiseWarning(EWarning.Right_Jig_Tilt_State);
+                                break;
                             }
-                            if (LeftJigDetect == false)
+                            if (RightJigDetect == false)
                             {
-                                RaiseWarning(EWarning.Left_Jig_Not_Detect);
+                                RaiseWarning(EWarning.Right_Jig_Not_Detect);
+                                break;
                             }
                         }
+                    }
 
+                    if (isLoading == false)
+                    {
+                        UpdateBothJigStatus(EJigStatus.None);
+                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
                         break;
                     }
 
-                    _machineStatus.ConfirmLoadingFinish = false;
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.MCR_Read:
@@ -863,7 +896,7 @@ namespace SDV_MoldingInjection.Process
                         Log.Debug($"MCR_Read");
 
                     }
-
+                    
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Chamber_CoverClose:
