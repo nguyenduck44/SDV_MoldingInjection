@@ -13,6 +13,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
     {
         #region Properties
         public Devices Devices { get; }
+        public MachineStatus MachineStatus { get; }
         public SyringAmountStatusList SyringeAmountStatusList { get; }
         public CarrierJigStatusList CarrierJigStatusList { get; }
         public double PanelTemperature => Devices.PanelIndicator.Temperature;
@@ -22,12 +23,14 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         #region Contructors
         public AutoViewModel(
             Devices devices,
+            MachineStatus machineStatus,
             NavigationStore navigationStore,
             SyringAmountStatusList syringeAmountStatusList,
             RecipeSelector recipeSelector,
             CarrierJigStatusList carrierJigStatusList)
         {
             Devices = devices;
+            MachineStatus = machineStatus;
             _navigationStore = navigationStore;
             SyringeAmountStatusList = syringeAmountStatusList;
             _recipeSelector = recipeSelector;

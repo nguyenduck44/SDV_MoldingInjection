@@ -12,6 +12,8 @@ namespace SDV_MoldingInjection.Defines
         public MultiPointPosition MultiPointPosition { get; set; }
         public bool MachineReadyDone { get; set; }
         public bool MachineTestMode { get; set; }
+        public bool DisableSyringeCheck { get; set; }
+        public bool ConfirmLoadingFinish { get; set; }
 
         public MachineStatus()
         {

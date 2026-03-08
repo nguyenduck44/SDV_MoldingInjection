@@ -9,6 +9,8 @@ namespace SDV_MoldingInjection.Recipe
         public event Action<bool> Head34SkipChanged;
         private bool _skipHead12;
         private bool _skipHead34;
+        private bool _inputTypeManual;
+        private bool _inputTypeAuto;
 
         #endregion
 
@@ -36,6 +38,28 @@ namespace SDV_MoldingInjection.Recipe
                 OnRecipeChanged(_skipHead34, value);
                 Head34SkipChanged?.Invoke(value);
                 _skipHead34 = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool InputTypeManual
+        {
+            get { return _inputTypeManual; }
+            set
+            {
+                OnRecipeChanged(_inputTypeManual, value);
+                _inputTypeManual = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool InputTypeAuto
+        {
+            get { return _inputTypeAuto; }
+            set
+            {
+                OnRecipeChanged(_inputTypeAuto, value);
+                _inputTypeAuto = value;
                 OnPropertyChanged();
             }
         }

@@ -459,7 +459,8 @@ namespace SDV_MoldingInjection.Process
             }
 
             if (_devices.Inputs.TempHighWarning.Value == true &&
-                ProcessMode != EProcessMode.Warning)
+                ProcessMode != EProcessMode.Warning &&
+                ProcessMode != EProcessMode.ToWarning)
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);

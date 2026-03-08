@@ -397,6 +397,7 @@
                         Canvas.Top="291"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Top"
+                        MouseUp="ConfirmLoadingFinish_MouseLeftButtonUp"
                         Width="273"
                         Height="66">
                     <Image.Visibility>
