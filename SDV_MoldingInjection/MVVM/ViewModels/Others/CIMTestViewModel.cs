@@ -5,6 +5,7 @@ using EQX.Core.Communication.CIM.Custom.WordArea;
 using EQX.UI.Controls;
 using EQX.UI.MVVM;
 using log4net;
+using Microsoft.Extensions.Logging;
 using SDV_MoldingInjection.MVVM.Views;
 using SDV_MoldingInjection.Recipe;
 using System;
@@ -62,10 +63,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(async () =>
                 {
-                    EquipEventDetail tmpLossReady = new EquipEventDetail(_mapHelper)
-                    {
-                        Event = EquipEvent.TPMLossReady
-                    }; tmpLossReady.SetLocalPLCBitOnFireAndForget();
+                    EquipEventDetail.Create(EquipEvent.TPMLossReady).SetPLCBitOn();
 
                     TPMLossWindow tpmLossWindow = new TPMLossWindow();
                     tpmLossWindow.ShowDialog();
@@ -76,17 +74,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         TPMLossDescp = tpmLossWindow.SelectedTPMMode.ToString()
                     };
 
-                    EquipEventDetail tmpLossEvent = new EquipEventDetail(_mapHelper)
-                    {
-                        Event = EquipEvent.TPMLoss
-                    };
-                    tmpLossEvent.WritePLCWordsToCIM(tmpLossArea.ToCIMData());
-                    tmpLossEvent.SetLocalPLCBitOnFireAndForget();
-                    tmpLossEvent.WaitForCIMBitOn(3000);
+                    EquipEventDetail.Create(EquipEvent.TPMLoss).Write(tmpLossArea.ToCIMData());
+                    EquipEventDetail.Create(EquipEvent.TPMLoss).SetPLCBitOn();
 
-                    tmpLossEvent.SetLocalReplyBitOff();
+                    EquipEventDetail.Create(EquipEvent.TPMLoss).WaitForCIMBitOn();
+                    EquipEventDetail.Create(EquipEvent.TPMLoss).SetPLCBitOff();
 
-                    tmpLossReady.SetLocalReplyBitOff();
+                    EquipEventDetail.Create(EquipEvent.TPMLossReady).SetPLCBitOff();
                 });
             }
         }
@@ -106,34 +100,29 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             Message = $"TRACKING START {jigIndex}";
             await Task.Delay(1000);
 
+            EquipEvent validRequest = EquipEvent.SpecificValidationRequest1 + jigIndex - 1;
+            CIMCommand validData = CIMCommand.SpecificValidationDataSend1 + jigIndex - 1;
+
             // 1. Request SpecificValidation
-            EquipEventDetail equipEvent = new EquipEventDetail(_mapHelper)
-            {
-                Event = EquipEvent.SpecificValidationRequest1 + jigIndex - 1
-            };
             SpecificValidationRequestArea validationRequestArea = new()
             {
                 OptionCode = "CELL",
                 CellID = $"ABCDE12345_{jigIndex}",
             };
-            equipEvent.Write(validationRequestArea.ToCIMData());
+            EquipEventDetail.Create(validRequest).WriteAndBitOnOff(validationRequestArea.ToCIMData());
 
             // 2. CIM Data
-            CIMCommandDetail cimCommad = new CIMCommandDetail(_mapHelper)
-            {
-                Command = CIMCommand.SpecificValidationDataSend1 + jigIndex - 1
-            };
-            bool isBitOn = cimCommad.WaitForCIMBitOn(3000);
+            bool isBitOn = CIMCommandDetail.Create(validData).WaitForCIMBitOn(3000);
             if (isBitOn == false)
             {
-                Message = $"Bit {cimCommad.CIMAddress} ON timeout (over 3000ms)";
+                Message = $"Bit {CIMCommandDetail.Create(validData).CIMAddress} ON timeout (over 3000ms)";
                 return;
             }
-            cimCommad.ReadCIMWords();
+            CIMCommandDetail.Create(validData).ReadCIMWords();
 
             // 3. Data processing
             SpecificValidationDataSendArea dataSendArea = new SpecificValidationDataSendArea();
-            dataSendArea.FromCIMData(cimCommad.FromCIMDataBuffer);
+            dataSendArea.FromCIMData(CIMCommandDetail.Create(validData).FromCIMDataBuffer);
 
             Message = $"REPLY : {dataSendArea.ReplyText}\r\n" +
                       $"STATUS : {dataSendArea.ReplyStatus}";
@@ -145,24 +134,20 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
 
             // 4. CELL TRACK IN
+            EquipEvent cellStartPortEvent = EquipEvent.CellStartPort1 + jigIndex - 1;
+            CIMCommand cellJobProc = CIMCommand.CellJobProcess1 + jigIndex - 1;
             CellStartPortArea cellStartPort = new CellStartPortArea()
             {
                 TrackInCellID = validationRequestArea.CellID,
                 TrackInReaderID = jigIndex.ToString(),
                 TrackInRRC = "0",
             };
-            EquipEventDetail equipEvent1 = new EquipEventDetail(_mapHelper)
-            {
-                Event = EquipEvent.CellStartPort1 + jigIndex - 1
-            };
-            equipEvent1.Write(cellStartPort.ToCIMData());
+            
+            EquipEventDetail.Create(cellStartPortEvent).WriteAndBitOnOff(cellStartPort.ToCIMData());
 
             // 5. CELL JOB PROCESS CONFIRM
-            CIMCommandDetail cimCommand1 = new CIMCommandDetail(_mapHelper)
-            {
-                Command = CIMCommand.CellJobProcess1 + jigIndex - 1
-            };
-            isBitOn = cimCommand1.WaitForCIMBitOn(3000);
+            EquipEvent cellCompPort = EquipEvent.CellCompPort1 + jigIndex - 1;
+            isBitOn = CIMCommandDetail.Create(cellJobProc).WaitForCIMBitOn(3000);
             if (isBitOn == false)
             {
                 CellCompPortArea compPortTimeout = new CellCompPortArea()
@@ -171,18 +156,15 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     TrackOutJudge = "O",
                     TrackOutDescription = "CELL_VALIDATION_TIMEOUT",
                 };
-                EquipEventDetail equipEventTimeOut = new EquipEventDetail(_mapHelper)
-                {
-                    Event = EquipEvent.CellCompPort1 + jigIndex - 1,
-                };
-                equipEventTimeOut.Write(compPortTimeout.ToCIMData());
-                Message = $"Bit {cimCommand1.CIMAddress} ON timeout (over 3000ms)";
+                
+                EquipEventDetail.Create(cellCompPort).WriteAndBitOnOff(compPortTimeout.ToCIMData());
+                Message = $"Bit {CIMCommandDetail.Create(cellJobProc).CIMAddress} ON timeout (over 3000ms)";
                 return;
             }
-            cimCommand1.ReadCIMWords();
+            CIMCommandDetail.Create(cellJobProc).ReadCIMWords();
 
             CellJobProcessCimToPlcArea cellJobProcess = new CellJobProcessCimToPlcArea();
-            cellJobProcess.FromCIMData(cimCommand1.FromCIMDataBuffer);
+            cellJobProcess.FromCIMData(CIMCommandDetail.Create(cellJobProc).FromCIMDataBuffer);
 
             cellStartPort.TrackInProductID = cellJobProcess.CellJobProcessProductID;
             cellStartPort.TrackInStepID = cellJobProcess.CellJobProcessStepID;
@@ -193,7 +175,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 await Task.Delay(3000);
             }
 
-            // TRACK OUT
+            // 6. CELL TRACK OUT
             Message = "TRACK OUT";
             CellCompPortArea compPortArea = new CellCompPortArea()
             {
@@ -206,11 +188,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 compPortArea.TrackOutJudge = "O";
                 compPortArea.TrackOutDescription = "CELL_VALIDATION_FAIL";
             }
-            EquipEventDetail equipEvent2 = new EquipEventDetail(_mapHelper)
-            {
-                Event = EquipEvent.CellCompPort1 + jigIndex - 1
-            };
-            equipEvent2.Write(compPortArea.ToCIMData());
+
+            EquipEventDetail.Create(cellCompPort).WriteAndBitOnOff(compPortArea.ToCIMData());
 
             if (cellJobProcess.CellJobProcessRCMD == $"{(int)ECellJobProcessRCMD.CellJobProcessCancel}")
             {

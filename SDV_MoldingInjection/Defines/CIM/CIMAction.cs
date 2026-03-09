@@ -184,50 +184,43 @@ namespace SDV_MoldingInjection.Defines.CIM
         {
             foreach (var fromCIMCommand in CIMConstants.FromCIMCommands)
             {
-                CIMCommandDetail cimMap = new CIMCommandDetail(_mapHelper)
-                {
-                    Command = fromCIMCommand
-                };
-
-                bool bitOn = cimMap.IsCIMBitOn();
+                bool bitOn = CIMCommandDetail.Create(fromCIMCommand).IsCIMBitOn();
                 if (bitOn)
                 {
                     lock(_locker)
                     {
-                        if (_commandHandling.ContainsKey(cimMap.Command)) continue;
-                        _commandHandling.Add(cimMap.Command, true);
+                        if (_commandHandling.ContainsKey(CIMCommandDetail.Create(fromCIMCommand).Command)) continue;
+                        _commandHandling.Add(CIMCommandDetail.Create(fromCIMCommand).Command, true);
                     }
 
-                    LogManager.GetLogger("CIM").Info($"{cimMap.Command} CIM bit {cimMap.CIMAddress} ON");
+                    LogManager.GetLogger("CIM").Info($"{CIMCommandDetail.Create(fromCIMCommand).Command} CIM bit {CIMCommandDetail.Create(fromCIMCommand).CIMAddress} ON");
 
-                    CIMCommandDetail commandDetail = cimMap;
                     _ = Task.Run(() =>
                     {
-                        if (commandDetail.CIMWordLength > 0)
+                        if (CIMCommandDetail.Create(fromCIMCommand).CIMWordLength > 0)
                         {
-                            commandDetail.ReadCIMWords();
+                            CIMCommandDetail.Create(fromCIMCommand).ReadCIMWords();
                         }
 
-                        CIMCommandDetail tmpDetail = commandDetail;
                         Task.Run(() =>
                         {
-                            FromCIMCommandAction?.Invoke(new CIMCommandArgs(tmpDetail.Command, tmpDetail.FromCIMDataBuffer));
+                            FromCIMCommandAction?.Invoke(new CIMCommandArgs(CIMCommandDetail.Create(fromCIMCommand).Command, CIMCommandDetail.Create(fromCIMCommand).FromCIMDataBuffer));
                         });
 
-                        LogManager.GetLogger("CIM").Info($"{commandDetail.Command} LOCAL bit {commandDetail.PLCAddress} ON then OFF");
+                        LogManager.GetLogger("CIM").Info($"{CIMCommandDetail.Create(fromCIMCommand).Command} LOCAL bit {CIMCommandDetail.Create(fromCIMCommand).PLCAddress} ON then OFF");
 
-                        commandDetail.SetLocalPLCBitOn();
+                        CIMCommandDetail.Create(fromCIMCommand).SetLocalPLCBitOn();
 
                         // TODO : Clear _commandHandling for Display Command
 
-                        commandDetail.WaitForCIMBitOff(10000);
+                        CIMCommandDetail.Create(fromCIMCommand).WaitForCIMBitOff(10000);
 
                         lock (_locker)
                         {
-                            _commandHandling.Remove(commandDetail.Command);
+                            _commandHandling.Remove(CIMCommandDetail.Create(fromCIMCommand).Command);
                         }
 
-                        LogManager.GetLogger("CIM").Info($"{commandDetail.Command} CIM bit {commandDetail.CIMAddress} OFF");
+                        LogManager.GetLogger("CIM").Info($"{CIMCommandDetail.Create(fromCIMCommand).Command} CIM bit {CIMCommandDetail.Create(fromCIMCommand).CIMAddress} OFF");
                     });
                 }
             }
