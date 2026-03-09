@@ -4,6 +4,7 @@ using EQX.UI.Language;
 
 namespace SDV_MoldingInjection.Recipe
 {
+
     public class CommonRecipe : RecipeBase
     {
         private double cylinderMoveTimeout;
@@ -15,6 +16,7 @@ namespace SDV_MoldingInjection.Recipe
         public event Action SelectedLanguageLoadAllRecipe;
 
         [SingleRecipeDescription(Description = "Bubble remove turn")]
+        [CIMParameterAddress((int)ECIMParamter.BubbleRemoveTurn)]
         public double BubbleRemoveTurn
         {
             get { return _bubbleRemoveTurn; }
@@ -29,6 +31,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Cylinder Move Timeout", Unit = Unit.Second)]
+        [CIMParameterAddress((int)ECIMParamter.CylinderMoveTimeout)]
         public double CylinderMoveTimeout
         {
             get { return cylinderMoveTimeout; }

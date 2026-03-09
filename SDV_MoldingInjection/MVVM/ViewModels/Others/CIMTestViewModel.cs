@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
+using EQX.Core.Communication;
 using EQX.Core.Communication.CIM;
+using EQX.Core.Communication.CIM.Custom;
 using EQX.Core.Communication.CIM.Custom.WordArea;
 using EQX.UI.Controls;
 using EQX.UI.MVVM;
@@ -68,19 +70,9 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     TPMLossWindow tpmLossWindow = new TPMLossWindow();
                     tpmLossWindow.ShowDialog();
 
-                    TPMLossArea tmpLossArea = new TPMLossArea
-                    {
-                        TPMLossCode = (int)tpmLossWindow.SelectedTPMMode,
-                        TPMLossDescp = tpmLossWindow.SelectedTPMMode.ToString()
-                    };
+                    if (tpmLossWindow.SelectedTPMMode == null) return;
 
-                    EquipEventDetail.Create(EquipEvent.TPMLoss).Write(tmpLossArea.ToCIMData());
-                    EquipEventDetail.Create(EquipEvent.TPMLoss).SetPLCBitOn();
-
-                    EquipEventDetail.Create(EquipEvent.TPMLoss).WaitForCIMBitOn();
-                    EquipEventDetail.Create(EquipEvent.TPMLoss).SetPLCBitOff();
-
-                    EquipEventDetail.Create(EquipEvent.TPMLossReady).SetPLCBitOff();
+                    EquipEventHelpers.TPMLostReport((ETPMLossDesciption)tpmLossWindow.SelectedTPMMode);
                 });
             }
         }
@@ -118,11 +110,12 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 Message = $"Bit {CIMCommandDetail.Create(validData).CIMAddress} ON timeout (over 3000ms)";
                 return;
             }
-            CIMCommandDetail.Create(validData).ReadCIMWords();
+            var validDataCommand = CIMCommandDetail.Create(validData);
+            validDataCommand.ReadCIMWords();
 
             // 3. Data processing
             SpecificValidationDataSendArea dataSendArea = new SpecificValidationDataSendArea();
-            dataSendArea.FromCIMData(CIMCommandDetail.Create(validData).FromCIMDataBuffer);
+            dataSendArea.FromCIMData(validDataCommand.FromCIMDataBuffer);
 
             Message = $"REPLY : {dataSendArea.ReplyText}\r\n" +
                       $"STATUS : {dataSendArea.ReplyStatus}";
@@ -161,10 +154,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 Message = $"Bit {CIMCommandDetail.Create(cellJobProc).CIMAddress} ON timeout (over 3000ms)";
                 return;
             }
-            CIMCommandDetail.Create(cellJobProc).ReadCIMWords();
+            var cellProcCommand = CIMCommandDetail.Create(cellJobProc);
+            cellProcCommand.ReadCIMWords();
 
             CellJobProcessCimToPlcArea cellJobProcess = new CellJobProcessCimToPlcArea();
-            cellJobProcess.FromCIMData(CIMCommandDetail.Create(cellJobProc).FromCIMDataBuffer);
+            cellJobProcess.FromCIMData(cellProcCommand.FromCIMDataBuffer);
 
             cellStartPort.TrackInProductID = cellJobProcess.CellJobProcessProductID;
             cellStartPort.TrackInStepID = cellJobProcess.CellJobProcessStepID;

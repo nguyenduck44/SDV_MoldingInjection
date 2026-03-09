@@ -2,7 +2,6 @@
 using EQX.Core.Communication.CIM.Custom.WordArea;
 using EQX.Core.Sequence;
 using EQX.UI.Controls;
-using EQX.UI.MVVM;
 using log4net;
 using log4net.Repository.Hierarchy;
 using System.Diagnostics;
@@ -10,24 +9,6 @@ using TOPENG_Device;
 
 namespace SDV_MoldingInjection.Defines.CIM
 {
-    public class CIMCollection
-    {
-        public List<MaterialPort> MaterialPorts { get; }
-
-        public CIMCollection(IEnumerable<MaterialPort> materialPorts)
-        {
-            MaterialPorts = materialPorts.ToList();
-
-            for (int i = 0; i < MaterialPorts.Count(); i++)
-            {
-                MaterialPorts[i].Id = i + 1;
-                MaterialPorts[i].Name = $"Material Port Head {i + 1}";
-                MaterialPorts[i].Type = "RESIN";
-            }
-            MaterialPorts.First().IsCurrentActived = true;
-        }
-    }
-
     public class CIMAction
     {
         #region Events
@@ -157,6 +138,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                     await Task.Delay(50);
                 }
             }, token);
+
             _cimStatusUpdateTask = Task.Factory.StartNew(async () =>
             {
                 while (true)
@@ -197,14 +179,15 @@ namespace SDV_MoldingInjection.Defines.CIM
 
                     _ = Task.Run(() =>
                     {
+                        var cimCommand = CIMCommandDetail.Create(fromCIMCommand);
                         if (CIMCommandDetail.Create(fromCIMCommand).CIMWordLength > 0)
                         {
-                            CIMCommandDetail.Create(fromCIMCommand).ReadCIMWords();
+                            cimCommand.ReadCIMWords();
                         }
 
                         Task.Run(() =>
                         {
-                            FromCIMCommandAction?.Invoke(new CIMCommandArgs(CIMCommandDetail.Create(fromCIMCommand).Command, CIMCommandDetail.Create(fromCIMCommand).FromCIMDataBuffer));
+                            FromCIMCommandAction?.Invoke(new CIMCommandArgs(cimCommand.Command, cimCommand.FromCIMDataBuffer));
                         });
 
                         LogManager.GetLogger("CIM").Info($"{CIMCommandDetail.Create(fromCIMCommand).Command} LOCAL bit {CIMCommandDetail.Create(fromCIMCommand).PLCAddress} ON then OFF");
@@ -213,7 +196,7 @@ namespace SDV_MoldingInjection.Defines.CIM
 
                         // TODO : Clear _commandHandling for Display Command
 
-                        CIMCommandDetail.Create(fromCIMCommand).WaitForCIMBitOff(10000);
+                        CIMCommandDetail.Create(fromCIMCommand).WaitForCIMBitOff(5000);
 
                         lock (_locker)
                         {

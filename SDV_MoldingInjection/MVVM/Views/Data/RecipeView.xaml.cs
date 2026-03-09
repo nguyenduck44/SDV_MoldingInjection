@@ -1,4 +1,5 @@
-﻿using EQX.Core.Recipe;
+﻿using EQX.Core.Communication.CIM.Custom;
+using EQX.Core.Recipe;
 using EQX.UI.Controls;
 using SDV_MoldingInjection.MVVM.ViewModels;
 using System.Reflection;
@@ -36,6 +37,7 @@ namespace SDV_MoldingInjection.MVVM.Views
             {
                 if (this.DataContext is RecipeViewModel dataContext)
                 {
+                    EquipEventHelpers.PPIDChange(dataContext.SelectedModel);
                     dataContext.RecipeSelector.SetCurrentModel(dataContext.SelectedModel);
                     LoadRecipe(dataContext.CurrentRecipe);
                 }
