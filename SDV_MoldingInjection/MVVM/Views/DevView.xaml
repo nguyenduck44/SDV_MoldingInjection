@@ -24,6 +24,9 @@
             <CheckBox IsChecked="{Binding MachineStatus.DisableSyringeCheck}"
                       Content="Disable Syringe Check"
                       Tag="Check to Disable Syringe Check"/>
+            <CheckBox IsChecked="{Binding MachineStatus.DisableDetectJig}"
+                      Content="Disable Detect Jig"
+                      Tag="Check to Disable Detect Jig"/>
             <Button
                 Height="50" Width="200"
                 Content="CIM Test View"

@@ -839,8 +839,14 @@ namespace SDV_MoldingInjection.Process
 
                 case EMoldProcLoadingUnloadingStep.Jig_Check:
                     Log.Debug("Jig check");
-                    if (isLoading == false)
+                    if (isLoading == false && _machineStatus.DisableDetectJig == false && _machineStatus.IsDryRunMode == false)
                     {
+#if SIMULATION
+                        SimulationInputSetter.SetSimInput(In_Jig1Detect,false);
+                        SimulationInputSetter.SetSimInput(In_Jig2Detect,false);
+                        SimulationInputSetter.SetSimInput(In_Jig3Detect,false);
+                        SimulationInputSetter.SetSimInput(In_Jig4Detect,false);
+#endif
                         if ((_optionRecipe.SkipHead12 == false && (In_Jig1Detect.Value || In_Jig2Detect.Value)) ||
                             (_optionRecipe.SkipHead34 == false && (In_Jig3Detect.Value || In_Jig4Detect.Value)))
                         {
@@ -849,9 +855,15 @@ namespace SDV_MoldingInjection.Process
                         }
                     }
 
-                    else
+                    if (isLoading && _machineStatus.DisableDetectJig == false && _machineStatus.IsDryRunMode == false)
                     {
-                        if (_optionRecipe.SkipHead12 == false)
+#if SIMULATION
+                        SimulationInputSetter.SetSimInput(In_Jig1Detect, true);
+                        SimulationInputSetter.SetSimInput(In_Jig2Detect, true);
+                        SimulationInputSetter.SetSimInput(In_Jig3Detect, true);
+                        SimulationInputSetter.SetSimInput(In_Jig4Detect, true);
+#endif
+                        if (_optionRecipe.SkipHead12 == false && _machineStatus.DisableDetectJig == false && _machineStatus.IsDryRunMode == false)
                         {
                             if (LeftJigTiltState)
                             {
@@ -865,7 +877,7 @@ namespace SDV_MoldingInjection.Process
                             }
                         }
 
-                        if (_optionRecipe.SkipHead34 == false)
+                        if (_optionRecipe.SkipHead34 == false && _machineStatus.DisableDetectJig == false && _machineStatus.IsDryRunMode == false)
                         {
                             if (RightJigTiltState)
                             {
