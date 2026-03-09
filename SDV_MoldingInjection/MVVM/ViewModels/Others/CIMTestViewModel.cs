@@ -193,13 +193,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             //}
 
             string cellID = $"ABCDE12345_{jigIndex}";
-            if (EquipEventHelpers.SpecificValidation(1, cellID) == false)
+            if (EquipEventHelpers.SpecificValidation(jigIndex, cellID) == false)
             {
                 MessageBoxEx.Show("CELL LOT INFOR FAIL");
                 return;
             }
 
-            if (EquipEventHelpers.CellTrackIn(1, cellID) == false)
+            if (EquipEventHelpers.CellTrackIn(jigIndex, cellID) == false)
             {
                 MessageBoxEx.Show("CELL TRACK IN FAIL");
                 return;
@@ -216,6 +216,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             await Task.Delay(3000);
 
             EquipEventHelpers.CellTrackOut(jigIndex, cellJobProcess);
+            Message = "TRACKOUT DONE";
         }
         #endregion
     }

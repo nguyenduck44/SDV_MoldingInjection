@@ -19,6 +19,7 @@ namespace SDV_MoldingInjection.Defines.CIM
         {
             _mapHelper = mapHelper;
             _machineStatus = machineStatus;
+            cimCommandDetail = new CIMCommandDetail(_mapHelper);
 
             FromCIMCommandAction += CIMAction_FromCIMCommandAction;
         }
@@ -161,12 +162,15 @@ namespace SDV_MoldingInjection.Defines.CIM
         }
         #endregion
 
+        private readonly CIMCommandDetail cimCommandDetail;
+
         #region Privates Methods
         private async Task CIMCommandHandleAsync()
         {
             foreach (var fromCIMCommand in CIMConstants.FromCIMCommands)
             {
-                bool bitOn = CIMCommandDetail.Create(fromCIMCommand).IsCIMBitOn();
+                cimCommandDetail.Command = fromCIMCommand;
+                bool bitOn = cimCommandDetail.IsCIMBitOn();
                 if (bitOn)
                 {
                     lock(_locker)
