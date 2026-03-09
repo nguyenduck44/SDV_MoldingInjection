@@ -6,6 +6,7 @@
              xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
              xmlns:ui="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
              mc:Ignorable="d"
+             IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
              d:DataContext="{d:DesignInstance Type={x:Type vm:MotionsConfigViewModel}}"
              d:DesignHeight="450"
              d:DesignWidth="800">

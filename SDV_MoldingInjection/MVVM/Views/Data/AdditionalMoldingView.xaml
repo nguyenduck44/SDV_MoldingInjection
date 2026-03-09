@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
              mc:Ignorable="d" 
              Loaded="UserControl_Loaded"
+             IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
              xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
              d:DataContext="{d:DesignInstance Type={x:Type vm:AdditionalMoldingViewModel}}"
              xmlns:ui="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
