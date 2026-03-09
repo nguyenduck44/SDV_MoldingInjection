@@ -4,7 +4,8 @@
     {
         Start,
 
-        CheckIfChamberOpen,
+        ChamberClose,
+        ChamberClose_Wait,
 
         Bellow_Down,
         Bellow_DownWait,

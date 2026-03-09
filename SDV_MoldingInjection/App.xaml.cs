@@ -80,7 +80,7 @@ namespace SDV_MoldingInjection
             }
 
             ThreadPool.GetMinThreads(out int workerThreads, out int completionPortThreads);
-            ThreadPool.SetMinThreads(40, completionPortThreads);
+            ThreadPool.SetMinThreads(100, completionPortThreads);
             ThreadPool.GetMinThreads(out int newWorker, out _);
 
             await AppHost!.StartAsync();

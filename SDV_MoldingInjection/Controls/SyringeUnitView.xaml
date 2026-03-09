@@ -4,9 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:SDV_MoldingInjection.Controls"
+             xmlns:conv="clr-namespace:SDV_MoldingInjection.Converters"
              mc:Ignorable="d"
              d:DesignHeight="200"
              d:DesignWidth="80">
+    <UserControl.Resources>
+        <conv:TimeSpanToTotalHoursStringConverter x:Key="TimeSpanToTotalHoursStringConverter" />
+    </UserControl.Resources>
     <Grid Margin="2">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -57,7 +61,7 @@
         </Grid>
 
         <TextBlock Grid.Row="2"
-                   Text="{Binding ElapsedTime, StringFormat='{}{0:hh\\:mm\\:ss}'}"
+                   Text="{Binding ElapsedTime, Converter={StaticResource TimeSpanToTotalHoursStringConverter}}"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    FontSize="14" />

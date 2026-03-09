@@ -14,11 +14,11 @@ namespace SDV_MoldingInjection.Extensions
             {
                 services.AddKeyedScoped<MettlerToledoWKC204C>("BalanceLeft", (ser, obj) =>
                 {
-                    return new MettlerToledoWKC204C(new SerialCommunicator(1, "BalanceLeft", "COM8", 38400));
+                    return new MettlerToledoWKC204C(new SerialCommunicator(1, "BalanceLeft", "COM7", 38400));
                 });
                 services.AddKeyedScoped<MettlerToledoWKC204C>("BalanceRight", (ser, obj) =>
                 {
-                    return new MettlerToledoWKC204C(new SerialCommunicator(2, "BalanceRight", "COM7", 38400));
+                    return new MettlerToledoWKC204C(new SerialCommunicator(2, "BalanceRight", "COM8", 38400));
                 });
 
                 services.AddSingleton<Balances>();

@@ -163,7 +163,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                 {
                     CIMScenarioDispatcher.ApplyEquipReportState(_machineStatus.EquipReportState);
 
-                    await Task.Delay(50);
+                    await Task.Delay(100);
                 }
             }, token);
         }

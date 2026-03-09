@@ -13,6 +13,7 @@ namespace SDV_MoldingInjection.Defines
         public bool MachineReadyDone { get; set; }
         public bool MachineTestMode { get; set; }
         public bool DisableSyringeCheck { get; set; }
+        public bool DisableDetectJig { get; set; }
         public bool ConfirmLoadingFinish { get; set; }
 
         public MachineStatus()
