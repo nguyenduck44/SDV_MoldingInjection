@@ -131,7 +131,7 @@ namespace SDV_MoldingInjection.Defines
 
 
         //--------- 2500 -> 3000 : SPD Head #3 Process Warning ---------
-        P3Axis_Origin_Timeout = 5500,
+        P3Axis_Origin_Timeout = 2500,
         G3Axis_Origin_Timeout,
         H3_PistonCyl_UpFail,
         H3_PistonCyl_DownFail,
@@ -150,7 +150,7 @@ namespace SDV_MoldingInjection.Defines
         H3_Syringe_Not_Detected,
 
         //--------- 3000 -> 3499 : SPD Head #3 Process Warning ---------
-        P4Axis_Origin_Timeout = 6500,
+        P4Axis_Origin_Timeout = 3000,
         G4Axis_Origin_Timeout,
         H4_PistonCyl_UpFail,
         H4_PistonCyl_DownFail,
