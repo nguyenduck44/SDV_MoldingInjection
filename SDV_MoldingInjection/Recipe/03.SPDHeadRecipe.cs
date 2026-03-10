@@ -7,6 +7,33 @@ namespace SDV_MoldingInjection.Recipe
     {
         public event Action<double> ResinWeightChanged;
 
+        [SingleRecipeDescription(Description = "Resin Weight", Unit = Unit.mg)]
+        public double ResinWeight
+        {
+            get { return _resinWeight; }
+            set
+            {
+                ResinWeightChanged?.Invoke(value);
+                if (_resinWeight == value) return;
+                OnRecipeChanged(_resinWeight, value);
+                _resinWeight = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "Resin Weight Spec", Unit = Unit.Percentage)]
+        public double ResinWeightSpec
+        {
+            get { return _resinWeightSpec; }
+            set
+            {
+                if (_resinWeightSpec == value) return;
+                OnRecipeChanged(_resinWeightSpec, value);
+                _resinWeightSpec = value;
+                OnPropertyChanged();
+            }
+        }
+
         [SingleRecipeDescription(Description = "Z-Axis SAFETY position (ready position)", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "ZAxis")]
         [SingleRecipeMinMax(Min = -5)]
@@ -165,29 +192,30 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "Resin Weight", Unit = Unit.mg)]
-        public double ResinWeight
+        [SingleRecipeDescription(Description = "P-Axis Dummy Charge position", Unit = Unit.mm)]
+        public double PAxisDummyChargePos
         {
-            get { return _resinWeight; }
+            get { return _pAxisDummyChargePos; }
             set
             {
-                ResinWeightChanged?.Invoke(value);
-                if (_resinWeight == value) return;
-                OnRecipeChanged(_resinWeight, value);
-                _resinWeight = value;
+                if (_pAxisDummyChargePos == value) return;
+
+                OnRecipeChanged(_pAxisDummyChargePos, value);
+                _pAxisDummyChargePos = value;
                 OnPropertyChanged();
             }
         }
 
-        [SingleRecipeDescription(Description = "Resin Weight Spec", Unit = Unit.Percentage)]
-        public double ResinWeightSpec
+        [SingleRecipeDescription(Description = "P-Axis Bubble Remove Charge position", Unit = Unit.mm)]
+        public double PAxisBubbleRemoveChargePos
         {
-            get { return _resinWeightSpec; }
+            get { return _pAxisBubbleRemoveChargePos; }
             set
             {
-                if (_resinWeightSpec == value) return;
-                OnRecipeChanged(_resinWeightSpec, value);
-                _resinWeightSpec = value;
+                if (_pAxisBubbleRemoveChargePos == value) return;
+
+                OnRecipeChanged(_pAxisBubbleRemoveChargePos, value);
+                _pAxisBubbleRemoveChargePos = value;
                 OnPropertyChanged();
             }
         }
@@ -224,6 +252,8 @@ namespace SDV_MoldingInjection.Recipe
 
         private double _resinWeight;
         private double _resinWeightSpec;
+        private double _pAxisDummyChargePos;
+        private double _pAxisBubbleRemoveChargePos;
 
         #endregion
     }

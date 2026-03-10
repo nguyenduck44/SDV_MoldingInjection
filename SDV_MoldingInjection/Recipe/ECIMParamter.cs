@@ -2,7 +2,7 @@
 {
     public enum ECIMParamter
     {
-        BubbleRemoveTurn,
+        BubbleRemoveTurn = 1,
         CylinderMoveTimeout
     }
 }
