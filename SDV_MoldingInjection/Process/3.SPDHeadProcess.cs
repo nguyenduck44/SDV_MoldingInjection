@@ -1429,11 +1429,11 @@ namespace SDV_MoldingInjection.Process
         #region Private Methods
         private void RaiseHeadWarning(EWarning warning)
         {
-            RaiseWarning(warning + 1000 * ((int)head - 1));
+            RaiseWarning(warning + 500 * ((int)head - 1));
         }
         private void RaiseHeadAlarm(EAlarm warning)
         {
-            RaiseAlarm(warning + 1000 * ((int)head - 1));
+            RaiseAlarm(warning + 500 * ((int)head - 1));
         }
         #endregion
 
