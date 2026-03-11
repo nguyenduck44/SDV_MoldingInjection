@@ -499,7 +499,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.BubbleRemove_H1:
-                    if (head == ESPDHead.SPDHead1)
+                    if (head == ESPDHead.SPDHead1 && CurrentHeadSkip == false)
                     {
                         Sequence_SPDHeadCommon(ESequence.BubbleRemove_H1);
                     }
@@ -509,7 +509,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.BubbleRemove_H2:
-                    if (head == ESPDHead.SPDHead2)
+                    if (head == ESPDHead.SPDHead2 && CurrentHeadSkip == false)
                     {
                         Sequence_SPDHeadCommon(ESequence.BubbleRemove_H2);
                     }
@@ -519,7 +519,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.BubbleRemove_H3:
-                    if (head == ESPDHead.SPDHead3)
+                    if (head == ESPDHead.SPDHead3 && CurrentHeadSkip == false)
                     {
                         Sequence_SPDHeadCommon(ESequence.BubbleRemove_H3);
                     }
@@ -529,7 +529,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     break;
                 case ESequence.BubbleRemove_H4:
-                    if (head == ESPDHead.SPDHead4)
+                    if (head == ESPDHead.SPDHead4 && CurrentHeadSkip == false)
                     {
                         Sequence_SPDHeadCommon(ESequence.BubbleRemove_H4);
                     }
