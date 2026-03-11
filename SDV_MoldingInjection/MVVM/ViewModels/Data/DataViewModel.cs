@@ -41,7 +41,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
             bool? result = MessageBoxEx.ShowDialog($"Do you want to change RunMode {currentMode} -> {newMode}");
 
-            if (result == true) _machineStatus.MachineRunMode = newMode;
+            if (result == true)
+            {
+                _machineStatus.MachineRunMode = newMode;
+                OnPropertyChanged(nameof(RunModeButtonContent));
+            }
         });
         public ICommand MotionConfigNavigateCommand
         {
@@ -60,31 +64,12 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         {
             _navigationService = navigationService;
             _machineStatus = machineStatus;
-            _machineStatus.PropertyChanged += OnMachineStatusPropertyChanged;
         }
         #endregion
 
         #region Privates
         private readonly INavigationService _navigationService;
         private readonly MachineStatus _machineStatus;
-
-        private void OnMachineStatusPropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(MachineStatus.MachineRunMode))
-            {
-                OnPropertyChanged(nameof(RunModeButtonContent));
-            }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _machineStatus.PropertyChanged -= OnMachineStatusPropertyChanged;
-            }
-
-            base.Dispose(disposing);
-        }
         #endregion
     }
 }

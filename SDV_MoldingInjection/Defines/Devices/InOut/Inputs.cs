@@ -94,15 +94,15 @@ namespace SDV_MoldingInjection.Defines
         public IDInput DoorReleaseRight => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_RELEASE_RIGHT);
         public IDInput MainPanelCloseCheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_PANEL_CLOSE_CHECK);    
 
-        //MAIN_BREAKER TRIP_EBOX
-        //MAIN_PANEL_FAN_RUN#1_EBOX
-        //MAIN_PANEL_FAN_RUN#2_EBOX
-        //MAIN_PANEL_FAN_RUN#3_EBOX
-        //MAIN_PANEL_FAN_RUN#4_EBOX
-        //SMOKE_DETECT_RUN_EBOX
-        //SMOKE_DETECT_DETECT_ALARM_EBOX
-        //SMOKE_DETECT_TEMP' HIGH_ALARM_EBOX
-        //SMOKE_DETECT_TEMP' HIGH_WARNING_EBOX
+        public IDInput MainBreakerTripEBox => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_BREAKER_TRIP_EBOX);
+        public IDInput MainPanelFanRun1EBox => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_PANEL_FAN_RUN1_EBOX);
+        public IDInput MainPanelFanRun2EBox => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_PANEL_FAN_RUN2_EBOX);
+        public IDInput MainPanelFanRun3EBox => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_PANEL_FAN_RUN3_EBOX);
+        public IDInput MainPanelFanRun4EBox => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_PANEL_FAN_RUN4_EBOX);
+        public IDInput SmokeDetectRunEBox => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SMOKE_DETECT_RUN_EBOX);
+        public IDInput SmokeDetectAlarmEBox => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SMOKE_DETECT_DETECT_ALARM_EBOX);
+        public IDInput TempHighAlarmEBox => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SMOKE_DETECT_TEMP_HIGH_ALARM_EBOX);
+        public IDInput TempHighWarningEBox => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SMOKE_DETECT_TEMP_HIGH_WARNING_EBOX);
 
         public IDInput Nozzle1Touch => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.NOZZLE1_TOUCH_DETECT);
         public IDInput Nozzle2Touch => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.NOZZLE2_TOUCH_DETECT);
@@ -131,12 +131,20 @@ namespace SDV_MoldingInjection.Defines
         public IDInput ChamberPurgeOn => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.CHAMBER_PURGE_ON);
         public IDInput ChamberOpen => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.CHAMBER_OPEN);
         public IDInput ChamberClose => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.CHAMBER_CLOSE);
+        public IDInput PanelCloseCheckLeft => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PANEL_CLOSE_CHECK_LEFT);
+        public IDInput LockMonitorSwitch => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.OP_KEY_SW_LOCK_MONITOR);
+        public IDInput LockKeyCheckSwitch => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.OP_KEY_SW_LOCK_KEY_CHECK);
 
         public IDInput SyringeCDACheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SYLINGE_HEAD_CDA_CHECK);
         public IDInput PumpCDACheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_CDA_CHECK);
         public IDInput PumpVentCDACheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_VENT_CDA_CHECK);
         public IDInput PumpFanRun1 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_FAN_RUN1);
         public IDInput PumpFanRun2 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_FAN_RUN2);
+        public IDInput DummyOverflowDetect1 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DUMMY_OVERFLOW_DETECT_1);
+        public IDInput DummyOverflowDetect2 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DUMMY_OVERFLOW_DETECT_2);
+        public IDInput DummyOverflowDetect3 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DUMMY_OVERFLOW_DETECT_3);
+        public IDInput DummyOverflowDetect4 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DUMMY_OVERFLOW_DETECT_4);
+        public IDInput EmoInterfaceKNK => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.EMO_INTERFACE_KNK);
 
         #region SPD Head Inputs
         public IDInput H1_CylUp => _dHead1InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.CYL_UP_POS);
