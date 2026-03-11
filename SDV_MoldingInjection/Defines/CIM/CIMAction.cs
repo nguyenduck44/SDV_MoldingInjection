@@ -74,7 +74,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                             OPCallMessageConfirm = cimArea.OperatorCallText
                         };
 
-                        ExecuteScenario(CIMScenario.OPCallOccurAndRelease, 
+                        ExecuteScenario(CIMScenario.OPCallOccurAndRelease,
                             new CIMScenarioContext
                             {
                                 OPCallOccurOnly = false,
@@ -122,6 +122,28 @@ namespace SDV_MoldingInjection.Defines.CIM
 
                         ParameterWordArea parameterWordArea = new ParameterWordArea();
                         parameterWordArea.FromCIMData(fppsArea.RmsParameterList);
+
+                        bool isValid = true;
+                        if (int.TryParse(fppsArea.RecipeNumber, out int recipeNumber) == false)
+                        {
+                            isValid = false;
+                        }
+                        else
+                        {
+                            if (recipeNumber <= 90 && parameterWordArea.PPIDName.StartsWith("TT")) isValid = false;
+                            if (recipeNumber > 90 && parameterWordArea.PPIDName.StartsWith("TT") == false) isValid = false;
+                        }
+
+                        if (isValid == false)
+                        {
+                            short[] buf = new short[] { (short)'7' };
+                            EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).Write(buf);
+                            EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).SetPLCBitOn();
+                            EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).WaitForCIMBitOn();
+                            EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).SetPLCBitOff();
+
+                            return;
+                        }
 
                         if (fppsArea.CCode == "1") // CREATE NEW
                         {
