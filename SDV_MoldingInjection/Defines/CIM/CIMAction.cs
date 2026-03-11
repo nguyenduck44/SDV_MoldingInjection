@@ -113,9 +113,17 @@ namespace SDV_MoldingInjection.Defines.CIM
                             });
                     }
                     break;
-                case CIMCommand.FormattedProcessProgramSend:
+                case CIMCommand.FormattedProcessProgramSend2:
                     {
-                        
+                        var fppsArea = CIMCommandHelpers.PPIDDownload();
+
+                        ParameterWordArea parameterWordArea = new ParameterWordArea();
+                        parameterWordArea.FromCIMData(fppsArea.RmsParameterList);
+
+                        if (fppsArea.CCode == "1") // CREATE NEW
+                        {
+                            _recipeSelector.Create(parameterWordArea.PPIDName, fppsArea.RecipeNumber);
+                        }
                     }
                     break;
                 case CIMCommand.FormattedProcessProgramRequest:
@@ -161,11 +169,31 @@ namespace SDV_MoldingInjection.Defines.CIM
                 while (true)
                 {
                     CIMScenarioDispatcher.ApplyEquipReportState(_machineStatus.EquipReportState);
+                    foreach (var recipe in _recipeSelector.AllRecipe)
+                    {
+                        EquipEventHelpers.PPIDListSinglePPIDWrite(recipe);
+                    }
+
+                    for (int i = 0; i < ECMValues.Length; i++)
+                    {
+                        EquipEventHelpers.WriteEcmSingle(i + 1, ECMValues[i]);
+                    }
+                    EquipEventHelpers.WriteFdcItem();
 
                     await Task.Delay(100);
                 }
             }, token);
         }
+
+        public static int[] ECMValues = new int[]
+        {
+            1234,
+            4567,
+            1357,
+            10000
+        };
+
+        bool isFirstTime = true;
 
         public void Stop()
         {

@@ -309,6 +309,13 @@
                                         FontSize="12"
                                         Height="50"
                                         Margin="2" />
+                        <ui:ImageButton
+                            Content="{DynamicResource str_Delete}"
+                            Image="{StaticResource image_delete_selected}"
+                            Command="{Binding DeleteRecipeCommand}"
+                            FontSize="12"
+                            Height="50"
+                            Margin="2" />
                     </UniformGrid>
                 </Grid>
             </GroupBox>

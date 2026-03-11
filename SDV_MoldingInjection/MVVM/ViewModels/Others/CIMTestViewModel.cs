@@ -8,6 +8,7 @@ using EQX.UI.Controls;
 using EQX.UI.MVVM;
 using log4net;
 using Microsoft.Extensions.Logging;
+using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.MVVM.Views;
 using SDV_MoldingInjection.Recipe;
 using System;
@@ -76,6 +77,20 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 });
             }
         }
+
+        public ICommand ECMChangeTest
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    CIMAction.ECMValues[0] = random.Next(10000);
+                    EquipEventHelpers.EquipmentConstantParameterChanged(1, CIMAction.ECMValues[0]);
+                });
+            }
+        }
+
+        Random random = new Random();
         #endregion
 
         public CIMTestViewModel(ICIMMapHelper mapHelper, RecipeSelector recipeSelector)
@@ -89,133 +104,37 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         #region Privates
         private async Task CellTracking(int jigIndex)
         {
-            //Message = $"TRACKING START {jigIndex}";
-            //await Task.Delay(1000);
-
-            //EquipEvent validRequest = EquipEvent.SpecificValidationRequest1 + jigIndex - 1;
-            //CIMCommand validData = CIMCommand.SpecificValidationDataSend1 + jigIndex - 1;
-
-            //// 1. Request SpecificValidation
-            //SpecificValidationRequestArea validationRequestArea = new()
-            //{
-            //    OptionCode = "CELL",
-            //    CellID = $"ABCDE12345_{jigIndex}",
-            //};
-            //EquipEventDetail.Create(validRequest).WriteAndBitOnOff(validationRequestArea.ToCIMData());
-
-            //// 2. CIM Data
-            //bool isBitOn = CIMCommandDetail.Create(validData).WaitForCIMBitOn(3000);
-            //if (isBitOn == false)
-            //{
-            //    Message = $"Bit {CIMCommandDetail.Create(validData).CIMAddress} ON timeout (over 3000ms)";
-            //    return;
-            //}
-            //var validDataCommand = CIMCommandDetail.Create(validData);
-            //validDataCommand.ReadCIMWords();
-
-            //// 3. Data processing
-            //SpecificValidationDataSendArea dataSendArea = new SpecificValidationDataSendArea();
-            //dataSendArea.FromCIMData(validDataCommand.FromCIMDataBuffer);
-
-            //Message = $"REPLY : {dataSendArea.ReplyText}\r\n" +
-            //          $"STATUS : {dataSendArea.ReplyStatus}";
-
-            //if (dataSendArea.ReplyStatus.ToUpper() == "FAIL")
-            //{
-            //    MessageBoxEx.Show("CELL LOT INFOR FAIL");
-            //    return;
-            //}
-
-            //// 4. CELL TRACK IN
-            //EquipEvent cellStartPortEvent = EquipEvent.CellStartPort1 + jigIndex - 1;
-            //CIMCommand cellJobProc = CIMCommand.CellJobProcess1 + jigIndex - 1;
-            //CellStartPortArea cellStartPort = new CellStartPortArea()
-            //{
-            //    TrackInCellID = validationRequestArea.CellID,
-            //    TrackInReaderID = jigIndex.ToString(),
-            //    TrackInRRC = "0",
-            //};
-
-            //EquipEventDetail.Create(cellStartPortEvent).WriteAndBitOnOff(cellStartPort.ToCIMData());
-
-            //// 5. CELL JOB PROCESS CONFIRM
-            //EquipEvent cellCompPort = EquipEvent.CellCompPort1 + jigIndex - 1;
-            //isBitOn = CIMCommandDetail.Create(cellJobProc).WaitForCIMBitOn(3000);
-            //if (isBitOn == false)
-            //{
-            //    CellCompPortArea compPortTimeout = new CellCompPortArea()
-            //    {
-            //        TrackOutCellID = jigIndex.ToString(),
-            //        TrackOutJudge = "O",
-            //        TrackOutDescription = "CELL_VALIDATION_TIMEOUT",
-            //    };
-
-            //    EquipEventDetail.Create(cellCompPort).WriteAndBitOnOff(compPortTimeout.ToCIMData());
-            //    Message = $"Bit {CIMCommandDetail.Create(cellJobProc).CIMAddress} ON timeout (over 3000ms)";
-            //    return;
-            //}
-            //var cellProcCommand = CIMCommandDetail.Create(cellJobProc);
-            //cellProcCommand.ReadCIMWords();
-
-            //CellJobProcessCimToPlcArea cellJobProcess = new CellJobProcessCimToPlcArea();
-            //cellJobProcess.FromCIMData(cellProcCommand.FromCIMDataBuffer);
-
-            //cellStartPort.TrackInProductID = cellJobProcess.CellJobProcessProductID;
-            //cellStartPort.TrackInStepID = cellJobProcess.CellJobProcessStepID;
-
-            //if (cellJobProcess.CellJobProcessRCMD == $"{(int)ECellJobProcessRCMD.CellJobProcessStart}")
-            //{
-            //    Message = "INJECTING...";
-            //    await Task.Delay(3000);
-            //}
-
-            //// 6. CELL TRACK OUT
-            //Message = "TRACK OUT";
-            //CellCompPortArea compPortArea = new CellCompPortArea()
-            //{
-            //    TrackOutCellID = jigIndex.ToString(),
-            //    TrackOutProductID = cellJobProcess.CellJobProcessProductID,
-            //    TrackOutStepID = cellJobProcess.CellJobProcessStepID
-            //};
-            //if (cellJobProcess.CellJobProcessRCMD == $"{(int)ECellJobProcessRCMD.CellJobProcessCancel}")
-            //{
-            //    compPortArea.TrackOutJudge = "O";
-            //    compPortArea.TrackOutDescription = "CELL_VALIDATION_FAIL";
-            //}
-
-            //EquipEventDetail.Create(cellCompPort).WriteAndBitOnOff(compPortArea.ToCIMData());
-
-            //if (cellJobProcess.CellJobProcessRCMD == $"{(int)ECellJobProcessRCMD.CellJobProcessCancel}")
-            //{
-            //    Message = "TRACK OUT WITH FAIL";
-            //    MessageBoxEx.Show("CELL JOB PROCESS CANCEL");
-            //    return;
-            //}
-
             string cellID = $"ABCDE12345_{jigIndex}";
             if (EquipEventHelpers.SpecificValidation(jigIndex, cellID) == false)
             {
+                // TODO: ALARM RAISING (TIMEOUT? FAIL?)
                 MessageBoxEx.Show("CELL LOT INFOR FAIL");
                 return;
             }
 
             if (EquipEventHelpers.CellTrackIn(jigIndex, cellID) == false)
             {
+                // TODO: ALARM RAISING (TIMEOUT? FAIL?)
                 MessageBoxEx.Show("CELL TRACK IN FAIL");
                 return;
             }
 
-            CellJobProcessCimToPlcArea cellJobProcess = EquipEventHelpers.CellJobProcessConfirm(jigIndex);
+            CellJobProcessCimToPlcArea cellJobProcess = EquipEventHelpers.CellJobProcessConfirm(jigIndex, cellID);
 
+            bool isJobProcessFail = false;
             if (cellJobProcess.CellJobProcessRCMD != $"{(int)ECellJobProcessRCMD.CellJobProcessStart}")
             {
-                return;
+                // TODO: ALARM RAISING (TIMEOUT? FAIL?)
+                isJobProcessFail = true;
+                MessageBoxEx.Show("CellJobProcessRCMD FAIL");
+            }
+            else
+            {
+                Message = "INJECTING...";
+                await Task.Delay(3000);
             }
 
-            Message = "INJECTING...";
-            await Task.Delay(3000);
-
-            EquipEventHelpers.CellTrackOut(jigIndex, cellJobProcess);
+            EquipEventHelpers.CellTrackOut(jigIndex, cellJobProcess, isJobProcessFail);
             Message = "TRACKOUT DONE";
         }
         #endregion

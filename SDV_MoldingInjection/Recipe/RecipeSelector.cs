@@ -1,6 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using EQX.Core.Communication.CIM;
+using EQX.Core.Communication.CIM.Custom;
+using EQX.Core.Communication.CIM.Custom.WordArea;
 using EQX.Core.Recipe;
 using EQX.UI.Controls;
+using EQX.UI.Language;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -8,12 +12,17 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
 using System.Windows;
-using EQX.UI.Language;
+using TOPENG_Device;
 
 namespace SDV_MoldingInjection.Recipe
 {
     public class RecipeSelector : ObservableObject
     {
+        public string GetRecipeFolderPath(string recipeName)
+        {
+            return Path.Combine(recipeFolder, recipeName);
+        }
+
         #region Privates
         private RecipeSetting recipeSetting;
         private readonly IConfiguration _configuration;
@@ -27,6 +36,7 @@ namespace SDV_MoldingInjection.Recipe
         #endregion
 
         #region Properties
+        public string[] AllRecipe;
         public ObservableCollection<string> ValidRecipes
         {
             get => _validRecipes;
@@ -110,6 +120,11 @@ namespace SDV_MoldingInjection.Recipe
                 if (backupRecipe != null)
                 {
                     CurrentRecipe.CloneFrom(backupRecipe);
+                    EQPPPIDArea ppipArea = new EQPPPIDArea
+                    {
+                        EQPPPID = RecipeSetting.CurrentRecipe,
+                    };
+                    EquipEventDetail.Create(EquipEvent.EQPPIDUpdate).Write(ppipArea.ToCIMData());
                 }
                 else
                 {
@@ -123,6 +138,38 @@ namespace SDV_MoldingInjection.Recipe
                 return false;
             }
             return true;
+        }
+
+        public void Create(string newRecipe, string cimRecipeNumber = "")
+        {
+            string createFolder = Path.Combine(recipeFolder, newRecipe);
+            if (Directory.Exists(createFolder))
+            {
+                MessageBox.Show($"Recipe folder \"{createFolder}\" exist.");
+                return;
+            }
+
+            try
+            {
+                Directory.CreateDirectory(createFolder);
+
+                foreach (var file in Directory.GetFiles(createFolder))
+                {
+                    string destFile = Path.Combine(createFolder, Path.GetFileName(file));
+                    File.Copy(file, destFile, true);
+                }
+                MessageBox.Show($"Recipe '{createFolder}' copied successfully to '{Path.GetFileName(createFolder)}'.");
+                UpdateValidRecipes(); // Refresh the list to show the new copied recipe
+
+                // TODO: WRITE PARAMETER DATA TO RMS AREA
+                EquipEventHelpers.ParameterWordSingleParameterUpdate(1, CurrentRecipe.CommonRecipe.LogSaveDay);
+
+                EquipEventHelpers.PPIDCreate(Path.GetFileName(createFolder), cimRecipeNumber);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to copy recipe: {ex.Message}");
+            }
         }
 
         public void Copy(string selectedRecipe)
@@ -152,6 +199,11 @@ namespace SDV_MoldingInjection.Recipe
                 }
                 MessageBox.Show($"Recipe '{selectedRecipe}' copied successfully to '{Path.GetFileName(destinationFolder)}'.");
                 UpdateValidRecipes(); // Refresh the list to show the new copied recipe
+
+                // TODO: WRITE PARAMETER DATA TO RMS AREA
+                EquipEventHelpers.ParameterWordSingleParameterUpdate(1, CurrentRecipe.CommonRecipe.LogSaveDay);
+
+                EquipEventHelpers.PPIDCreate(Path.GetFileName(destinationFolder));
             }
             catch (Exception ex)
             {
@@ -199,6 +251,7 @@ namespace SDV_MoldingInjection.Recipe
                     _validRecipes.Add(recipe!);
                 }
 
+                AllRecipe = _validRecipes.ToArray();
                 OnPropertyChanged(nameof(ValidRecipes));
             }
             catch (Exception ex) { MessageBox.Show($"Failed to update recipe list: {ex.Message}"); }

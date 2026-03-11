@@ -11,6 +11,7 @@
             <system:String x:Key="str_Load">Load</system:String>
             <system:String x:Key="str_Refresh">Refresh</system:String>
             <system:String x:Key="str_Copy">Copy</system:String>
+            <system:String x:Key="str_Delete">Delete</system:String>
 
             <system:String x:Key="str_Cassette_In">Cassette In</system:String>
             <system:String x:Key="str_Cassette_Out">Cassette Out</system:String>

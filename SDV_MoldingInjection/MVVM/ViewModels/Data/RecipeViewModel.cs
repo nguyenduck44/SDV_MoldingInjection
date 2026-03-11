@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
+using EQX.Core.Communication.CIM;
+using EQX.Core.Communication.CIM.Custom;
 using EQX.Core.Motion;
 using EQX.Core.Recipe;
 using EQX.UI.Controls;
@@ -9,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Recipe;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
@@ -149,6 +152,35 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         RecipeSelector.Copy(SelectedModel);
                         RecipeSelector.UpdateValidRecipes();
                         LoadRecipeEvent?.Invoke();
+                    }
+                });
+            }
+        }
+        public ICommand DeleteRecipeCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    string selectedRecipe = SelectedModel;
+                    bool? confirm = MessageBoxEx.ShowDialog($"DO you realy want to DELETE RECIPE {selectedRecipe}");
+
+                    if (confirm != true) return;
+
+                    string CopyRecipe = (string)Application.Current.Resources["str_CopyRecipe"];
+                    if (selectedRecipe == RecipeSelector.RecipeSetting.CurrentRecipe)
+                    {
+                        MessageBoxEx.ShowDialog($"Can not delete CURRENT RECIPE {selectedRecipe}");
+                        return;
+                    }
+                    string folderPath = RecipeSelector.GetRecipeFolderPath(selectedRecipe);
+                    if (Directory.Exists(folderPath))
+                    {
+                        Directory.Delete(folderPath, true);
+
+                        RecipeSelector.UpdateValidRecipes();
+                        RecipeSelector.AllRecipe = RecipeSelector.ValidRecipes.ToArray();
+                        EquipEventHelpers.PPIDDelete(selectedRecipe);
                     }
                 });
             }
