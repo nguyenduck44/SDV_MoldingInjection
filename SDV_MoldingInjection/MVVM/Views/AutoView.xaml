@@ -61,6 +61,7 @@
 
         <!-- SYRINGE AMOUNT -->
         <Grid Grid.Column="1"
+              IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
               Width="215"
               HorizontalAlignment="Left" >
             <StackPanel Margin="5 1">
@@ -338,6 +339,7 @@
                 <ui:ImageButton Image="/EQX.UI;component/Resources/Images/Components/Common/lock_selected.png"
                                 DisabledImage="/EQX.UI;component/Resources/Images/Components/Common/lock_selected.png"
                                 Command="{Binding DoorOpenCommand}"
+                                IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
                                 Width="85"
                                 Height="42"
                                 Margin="2">
@@ -364,6 +366,7 @@
                                 DisabledImage="/EQX.UI;component/Resources/Images/KEYGRAY.png"
                                 Content="SafetyKey"
                                 Command="{Binding SafetyKeyCommand}"
+                                IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
                                 Width="85"
                                 Height="42"
                                 Margin="2">
@@ -453,8 +456,9 @@
                         Width="42"
                         Height="94">
                     <Image.Visibility>
-                        <Binding Path="Devices.Inputs.H1_CylDown.Value"
-                                 Converter="{StaticResource BooleanToVisibilityConverter}" />
+                        <MultiBinding Converter="{StaticResource BooleanOrToVisibilityConverter}">
+                            <Binding Path="H1Working" />
+                        </MultiBinding>
                     </Image.Visibility>
                 </Image>
             </Canvas>
@@ -467,8 +471,9 @@
                         Width="43"
                         Height="94">
                     <Image.Visibility>
-                        <Binding Path="Devices.Inputs.H2_CylDown.Value"
-                                 Converter="{StaticResource BooleanToVisibilityConverter}" />
+                        <MultiBinding Converter="{StaticResource BooleanOrToVisibilityConverter}">
+                            <Binding Path="H2Working" />
+                        </MultiBinding>
                     </Image.Visibility>
                 </Image>
             </Canvas>
@@ -481,8 +486,9 @@
                         Width="42"
                         Height="94">
                     <Image.Visibility>
-                        <Binding Path="Devices.Inputs.H3_CylDown.Value"
-                                 Converter="{StaticResource BooleanToVisibilityConverter}" />
+                        <MultiBinding Converter="{StaticResource BooleanOrToVisibilityConverter}">
+                            <Binding Path="H3Working" />
+                        </MultiBinding>
                     </Image.Visibility>
                 </Image>
             </Canvas>
@@ -496,8 +502,9 @@
                         Width="43"
                         Height="94">
                     <Image.Visibility>
-                        <Binding Path="Devices.Inputs.H4_CylDown.Value"
-                                 Converter="{StaticResource BooleanToVisibilityConverter}" />
+                        <MultiBinding Converter="{StaticResource BooleanOrToVisibilityConverter}">
+                            <Binding Path="H4Working" />
+                        </MultiBinding>
                     </Image.Visibility>
                 </Image>
             </Canvas>

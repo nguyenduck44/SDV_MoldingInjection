@@ -1,5 +1,6 @@
 ﻿using EQX.Core.Common;
 using EQX.Core.Communication.CIM;
+using EQX.Core.Communication.CIM.Custom;
 using EQX.Core.Communication.CIM.Custom.WordArea;
 using EQX.UI.MVVM;
 using log4net;
@@ -54,7 +55,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
 
             Log.Info($"{cimArea.MaterialReplyText} {cimArea.MaterialTotalQTY} {cimArea.MaterialProtID}");
-            
+
             if (mp.LastKittingCEID == EMaterialKittingCEID.KITTING)
             {
                 mp.MaterialState = cimArea.MaterialState;
@@ -63,26 +64,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 mp.RemainQty = cimArea.MaterialTotalQTY;
                 mp.UseQty = cimArea.MaterialUseQTY;
                 mp.UIUpdate();
-                EquipEventDetail equipEvent = new EquipEventDetail(_mapHelper)
-                {
-                    Event = EquipEvent.MaterialLocationUpdate1
-                };
-                equipEvent.WriteAndBitOnOff(mp.ToCIMData());
 
-                EquipEventDetail materialPortState = new EquipEventDetail(_mapHelper)
-                {
-                    Event = EquipEvent.MaterialPortState1 + mp.Id - 1
-                };
-                MaterialPortStateItemArea area = new MaterialPortStateItemArea()
-                {
-                    Type = mp.Type,
-                    LST = "1",  // MOUNT
-                    ID = mp.BatchID,
-                    LoaderNo = (short)mp.Id,
-                    Usage = (short)mp.RemainQty,
-                };
-                materialPortState.WriteAndBitOnOff(area.ToCIMData());
+                EquipEventHelpers.MaterialInfoSendKitting(mp);
             }
+
             if (mp.LastKittingCEID == EMaterialKittingCEID.KITTING_CANCEL)
             {
                 mp.MaterialState = cimArea.MaterialState;
@@ -91,25 +76,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 mp.RemainQty = 0;
                 mp.UseQty = 0;
                 mp.UIUpdate();
-                EquipEventDetail equipEvent = new EquipEventDetail(_mapHelper)
-                {
-                    Event = EquipEvent.MaterialShortage1
-                };
-                equipEvent.WriteAndBitOnOff(mp.ToCIMData());
 
-                EquipEventDetail materialPortState = new EquipEventDetail(_mapHelper)
-                {
-                    Event = EquipEvent.MaterialPortState1 + mp.Id - 1
-                };
-                MaterialPortStateItemArea area = new MaterialPortStateItemArea()
-                {
-                    Type = mp.Type,
-                    LST = "3",  // UNMOUNT
-                    ID = "",
-                    LoaderNo = (short)mp.Id,
-                    Usage = 0,
-                };
-                materialPortState.WriteAndBitOnOff(area.ToCIMData());
+                EquipEventHelpers.MaterialInfoSendCancel(mp);
             }
         }
 

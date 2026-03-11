@@ -18,6 +18,52 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public CarrierJigStatusList CarrierJigStatusList { get; }
         public double PanelTemperature => Devices.PanelIndicator.Temperature;
         public double PanelHumidity => Devices.PanelIndicator.Humidity;
+
+        private bool h1Working;
+        private bool h2Working;
+        private bool h3Working;
+        private bool h4Working;
+
+        public bool H1Working
+        {
+            get { return h1Working; }
+            set
+            {
+                h1Working = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool H2Working
+        {
+            get { return h2Working; }
+            set
+            {
+                h2Working = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool H3Working
+        {
+            get { return h3Working; }
+            set
+            {
+                h3Working = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool H4Working
+        {
+            get { return h4Working; }
+            set
+            {
+                h4Working = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region Contructors
@@ -67,12 +113,19 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             Devices.Inputs.BelowsUp.RaiseValueUpdated();
             Devices.Inputs.DryPumpRun.RaiseValueUpdated();
             Devices.Inputs.PanelClodeCheck.RaiseValueUpdated();
+
             UpdateSyringeStatus();
+
+
+            H1Working = Devices.Motions.Z1Axis.Status.IsMotioning || Devices.Motions.P1Axis.Status.IsMotioning || Devices.Motions.G1Axis.Status.IsMotioning;
+            H2Working = Devices.Motions.Z2Axis.Status.IsMotioning || Devices.Motions.P2Axis.Status.IsMotioning || Devices.Motions.G2Axis.Status.IsMotioning;
+            H3Working = Devices.Motions.Z3Axis.Status.IsMotioning || Devices.Motions.P3Axis.Status.IsMotioning || Devices.Motions.G3Axis.Status.IsMotioning;
+            H4Working = Devices.Motions.Z4Axis.Status.IsMotioning || Devices.Motions.P4Axis.Status.IsMotioning || Devices.Motions.G4Axis.Status.IsMotioning;
         }
 
         private void UpdateSyringeStatus()
         {
-            foreach(var syringe in SyringeAmountStatusList.SyringeAmounts)
+            foreach (var syringe in SyringeAmountStatusList.SyringeAmounts)
             {
                 syringe.UpdateElapsedTime();
             }

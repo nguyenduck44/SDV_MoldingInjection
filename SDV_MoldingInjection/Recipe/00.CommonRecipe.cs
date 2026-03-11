@@ -1,10 +1,10 @@
-﻿using EQX.Core.Recipe;
+﻿using EQX.Core.Communication.CIM.Custom;
+using EQX.Core.Recipe;
 using EQX.Core.Units;
 using EQX.UI.Language;
 
 namespace SDV_MoldingInjection.Recipe
 {
-
     public class CommonRecipe : RecipeBase
     {
         private double cylinderMoveTimeout;
@@ -23,7 +23,6 @@ namespace SDV_MoldingInjection.Recipe
             set
             {
                 if (_bubbleRemoveTurn == value) return;
-
                 OnRecipeChanged(_bubbleRemoveTurn, value);
                 _bubbleRemoveTurn = value;
                 OnPropertyChanged();
@@ -129,8 +128,7 @@ namespace SDV_MoldingInjection.Recipe
             get { return logSaveDay; }
             set
             {
-                OnRecipeChanged(logSaveDay, value);
-                logSaveDay = value;
+                SetRecipe(ref logSaveDay, value, nameof(LogSaveDay));
             }
         }
 

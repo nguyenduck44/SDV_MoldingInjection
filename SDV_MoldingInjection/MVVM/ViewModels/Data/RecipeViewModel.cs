@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
+using EQX.Core.Communication.CIM;
+using EQX.Core.Communication.CIM.Custom;
 using EQX.Core.Motion;
 using EQX.Core.Recipe;
 using EQX.UI.Controls;
@@ -9,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Recipe;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
@@ -150,6 +153,16 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         RecipeSelector.UpdateValidRecipes();
                         LoadRecipeEvent?.Invoke();
                     }
+                });
+            }
+        }
+        public ICommand DeleteRecipeCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    RecipeSelector.Delete(SelectedModel);
                 });
             }
         }

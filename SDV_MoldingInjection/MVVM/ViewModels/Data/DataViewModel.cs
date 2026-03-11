@@ -1,14 +1,18 @@
-﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
 using EQX.UI.Controls;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Process;
+using System.ComponentModel;
 using System.Windows.Input;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
     public class DataViewModel : ViewModelBase
     {
+        public string RunModeButtonContent =>
+            _machineStatus.MachineRunMode == EMachineRunMode.Auto ? "Dry Run Mode" : "Auto Run Mode";
+
         #region Commands
         public ICommand RecipeDataNavigateCommand => new RelayCommand(() =>
         {
@@ -56,12 +60,31 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         {
             _navigationService = navigationService;
             _machineStatus = machineStatus;
+            _machineStatus.PropertyChanged += OnMachineStatusPropertyChanged;
         }
         #endregion
 
         #region Privates
         private readonly INavigationService _navigationService;
         private readonly MachineStatus _machineStatus;
+
+        private void OnMachineStatusPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(MachineStatus.MachineRunMode))
+            {
+                OnPropertyChanged(nameof(RunModeButtonContent));
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _machineStatus.PropertyChanged -= OnMachineStatusPropertyChanged;
+            }
+
+            base.Dispose(disposing);
+        }
         #endregion
     }
 }

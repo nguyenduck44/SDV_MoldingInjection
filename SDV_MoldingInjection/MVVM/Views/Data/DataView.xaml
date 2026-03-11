@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="SDV_MoldingInjection.MVVM.Views.DataView"
+<UserControl x:Class="SDV_MoldingInjection.MVVM.Views.DataView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -34,7 +34,7 @@
                 <Button Content="Option Enable/Disable"
                         Command="{Binding OptionNavigateCommand}" />
 
-                <Button Content="Run Mode"
+                <Button Content="{Binding RunModeButtonContent}"
                         Command="{Binding RunModeChangeCommand}" />
 
                 <Button Content="Material Ports"

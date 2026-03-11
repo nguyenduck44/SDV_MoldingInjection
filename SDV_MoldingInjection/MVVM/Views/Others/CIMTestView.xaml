@@ -41,9 +41,15 @@
                 <Button
                     Content="TMPLostTest"
                     Command="{Binding TPMLostTest}"/>
+
+                <Button
+                    Content="ECMChangeTest"
+                    Command="{Binding ECMChangeTest}"/>
+
                 <Button
                     Content="CIM Function test"
                     Command="{Binding OpenCIMFunctionTestCommand}"/>
+
             </WrapPanel>
 
             <TextBox

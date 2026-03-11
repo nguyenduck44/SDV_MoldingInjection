@@ -745,13 +745,13 @@ namespace SDV_MoldingInjection.Process
                         case ESequence.DummyShot_H2:
                         case ESequence.DummyShot_H3:
                         case ESequence.DummyShot_H4:
-                            _pAxisCharge_Pos = _pAxisBase_Pos - 10;
+                            _pAxisCharge_Pos = _currentSPDHeadRecipe.PAxisDummyChargePos;
                             break;
                         case ESequence.BubbleRemove_H1:
                         case ESequence.BubbleRemove_H2:
                         case ESequence.BubbleRemove_H3:
                         case ESequence.BubbleRemove_H4:
-                            _pAxisCharge_Pos = 1;
+                            _pAxisCharge_Pos = _currentSPDHeadRecipe.PAxisBubbleRemoveChargePos;
                             break;
                         default: throw new NotImplementedException();
                     }
@@ -1429,11 +1429,11 @@ namespace SDV_MoldingInjection.Process
         #region Private Methods
         private void RaiseHeadWarning(EWarning warning)
         {
-            RaiseWarning(warning + 1000 * ((int)head - 1));
+            RaiseWarning(warning + 500 * ((int)head - 1));
         }
         private void RaiseHeadAlarm(EAlarm warning)
         {
-            RaiseAlarm(warning + 1000 * ((int)head - 1));
+            RaiseAlarm(warning + 500 * ((int)head - 1));
         }
         #endregion
 
@@ -1504,7 +1504,7 @@ namespace SDV_MoldingInjection.Process
 
         private double V380Weight2mg(double weight, double constant = 1)
         {
-            return Math.Round(weight / (Math.Pow(2.5, 2) * Math.PI), 3);
+            return Math.Round(weight / (Math.Pow(2.5, 2) * Math.PI * rho_Resin), 3);
         }
 
         private OptionRecipe OptionRecipe => _recipeSelector.CurrentRecipe.OptionRecipe;
@@ -1517,6 +1517,7 @@ namespace SDV_MoldingInjection.Process
 
         private double _pAxisAssemble_Pos = 13.4375;
         private double _pAxisBase_Pos = 20.875;
+        private double rho_Resin = 1.136;
 
         public int _removeResinCount;
         private int _bubbleRemoveCount;
