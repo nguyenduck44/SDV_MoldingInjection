@@ -1,9 +1,13 @@
 using EQX.Core.Common;
+using EQX.Core.Communication;
+using EQX.Core.Communication.CIM;
+using EQX.Core.Communication.CIM.Custom;
 using EQX.Core.Recipe;
 using EQX.Core.Sequence;
 using EQX.Process;
 using EQX.UI.Controls;
 using EQX.UI.Language;
+using EQX.UI.MVVM;
 using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
@@ -60,7 +64,10 @@ namespace SDV_MoldingInjection.Process
                 RootProcess_WarningRaised(warningId, warningSource);
             };
 
-            _machineStatus.EquipReportState = EquipReportStateKind.IdleNormal;
+            _machineStatus.EquipState = new EquipState
+            {
+                IsRunning = false,
+            };
         }
 
         #endregion
@@ -150,7 +157,7 @@ namespace SDV_MoldingInjection.Process
 
                 _machineStatus.OriginDone = false;
 
-                _machineStatus.EquipReportState = EquipReportStateKind.Down;
+                _machineStatus.EquipState.IsAvailable = false;
 
                 _devices.Outputs.Lamp_Alarm(true);
 
@@ -190,7 +197,7 @@ namespace SDV_MoldingInjection.Process
                 Log.Info("ToWarning Done, Warning");
                 AlertNotifyView.ShowDialog(_warningService.GetById(raisedWarningCode), true);
 
-                _machineStatus.EquipReportState = EquipReportStateKind.Down;
+                _machineStatus.EquipState.IsAvailable = false;
 
                 // TODO: CIM
                 CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmRelease, new CIMScenarioContext
@@ -312,10 +319,12 @@ namespace SDV_MoldingInjection.Process
         {
             if (Childs!.Count(child => child.ProcessStatus != EProcessStatus.ToStopDone) == 0)
             {
+                _devices.Motions.All.ForEach(r => r.Stop());
+
                 // TODO: CIM
-                if (_machineStatus.IsInterlock)
+                if (_machineStatus.EquipState.IsInterlock)
                 {
-                    CIMScenarioDispatcher.ApplyEquipReportState(EquipReportStateKind.Interlock);
+                    EquipEventHelpers.EquipStateReport(_machineStatus.EquipState);
                 }
                 else
                 {
@@ -323,15 +332,26 @@ namespace SDV_MoldingInjection.Process
                     if (Sequence == ESequence.AutoRun)
                     {
                         // TPMLoss Report
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            EquipEventDetail.Create(EquipEvent.TPMLossReady).SetPLCBitOn();
+
+                            TPMLossWindow tpmLossWindow = new TPMLossWindow();
+                            tpmLossWindow.ShowDialog();
+
+                            if (tpmLossWindow.SelectedTPMMode != null)
+                            {
+                                EquipEventHelpers.TPMLostReport((ETPMLossDesciption)tpmLossWindow.SelectedTPMMode);
+                            }
+                        });
                     }
 
-                    _machineStatus.EquipReportState = EquipReportStateKind.IdleNormal;
+                    _machineStatus.EquipState.IsRunning = false;
                 }
 
                 ProcessMode = EProcessMode.Stop;
-
-                _devices.Motions.All.ForEach(r => r.Stop());
                 _devices.Outputs.Lamp_Stop();
+
                 Log.Info("ToStop Done, Stop");
             }
             else
@@ -387,9 +407,12 @@ namespace SDV_MoldingInjection.Process
                     _devices.Outputs.Lamp_Run();
 
                     // TODO: CIM
-                    _machineStatus.IsInterlock = false;
-                    _machineStatus.EquipReportState = EquipReportStateKind.Running;
-
+                    if (Sequence == ESequence.AutoRun)
+                    {
+                        _machineStatus.EquipState.IsInterlock = false;
+                        _machineStatus.EquipState.IsRunning = true;
+                    }
+                    
                     ProcessMode = EProcessMode.Run;
                     Log.Info("ToRun Done, Running");
                     break;

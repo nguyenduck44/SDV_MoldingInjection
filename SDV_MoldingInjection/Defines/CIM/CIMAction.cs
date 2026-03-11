@@ -88,8 +88,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                         InterlockCimToPlcArea cimArea = new InterlockCimToPlcArea();
                         cimArea.FromCIMData(obj.Buffer);
 
-                        _machineStatus.IsInterlock = true;
-                        _machineStatus.EquipReportState = EquipReportStateKind.Interlock;
+                        _machineStatus.EquipState.IsInterlock = true;
                         _machineStatus.OPCommand = EOperationCommand.Stop;
 
                         // WRITE INTERLOCK MESSAGE
@@ -210,7 +209,7 @@ namespace SDV_MoldingInjection.Defines.CIM
             {
                 while (true)
                 {
-                    CIMScenarioDispatcher.ApplyEquipReportState(_machineStatus.EquipReportState);
+                    EquipEventHelpers.EquipStateReport(_machineStatus.EquipState);
                     foreach (var recipe in _recipeSelector.AllRecipe)
                     {
                         EquipEventHelpers.PPIDListSinglePPIDWrite(recipe);
