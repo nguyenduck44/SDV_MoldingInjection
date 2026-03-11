@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="SDV_MoldingInjection.MVVM.Views.CIMTestView"
+<UserControl x:Class="SDV_MoldingInjection.MVVM.Views.CIMTestView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -41,7 +41,9 @@
                 <Button
                     Content="TMPLostTest"
                     Command="{Binding TPMLostTest}"/>
-
+                <Button
+                    Content="CIM Function test"
+                    Command="{Binding OpenCIMFunctionTestCommand}"/>
             </WrapPanel>
 
             <TextBox

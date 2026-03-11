@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
 using EQX.Core.Communication;
 using EQX.Core.Communication.CIM;
@@ -7,6 +7,7 @@ using EQX.Core.Communication.CIM.Custom.WordArea;
 using EQX.UI.Controls;
 using EQX.UI.MVVM;
 using log4net;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SDV_MoldingInjection.MVVM.Views;
 using SDV_MoldingInjection.Recipe;
@@ -15,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using TOPENG_Device;
 
@@ -24,6 +26,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
     {
         private readonly ICIMMapHelper _mapHelper;
         private readonly RecipeSelector _recipeSelector;
+        private readonly IConfiguration _configuration;
         private string _message;
 
         public string Message
@@ -76,12 +79,33 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 });
             }
         }
+
+        public ICommand OpenCIMFunctionTestCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    var filePath = _configuration["Files:CIMFunctionFile"];
+                    var window = new Window
+                    {
+                        Title = "EQP Function Change",
+                        Content = new CIMFunctionView(),
+                        SizeToContent = SizeToContent.WidthAndHeight,
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen
+                    };
+                    window.DataContext = new CIMFunctionViewModel(filePath);
+                    window.Show();
+                });
+            }
+        }
         #endregion
 
-        public CIMTestViewModel(ICIMMapHelper mapHelper, RecipeSelector recipeSelector)
+        public CIMTestViewModel(ICIMMapHelper mapHelper, RecipeSelector recipeSelector, IConfiguration configuration)
         {
             _mapHelper = mapHelper;
             _recipeSelector = recipeSelector;
+            _configuration = configuration;
 
             Log = LogManager.GetLogger("CIMTest");
         }
