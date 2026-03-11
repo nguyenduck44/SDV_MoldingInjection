@@ -135,7 +135,7 @@ namespace SDV_MoldingInjection.Process
                     Step.ToRunStep++;
                     break;
                 case EMoldProcToRunStep.Bellow_Down:
-                    if (BellowCyl.IsDown()) 
+                    if (BellowCyl.IsDown())
                     {
                         Log.Debug($"{BellowCyl} is down already");
                         Step.ToRunStep = (int)EMoldProcToRunStep.ZAxis_SafetyPos_Move;
@@ -520,7 +520,7 @@ namespace SDV_MoldingInjection.Process
                         RaiseWarning(EWarning.Chamber_RightJig_TiltDetect);
                         break;
                     }
-                    if ((!LeftJigDetect && _optionRecipe.SkipHead12 == false) || 
+                    if ((!LeftJigDetect && _optionRecipe.SkipHead12 == false) ||
                         (!RightJigDetect && _optionRecipe.SkipHead34 == false))
                     {
                         Log.Info($"Sequence set to {ESequence.Loading}");
@@ -842,10 +842,10 @@ namespace SDV_MoldingInjection.Process
                     if (isLoading == false && _machineStatus.DisableDetectJig == false && _machineStatus.IsDryRunMode == false)
                     {
 #if SIMULATION
-                        SimulationInputSetter.SetSimInput(In_Jig1Detect,false);
-                        SimulationInputSetter.SetSimInput(In_Jig2Detect,false);
-                        SimulationInputSetter.SetSimInput(In_Jig3Detect,false);
-                        SimulationInputSetter.SetSimInput(In_Jig4Detect,false);
+                        SimulationInputSetter.SetSimInput(In_Jig1Detect, false);
+                        SimulationInputSetter.SetSimInput(In_Jig2Detect, false);
+                        SimulationInputSetter.SetSimInput(In_Jig3Detect, false);
+                        SimulationInputSetter.SetSimInput(In_Jig4Detect, false);
 #endif
                         if ((_optionRecipe.SkipHead12 == false && (In_Jig1Detect.Value || In_Jig2Detect.Value)) ||
                             (_optionRecipe.SkipHead34 == false && (In_Jig3Detect.Value || In_Jig4Detect.Value)))
@@ -908,7 +908,7 @@ namespace SDV_MoldingInjection.Process
                         Log.Debug($"MCR_Read");
 
                     }
-                    
+
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Chamber_CoverClose:
@@ -953,10 +953,17 @@ namespace SDV_MoldingInjection.Process
             switch ((EMoldProcDummyShotStep)Step.RunStep)
             {
                 case EMoldProcDummyShotStep.Start:
-                    if (head == ESPDHead.SPDHead1 && _currentRecipe.OptionRecipe.SkipHead12 ||
-                        head == ESPDHead.SPDHead2 && _currentRecipe.OptionRecipe.SkipHead12 ||
-                        head == ESPDHead.SPDHead3 && _currentRecipe.OptionRecipe.SkipHead34 ||
-                        head == ESPDHead.SPDHead4 && _currentRecipe.OptionRecipe.SkipHead34)
+                    if ((((head == ESPDHead.SPDHead1 || head == ESPDHead.SPDHead2) && _currentRecipe.OptionRecipe.SkipHead12) ||
+                       ((head == ESPDHead.SPDHead3 || head == ESPDHead.SPDHead4) && _currentRecipe.OptionRecipe.SkipHead34)) &&
+                       sequence != ESequence.HeadAssemble_H1 &&
+                       sequence != ESequence.HeadAssemble_H2 &&
+                       sequence != ESequence.HeadAssemble_H3 &&
+                       sequence != ESequence.HeadAssemble_H4 &&
+                       sequence != ESequence.HeadDisassemble_H1 &&
+                       sequence != ESequence.HeadDisassemble_H2 &&
+                       sequence != ESequence.HeadDisassemble_H3 &&
+                       sequence != ESequence.HeadDisassemble_H4)
+
                     {
                         Log.Debug("SKIP dummy shot for head " + head);
                         Step.RunStep = (int)EMoldProcDummyShotStep.End;
@@ -1059,10 +1066,24 @@ namespace SDV_MoldingInjection.Process
                     break;
 
                 case EMoldProcDummyShotStep.SPDHead_InjectResin_Done_And_VentComplete_Wait:
-                    if (IsSPDHeadWorkDone(head) == false)
+                    if (sequence == ESequence.HeadAssemble_H1 || sequence == ESequence.HeadAssemble_H2 ||
+                        sequence == ESequence.HeadAssemble_H3 || sequence == ESequence.HeadAssemble_H4 ||
+                        sequence == ESequence.HeadDisassemble_H1 || sequence == ESequence.HeadDisassemble_H2 ||
+                        sequence == ESequence.HeadDisassemble_H3 || sequence == ESequence.HeadDisassemble_H4)
                     {
-                        Wait(50);
-                        break;
+                        if (IsSPDHeadWorkDoneForAssemble(head) == false)
+                        {
+                            Wait(50);
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (IsSPDHeadWorkDone(head) == false)
+                        {
+                            Wait(50);
+                            break;
+                        }
                     }
 
                     Log.Debug($"Inject Resin done.");
@@ -1883,6 +1904,18 @@ namespace SDV_MoldingInjection.Process
                 ESPDHead.SPDHead2 => procInputs[EInjectProcInput.SPDHead2_WorkDone].Value || _currentRecipe.OptionRecipe.SkipHead12,
                 ESPDHead.SPDHead3 => procInputs[EInjectProcInput.SPDHead3_WorkDone].Value || _currentRecipe.OptionRecipe.SkipHead34,
                 ESPDHead.SPDHead4 => procInputs[EInjectProcInput.SPDHead4_WorkDone].Value || _currentRecipe.OptionRecipe.SkipHead34,
+                _ => throw new Exception($"Invalid head: {head}")
+            };
+        }
+
+        private bool IsSPDHeadWorkDoneForAssemble(ESPDHead head)
+        {
+            return head switch
+            {
+                ESPDHead.SPDHead1 => procInputs[EInjectProcInput.SPDHead1_WorkDone].Value,
+                ESPDHead.SPDHead2 => procInputs[EInjectProcInput.SPDHead2_WorkDone].Value,
+                ESPDHead.SPDHead3 => procInputs[EInjectProcInput.SPDHead3_WorkDone].Value,
+                ESPDHead.SPDHead4 => procInputs[EInjectProcInput.SPDHead4_WorkDone].Value,
                 _ => throw new Exception($"Invalid head: {head}")
             };
         }
