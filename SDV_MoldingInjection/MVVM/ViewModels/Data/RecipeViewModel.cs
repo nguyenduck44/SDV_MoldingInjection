@@ -162,26 +162,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    string selectedRecipe = SelectedModel;
-                    bool? confirm = MessageBoxEx.ShowDialog($"DO you realy want to DELETE RECIPE {selectedRecipe}");
-
-                    if (confirm != true) return;
-
-                    string CopyRecipe = (string)Application.Current.Resources["str_CopyRecipe"];
-                    if (selectedRecipe == RecipeSelector.RecipeSetting.CurrentRecipe)
-                    {
-                        MessageBoxEx.ShowDialog($"Can not delete CURRENT RECIPE {selectedRecipe}");
-                        return;
-                    }
-                    string folderPath = RecipeSelector.GetRecipeFolderPath(selectedRecipe);
-                    if (Directory.Exists(folderPath))
-                    {
-                        Directory.Delete(folderPath, true);
-
-                        RecipeSelector.UpdateValidRecipes();
-                        RecipeSelector.AllRecipe = RecipeSelector.ValidRecipes.ToArray();
-                        EquipEventHelpers.PPIDDelete(selectedRecipe);
-                    }
+                    RecipeSelector.Delete(SelectedModel);
                 });
             }
         }

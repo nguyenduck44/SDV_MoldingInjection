@@ -124,6 +124,14 @@ namespace SDV_MoldingInjection.Defines.CIM
                         {
                             _recipeSelector.Create(parameterWordArea.PPIDName, fppsArea.RecipeNumber);
                         }
+                        else if (fppsArea.CCode == "2") // Delete PPID
+                        {
+                            _recipeSelector.Delete(parameterWordArea.PPIDName, fppsArea.RecipeNumber);
+                        }
+                        else if (fppsArea.CCode == "3") // Parameter Update
+                        {
+                            _recipeSelector.CurrentRecipe.CommonRecipe.LogSaveDay = parameterWordArea.Parameters[0];
+                        }
                     }
                     break;
                 case CIMCommand.FormattedProcessProgramRequest:

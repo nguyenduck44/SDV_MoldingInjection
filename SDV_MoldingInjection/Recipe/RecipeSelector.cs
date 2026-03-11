@@ -8,6 +8,7 @@ using EQX.UI.Language;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
@@ -70,7 +71,33 @@ namespace SDV_MoldingInjection.Recipe
             UpdateValidRecipes();
 
             CurrentRecipe = new RecipeList();
-            CurrentRecipe.CommonRecipe.SelectedLanguageEvent += CommonRecipe_SelectedLanguageEvent; ;
+            CurrentRecipe.CommonRecipe.SelectedLanguageEvent += CommonRecipe_SelectedLanguageEvent;
+
+            CurrentRecipe.CommonRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
+            CurrentRecipe.InjectRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
+            CurrentRecipe.DryPumpRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
+            CurrentRecipe.SPDHead1_Recipe.RecipeChanged += SingleRecipe_RecipeChanged;
+            CurrentRecipe.SPDHead2_Recipe.RecipeChanged += SingleRecipe_RecipeChanged;
+            CurrentRecipe.SPDHead3_Recipe.RecipeChanged += SingleRecipe_RecipeChanged;
+            CurrentRecipe.SPDHead4_Recipe.RecipeChanged += SingleRecipe_RecipeChanged;
+            CurrentRecipe.AdditionalMolding_Recipe.RecipeChanged += SingleRecipe_RecipeChanged;
+            CurrentRecipe.OptionRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
+        }
+
+        private void SingleRecipe_RecipeChanged(object oldValue, object newValue, string? propertyName = null)
+        {
+            bool result1 = CIMHelpers.TryParseRecipeNumber(RecipeSetting.CurrentRecipe, out int index);
+            if (result1 == false)
+            {
+                throw new Exception("PPID Name format is not match");
+            }
+
+            var parameterArea = new ParameterWordArea
+            {
+                PPIDName = RecipeSetting.CurrentRecipe,
+            };
+            parameterArea.Parameters[0] = CurrentRecipe.CommonRecipe.LogSaveDay;
+            EquipEventHelpers.ParameterChange(parameterArea, index);
         }
 
         private void CommonRecipe_SelectedLanguageEvent(ILanguageDefinition obj)
@@ -88,7 +115,7 @@ namespace SDV_MoldingInjection.Recipe
             string recipeSettingFile = Path.Combine(recipeFolder, "RecipeSetting.json");
             if (File.Exists(recipeSettingFile) == false)
             {
-                MessageBox.Show($"{recipeSettingFile} file not found");
+                MessageBoxEx.Show($"{recipeSettingFile} file not found");
                 return false;
             }
 
@@ -100,7 +127,7 @@ namespace SDV_MoldingInjection.Recipe
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBoxEx.Show(ex.Message);
                 return false;
             }
 
@@ -108,7 +135,7 @@ namespace SDV_MoldingInjection.Recipe
             string currentRecipeFolder = Path.Combine(recipeFolder, RecipeSetting.CurrentRecipe);
             string currentRecipeFile = Path.Combine(currentRecipeFolder, "Recipe.json");
             if (Directory.Exists(currentRecipeFolder) == false)
-                MessageBox.Show($" Recipe folder \"{currentRecipeFolder}\" not found");
+                MessageBoxEx.Show($" Recipe folder \"{currentRecipeFolder}\" not found");
 
             var settings = new JsonSerializerSettings
             {
@@ -128,13 +155,13 @@ namespace SDV_MoldingInjection.Recipe
                 }
                 else
                 {
-                    MessageBox.Show($"Failed to load recipe file: {currentRecipeFile}");
+                    MessageBoxEx.Show($"Failed to load recipe file: {currentRecipeFile}");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading recipe: {ex.Message}");
+                MessageBoxEx.Show($"Error loading recipe: {ex.Message}");
                 return false;
             }
             return true;
@@ -145,7 +172,7 @@ namespace SDV_MoldingInjection.Recipe
             string createFolder = Path.Combine(recipeFolder, newRecipe);
             if (Directory.Exists(createFolder))
             {
-                MessageBox.Show($"Recipe folder \"{createFolder}\" exist.");
+                MessageBoxEx.Show($"Recipe folder \"{createFolder}\" exist.");
                 return;
             }
 
@@ -153,38 +180,69 @@ namespace SDV_MoldingInjection.Recipe
             {
                 Directory.CreateDirectory(createFolder);
 
+                // TODO: Update recipe
                 foreach (var file in Directory.GetFiles(createFolder))
                 {
                     string destFile = Path.Combine(createFolder, Path.GetFileName(file));
                     File.Copy(file, destFile, true);
                 }
-                MessageBox.Show($"Recipe '{createFolder}' copied successfully to '{Path.GetFileName(createFolder)}'.");
-                UpdateValidRecipes(); // Refresh the list to show the new copied recipe
-
-                // TODO: WRITE PARAMETER DATA TO RMS AREA
-                EquipEventHelpers.ParameterWordSingleParameterUpdate(1, CurrentRecipe.CommonRecipe.LogSaveDay);
 
                 EquipEventHelpers.PPIDCreate(Path.GetFileName(createFolder), cimRecipeNumber);
+                
+                UpdateValidRecipes(); // Refresh the list to show the new copied recipe
+
+                MessageBoxEx.Show($"Recipe '{createFolder}' copied successfully to '{Path.GetFileName(createFolder)}'.");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to copy recipe: {ex.Message}");
+                MessageBoxEx.Show($"Failed to copy recipe: {ex.Message}");
             }
         }
 
+        public void Delete(string selectedRecipe, string fromCIMRecipeNumber = "")
+        {
+            if (string.IsNullOrEmpty(fromCIMRecipeNumber))
+            {
+                bool? confirm = MessageBoxEx.ShowDialog($"DO you realy want to DELETE RECIPE {selectedRecipe}");
+
+                if (confirm != true) return;
+            }
+
+            string CopyRecipe = (string)Application.Current.Resources["str_CopyRecipe"];
+            if (selectedRecipe == RecipeSetting.CurrentRecipe)
+            {
+                MessageBoxEx.ShowDialog($"Can not delete CURRENT RECIPE {selectedRecipe}");
+                return;
+            }
+            string folderPath = GetRecipeFolderPath(selectedRecipe);
+            if (Directory.Exists(folderPath))
+            {
+                Directory.Delete(folderPath, true);
+
+                UpdateValidRecipes();
+
+                EquipEventHelpers.PPIDListSinglePPIDWrite(selectedRecipe, true);
+                EquipEventHelpers.PPIDDelete(selectedRecipe, fromCIMRecipeNumber);
+                EquipEventHelpers.PPIDListSinglePPIDWrite(selectedRecipe, true);
+            }
+        }
+
+        // FROM EQUIPMENT ONLY
         public void Copy(string selectedRecipe)
         {
+            if (string.IsNullOrEmpty(selectedRecipe)) return;
+
             string sourceFolder = Path.Combine(recipeFolder, selectedRecipe);
             if (!Directory.Exists(sourceFolder))
             {
-                MessageBox.Show($"Recipe folder \"{sourceFolder}\" not found.");
+                MessageBoxEx.Show($"Recipe folder \"{sourceFolder}\" not found.");
                 return;
             }
 
-            string destinationFolder = $"{sourceFolder}_Copy";
+            string destinationFolder = $"D:\\MoldInjection\\Recipe\\TT_094_MODEL094";
             if (Directory.Exists(destinationFolder))
             {
-                MessageBox.Show($"Recipe folder \"{destinationFolder}\" already exists.");
+                MessageBoxEx.Show($"Recipe folder \"{destinationFolder}\" already exists.");
                 return;
             }
 
@@ -197,17 +255,23 @@ namespace SDV_MoldingInjection.Recipe
                     string destFile = Path.Combine(destinationFolder, Path.GetFileName(file));
                     File.Copy(file, destFile, true);
                 }
-                MessageBox.Show($"Recipe '{selectedRecipe}' copied successfully to '{Path.GetFileName(destinationFolder)}'.");
+                MessageBoxEx.Show($"Recipe '{selectedRecipe}' copied successfully to '{Path.GetFileName(destinationFolder)}'.");
                 UpdateValidRecipes(); // Refresh the list to show the new copied recipe
 
                 // TODO: WRITE PARAMETER DATA TO RMS AREA
                 EquipEventHelpers.ParameterWordSingleParameterUpdate(1, CurrentRecipe.CommonRecipe.LogSaveDay);
 
+                bool result1 = CIMHelpers.TryParseRecipeNumber(Path.GetFileName(destinationFolder), out int index);
+                if (result1 == false)
+                {
+                    throw new Exception("PPID Name format is not match");
+                }
+
                 EquipEventHelpers.PPIDCreate(Path.GetFileName(destinationFolder));
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to copy recipe: {ex.Message}");
+                MessageBoxEx.Show($"Failed to copy recipe: {ex.Message}");
             }
         }
 
@@ -218,7 +282,7 @@ namespace SDV_MoldingInjection.Recipe
                 string currentRecipeFolder = Path.Combine(recipeFolder, RecipeSetting.CurrentRecipe);
                 string currentRecipeFile = Path.Combine(currentRecipeFolder, "Recipe.json");
                 if (Directory.Exists(currentRecipeFolder) == false)
-                    MessageBox.Show($" Recipe folder \"{currentRecipeFolder}\" not found");
+                    MessageBoxEx.Show($" Recipe folder \"{currentRecipeFolder}\" not found");
 
                 var settings = new JsonSerializerSettings
                 {
@@ -232,29 +296,31 @@ namespace SDV_MoldingInjection.Recipe
 
         public void UpdateValidRecipes()
         {
-            try
-            {
-                if (!Directory.Exists(recipeFolder))
+            Application.Current.Dispatcher.Invoke(() => {
+                try
                 {
+                    if (!Directory.Exists(recipeFolder))
+                    {
+                        _validRecipes.Clear();
+                        return;
+                    }
+
+                    var onDiskRecipes = Directory.GetDirectories(recipeFolder, "*", SearchOption.TopDirectoryOnly)
+                                                 .Select(Path.GetFileName)
+                                                 .Where(name => name != null)
+                                                 .ToList();
+
                     _validRecipes.Clear();
-                    return;
+                    foreach (var recipe in onDiskRecipes.OrderBy(r => r))
+                    {
+                        _validRecipes.Add(recipe!);
+                    }
+
+                    AllRecipe = _validRecipes.ToArray();
+                    OnPropertyChanged(nameof(ValidRecipes));
                 }
-
-                var onDiskRecipes = Directory.GetDirectories(recipeFolder, "*", SearchOption.TopDirectoryOnly)
-                                             .Select(Path.GetFileName)
-                                             .Where(name => name != null)
-                                             .ToList();
-
-                _validRecipes.Clear();
-                foreach (var recipe in onDiskRecipes.OrderBy(r => r))
-                {
-                    _validRecipes.Add(recipe!);
-                }
-
-                AllRecipe = _validRecipes.ToArray();
-                OnPropertyChanged(nameof(ValidRecipes));
-            }
-            catch (Exception ex) { MessageBox.Show($"Failed to update recipe list: {ex.Message}"); }
+                catch (Exception ex) { MessageBoxEx.Show($"Failed to update recipe list: {ex.Message}"); }
+            });
         }
         public void SetCurrentModel(string selectedRecipe)
         {
