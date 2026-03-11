@@ -3,6 +3,7 @@ using EQX.Core.Communication.CIM.Custom;
 using EQX.Core.Communication.CIM.Custom.WordArea;
 using EQX.Core.Sequence;
 using EQX.UI.Controls;
+using EQX.UI.MVVM;
 using log4net;
 using log4net.Repository.Hierarchy;
 using SDV_MoldingInjection.Recipe;
@@ -18,10 +19,11 @@ namespace SDV_MoldingInjection.Defines.CIM
         public event Action<CIMCommandArgs> FromCIMCommandAction;
         #endregion
 
-        public CIMAction(MachineStatus machineStatus, ICIMMapHelper mapHelper, RecipeSelector recipeSelector)
+        public CIMAction(MachineStatus machineStatus, ICIMMapHelper mapHelper, RecipeSelector recipeSelector, CIMFunctionViewModel cimFunctionVM)
         {
             _mapHelper = mapHelper;
             _recipeSelector = recipeSelector;
+            _cimFunctionVM = cimFunctionVM;
             _machineStatus = machineStatus;
             cimCommandDetail = new CIMCommandDetail(_mapHelper);
 
@@ -159,9 +161,27 @@ namespace SDV_MoldingInjection.Defines.CIM
                         EquipFunctionChangeCommandReceiveArea receiveArea = new EquipFunctionChangeCommandReceiveArea();
                         receiveArea.FromCIMData(functionChangeCommand.FromCIMDataBuffer);
 
+                        if (int.TryParse(receiveArea.EquipCmdEFID, out int efid) == false) return;
+
+                        if (efid >= 6 || efid == 3 || efid == 5)
+                        {
+                            EquipEventDetail.Create(EquipEvent.EquipFunctionChangeCMDHcack).Write(new short[] { (short)'5' });
+
+                            functionChangeCommand.SetPLCBitOn();
+                            functionChangeCommand.WaitForCIMBitOff();
+                            functionChangeCommand.SetPLCBitOff();
+
+                            return;
+                        }
+
+                        EquipEventDetail.Create(EquipEvent.EquipFunctionChangeCMDHcack).Write(new short[] { (short)'0' });
+                        _cimFunctionVM.UpdateSingle(efid, receiveArea.EquipCmdEFST);
+
                         functionChangeCommand.SetPLCBitOn();
                         functionChangeCommand.WaitForCIMBitOff();
                         functionChangeCommand.SetPLCBitOff();
+
+                        _cimFunctionVM.SaveCommand?.Execute("HOST");
                     }
                     break;
             }
@@ -277,6 +297,7 @@ namespace SDV_MoldingInjection.Defines.CIM
         private static CancellationTokenSource ctsCIMTrasmitTask = new CancellationTokenSource();
         private ICIMMapHelper _mapHelper;
         private readonly RecipeSelector _recipeSelector;
+        private readonly CIMFunctionViewModel _cimFunctionVM;
         private Dictionary<CIMCommand, bool> _commandHandling = new Dictionary<CIMCommand, bool>();
         private readonly MachineStatus _machineStatus;
         private object _locker = new object();
