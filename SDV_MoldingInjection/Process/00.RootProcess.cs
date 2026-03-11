@@ -170,7 +170,7 @@ namespace SDV_MoldingInjection.Process
                 {
                     CIMAlarmData = new CIMAlarmData
                     {
-                        ALCD = 2, // LIGHT ALARM
+                        ALCD = 2, // HEAVY ALARM
                         ALID = raisedWarningCode,
                         AlarmDescription = ((EAlarm)raisedWarningCode).ToString(),
                     }
@@ -204,7 +204,7 @@ namespace SDV_MoldingInjection.Process
                 {
                     CIMAlarmData = new CIMAlarmData
                     {
-                        ALCD = 1, // LIGHT ALARM
+                        ALCD = 2, // HEAVY ALARM
                         ALID = raisedWarningCode,
                         AlarmDescription = ((EWarning)raisedWarningCode).ToString(),
                     }
@@ -320,6 +320,12 @@ namespace SDV_MoldingInjection.Process
             if (Childs!.Count(child => child.ProcessStatus != EProcessStatus.ToStopDone) == 0)
             {
                 _devices.Motions.All.ForEach(r => r.Stop());
+                _machineStatus.EquipState.IsRunning = false;
+
+                ProcessMode = EProcessMode.Stop;
+                _devices.Outputs.Lamp_Stop();
+
+                Log.Info("ToStop Done, Stop");
 
                 // TODO: CIM
                 if (_machineStatus.EquipState.IsInterlock)
@@ -345,14 +351,7 @@ namespace SDV_MoldingInjection.Process
                             }
                         });
                     }
-
-                    _machineStatus.EquipState.IsRunning = false;
                 }
-
-                ProcessMode = EProcessMode.Stop;
-                _devices.Outputs.Lamp_Stop();
-
-                Log.Info("ToStop Done, Stop");
             }
             else
             {
@@ -409,6 +408,7 @@ namespace SDV_MoldingInjection.Process
                     // TODO: CIM
                     if (Sequence == ESequence.AutoRun)
                     {
+                        _machineStatus.EquipState.IsAvailable = true;
                         _machineStatus.EquipState.IsInterlock = false;
                         _machineStatus.EquipState.IsRunning = true;
                     }

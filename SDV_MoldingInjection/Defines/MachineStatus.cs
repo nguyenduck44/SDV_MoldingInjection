@@ -16,8 +16,25 @@ namespace SDV_MoldingInjection.Defines
         public bool DisableDetectJig { get; set; }
         public bool ConfirmLoadingFinish { get; set; }
 
-        public MachineStatus()
+        public MachineStatus(Inputs inputs)
         {
+            _inputs = inputs;
+
+            _inputs.Jig1Detect.ValueChanged += JigDetect_ValueChanged;
+            _inputs.Jig2Detect.ValueChanged += JigDetect_ValueChanged;
+            _inputs.Jig3Detect.ValueChanged += JigDetect_ValueChanged;
+            _inputs.Jig4Detect.ValueChanged += JigDetect_ValueChanged;
+        }
+
+        private void JigDetect_ValueChanged(object? sender, EventArgs e)
+        {
+            if (_inputs.Jig1Detect.Value ||
+                _inputs.Jig2Detect.Value ||
+                _inputs.Jig3Detect.Value ||
+                _inputs.Jig4Detect.Value)
+            {
+                EquipState.IsCellInEquip = true;
+            }
         }
 
         public bool OriginDone
@@ -62,6 +79,7 @@ namespace SDV_MoldingInjection.Defines
 
         #region Privates
         private bool _originDone;
+        private readonly Inputs _inputs;
         #endregion
     }
 }

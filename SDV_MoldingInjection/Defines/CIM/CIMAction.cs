@@ -85,6 +85,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                     break;
                 case CIMCommand.Interlock:
                     {
+                        CIMCommandDetail.Create(obj.CIMCommand).SetPLCBitOn();
                         InterlockCimToPlcArea cimArea = new InterlockCimToPlcArea();
                         cimArea.FromCIMData(obj.Buffer);
 
