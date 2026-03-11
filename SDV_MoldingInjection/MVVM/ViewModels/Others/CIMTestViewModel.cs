@@ -27,7 +27,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
     {
         private readonly ICIMMapHelper _mapHelper;
         private readonly RecipeSelector _recipeSelector;
-        private readonly IConfiguration _configuration;
+        private readonly CIMFunctionViewModel _cimFunctionVM;
         private string _message;
 
         public string Message
@@ -100,7 +100,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    var filePath = _configuration["Files:CIMFunctionFile"];
                     var window = new Window
                     {
                         Title = "EQP Function Change",
@@ -108,18 +107,19 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         SizeToContent = SizeToContent.WidthAndHeight,
                         WindowStartupLocation = WindowStartupLocation.CenterScreen
                     };
-                    window.DataContext = new CIMFunctionViewModel(filePath);
+                    window.DataContext = _cimFunctionVM;
                     window.Show();
                 });
             }
         }
         #endregion
 
-        public CIMTestViewModel(ICIMMapHelper mapHelper, RecipeSelector recipeSelector, IConfiguration configuration)
+        public CIMTestViewModel(ICIMMapHelper mapHelper, RecipeSelector recipeSelector,
+            CIMFunctionViewModel cimFunctionVM)
         {
             _mapHelper = mapHelper;
             _recipeSelector = recipeSelector;
-            _configuration = configuration;
+            _cimFunctionVM = cimFunctionVM;
 
             Log = LogManager.GetLogger("CIMTest");
         }

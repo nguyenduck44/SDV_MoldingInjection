@@ -1,8 +1,10 @@
 ﻿using EQX.Core.Communication.CIM;
 using EQX.UI.MVVM;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SDV_MoldingInjection.Defines.CIM;
+using System.Windows;
 
 namespace SDV_MoldingInjection.Extensions
 {
@@ -21,6 +23,12 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddSingleton<MaterialPort>();
 
                 services.AddSingleton<CIMCollection>();
+
+                services.AddSingleton<CIMFunctionViewModel>((ser) =>
+                {
+                    var configuration = ser.GetRequiredService<IConfiguration>();
+                    return new CIMFunctionViewModel(configuration["Files:CIMFunctionFile"]);
+                });
             });
             return hostBuilder;
         }

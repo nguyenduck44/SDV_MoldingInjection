@@ -8,6 +8,7 @@ using log4net.Repository.Hierarchy;
 using SDV_MoldingInjection.Recipe;
 using System.Diagnostics;
 using TOPENG_Device;
+using static EQX.Core.Communication.CIM.Custom.WordArea.PPIDListArea;
 
 namespace SDV_MoldingInjection.Defines.CIM
 {
@@ -148,6 +149,19 @@ namespace SDV_MoldingInjection.Defines.CIM
                 case CIMCommand.EquipConstantNameList:
                     {
 
+                    }
+                    break;
+                case CIMCommand.EquipFunctionChangeCommand:
+                    {
+                        var functionChangeCommand = CIMCommandDetail.Create(CIMCommand.EquipFunctionChangeCommand);
+                        functionChangeCommand.ReadCIMWords();
+
+                        EquipFunctionChangeCommandReceiveArea receiveArea = new EquipFunctionChangeCommandReceiveArea();
+                        receiveArea.FromCIMData(functionChangeCommand.FromCIMDataBuffer);
+
+                        functionChangeCommand.SetPLCBitOn();
+                        functionChangeCommand.WaitForCIMBitOff();
+                        functionChangeCommand.SetPLCBitOff();
                     }
                     break;
             }
