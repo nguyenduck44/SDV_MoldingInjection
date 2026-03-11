@@ -82,7 +82,24 @@
         PUMP_CDA_CHECK = 60,
         PUMP_VENT_CDA_CHECK = 61,
         PUMP_FAN_RUN1 = 62,
-        PUMP_FAN_RUN2 = 63
+        PUMP_FAN_RUN2 = 63,
+        DUMMY_OVERFLOW_DETECT_1 = 64,
+        DUMMY_OVERFLOW_DETECT_2 = 65,
+        DUMMY_OVERFLOW_DETECT_3 = 66,
+        DUMMY_OVERFLOW_DETECT_4 = 67,
+        EMO_INTERFACE_KNK = 68,
+        SPARE_IN_69 = 69,
+        SPARE_IN_70 = 70,
+        SPARE_IN_71 = 71,
+        SPARE_IN_72 = 72,
+        SPARE_IN_73 = 73,
+        SPARE_IN_74 = 74,
+        SPARE_IN_75 = 75,
+        SPARE_IN_76 = 76,
+        SPARE_IN_77 = 77,
+        SPARE_IN_78 = 78,
+        SPARE_IN_79 = 79,
+
     }
 }
 

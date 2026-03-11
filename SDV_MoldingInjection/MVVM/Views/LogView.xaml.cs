@@ -127,9 +127,6 @@ namespace SDV_MoldingInjection.MVVM.Views
         {
             var sourceItems = new List<SourceItem> { new SourceItem { Name = "All", Value = "All", IsSelected = true } };
 
-            sourceItems.Add(new SourceItem { Name = "Kuka Robot Load", Value = "Kuka Robot Load", IsSelected = false });
-            sourceItems.Add(new SourceItem { Name = "Kuka Robot Unload", Value = "Kuka Robot Unload", IsSelected = false });
-
             sourceItems.AddRange(Enum.GetValues<EProcess>()
                 .Select(process => new SourceItem { Name = process.ToString(), Value = process.ToString(), IsSelected = false }));
 
