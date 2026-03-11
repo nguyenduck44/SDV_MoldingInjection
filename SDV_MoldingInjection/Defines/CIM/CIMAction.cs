@@ -124,7 +124,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                         parameterWordArea.FromCIMData(fppsArea.RmsParameterList);
 
                         bool isValid = true;
-                        if (int.TryParse(fppsArea.RecipeNumber, out int recipeNumber) == false)
+                        if (int.TryParse(fppsArea.RecipeNumber.Substring(0, 2), out int recipeNumber) == false)
                         {
                             isValid = false;
                         }
