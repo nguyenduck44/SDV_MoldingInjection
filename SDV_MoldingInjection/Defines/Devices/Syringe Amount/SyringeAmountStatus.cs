@@ -8,6 +8,7 @@ namespace SDV_MoldingInjection.Defines.Devices
         private double maxVolume = 1000.0;
         private double remainVolume;
         private DateTime resetTime = DateTime.Now;
+        private TimeSpan pausedElapsedTime = TimeSpan.Zero;
         private bool isTimeOver;
         private bool isHeadAvailable = true;
 
@@ -52,7 +53,7 @@ namespace SDV_MoldingInjection.Defines.Devices
             }
         }
 
-        public TimeSpan ElapsedTime => DateTime.Now - ResetTime;
+        public TimeSpan ElapsedTime => IsHeadAvailable ? DateTime.Now - ResetTime : pausedElapsedTime;
 
         public bool IsTimeOver
         {
@@ -72,19 +73,32 @@ namespace SDV_MoldingInjection.Defines.Devices
             set
             {
                 if (isHeadAvailable == value) return;
+
+                if (!value)
+                {
+                    pausedElapsedTime = DateTime.Now - ResetTime;
+                }
+                else
+                {
+                    resetTime = DateTime.Now - pausedElapsedTime;
+                }
+
                 isHeadAvailable = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(ElapsedTime));
             }
         }
 
         public void Reset()
         {
             RemainVolume = MaxVolume;
+            pausedElapsedTime = TimeSpan.Zero;
             ResetTime = DateTime.Now;
         }
 
         public void UpdateElapsedTime()
         {
+            if (!IsHeadAvailable) return;
             OnPropertyChanged(nameof(ElapsedTime));
         }
     }
