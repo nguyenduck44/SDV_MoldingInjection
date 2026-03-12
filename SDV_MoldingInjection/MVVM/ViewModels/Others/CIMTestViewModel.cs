@@ -128,22 +128,23 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private async Task CellTracking(int jigIndex)
         {
             string cellID = $"ABCDE12345_{jigIndex}";
-            if (EquipEventHelpers.SpecificValidation(jigIndex, cellID) == false)
+            string outCellID = "";
+            if (EquipEventHelpers.SpecificValidation(jigIndex, cellID, ref outCellID) == false)
             {
                 // TODO: ALARM RAISING (TIMEOUT? FAIL?)
                 MessageBoxEx.Show("CELL LOT INFOR FAIL");
                 return;
             }
 
-            if (EquipEventHelpers.CellTrackIn(jigIndex, cellID) == false)
+            if (EquipEventHelpers.CellTrackIn(jigIndex, outCellID) == false)
             {
                 // TODO: ALARM RAISING (TIMEOUT? FAIL?)
                 MessageBoxEx.Show("CELL TRACK IN FAIL");
                 return;
             }
 
-            CellJobProcessCimToPlcArea cellJobProcess = EquipEventHelpers.CellJobProcessConfirm(jigIndex, cellID);
-
+            CellJobProcessCimToPlcArea cellJobProcess = EquipEventHelpers.CellJobProcessConfirm(jigIndex, outCellID);
+            
             bool isJobProcessFail = false;
             if (cellJobProcess.CellJobProcessRCMD != $"{(int)ECellJobProcessRCMD.CellJobProcessStart}")
             {
