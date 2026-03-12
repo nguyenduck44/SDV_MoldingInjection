@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using Newtonsoft.Json;
 
 namespace SDV_MoldingInjection.Defines.Devices
 {
@@ -8,6 +9,7 @@ namespace SDV_MoldingInjection.Defines.Devices
         private double remainVolume;
         private DateTime resetTime = DateTime.Now;
         private bool isTimeOver;
+        private bool isHeadAvailable = true;
 
         public double MaxVolume
         {
@@ -59,6 +61,18 @@ namespace SDV_MoldingInjection.Defines.Devices
             {
                 if (isTimeOver == value) return;
                 isTimeOver = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [JsonIgnore]
+        public bool IsHeadAvailable
+        {
+            get => isHeadAvailable;
+            set
+            {
+                if (isHeadAvailable == value) return;
+                isHeadAvailable = value;
                 OnPropertyChanged();
             }
         }

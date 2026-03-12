@@ -110,6 +110,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             Devices.Inputs.H2_CylDown.RaiseValueUpdated();
             Devices.Inputs.H3_CylDown.RaiseValueUpdated();
             Devices.Inputs.H4_CylDown.RaiseValueUpdated();
+            Devices.Inputs.H1_SyringeCheck.RaiseValueUpdated();
+            Devices.Inputs.H2_SyringeCheck.RaiseValueUpdated();
+            Devices.Inputs.H3_SyringeCheck.RaiseValueUpdated();
+            Devices.Inputs.H4_SyringeCheck.RaiseValueUpdated();
             Devices.Inputs.BelowsUp.RaiseValueUpdated();
             Devices.Inputs.DryPumpRun.RaiseValueUpdated();
             Devices.Inputs.PanelClodeCheck.RaiseValueUpdated();
@@ -160,7 +164,20 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 }
 
                 status.IsTimeOver = isOver;
+                status.IsHeadAvailable = GetSyringeCheckByIndex(i);
             }
+        }
+
+        private bool GetSyringeCheckByIndex(int index)
+        {
+            return index switch
+            {
+                0 => Devices.Inputs.H1_SyringeCheck.Value,
+                1 => Devices.Inputs.H2_SyringeCheck.Value,
+                2 => Devices.Inputs.H3_SyringeCheck.Value,
+                3 => Devices.Inputs.H4_SyringeCheck.Value,
+                _ => true
+            };
         }
         #endregion
 

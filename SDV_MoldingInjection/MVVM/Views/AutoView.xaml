@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="SDV_MoldingInjection.MVVM.Views.AutoView"
+<UserControl x:Class="SDV_MoldingInjection.MVVM.Views.AutoView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -105,7 +105,21 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <ContentControl Width="60"
-                                                        Content="{Binding .}" />
+                                                        Content="{Binding .}">
+                                            <ContentControl.Style>
+                                                <Style TargetType="ContentControl">
+                                                    <Setter Property="Visibility"
+                                                            Value="Visible" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsHeadAvailable}"
+                                                                     Value="False">
+                                                            <Setter Property="Visibility"
+                                                                    Value="Hidden" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ContentControl.Style>
+                                        </ContentControl>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
