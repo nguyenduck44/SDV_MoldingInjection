@@ -9,7 +9,7 @@
              d:DataContext="{d:DesignInstance Type=vm:FooterViewModel}"
              Height="80"
              d:DesignHeight="80" d:DesignWidth="800">
-    <DockPanel Background="{StaticResource PrimaryBackgroundColor}">
+    <DockPanel Background="{StaticResource SecondaryBackgroundColor}">
         <Grid Height="2.5"
               DockPanel.Dock="Top"/>
         <ContentControl Content="{Binding NavigateVM}"

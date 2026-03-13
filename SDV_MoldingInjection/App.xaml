@@ -17,6 +17,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/EQX.UI;component/Resources/Themes/SamsungTheme.xaml" />
+                <ResourceDictionary Source="/EQX.UI;component/Resources/Themes/Additional/SDVTheme.xaml" />
                 <ResourceDictionary Source="/EQX.UI;component/Generic.xaml" />
 
                 <ResourceDictionary Source="/EQX.UI;component/Resources/Language/KoreanLanguage.xaml" />

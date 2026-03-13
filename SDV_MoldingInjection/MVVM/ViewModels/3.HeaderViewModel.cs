@@ -17,9 +17,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
     {
         private readonly INavigationService _navigationService;
         private readonly IViewModelFactory _viewModelFactory;
+        private readonly NavigationStore _navigationStore;
 
         public Information Information { get; }
         public RecipeSelector RecipeSelector { get; }
+        public string CurrentView => _navigationStore?.CurrentViewModel?.GetType().Name.TrimEnd("Model".ToCharArray());
 
         public DateTime Now => DateTime.Now;
 
@@ -43,16 +45,25 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public HeaderViewModel(Information information,
             INavigationService navigationService,
             IViewModelFactory viewModelFactory,
-            RecipeSelector recipeSelector)
+            RecipeSelector recipeSelector,
+            NavigationStore navigationStore)
         {
             Information = information;
             _navigationService = navigationService;
             _viewModelFactory = viewModelFactory;
             RecipeSelector = recipeSelector;
-          
+            _navigationStore = navigationStore;
+
+            _navigationStore.CurrentViewModelChanged += _navigationStore_CurrentViewModelChanged;
+
             System.Timers.Timer timer = new System.Timers.Timer(500);
             timer.Elapsed += Timer_Elapsed;
             timer.Start();
+        }
+
+        private void _navigationStore_CurrentViewModelChanged()
+        {
+            OnPropertyChanged(nameof(CurrentView));
         }
 
         private void Timer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)

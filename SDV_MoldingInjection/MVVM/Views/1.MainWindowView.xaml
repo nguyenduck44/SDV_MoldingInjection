@@ -8,7 +8,8 @@
         mc:Ignorable="d"
         WindowStyle="None"
         WindowState="Maximized"
-        MaxWidth="1024" MaxHeight="768"
+        MaxWidth="1024"
+        MaxHeight="768"
         WindowStartupLocation="CenterScreen"
         ShowInTaskbar="True"
         Icon="/EQX.UI;component/Resources/Images/TopIcon.ico"
@@ -19,10 +20,10 @@
         Closing="Window_Closing"
         Title="MainWindowView">
 
-    <DockPanel Margin="7 0 0 0">
-        <Grid Height="11.5"
-                DockPanel.Dock="Bottom"
-                Background="{StaticResource PrimaryBackgroundColor}" />
+    <DockPanel Margin="7 7 0 0">
+        <Grid Height="11"
+              DockPanel.Dock="Bottom"
+              Background="{StaticResource SecondaryBackgroundColor}" />
         <ContentControl Content="{Binding HeaderVM}"
                         DockPanel.Dock="Top"
                         Height="Auto" />
@@ -31,14 +32,15 @@
 
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="6*"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="6*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            
+
             <ContentControl Content="{Binding CurrentFrameVM}" />
-            <ContentControl Grid.Column="1" Width="180"
-                Content="{Binding RightPanelVM}"
-                Visibility="{Binding ShowRightPanelVM, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <ContentControl Grid.Column="1"
+                            Width="180"
+                            Content="{Binding RightPanelVM}"
+                            Visibility="{Binding ShowRightPanelVM, Converter={StaticResource BooleanToVisibilityConverter}}" />
         </Grid>
     </DockPanel>
 </Window>
