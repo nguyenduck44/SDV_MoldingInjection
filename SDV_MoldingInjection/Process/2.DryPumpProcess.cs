@@ -97,6 +97,7 @@ namespace SDV_MoldingInjection.Process
 
         public override bool ProcessToWarning()
         {
+            EnableWritePressureLog = false;
             EnableTimerDelay = false;
             return base.ProcessToWarning();
         }
@@ -104,11 +105,13 @@ namespace SDV_MoldingInjection.Process
         public override bool ProcessToAlarm()
         {
             EnableTimerDelay = false;
+            EnableWritePressureLog = false;
             return base.ProcessToAlarm();
         }
 
         public override bool ProcessToStop()
         {
+            EnableWritePressureLog = false;
             EnablePressureHold = false;
             EnableTimerDelay = false;
             return base.ProcessToStop();
