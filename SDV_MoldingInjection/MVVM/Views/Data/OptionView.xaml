@@ -65,6 +65,17 @@
                               Tag="Check to Input type by Robot"/>
                 </StackPanel>
             </GroupBox>
+            
+            <GroupBox Header="Log"
+                      Style="{x:Null}"
+                      Grid.Column="2">
+                <StackPanel Orientation="Vertical">
+                    <CheckBox Content="Save Pressure Log" 
+                              Margin="5"
+                              IsChecked="{Binding RecipeList.OptionRecipe.SavePressureLog}" 
+                              Tag="Check to Save Pressure Log"/>
+                </StackPanel>
+            </GroupBox>
         </Grid>
 
         <ui:ImageButton Content="{DynamicResource str_Save}"
