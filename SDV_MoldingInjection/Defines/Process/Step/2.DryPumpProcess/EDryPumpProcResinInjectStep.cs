@@ -19,12 +19,12 @@
         DryPump_Purge_1st,
         DryPump_Purge_Wait_1st,
         //
-        AngleValve_Open_2st,
-        AngleValve_OpenWait_2st,
+        AngleValve_Open_2nd,
+        AngleValve_OpenWait_2nd,
 
-        VacuumGauge_SpecIn_Wait_2st,
+        VacuumGauge_SpecIn_Wait_2nd,
 
-        AngleValve_Close_2st,
+        AngleValve_Close_2nd,
         AngleValve_CloseWait_2st,
 
         Delay_BeforeInject,

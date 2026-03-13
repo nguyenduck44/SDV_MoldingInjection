@@ -1,4 +1,4 @@
-﻿using EQX.UI.Controls;
+using EQX.UI.Controls;
 using SDV_MoldingInjection.MVVM.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -29,19 +29,47 @@ namespace SDV_MoldingInjection.MVVM.Views
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            if(this.DataContext is LoginViewModel loginViewModel)
+            if (this.DataContext is LoginViewModel loginViewModel)
             {
                 loginViewModel.LoginCommand.Execute(passwordBox.Password);
+            }
+        }
+
+        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.DataContext is LoginViewModel loginViewModel)
+            {
+                loginViewModel.LogoutCommand.Execute(passwordBox.Password);
+                passwordBox.Password = string.Empty;
             }
         }
 
         private void passwordBox_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             VirtualKeyboard virtualKeyboard = new VirtualKeyboard();
-            if(virtualKeyboard.ShowDialog() == true)
+            if (virtualKeyboard.ShowDialog() == true)
             {
                 passwordBox.Password = virtualKeyboard.InputText;
-            }    
+            }
+        }
+
+        private void keyBoardBox_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is not TextBox textBox)
+            {
+                return;
+            }
+
+            VirtualKeyboard virtualKeyboard = new VirtualKeyboard(false)
+            {
+                Owner = Window.GetWindow(this),
+                InputText = textBox.Text
+            };
+            if (virtualKeyboard.ShowDialog() == true)
+            {
+                textBox.Text = virtualKeyboard.InputText;
+            }
+            e.Handled = true;
         }
     }
 }

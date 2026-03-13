@@ -28,13 +28,8 @@ namespace SDV_MoldingInjection.Defines
 
         private void JigDetect_ValueChanged(object? sender, EventArgs e)
         {
-            if (_inputs.Jig1Detect.Value ||
-                _inputs.Jig2Detect.Value ||
-                _inputs.Jig3Detect.Value ||
-                _inputs.Jig4Detect.Value)
-            {
-                EquipState.IsCellInEquip = true;
-            }
+            EquipState.IsCellInEquip = _inputs.Jig1Detect.Value || _inputs.Jig2Detect.Value ||
+                _inputs.Jig3Detect.Value || _inputs.Jig4Detect.Value;
         }
 
         public bool OriginDone

@@ -11,6 +11,7 @@ namespace SDV_MoldingInjection.Recipe
         private bool _skipHead34;
         private bool _inputTypeManual;
         private bool _inputTypeAuto;
+        private bool _savePressureLog;
 
         #endregion
 
@@ -78,6 +79,20 @@ namespace SDV_MoldingInjection.Recipe
                         _inputTypeManual = false;
                         OnPropertyChanged(nameof(InputTypeManual));
                     }
+                }
+            }
+        }
+
+        public bool SavePressureLog
+        {
+            get { return _savePressureLog; }
+            set
+            {
+                if (_savePressureLog != value)
+                {
+                    OnRecipeChanged(_savePressureLog, value);
+                    _savePressureLog = value;
+                    OnPropertyChanged();
                 }
             }
         }

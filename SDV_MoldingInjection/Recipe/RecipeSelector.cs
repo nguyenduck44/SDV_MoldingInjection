@@ -6,6 +6,8 @@ using EQX.Core.Communication.CIM.Custom.WordArea;
 using EQX.Core.Recipe;
 using EQX.UI.Controls;
 using EQX.UI.Language;
+using log4net;
+using log4net.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -101,6 +103,8 @@ namespace SDV_MoldingInjection.Recipe
             };
             parameterArea.Parameters[0] = CurrentRecipe.CommonRecipe.LogSaveDay;
             EquipEventHelpers.ParameterChange(parameterArea, index);
+
+            LogManager.GetLogger("Data").Info($"{propertyName} value updated : {oldValue} -> {newValue}");
         }
 
         private void CommonRecipe_SelectedLanguageEvent(ILanguageDefinition obj)

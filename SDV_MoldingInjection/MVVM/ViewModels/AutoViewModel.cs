@@ -139,7 +139,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             var common = recipe.CommonRecipe;
             if (common == null) return;
 
-            double maxVolumeG = common.SyringeAmountWeight / 1000.0;
+            double maxVolumeG = common.SyringeAmountWeight;
             double limitHours = common.SyringeMountTimeChange;
 
             for (int i = 0; i < SyringeAmountStatusList.SyringeAmounts.Count; i++)

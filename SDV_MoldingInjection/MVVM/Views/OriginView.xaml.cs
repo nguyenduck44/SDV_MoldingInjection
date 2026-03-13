@@ -1,4 +1,4 @@
-﻿using EQX.Core.Process;
+using EQX.Core.Process;
 using EQX.Process;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.MVVM.ViewModels;
@@ -44,6 +44,7 @@ namespace SDV_MoldingInjection.MVVM.Views
         private void root_Loaded(object sender, RoutedEventArgs e)
         {
             if (DataContext is OriginViewModel originVM == false) return;
+            if (originVM.MachineStatus.IsStandByProcessMode == false) return;
             originVM.Processes.RootProcess.Childs!.ToList().ForEach(p => p.IsOriginOrInitSelected = false);
         }
     }

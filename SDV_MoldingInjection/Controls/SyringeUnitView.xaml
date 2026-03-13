@@ -10,6 +10,19 @@
              d:DesignWidth="80">
     <UserControl.Resources>
         <conv:TimeSpanToTotalHoursStringConverter x:Key="TimeSpanToTotalHoursStringConverter" />
+
+        <Style x:Key="HeadTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsHeadAvailable}" Value="False">
+                    <Setter Property="Opacity" Value="0.3"/>
+                    <Setter Property="Text" Value="0"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
     </UserControl.Resources>
     <Grid Margin="2">
         <Grid.RowDefinitions>
@@ -20,11 +33,10 @@
 
         <TextBlock Grid.Row="0"
                    Text="{Binding RemainVolume, StringFormat=F3}"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
+                   Style="{StaticResource HeadTextBlockStyle}"
                    FontSize="16"
                    FontWeight="Bold"
-                   Margin="2 5" />
+                   Margin="2 5"/>
 
         <Grid Grid.Row="1"
               HorizontalAlignment="Center"
@@ -37,6 +49,21 @@
                     BorderBrush="#FFB0B0B0"
                     MouseUp="Border_MouseUp"
                     BorderThickness="1">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Background"
+                                Value="#FFE5E5E5" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsHeadAvailable}"
+                                         Value="False">
+                                <Setter Property="Background"
+                                        Value="Transparent" />
+                                <Setter Property="Opacity"
+                                        Value="0.5"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
                 <Grid>
                     <Border Width="40"
                             CornerRadius="12"
@@ -52,6 +79,13 @@
                                         <Setter Property="Background"
                                                 Value="Brown" />
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsHeadAvailable}"
+                                                 Value="False">
+                                        <Setter Property="Background"
+                                                Value="Transparent" />
+                                        <Setter Property="Height"
+                                                Value="0" />
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Border.Style>
@@ -62,8 +96,7 @@
 
         <TextBlock Grid.Row="2"
                    Text="{Binding ElapsedTime, Converter={StaticResource TimeSpanToTotalHoursStringConverter}}"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   FontSize="14" />
+                   Style="{StaticResource HeadTextBlockStyle}"
+                   FontSize="14"/>
     </Grid>
 </UserControl>

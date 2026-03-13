@@ -1,10 +1,11 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
+using EQX.Core.Communication.CIM.Custom;
 using EQX.UI.Controls;
 using log4net;
+using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Input;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
@@ -25,6 +26,26 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         {
             get => _selectedPermission;
             set { _selectedPermission = value; OnPropertyChanged(nameof(SelectedPermission)); }
+        }
+
+        public string OperatorId
+        {
+            get => operatorId;
+            set
+            {
+                operatorId = value;
+                OnPropertyChanged(nameof(OperatorId));
+            }
+        }
+
+        public bool IsLoggedIn
+        {
+            get => _isLoggedIn;
+            set
+            {
+                _isLoggedIn = value;
+                OnPropertyChanged(nameof(IsLoggedIn));
+            }
         }
         #endregion
 
@@ -52,8 +73,29 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         return;
                     }
 
+                    if (permission == EPermission.Operator)
+                    {
+                        EquipEventHelpers.OperatorLogin(operatorId, password);
+                        IsLoggedIn = true;
+                    }
+
                     _navigationService.NavigateTo<AutoViewModel>();
                     _log.Info($"Login {permission} Permission");
+                });
+            }
+        }
+
+        public ICommand LogoutCommand
+        {
+            get
+            {
+                return new RelayCommand<string>((password) =>
+                {
+                    var logoutOperatorId = OperatorId;
+                    EquipEventHelpers.OperatorLogout(logoutOperatorId, password);
+                    IsLoggedIn = false;
+                    OperatorId = string.Empty;
+                    _log.Info($"User {logoutOperatorId} Logout Success!");
                 });
             }
         }
@@ -81,6 +123,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly ILog _log;
         private ObservableCollection<string> _permissions;
         private string _selectedPermission;
+        private string operatorId = string.Empty;
+        private bool _isLoggedIn;
         #endregion
     }
 }

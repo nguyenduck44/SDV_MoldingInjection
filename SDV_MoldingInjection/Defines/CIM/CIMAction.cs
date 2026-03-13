@@ -185,7 +185,7 @@ namespace SDV_MoldingInjection.Defines.CIM
 
                         if (int.TryParse(receiveArea.EquipCmdEFID, out int efid) == false) return;
 
-                        if (efid >= 6 || efid == 3 || efid == 5)
+                        if (efid >= 6)
                         {
                             EquipEventDetail.Create(EquipEvent.EquipFunctionChangeCMDHcack).Write(new short[] { (short)'5' });
 
