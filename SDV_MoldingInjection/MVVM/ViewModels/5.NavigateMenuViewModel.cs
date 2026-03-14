@@ -32,6 +32,17 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
         }
 
+        public ICommand ExitCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    _viewModelFactory.Create<HeaderViewModel>().ApplicationCloseCommand.Execute(null);
+                });
+            }
+        }
+
         public string CurrentUserLabel
         {
             get => _currentUserLabel;

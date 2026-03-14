@@ -82,7 +82,7 @@
                            FontSize="18"
                            Margin="10 0"
                            Foreground="{StaticResource PrimaryBackgroundColor}"
-                           Text="{Binding Now, StringFormat='{}{0:yyyy-mm-dd, HH:mm:ss}'}" />
+                           Text="{Binding Now, StringFormat='{}{0:yyyy-MM-dd, HH:mm:ss}'}" />
 
                 <Border BorderThickness="3 0 0 0">
                     <TextBlock TextAlignment="Center"
