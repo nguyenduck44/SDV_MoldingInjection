@@ -466,6 +466,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"Disable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
+                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Vent Start");
                     EnablePressureHold = false;
                     Log.Debug("Vent start");
                     _ventStartTick = Environment.TickCount;
@@ -480,6 +481,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"Vent Complete: {_currentRecipe.InjectRecipe.VentTime}s");
+                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Vent Complete");
                     procOutputs[EDryPumpProcOutput.VentComplete].Value = true;
                     Out_ChamberPurgeOn.Value = false;
                     Step.RunStep++;
