@@ -60,6 +60,10 @@
                 <views:NavigateMenuView />
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type uiMVVM:CIMHostMessageViewModelBase}">
+                <uiMVVM:CIMHostMessageView />
+            </DataTemplate>
+            
             <DataTemplate DataType="{x:Type vm:InitDeinitViewModel}">
                 <views:InitDeinitView />
             </DataTemplate>

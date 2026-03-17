@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
+using EQX.UI.MVVM;
 using SDV_MoldingInjection.Defines;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Navigation;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
@@ -75,6 +77,39 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     monitorIOViewModel.CurrentOutputList = outputs.Head4;
                     monitorIOViewModel.CurrentInputList = inputs.Head4;
                     navigationService.NavigateTo<MonitorIOViewModel>();
+                });
+            }
+        }
+
+        public ICommand OPCallMsgNavigateCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    navigationService.NavigateTo<OPCallMessageViewModel>();
+                });
+            }
+        }
+
+        public ICommand InterlockMsgNavigateCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    navigationService.NavigateTo<InterlockMessageViewModel>();
+                });
+            }
+        }
+
+        public ICommand TerminalMessageNavigateCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    navigationService.NavigateTo<TerminalMessageViewModel>();
                 });
             }
         }

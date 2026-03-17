@@ -1,5 +1,6 @@
 using EQX.Core.Common;
 using EQX.InOut.InputSimulation;
+using EQX.UI.MVVM;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SDV_MoldingInjection.Defines;
@@ -50,6 +51,9 @@ namespace SDV_MoldingInjection.Extensions
 
                 services.AddViewModel<MonitorIOViewModel>();
                 services.AddViewModel<MonitorMotionViewModel>();
+                services.AddViewModel<OPCallMessageViewModel>();
+                services.AddViewModel<InterlockMessageViewModel>();
+                services.AddViewModel<TerminalMessageViewModel>();
 
                 services.AddViewModel<CIMTestViewModel>();
 
