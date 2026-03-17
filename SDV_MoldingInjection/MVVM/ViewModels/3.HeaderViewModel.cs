@@ -1,6 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
 using EQX.UI.Controls;
+using SDV_MoldingInjection.Defines;
+using SDV_MoldingInjection.Defines.Devices;
+using SDV_MoldingInjection.Recipe;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +11,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Navigation;
-using SDV_MoldingInjection.Defines;
-using SDV_MoldingInjection.Recipe;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
@@ -21,6 +22,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         public Information Information { get; }
         public RecipeSelector RecipeSelector { get; }
+        public Devices Devices { get; }
+
         public string CurrentView => _navigationStore?.CurrentViewModel?.GetType().Name.TrimEnd("Model".ToCharArray());
 
         public DateTime Now => DateTime.Now;
@@ -42,16 +45,32 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
         }
 
+        public ICommand BuzzerOffCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    Devices.Outputs.Buzzer1On.Value = false;
+                    Devices.Outputs.Buzzer2On.Value = false;
+                    Devices.Outputs.Buzzer3On.Value = false;
+                    Devices.Outputs.Buzzer4On.Value = false;
+                });
+            }
+        }
+
         public HeaderViewModel(Information information,
             INavigationService navigationService,
             IViewModelFactory viewModelFactory,
             RecipeSelector recipeSelector,
+            Devices devices,
             NavigationStore navigationStore)
         {
             Information = information;
             _navigationService = navigationService;
             _viewModelFactory = viewModelFactory;
             RecipeSelector = recipeSelector;
+            Devices = devices;
             _navigationStore = navigationStore;
 
             _navigationStore.CurrentViewModelChanged += _navigationStore_CurrentViewModelChanged;
