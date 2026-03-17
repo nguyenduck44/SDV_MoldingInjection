@@ -412,7 +412,8 @@ namespace SDV_MoldingInjection.Process
                         _machineStatus.EquipState.IsInterlock = false;
                         _machineStatus.EquipState.IsRunning = true;
                     }
-                    
+
+                    _machineStatus.Message = string.Empty;
                     ProcessMode = EProcessMode.Run;
                     Log.Info("ToRun Done, Running");
                     break;
@@ -727,6 +728,8 @@ namespace SDV_MoldingInjection.Process
                 });
 
                 Log.Error($"{alarmSource} raising alarm [#{(int)(EAlarm)alarmId}] {(EAlarm)alarmId}");
+                _machineStatus.Message = $"[{(int)(EAlarm)alarmId}] {(EAlarm)alarmId}";
+
                 raisedAlarmCode = alarmId;
                 ProcessMode = EProcessMode.ToAlarm;
             }
@@ -750,6 +753,7 @@ namespace SDV_MoldingInjection.Process
                 });
 
                 Log.Warn($"{warningSource} raising warning [#{(int)(EWarning)warningId}] {(EWarning)warningId}");
+                _machineStatus.Message = $"[{(int)(EWarning)warningId}] {(EWarning)warningId}";
 
                 raisedWarningCode = warningId;
                 ProcessMode = EProcessMode.ToWarning;

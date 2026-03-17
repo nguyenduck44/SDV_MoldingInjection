@@ -62,6 +62,18 @@ namespace SDV_MoldingInjection.Defines
             }
         }
 
+        private string message;
+
+        public string Message
+        {
+            get { return message; }
+            set
+            {
+                message = value;
+                OnPropertyChanged();
+            }
+        }
+
         public override void MoveMultiPointPositionSequence(MultiPointPosition multiPointPosition)
         {
             if (multiPointPosition == null || multiPointPosition.Points.Count <= 0) return;
