@@ -1,0 +1,155 @@
+﻿<UserControl
+    x:Class="SDV_MoldingInjection.MVVM.Views.TactTimeView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
+    mc:Ignorable="d"
+    xmlns:uiControls="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
+    xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
+    d:DataContext="{d:DesignInstance Type={x:Type vm:TactTimeViewModel}}"
+    d:DesignHeight="450"
+    d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style
+            TargetType="TextBox"
+            x:Key="AverageTextBoxStyle">
+            <Setter
+                Property="IsReadOnly"
+                Value="True" />
+            <Setter
+                Property="HorizontalContentAlignment"
+                Value="Center" />
+            <Setter
+                Property="VerticalContentAlignment"
+                Value="Center" />
+            <Setter
+                Property="FontSize"
+                Value="20" />
+            <Setter
+                Property="Background"
+                Value="AliceBlue" />
+            <Setter
+                Property="Height"
+                Value="40" />
+            <Setter
+                Property="Margin"
+                Value="5 10 5 0" />
+            <Setter
+                Property="VerticalAlignment"
+                Value="Top" />
+        </Style>
+        <Style
+            TargetType="Button"
+            BasedOn="{StaticResource {x:Type Button}}">
+            <Setter
+                Property="Margin"
+                Value="5" />
+            <Setter
+                Property="FontSize"
+                Value="16" />
+            <Setter
+                Property="Content"
+                Value="Reset" />
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition
+                Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBlock
+            Text="TactTime"
+            FontSize="20"
+            FontWeight="SemiBold"
+            Foreground="#273c75"
+            HorizontalAlignment="Center"
+            Margin="0,0,0,10" />
+        <Grid
+            Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition
+                    Height="8*" />
+                <RowDefinition
+                    Height="1*" />
+                <RowDefinition
+                    Height="1*" />
+            </Grid.RowDefinitions>
+            <uiControls:TactTimeTable
+                DataContext="{Binding TactTimeList.Loading}"
+                Grid.Column="0" />
+            <uiControls:TactTimeTable
+                DataContext="{Binding TactTimeList.Inject}"
+                Grid.Column="1" />
+            <uiControls:TactTimeTable
+                DataContext="{Binding TactTimeList.DummyShot}"
+                Grid.Column="2" />
+            <uiControls:TactTimeTable
+                DataContext="{Binding TactTimeList.NeedleClean}"
+                Grid.Column="3" />
+            <uiControls:TactTimeTable
+                DataContext="{Binding TactTimeList.Unloading}"
+                Grid.Column="4" />
+            
+            <TextBox
+                Text="{Binding TactTimeList.Loading.Average,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
+                Grid.Row="1"
+                Grid.Column="0"
+                Style="{StaticResource AverageTextBoxStyle}" />
+            <TextBox
+                Text="{Binding TactTimeList.Inject.Average,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
+                Grid.Row="1"
+                Grid.Column="1"
+                Style="{StaticResource AverageTextBoxStyle}" />
+            <TextBox
+                Text="{Binding TactTimeList.DummyShot.Average,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
+                Grid.Row="1"
+                Grid.Column="2"
+                Style="{StaticResource AverageTextBoxStyle}" />
+            <TextBox
+                Text="{Binding TactTimeList.NeedleClean.Average,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
+                Grid.Row="1"
+                Grid.Column="3"
+                Style="{StaticResource AverageTextBoxStyle}" />
+            <TextBox
+                Text="{Binding TactTimeList.Unloading.Average,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
+                Grid.Row="1"
+                Grid.Column="4"
+                Style="{StaticResource AverageTextBoxStyle}" />
+            
+            <Button
+                Grid.Row="2"
+                Command="{Binding ResetTactTimeCommand}"
+                CommandParameter="Load" />
+            <Button
+                Grid.Row="2"
+                Grid.Column="1"
+                Command="{Binding ResetTactTimeCommand}"
+                CommandParameter="Inject" />
+            <Button
+                Grid.Row="2"
+                Grid.Column="2"
+                Command="{Binding ResetTactTimeCommand}"
+                CommandParameter="DummyShot" />
+            <Button
+                Grid.Row="2"
+                Grid.Column="3"
+                Command="{Binding ResetTactTimeCommand}"
+                CommandParameter="NeedleClean" />
+            <Button
+                Grid.Row="2"
+                Grid.Column="4"
+                Command="{Binding ResetTactTimeCommand}"
+                CommandParameter="Unload" />
+        </Grid>
+    </Grid>
+</UserControl>

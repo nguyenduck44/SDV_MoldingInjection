@@ -62,11 +62,13 @@ namespace SDV_MoldingInjection.Process
             ProcessIO processIO,
             MachineStatus machineStatus,
             RecipeSelector recipeSelector,
+            TactTimeList tactTimeList,
             ICIMMapHelper mapHelper)
         {
             _devices = devices;
             _machineStatus = machineStatus;
             _recipeSelector = recipeSelector;
+            _tactTimeList = tactTimeList;
             _mapHelper = mapHelper;
             procInputs = processIO.InjectProcInput;
             procOutputs = processIO.InjectProcOutput;
@@ -567,6 +569,11 @@ namespace SDV_MoldingInjection.Process
             {
                 case EMoldProcResinInjectStep.Start:
                     Log.Info("ResinInject start");
+                    if(Parent?.Sequence == ESequence.AutoRun)
+                    {
+                        _tactTimeList.Inject.TaktTimeCounter = Environment.TickCount;
+                    }
+
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.XYAxis_InjectPos_Move:
@@ -729,6 +736,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Info("ResinInject end");
+                    _tactTimeList.Inject.SetTaktTime();
                     Sequence = ESequence.DummyShot;
                     break;
 
@@ -740,8 +748,16 @@ namespace SDV_MoldingInjection.Process
             switch ((EMoldProcLoadingUnloadingStep)Step.RunStep)
             {
                 case EMoldProcLoadingUnloadingStep.Start:
-                    if (isLoading) Log.Info("Loading start");
-                    else Log.Info("Unloading start");
+                    if (isLoading)
+                    {
+                        Log.Info("Loading start");
+                        _tactTimeList.Loading.TaktTimeCounter = Environment.TickCount;
+                    }
+                    else
+                    {
+                        Log.Info("Unloading start");
+                        _tactTimeList.Unloading.TaktTimeCounter = Environment.TickCount;
+                    }
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.YAxis_ReadyPos_Move:
@@ -937,11 +953,13 @@ namespace SDV_MoldingInjection.Process
                     if (isLoading)
                     {
                         Log.Info("Loading end");
+                        _tactTimeList.Loading.SetTaktTime();
                         Sequence = ESequence.ResinInject;
                         break;
                     }
 
                     Log.Info("Unloading end");
+                    _tactTimeList.Unloading.SetTaktTime();
                     Sequence = ESequence.Loading;
 
                     break;
@@ -969,6 +987,12 @@ namespace SDV_MoldingInjection.Process
                         Step.RunStep = (int)EMoldProcDummyShotStep.End;
                         break;
                     }
+
+                    if (sequence == ESequence.DummyShot && Parent?.Sequence == ESequence.AutoRun)
+                    {
+                        _tactTimeList.DummyShot.TaktTimeCounter = Environment.TickCount;
+                    }
+
                     Log.Info($"Dummy position for {head} start");
                     Step.RunStep++;
                     break;
@@ -1126,6 +1150,7 @@ namespace SDV_MoldingInjection.Process
                     if (sequence == ESequence.DummyShot)
                     {
                         Log.Info("Set next sequence to needdle clean");
+                        _tactTimeList.DummyShot.SetTaktTime();
                         Sequence = ESequence.NeedleCleaning;
                     }
                     else
@@ -1151,6 +1176,12 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Info("NeedleClean start");
+
+                    if (Parent?.Sequence == ESequence.AutoRun)
+                    {
+                        _tactTimeList.NeedleClean.TaktTimeCounter = Environment.TickCount;
+                    }
+
                     Step.RunStep++;
                     break;
                 case EMoldProcNeedleCleaningStep.YAxis_CleanPos_Calculator:
@@ -1283,6 +1314,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Info("Set next sequence to unloading");
+                    _tactTimeList.NeedleClean.SetTaktTime();
                     Sequence = ESequence.Unloading;
                     break;
             }
@@ -1974,6 +2006,7 @@ namespace SDV_MoldingInjection.Process
         private readonly Devices _devices;
         private readonly MachineStatus _machineStatus;
         private readonly RecipeSelector _recipeSelector;
+        private readonly TactTimeList _tactTimeList;
         private readonly ICIMMapHelper _mapHelper;
 
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;

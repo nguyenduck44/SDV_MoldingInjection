@@ -51,6 +51,8 @@ namespace SDV_MoldingInjection.Extensions
 
                 services.AddViewModel<MonitorIOViewModel>();
                 services.AddViewModel<MonitorMotionViewModel>();
+                services.AddViewModel<ProductionInforViewModel>();
+                services.AddViewModel<TactTimeViewModel>();
                 services.AddViewModel<OPCallMessageViewModel>();
                 services.AddViewModel<InterlockMessageViewModel>();
                 services.AddViewModel<TerminalMessageViewModel>();

@@ -2,29 +2,45 @@
 using EQX.Core.Common;
 using EQX.UI.MVVM;
 using SDV_MoldingInjection.Defines;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Navigation;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
     public class MonitorViewModel : ViewModelBase
     {
         #region Commands
+        public ICommand ProductionInforNavigateCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    _navigationService.NavigateTo<ProductionInforViewModel>();
+                });
+            }
+        }
+
+        public ICommand TactTimeNavigateCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    _navigationService.NavigateTo<TactTimeViewModel>();
+                });
+            }
+        }
+
         public ICommand MachineIONavigate
         {
             get
             {
                 return new RelayCommand(() =>
                 {
-                    var monitorIOViewModel = viewModelFactory.Create<MonitorIOViewModel>();
-                    monitorIOViewModel.CurrentOutputList = outputs.Machine;
-                    monitorIOViewModel.CurrentInputList = inputs.Machine;
-                    navigationService.NavigateTo<MonitorIOViewModel>();
+                    var monitorIOViewModel = _viewModelFactory.Create<MonitorIOViewModel>();
+                    monitorIOViewModel.CurrentOutputList = _outputs.Machine;
+                    monitorIOViewModel.CurrentInputList = _inputs.Machine;
+                    _navigationService.NavigateTo<MonitorIOViewModel>();
                 });
             }
         }
@@ -34,10 +50,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    var monitorIOViewModel = viewModelFactory.Create<MonitorIOViewModel>();
-                    monitorIOViewModel.CurrentOutputList = outputs.Head1;
-                    monitorIOViewModel.CurrentInputList = inputs.Head1;
-                    navigationService.NavigateTo<MonitorIOViewModel>();
+                    var monitorIOViewModel = _viewModelFactory.Create<MonitorIOViewModel>();
+                    monitorIOViewModel.CurrentOutputList = _outputs.Head1;
+                    monitorIOViewModel.CurrentInputList = _inputs.Head1;
+                    _navigationService.NavigateTo<MonitorIOViewModel>();
                 });
             }
         }
@@ -47,10 +63,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    var monitorIOViewModel = viewModelFactory.Create<MonitorIOViewModel>();
-                    monitorIOViewModel.CurrentOutputList = outputs.Head2;
-                    monitorIOViewModel.CurrentInputList = inputs.Head2;
-                    navigationService.NavigateTo<MonitorIOViewModel>();
+                    var monitorIOViewModel = _viewModelFactory.Create<MonitorIOViewModel>();
+                    monitorIOViewModel.CurrentOutputList = _outputs.Head2;
+                    monitorIOViewModel.CurrentInputList = _inputs.Head2;
+                    _navigationService.NavigateTo<MonitorIOViewModel>();
                 });
             }
         }
@@ -60,10 +76,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    var monitorIOViewModel = viewModelFactory.Create<MonitorIOViewModel>();
-                    monitorIOViewModel.CurrentOutputList = outputs.Head3;
-                    monitorIOViewModel.CurrentInputList = inputs.Head3;
-                    navigationService.NavigateTo<MonitorIOViewModel>();
+                    var monitorIOViewModel = _viewModelFactory.Create<MonitorIOViewModel>();
+                    monitorIOViewModel.CurrentOutputList = _outputs.Head3;
+                    monitorIOViewModel.CurrentInputList = _inputs.Head3;
+                    _navigationService.NavigateTo<MonitorIOViewModel>();
                 });
             }
         }
@@ -73,10 +89,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    var monitorIOViewModel = viewModelFactory.Create<MonitorIOViewModel>();
-                    monitorIOViewModel.CurrentOutputList = outputs.Head4;
-                    monitorIOViewModel.CurrentInputList = inputs.Head4;
-                    navigationService.NavigateTo<MonitorIOViewModel>();
+                    var monitorIOViewModel = _viewModelFactory.Create<MonitorIOViewModel>();
+                    monitorIOViewModel.CurrentOutputList = _outputs.Head4;
+                    monitorIOViewModel.CurrentInputList = _inputs.Head4;
+                    _navigationService.NavigateTo<MonitorIOViewModel>();
                 });
             }
         }
@@ -87,7 +103,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    navigationService.NavigateTo<OPCallMessageViewModel>();
+                    _navigationService.NavigateTo<OPCallMessageViewModel>();
                 });
             }
         }
@@ -98,7 +114,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    navigationService.NavigateTo<InterlockMessageViewModel>();
+                    _navigationService.NavigateTo<InterlockMessageViewModel>();
                 });
             }
         }
@@ -109,7 +125,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    navigationService.NavigateTo<TerminalMessageViewModel>();
+                    _navigationService.NavigateTo<TerminalMessageViewModel>();
                 });
             }
         }
@@ -120,17 +136,17 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             Inputs inputs,
             Outputs outputs)
         {
-            this.navigationService = navigationService;
-            this.viewModelFactory = viewModelFactory;
-            this.inputs = inputs;
-            this.outputs = outputs;
+            _navigationService = navigationService;
+            _viewModelFactory = viewModelFactory;
+            _inputs = inputs;
+            _outputs = outputs;
         }
 
         #region Privates
-        private readonly INavigationService navigationService;
-        private readonly IViewModelFactory viewModelFactory;
-        private readonly Inputs inputs;
-        private readonly Outputs outputs;
+        private readonly INavigationService _navigationService;
+        private readonly IViewModelFactory _viewModelFactory;
+        private readonly Inputs _inputs;
+        private readonly Outputs _outputs;
         #endregion
     }
 }
