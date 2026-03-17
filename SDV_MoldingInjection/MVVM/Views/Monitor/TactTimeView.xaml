@@ -7,8 +7,9 @@
     xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
     mc:Ignorable="d"
     xmlns:uiControls="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
-    xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
+    xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"   
     d:DataContext="{d:DesignInstance Type={x:Type vm:TactTimeViewModel}}"
+    IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
     d:DesignHeight="450"
     d:DesignWidth="800">
     <UserControl.Resources>

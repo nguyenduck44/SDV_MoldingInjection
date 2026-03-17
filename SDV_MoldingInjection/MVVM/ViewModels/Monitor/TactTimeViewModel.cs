@@ -7,12 +7,15 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 {
     public class TactTimeViewModel : ViewModelBase
     {
-        public TactTimeViewModel(TactTimeList tactTimeList)
+        public TactTimeViewModel(TactTimeList tactTimeList,
+            MachineStatus machineStatus)
         {
             TactTimeList = tactTimeList;
+            MachineStatus = machineStatus;
         }
 
         public TactTimeList TactTimeList { get; }
+        public MachineStatus MachineStatus { get; }
 
         public ICommand ResetTactTimeCommand
         {

@@ -88,7 +88,7 @@
                 Grid.Column="3"
                 Grid.RowSpan="2"
                 Margin="5"
-                Width="120"
+                Width="103"
                 Command="{Binding BuzzerOffCommand}"
                 DisabledImage="{StaticResource image_cancel_normal_light}"
                 Image="{StaticResource image_alarm_stop_selected}" />
