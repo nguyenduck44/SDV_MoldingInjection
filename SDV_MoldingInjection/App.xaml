@@ -131,6 +131,10 @@
                 <views:OptionView />
             </DataTemplate>
             <DataTemplate
+                DataType="{x:Type vm:InjectTimeViewModel}">
+                <views:InjectTimeView />
+            </DataTemplate>
+            <DataTemplate
                 DataType="{x:Type vm:MaterialPortsViewModel}">
                 <views:MaterialPortsView />
             </DataTemplate> 

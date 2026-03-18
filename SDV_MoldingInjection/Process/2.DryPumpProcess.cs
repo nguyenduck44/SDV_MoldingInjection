@@ -439,13 +439,13 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.Delay_BeforeInject:
-                    if (((Environment.TickCount - _delayStartTick) / 1000.0) < _currentRecipe.InjectRecipe.DelayTime)
+                    if (((Environment.TickCount - _delayStartTick) / 1000.0) < InjectTimeRecipe.DelayTime)
                     {
                         Wait(10);
                         break;
                     }
 
-                    Log.Debug($"Delay before inject complete: {_currentRecipe.InjectRecipe.DelayTime}s");
+                    Log.Debug($"Delay before inject complete: {InjectTimeRecipe.DelayTime}s");
                     EnableTimerDelay = false;
                     Step.RunStep++;
                     break;
@@ -456,10 +456,10 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_WaitVentTime:
-                    if (((_carrierJigStatusList.CarrierJigStatusH1.InjectTime < _currentRecipe.InjectRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead12) ||
-                        ((_carrierJigStatusList.CarrierJigStatusH2.InjectTime < _currentRecipe.InjectRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead12) ||
-                        ((_carrierJigStatusList.CarrierJigStatusH3.InjectTime < _currentRecipe.InjectRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead34) ||
-                        ((_carrierJigStatusList.CarrierJigStatusH4.InjectTime < _currentRecipe.InjectRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead34))
+                    if (((_carrierJigStatusList.CarrierJigStatusH1.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead12) ||
+                        ((_carrierJigStatusList.CarrierJigStatusH2.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead12) ||
+                        ((_carrierJigStatusList.CarrierJigStatusH3.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead34) ||
+                        ((_carrierJigStatusList.CarrierJigStatusH4.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead34))
                     {
                         Wait(10);
                         break;
@@ -474,13 +474,13 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_PurgeAndWait:
-                    if (((Environment.TickCount - _ventStartTick) / 1000.0) < _currentRecipe.InjectRecipe.VentTime)
+                    if (((Environment.TickCount - _ventStartTick) / 1000.0) < InjectTimeRecipe.VentTime)
                     {
                         Wait(10);
                         break;
                     }
 
-                    Log.Debug($"Vent Complete: {_currentRecipe.InjectRecipe.VentTime}s");
+                    Log.Debug($"Vent Complete: {InjectTimeRecipe.VentTime}s");
                     PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Vent Complete");
                     procOutputs[EDryPumpProcOutput.VentComplete].Value = true;
                     Out_ChamberPurgeOn.Value = false;
@@ -577,6 +577,8 @@ namespace SDV_MoldingInjection.Process
         private readonly CarrierJigStatusList _carrierJigStatusList;
 
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
+        private InjectTimeRecipe InjectTimeRecipe => _recipeSelector.CurrentRecipe.InjectTimeRecipe;
+
         private ESPDHead _failHead;
         private double _ventStartTick;
         private double _delayStartTick;

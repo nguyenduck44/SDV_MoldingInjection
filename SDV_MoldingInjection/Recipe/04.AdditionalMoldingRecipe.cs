@@ -10,6 +10,8 @@ namespace SDV_MoldingInjection.Recipe
         private double _addTailWeight;
         private double _zUpDistanceAddTail;
         private double _addTailSpeed;
+        private double _bubbleRemoveCount;
+        private double _bubbleRemoveRotateCount;
 
         #endregion
 
@@ -61,6 +63,33 @@ namespace SDV_MoldingInjection.Recipe
                 if (_addTailSpeed == value) return;
                 OnRecipeChanged(_addTailSpeed, value);
                 _addTailSpeed = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "Bubble remove count")]
+        [CIMParameterAddress((int)ECIMParamter.BubbleRemoveCount)]
+        public double BubbleRemoveCount
+        {
+            get { return _bubbleRemoveCount; }
+            set
+            {
+                if (_bubbleRemoveCount == value) return;
+                OnRecipeChanged(_bubbleRemoveCount, value);
+                _bubbleRemoveCount = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "Bubble remove rotate count")]
+        public double BubbleRemoveRotateCount
+        {
+            get { return _bubbleRemoveRotateCount; }
+            set
+            {
+                if (_bubbleRemoveRotateCount == value) return;
+                OnRecipeChanged(_bubbleRemoveRotateCount, value);
+                _bubbleRemoveRotateCount = value;
                 OnPropertyChanged();
             }
         }

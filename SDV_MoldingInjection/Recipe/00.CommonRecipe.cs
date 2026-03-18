@@ -1,5 +1,4 @@
-﻿using EQX.Core.Communication.CIM.Custom;
-using EQX.Core.Recipe;
+﻿using EQX.Core.Recipe;
 using EQX.Core.Units;
 using EQX.UI.Language;
 
@@ -14,20 +13,6 @@ namespace SDV_MoldingInjection.Recipe
         private int logSaveDay = 30;
         public event Action<ILanguageDefinition> SelectedLanguageEvent;
         public event Action SelectedLanguageLoadAllRecipe;
-
-        [SingleRecipeDescription(Description = "Bubble remove turn")]
-        [CIMParameterAddress((int)ECIMParamter.BubbleRemoveTurn)]
-        public double BubbleRemoveTurn
-        {
-            get { return _bubbleRemoveTurn; }
-            set
-            {
-                if (_bubbleRemoveTurn == value) return;
-                OnRecipeChanged(_bubbleRemoveTurn, value);
-                _bubbleRemoveTurn = value;
-                OnPropertyChanged();
-            }
-        }
 
         [SingleRecipeDescription(Description = "Cylinder Move Timeout", Unit = Unit.Second)]
         [CIMParameterAddress((int)ECIMParamter.CylinderMoveTimeout)]
@@ -147,7 +132,6 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         #region Privates
-        private double _bubbleRemoveTurn;
         private double _syringeAmountTimeChange;
         private double _syringeAmountWeight;
         private ILanguageDefinition selectLanguage;

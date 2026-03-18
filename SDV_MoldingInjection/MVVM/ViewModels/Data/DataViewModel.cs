@@ -3,6 +3,7 @@ using EQX.Core.Common;
 using EQX.UI.Controls;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Process;
+using SDV_MoldingInjection.Recipe;
 using System.ComponentModel;
 using System.Windows.Input;
 
@@ -47,6 +48,12 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 OnPropertyChanged(nameof(RunModeButtonContent));
             }
         });
+
+        public ICommand InjectTimeNavigateCommand => new RelayCommand(() =>
+        {
+            _navigationService.NavigateTo<InjectTimeViewModel>();
+        });
+
         public ICommand MotionConfigNavigateCommand
         {
             get

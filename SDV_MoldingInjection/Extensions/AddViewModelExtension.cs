@@ -40,6 +40,7 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddViewModel<MotionsConfigViewModel>();
                 services.AddViewModel<AdditionalMoldingViewModel>();
                 services.AddViewModel<OptionViewModel>();
+                services.AddViewModel<InjectTimeViewModel>();
                 services.AddViewModel<MaterialPortsViewModel>();
                 services.AddViewModel<SecurityControlViewModel>();
 
