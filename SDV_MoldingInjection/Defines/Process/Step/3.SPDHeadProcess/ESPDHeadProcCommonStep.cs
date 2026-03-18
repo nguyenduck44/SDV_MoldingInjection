@@ -5,7 +5,7 @@
         Start,
 
         ResetInjectTime,
-
+        BubbleRemoveResetCountRotate,
         // ----- CHARGING PHASE -----
         Gate_Close,
         Gate_CloseWait,

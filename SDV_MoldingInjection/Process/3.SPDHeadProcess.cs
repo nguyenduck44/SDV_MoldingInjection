@@ -677,14 +677,7 @@ namespace SDV_MoldingInjection.Process
             {
                 case ESPDHeadProcCommonStep.Start:
                     Log.Debug($"{sequence} start");
-                    if (sequence == ESequence.BubbleRemove_H1 ||
-                        sequence == ESequence.BubbleRemove_H2 ||
-                        sequence == ESequence.BubbleRemove_H3 ||
-                        sequence == ESequence.BubbleRemove_H4)
-                    {
-                        _bubbleRemoveCount = 1;
-                    }
-
+                    _bubbleRemoveCount = 1;
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.ResetInjectTime:
@@ -692,6 +685,18 @@ namespace SDV_MoldingInjection.Process
                     {
                         InjectAddTail = false;
                         CarrierJigStatus.InjectTime = 0;
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcCommonStep.BubbleRemoveResetCountRotate:
+                    if (sequence == ESequence.BubbleRemove_H1 ||
+                        sequence == ESequence.BubbleRemove_H2 ||
+                        sequence == ESequence.BubbleRemove_H3 ||
+                        sequence == ESequence.BubbleRemove_H4)
+                    {
+                        Log.Debug("Bubble Remove Reset Count Rotate For Cycle Bubble Remove New");
+                        _bubbleRemoveRotateCount = 1;
                     }
 
                     Step.RunStep++;
@@ -798,9 +803,9 @@ namespace SDV_MoldingInjection.Process
                         case ESequence.BubbleRemove_H2:
                         case ESequence.BubbleRemove_H3:
                         case ESequence.BubbleRemove_H4:
-                            if (_bubbleRemoveCount != _currentRecipe.AdditionalMolding_Recipe.BubbleRemoveCount)
+                            if (_bubbleRemoveRotateCount != _currentRecipe.AdditionalMolding_Recipe.BubbleRemoveRotateCount)
                             {
-                                _pAxisInject_Pos = _pAxisCharge_Pos + (_bubbleRemoveCount * Math.Abs(_pAxisCharge_Pos - _pAxisBase_Pos) / _currentRecipe.AdditionalMolding_Recipe.BubbleRemoveCount);
+                                _pAxisInject_Pos = _pAxisCharge_Pos + (_bubbleRemoveCount * Math.Abs(_pAxisCharge_Pos - _pAxisBase_Pos) / _currentRecipe.AdditionalMolding_Recipe.BubbleRemoveRotateCount);
                             }
 
                             _gAxisBubbleRemove_Pos = GAxis.Status.ActualPosition + 180;
@@ -923,12 +928,22 @@ namespace SDV_MoldingInjection.Process
                         sequence == ESequence.BubbleRemove_H3 ||
                         sequence == ESequence.BubbleRemove_H4)
                     {
-                        _bubbleRemoveCount++;
+                        _bubbleRemoveRotateCount++;
                         Log.Debug($"Bubble remove turn: {_bubbleRemoveCount}");
-                        if (_bubbleRemoveCount <= _currentRecipe.AdditionalMolding_Recipe.BubbleRemoveCount)
+                        if (_bubbleRemoveRotateCount <= _currentRecipe.AdditionalMolding_Recipe.BubbleRemoveRotateCount)
                         {
                             Step.RunStep = (int)ESPDHeadProcCommonStep.Base_PosVel_Calculte;
                             break;
+                        }
+                        else
+                        {
+                            _bubbleRemoveCount++;
+                            if(_bubbleRemoveCount <= 2)
+                            {
+                                _syringeAmountStatusList.ConsumeSyringeAmount(head, _pAxisBase_Pos - _pAxisCharge_Pos);
+                                Step.RunStep = (int)ESPDHeadProcCommonStep.BubbleRemoveResetCountRotate;
+                                break;
+                            }
                         }
                     }
 
@@ -1516,6 +1531,7 @@ namespace SDV_MoldingInjection.Process
 
         public int _removeResinCount;
         private int _bubbleRemoveCount;
+        private int _bubbleRemoveRotateCount;
         private long _injectSequenceStartTick = -1;
 
         private double _pAxisInjectCharge_Height;
