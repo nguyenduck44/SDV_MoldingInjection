@@ -23,6 +23,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public Information Information { get; }
         public RecipeSelector RecipeSelector { get; }
         public Devices Devices { get; }
+        public MachineStatus MachineStatus { get; }
 
         public string CurrentView => _navigationStore?.CurrentViewModel?.GetType().Name.TrimEnd("Model".ToCharArray());
 
@@ -64,6 +65,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             IViewModelFactory viewModelFactory,
             RecipeSelector recipeSelector,
             Devices devices,
+            MachineStatus machineStatus,
             NavigationStore navigationStore)
         {
             Information = information;
@@ -71,6 +73,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _viewModelFactory = viewModelFactory;
             RecipeSelector = recipeSelector;
             Devices = devices;
+            MachineStatus = machineStatus;
             _navigationStore = navigationStore;
 
             _navigationStore.CurrentViewModelChanged += _navigationStore_CurrentViewModelChanged;

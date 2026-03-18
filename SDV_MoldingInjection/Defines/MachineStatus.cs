@@ -38,8 +38,6 @@ namespace SDV_MoldingInjection.Defines
             set { _originDone = value; }
         }
 
-        private bool isDotWeightingTest;
-
         public bool IsDotWeightingTest
         {
             get { return isDotWeightingTest; }
@@ -50,8 +48,6 @@ namespace SDV_MoldingInjection.Defines
             }
         }
 
-        private double timeInject;
-
         public double TimeInject
         {
             get { return timeInject; }
@@ -61,8 +57,6 @@ namespace SDV_MoldingInjection.Defines
                 OnPropertyChanged();
             }
         }
-
-        private string message;
 
         public string Message
         {
@@ -85,6 +79,9 @@ namespace SDV_MoldingInjection.Defines
         }
 
         #region Privates
+        private double timeInject;
+        private string message;
+        private bool isDotWeightingTest;
         private bool _originDone;
         private readonly Inputs _inputs;
         #endregion

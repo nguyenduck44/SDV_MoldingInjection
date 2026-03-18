@@ -158,7 +158,7 @@
                     FontWeight="Bold"
                     FontSize="18"
                     Foreground="Tomato"
-                    Text="Display Message HERE" />
+                    Text="{Binding MachineStatus.Message}" />
             </Border>
         </Grid>
     </Border>
