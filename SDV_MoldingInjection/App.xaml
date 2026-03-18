@@ -133,6 +133,10 @@
             <DataTemplate
                 DataType="{x:Type vm:MaterialPortsViewModel}">
                 <views:MaterialPortsView />
+            </DataTemplate> 
+            <DataTemplate
+                DataType="{x:Type vm:SecurityControlViewModel}">
+                <views:SecurityControlView />
             </DataTemplate>
 
             <!-- MAINTENANCE DATATEMPLATE -->

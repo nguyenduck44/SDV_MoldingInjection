@@ -10,78 +10,133 @@
              xmlns:uiControls="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.InputBindings>
-        <KeyBinding Command="{Binding LoginCommand}" Key="Enter" />
+        <KeyBinding
+            Command="{Binding LoginCommand}"
+            Key="Enter" />
     </UserControl.InputBindings>
     <Grid>
-        <StackPanel Width="350"
-                    VerticalAlignment="Center"
-                    Orientation="Vertical">
-
-            <Label Content="{DynamicResource str_UserGroup}"
-                   FontWeight="Bold" />
-
-            <ComboBox Tag="{DynamicResource str_UserGroup}"
-                      VerticalContentAlignment="Center"
-                      HorizontalContentAlignment="Center"
-                      Height="40"
-                      ItemsSource="{Binding Permissions, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                      SelectedValue="{Binding SelectedPermission, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
-
-            <StackPanel Margin="0 10 0 0">
-                <StackPanel.Style>
-                    <Style TargetType="{x:Type StackPanel}">
-                        <Setter Property="Visibility"
-                                Value="Collapsed" />
+        <StackPanel
+            Width="350"
+            VerticalAlignment="Center"
+            Orientation="Vertical">
+            <Label
+                Content="{DynamicResource str_UserGroup}"
+                FontWeight="Bold">
+                <Label.Style>
+                    <Style
+                        TargetType="{x:Type Label}"
+                        BasedOn="{StaticResource {x:Type Label}}">
+                        <Setter
+                            Property="Visibility"
+                            Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding SelectedPermission}"
-                                         Value="Operator">
-                                <Setter Property="Visibility"
-                                        Value="Visible" />
+                            <DataTrigger
+                                Binding="{Binding IsEQPPasswordMode}"
+                                Value="True">
+                                <Setter
+                                    Property="Visibility"
+                                    Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Label.Style>
+
+            </Label>
+
+            <ComboBox
+                Tag="{DynamicResource str_UserGroup}"
+                VerticalContentAlignment="Center"
+                HorizontalContentAlignment="Center"
+                Height="40"
+                ItemsSource="{Binding Permissions, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                SelectedValue="{Binding SelectedPermission, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                <ComboBox.Style>
+                    <Style
+                        TargetType="{x:Type ComboBox}"
+                        BasedOn="{StaticResource {x:Type ComboBox}}">
+                        <Setter
+                            Property="Visibility"
+                            Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger
+                                Binding="{Binding IsEQPPasswordMode}"
+                                Value="True">
+                                <Setter
+                                    Property="Visibility"
+                                    Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ComboBox.Style>
+            </ComboBox>
+
+            <StackPanel
+                Margin="0 10 0 0">
+                <StackPanel.Style>
+                    <Style
+                        TargetType="{x:Type StackPanel}">
+                        <Setter
+                            Property="Visibility"
+                            Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger
+                                Binding="{Binding IsRMSPasswordMode}"
+                                Value="True">
+                                <Setter
+                                    Property="Visibility"
+                                    Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </StackPanel.Style>
 
-                <Label FontWeight="Bold"
-                       Content="ID" />
-                <Border Height="40"
-                        BorderBrush="{StaticResource PrimaryBorderBrush}"
-                        BorderThickness="1"
-                        CornerRadius="5">
-
+                <Label
+                    FontWeight="Bold"
+                    Content="ID">
+                </Label>
+                <Border
+                    Height="40"
+                    BorderBrush="{StaticResource PrimaryBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="5">
                     <TextBox
-                            BorderThickness="0"
-                            Background="Transparent"
-                            PreviewMouseDown="keyBoardBox_PreviewMouseDown"
-                            VerticalContentAlignment="Center"
-                            HorizontalContentAlignment="Center"
-                            Text="{Binding OperatorId, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                        BorderThickness="0"
+                        Background="Transparent"
+                        PreviewMouseDown="keyBoardBox_PreviewMouseDown"
+                        VerticalContentAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        Text="{Binding OperatorID, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                 </Border>
             </StackPanel>
 
-            <Label FontWeight="Bold"
-                   Margin="0 10 0 0"
-                   Content="{DynamicResource str_Password}" />
-
-            <PasswordBox VerticalContentAlignment="Center"
-                         HorizontalContentAlignment="Center"
-                         Name="passwordBox"
-                         PreviewMouseDown="passwordBox_PreviewMouseDown"
-                         Height="40">
+            <Label
+                FontWeight="Bold"
+                Margin="0 10 0 0"
+                Content="{DynamicResource str_Password}" />
+            <PasswordBox
+                VerticalContentAlignment="Center"
+                HorizontalContentAlignment="Center"
+                Name="passwordBox"
+                PreviewMouseDown="passwordBox_PreviewMouseDown"
+                Height="40">
                 <PasswordBox.Style>
-                    <Style TargetType="{x:Type PasswordBox}">
+                    <Style
+                        TargetType="{x:Type PasswordBox}">
                         <Style.Setters>
-                            <Setter Property="Template">
+                            <Setter
+                                Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate>
-                                        <Border BorderBrush="{StaticResource PrimaryBorderBrush}"
-                                                BorderThickness="1"
-                                                CornerRadius="5"
-                                                Background="{TemplateBinding Background}">
+                                        <Border
+                                            BorderBrush="{StaticResource PrimaryBorderBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="5"
+                                            Background="{TemplateBinding Background}">
                                             <Grid>
-                                                <ScrollViewer x:Name="PART_ContentHost"
-                                                              HorizontalScrollBarVisibility="Hidden"
-                                                              VerticalScrollBarVisibility="Hidden" />
+                                                <ScrollViewer
+                                                    x:Name="PART_ContentHost"
+                                                    HorizontalScrollBarVisibility="Hidden"
+                                                    VerticalScrollBarVisibility="Hidden" />
                                             </Grid>
                                         </Border>
                                     </ControlTemplate>
@@ -91,41 +146,50 @@
                     </Style>
                 </PasswordBox.Style>
             </PasswordBox>
-
-            <uiControls:ImageButton Margin="0 10 0 0"
-                                    Content="{DynamicResource str_Login}"
-                                    Height="60"
-                                    Click="LoginButton_Click">
+            <uiControls:ImageButton
+                Margin="0 10 0 0"
+                Content="{DynamicResource str_Login}"
+                Height="60"
+                Click="LoginButton_Click">
                 <uiControls:ImageButton.Style>
-                    <Style TargetType="{x:Type uiControls:ImageButton}"
-                           BasedOn="{StaticResource {x:Type uiControls:ImageButton}}">
-                        <Setter Property="Visibility"
-                                Value="Visible" />
+                    <Style
+                        TargetType="{x:Type uiControls:ImageButton}"
+                        BasedOn="{StaticResource {x:Type uiControls:ImageButton}}">
+                        <Setter
+                            Property="Visibility"
+                            Value="Visible" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsLoggedIn}"
-                                         Value="True">
-                                <Setter Property="Visibility"
-                                        Value="Collapsed" />
+                            <DataTrigger
+                                Binding="{Binding IsLoggedIn}"
+                                Value="True">
+                                <Setter
+                                    Property="Visibility"
+                                    Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </uiControls:ImageButton.Style>
             </uiControls:ImageButton>
 
-            <uiControls:ImageButton Margin="0 10 0 0"
-                                    Content="Logout"
-                                    Height="60"
-                                    Click="LogoutButton_Click">
+            <uiControls:ImageButton
+                Margin="0 10 0 0"
+                Content="Logout"
+                Height="60"
+                Click="LogoutButton_Click">
                 <uiControls:ImageButton.Style>
-                    <Style TargetType="{x:Type uiControls:ImageButton}"
-                           BasedOn="{StaticResource {x:Type uiControls:ImageButton}}">
-                        <Setter Property="Visibility"
-                                Value="Collapsed" />
+                    <Style
+                        TargetType="{x:Type uiControls:ImageButton}"
+                        BasedOn="{StaticResource {x:Type uiControls:ImageButton}}">
+                        <Setter
+                            Property="Visibility"
+                            Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsLoggedIn}"
-                                         Value="True">
-                                <Setter Property="Visibility"
-                                        Value="Visible" />
+                            <DataTrigger
+                                Binding="{Binding IsLoggedIn}"
+                                Value="True">
+                                <Setter
+                                    Property="Visibility"
+                                    Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -133,5 +197,4 @@
             </uiControls:ImageButton>
         </StackPanel>
     </Grid>
-
 </UserControl>

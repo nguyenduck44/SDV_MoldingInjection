@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Services;
+using SDV_MoldingInjection.Services.Security;
 
 namespace SDV_MoldingInjection.Extensions
 {
@@ -28,6 +29,7 @@ namespace SDV_MoldingInjection.Extensions
         {
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
+                services.AddSingleton<ISecurityControlStore, SecurityControlStore>();
                 services.AddSingleton<CellStatusToColorConverter>();
                 services.AddSingleton<SyringAmountStatusList>();
                 services.AddSingleton<CarrierJigStatusList>();

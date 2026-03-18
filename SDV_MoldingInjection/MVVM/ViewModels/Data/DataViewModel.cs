@@ -57,6 +57,17 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 });
             }
         }
+
+        public ICommand SecurityControlNavigateCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    _navigationService.NavigateTo<SecurityControlViewModel>();
+                });
+            }
+        }
         #endregion
 
         #region Constructor(s)

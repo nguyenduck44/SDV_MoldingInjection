@@ -41,6 +41,7 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddViewModel<AdditionalMoldingViewModel>();
                 services.AddViewModel<OptionViewModel>();
                 services.AddViewModel<MaterialPortsViewModel>();
+                services.AddViewModel<SecurityControlViewModel>();
 
                 services.AddViewModel<MonitorViewModel>();
                 services.AddViewModel<MonitorIOViewModel>();

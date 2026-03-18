@@ -1,19 +1,16 @@
 ﻿using EQX.Core.Common;
+using SDV_MoldingInjection.Services.Security;
 
 namespace SDV_MoldingInjection.Services
 {
-    public class SDVAuthenticationService(IUserStore userStore)
+    public class SDVAuthenticationService(
+        IUserStore userStore,
+        ISecurityControlStore securityControlStore)
         : AuthenticationService(userStore)
     {
         protected override bool ValidatePassword(EPermission permission, string password)
         {
-            return permission switch
-            {
-                EPermission.Operator => true,
-                EPermission.Admin => true,
-                EPermission.SuperUser => (password == "3141") || (password == DateTime.Now.ToString("HHdd")),
-                _ => false,
-            };
+            return securityControlStore.ValidatePassword(permission, password);
         }
     }
 }

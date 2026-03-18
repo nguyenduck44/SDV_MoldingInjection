@@ -3,6 +3,7 @@ using EQX.Core.Common;
 using EQX.Core.Communication.CIM.Custom;
 using EQX.UI.Controls;
 using log4net;
+using SDV_MoldingInjection.Services.Security;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
@@ -28,25 +29,28 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             set { _selectedPermission = value; OnPropertyChanged(nameof(SelectedPermission)); }
         }
 
-        public string OperatorId
+        public string OperatorID
         {
-            get => operatorId;
+            get { return operatorID; }
             set
             {
-                operatorId = value;
-                OnPropertyChanged(nameof(OperatorId));
+                operatorID = value;
+                OnPropertyChanged(OperatorID);
             }
         }
 
         public bool IsLoggedIn
         {
-            get => _isLoggedIn;
+            get => isLoggedIn;
             set
             {
-                _isLoggedIn = value;
+                isLoggedIn = value;
                 OnPropertyChanged(nameof(IsLoggedIn));
             }
         }
+
+        public bool IsEQPPasswordMode => _securityControlStore.Settings.PasswordMode == EPasswordMode.EQP;
+        public bool IsRMSPasswordMode => _securityControlStore.Settings.PasswordMode == EPasswordMode.RMS;
         #endregion
 
         #region Commands
@@ -56,31 +60,35 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand<string>((password) =>
                 {
-                    if (!Enum.TryParse<EPermission>(SelectedPermission, out var permission))
+                    if (IsEQPPasswordMode)
                     {
-                        _log.Warn($"Unknown access selected: {SelectedPermission}");
-                        MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_WrongPassword"]);
-                        return;
+                        if (!Enum.TryParse<EPermission>(SelectedPermission, out var permission))
+                        {
+                            _log.Warn($"Unknown access selected: {SelectedPermission}");
+                            MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_WrongPassword"]);
+                            return;
+                        }
+
+                        // Delegate authentication logic to the authentication service (Single Responsibility).
+                        var isValid = _authenticationService.ValidatePermission(permission, password);
+
+                        if (!isValid)
+                        {
+                            _log.Info($"Failed login attempt for permission {permission}");
+                            MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_WrongPassword"]);
+                            return;
+                        }
+                        _log.Info($"Login {permission} Permission");
                     }
 
-                    // Delegate authentication logic to the authentication service (Single Responsibility).
-                    var isValid = _authenticationService.ValidatePermission(permission, password);
-
-                    if (!isValid)
+                    else
                     {
-                        _log.Info($"Failed login attempt for permission {permission}");
-                        MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_WrongPassword"]);
-                        return;
-                    }
-
-                    if (permission == EPermission.Operator)
-                    {
-                        EquipEventHelpers.OperatorLogin(operatorId, password);
+                        EquipEventHelpers.OperatorLogin(operatorID, password);
+                        _log.Info($"Login {operatorID} Permission");
                         IsLoggedIn = true;
                     }
 
                     _navigationService.NavigateTo<AutoViewModel>();
-                    _log.Info($"Login {permission} Permission");
                 });
             }
         }
@@ -91,11 +99,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand<string>((password) =>
                 {
-                    var logoutOperatorId = OperatorId;
-                    EquipEventHelpers.OperatorLogout(logoutOperatorId, password);
+                    EquipEventHelpers.OperatorLogout(operatorID, password);
                     IsLoggedIn = false;
-                    OperatorId = string.Empty;
-                    _log.Info($"User {logoutOperatorId} Logout Success!");
+                    OperatorID = string.Empty;
+                    _log.Info($"User {operatorID} Logout Success!");
                 });
             }
         }
@@ -103,10 +110,12 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         public LoginViewModel(
             INavigationService navigationService,
-            IAuthenticationService authenticationService)
+            IAuthenticationService authenticationService,
+            ISecurityControlStore securityControlStore)
         {
             _navigationService = navigationService;
             _authenticationService = authenticationService;
+            _securityControlStore = securityControlStore;
 
             _log = LogManager.GetLogger("LoginVM");
 
@@ -120,11 +129,12 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         #region Private Fields
         private readonly INavigationService _navigationService;
         private readonly IAuthenticationService _authenticationService;
+        private readonly ISecurityControlStore _securityControlStore;
         private readonly ILog _log;
         private ObservableCollection<string> _permissions;
         private string _selectedPermission;
-        private string operatorId = string.Empty;
-        private bool _isLoggedIn;
+        private string operatorID;
+        private bool isLoggedIn;
         #endregion
     }
 }
