@@ -231,6 +231,14 @@
                 <views:LoginView />
             </DataTemplate>
             <DataTemplate
+                DataType="{x:Type vm:ErrorViewModel}">
+                <views:ErrorView />
+            </DataTemplate>
+            <DataTemplate
+                DataType="{x:Type vm:AlarmViewModel}">
+                <views:AlarmView />
+            </DataTemplate>
+            <DataTemplate
                 DataType="{x:Type vm:MonitorViewModel}">
                 <views:MonitorView />
             </DataTemplate>

@@ -1,0 +1,159 @@
+﻿<UserControl
+    x:Class="SDV_MoldingInjection.MVVM.Views.ErrorView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
+    mc:Ignorable="d"
+    Loaded="UserControl_Loaded"
+    xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
+    d:DataContext="{d:DesignInstance Type={x:Type vm:ErrorViewModel}}"
+    d:DesignHeight="450"
+    d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition
+                Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <StackPanel
+            Orientation="Horizontal"
+            Margin="5 0 0 0"
+            Grid.Column="0">
+            <TextBlock
+                Text="Select Day"
+                VerticalAlignment="Center" />
+
+            <ComboBox
+                Width="150"
+                Margin="10 0 0 0"
+                ItemsSource="{Binding LogDays}"
+                SelectedItem="{Binding SelectedDaySearch}"
+                SelectionChanged="ComboBox_SelectionChanged" />
+        </StackPanel>
+
+
+        <DataGrid
+            x:Name="ErrorListHistoryDataGrid"
+            Margin="5"
+            Grid.Row="1"
+            FontSize="13"
+            AutoGenerateColumns="False"
+            CanUserResizeColumns="True"
+            CanUserSortColumns="True"
+            SelectionUnit="CellOrRowHeader"
+            SelectionMode="Extended"
+            ClipboardCopyMode="ExcludeHeader"
+            CanUserAddRows="False"
+            Sorting="ErrorListHistoryDataGrid_Sorting"
+            ItemsSource="{Binding ErrorLogEntries}">
+            <DataGrid.RowStyle>
+                <Style
+                    TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger
+                            Binding="{Binding IsHightlight}"
+                            Value="True">
+                            <Setter
+                                Property="Background"
+                                Value="Yellow" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn
+                    x:Name="TextCollumnTypeData"
+                    Header="Type"
+                    IsReadOnly="True"
+                    Binding="{Binding Type}"
+                    SortMemberPath="Timestamp"
+                    Width="80" />
+                <DataGridTextColumn
+                    x:Name="TextCollumnErrorData"
+                    Header="DateTime"
+                    IsReadOnly="True"
+                    SortDirection="Descending"
+                    Binding="{Binding Timestamp}"
+                    SortMemberPath="Timestamp"
+                    Width="100" />
+                <DataGridTextColumn
+                    Header="I/O"
+                    IsReadOnly="True"
+                    Binding="{Binding IOName}"
+                    Width="100" />
+                <DataGridTextColumn
+                    Header="ErrorCode"
+                    IsReadOnly="True"
+                    Binding="{Binding ErrorCode}"
+                    Width="100" />
+                <DataGridTextColumn
+                    Header="Message"
+                    IsReadOnly="True"
+                    Binding="{Binding Message}"
+                    Width="*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style
+                            TargetType="TextBlock">
+                            <Setter
+                                Property="TextWrapping"
+                                Value="Wrap" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+
+        </DataGrid>
+
+        <DataGrid
+            Grid.Column="1"
+            Grid.Row="1"
+            Margin="5"
+            AutoGenerateColumns="False"
+            HeadersVisibility="Column"
+            CanUserAddRows="False"
+            CanUserDeleteRows="False"
+            IsReadOnly="True"
+            FontSize="13"
+            SelectedItem="{Binding SelectedErrorLogCount}"
+            ItemsSource="{Binding ErrorLogCounts}">
+            <DataGrid.Columns>
+                <DataGridTextColumn
+                    Header="Count"
+                    IsReadOnly="True"
+                    Binding="{Binding Count}"
+                    Width="80" />
+                <DataGridTextColumn
+                    Header="I/O"
+                    IsReadOnly="True"
+                    Binding="{Binding IOName}"
+                    Width="100" />
+                <DataGridTextColumn
+                    Header="ErrorCode"
+                    IsReadOnly="True"
+                    Binding="{Binding ErrorCode}"
+                    Width="100" />
+                <DataGridTextColumn
+                    Header="Message"
+                    IsReadOnly="True"
+                    Binding="{Binding Message}"
+                    Width="*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style
+                            TargetType="TextBlock">
+                            <Setter
+                                Property="TextWrapping"
+                                Value="Wrap" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

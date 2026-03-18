@@ -12,5 +12,7 @@ namespace SDV_MoldingInjection.Defines.ErrorLog
         public string Timestamp { get; set; }
         public int ErrorCode { get; set; }
         public string Message { get; set; }
+        public string IOName { get; set; }
+        public bool IsHightlight { get; set; }
     }
 }

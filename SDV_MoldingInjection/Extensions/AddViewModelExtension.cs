@@ -45,6 +45,8 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddViewModel<MonitorViewModel>();
                 services.AddViewModel<MonitorIOViewModel>();
 
+                services.AddViewModel<ErrorViewModel>();
+                services.AddViewModel<AlarmViewModel>();
                 services.AddViewModel<LogViewModel>();
                 services.AddViewModel<LoginViewModel>();
                 services.AddViewModel<DevViewModel>();
