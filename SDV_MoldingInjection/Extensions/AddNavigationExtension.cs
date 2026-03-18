@@ -94,7 +94,7 @@ namespace SDV_MoldingInjection.Extensions
                     {
                         Label = "Log",
                         GroupName = "Right",
-                        ViewModelType = typeof(LogViewModel),
+                        ViewModelType = typeof(AlarmViewModel),
                         RequiredRole = EPermission.Operator,
                         ImageKey = "image_log_selected",
                         DisabledImageKey = "image_log_normal"

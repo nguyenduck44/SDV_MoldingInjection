@@ -74,7 +74,7 @@
                     IsReadOnly="True"
                     Binding="{Binding Type}"
                     SortMemberPath="Timestamp"
-                    Width="80" />
+                    Width="50" />
                 <DataGridTextColumn
                     x:Name="TextCollumnErrorData"
                     Header="DateTime"
@@ -82,7 +82,7 @@
                     SortDirection="Descending"
                     Binding="{Binding Timestamp}"
                     SortMemberPath="Timestamp"
-                    Width="100" />
+                    Width="70" />
                 <DataGridTextColumn
                     Header="I/O"
                     IsReadOnly="True"
@@ -92,7 +92,19 @@
                     Header="ErrorCode"
                     IsReadOnly="True"
                     Binding="{Binding ErrorCode}"
-                    Width="100" />
+                    Width="70">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style
+                            TargetType="TextBlock">
+                            <Setter
+                                Property="TextAlignment"
+                                Value="Center" />
+                            <Setter
+                                Property="VerticalAlignment"
+                                Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 <DataGridTextColumn
                     Header="Message"
                     IsReadOnly="True"
@@ -128,7 +140,19 @@
                     Header="Count"
                     IsReadOnly="True"
                     Binding="{Binding Count}"
-                    Width="80" />
+                    Width="60">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style
+                            TargetType="TextBlock">
+                            <Setter
+                                Property="TextAlignment"
+                                Value="Center" />
+                            <Setter
+                                Property="VerticalAlignment"
+                                Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 <DataGridTextColumn
                     Header="I/O"
                     IsReadOnly="True"
@@ -138,7 +162,19 @@
                     Header="ErrorCode"
                     IsReadOnly="True"
                     Binding="{Binding ErrorCode}"
-                    Width="100" />
+                    Width="80">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style
+                            TargetType="TextBlock">
+                            <Setter
+                                Property="TextAlignment"
+                                Value="Center" />
+                            <Setter
+                                Property="VerticalAlignment"
+                                Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 <DataGridTextColumn
                     Header="Message"
                     IsReadOnly="True"

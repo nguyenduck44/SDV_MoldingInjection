@@ -729,7 +729,7 @@ namespace SDV_MoldingInjection.Process
                     }
                 });
 
-                Log.Error($"{alarmSource} raising alarm [#{(int)(EAlarm)alarmId}] {(EAlarm)alarmId}");
+                Log.Error($"[{(int)(EAlarm)alarmId}] {(EAlarm)alarmId}");
                 _machineStatus.Message = $"[{(int)(EAlarm)alarmId}] {(EAlarm)alarmId}";
 
                 raisedAlarmCode = alarmId;
@@ -754,7 +754,7 @@ namespace SDV_MoldingInjection.Process
                     }
                 });
 
-                Log.Warn($"{warningSource} raising warning [#{(int)(EWarning)warningId}] {(EWarning)warningId}");
+                Log.Warn($"[{(int)(EWarning)warningId}] {(EWarning)warningId}");
                 _machineStatus.Message = $"[{(int)(EWarning)warningId}] {(EWarning)warningId}";
 
                 raisedWarningCode = warningId;
