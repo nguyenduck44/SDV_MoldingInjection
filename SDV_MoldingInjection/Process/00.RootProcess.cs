@@ -520,12 +520,14 @@ namespace SDV_MoldingInjection.Process
                 return;
             }
 #if !SIMULATION
-            if (_devices.Inputs.MainCDACheck.Value == false)
+            if (_devices.Inputs.MainCDACheck.Value == false &&
+                ProcessMode != EProcessMode.Warning &&
+                ProcessMode != EProcessMode.ToWarning)
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
                 Log.Error("Main Air Not Supplied");
-                RaiseAlarm((int)EAlarm.MainAirNotSupplied);
+                RaiseWarning((int)EWarning.MainAirNotSupplied);
                 return;
             }
 #endif

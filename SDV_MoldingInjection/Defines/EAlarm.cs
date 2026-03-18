@@ -1,4 +1,6 @@
-﻿namespace SDV_MoldingInjection.Defines
+using System.ComponentModel;
+
+namespace SDV_MoldingInjection.Defines
 {
     public enum EAlarm
     {
@@ -6,16 +8,21 @@
         None = 10,
 
         // System Level Alarms
-        MainAirNotSupplied =20,
-        MainPowerDown,
+        [Description("IN14")]
+        MainPowerDown = 20,
+        [Description("IN16~IN19 - IN69~IN72")]
         DoorOpen,
+        [Description("IN03")]
         EmergencyStopActivated,
+        [Description("IN13")]
         PowerMCOff,
         Motion_Alarm_Detected,
         Motion_Alarm_ResetFail,
         Motion_Driver_Off,
         Motion_Limit_Detected,
+        [Description("IN09")]
         Panel_Smoke_Detected,
+        [Description("IN10")]
         Alarm_OverTemperature_Detected,
 
         //--------- 500 -> 999 : Mold Process Alarm ---------

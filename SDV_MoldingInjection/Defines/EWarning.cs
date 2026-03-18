@@ -1,13 +1,21 @@
+using System.ComponentModel;
+
 namespace SDV_MoldingInjection.Defines
 {
     public enum EWarning
     {
         //--------- 20 -> 499 : Global Warning ---------
         Root = 20,
+        [Description("IN15")]
+        MainAirNotSupplied,
+        [Description("IN16~IN19 - IN69~IN72")]
         DoorOpen,
+        [Description("OUT16")]
         DoorNotSafetyLock,
         MoveTargetPosition_Fail,
+        [Description("IN11")]
         Warning_OverTemperature_Detected,
+        [Description("IN04")]
         OPSwitchKey_Not_In_AutoMode,
 
         //--------- 500 -> 999 : Mold Process Warning ---------
@@ -94,9 +102,13 @@ namespace SDV_MoldingInjection.Defines
         //--------- 1500 -> 1999 : SPD Head #1 Process Warning ---------
         P1Axis_Origin_Timeout = 1500,
         G1Axis_Origin_Timeout,
+        [Description("HEAD1_IN00")]
         H1_PistonCyl_UpFail,
+        [Description("HEAD1_IN01")]
         H1_PistonCyl_DownFail,
+        [Description("HEAD1_IN04")]
         H1_Assemble_Check_Timeout,
+        [Description("HEAD1_IN04")]
         H1_Disassemble_Check_Timeout,
         H1_Balance_NotStable,
         H1_Balance_RequestWeight_Fail,
@@ -108,14 +120,19 @@ namespace SDV_MoldingInjection.Defines
         H1_PAxis_BubbleRemove_Timeout,
         H1_GAxis_BubbleRemove_Timeout,
         H1_BubbleRemove_InjectPosOverBasePos,
+        [Description("HEAD1_IN05")]
         H1_Syringe_Not_Detected,
 
         //--------- 2000 -> 2499 : SPD Head #2 Process Warning ---------
         P2Axis_Origin_Timeout = 2000,
         G2Axis_Origin_Timeout,
+        [Description("HEAD2_IN00")]
         H2_PistonCyl_UpFail,
+        [Description("HEAD2_IN01")]
         H2_PistonCyl_DownFail,
+        [Description("HEAD2_IN04")]
         H2_Assemble_Check_Timeout,
+        [Description("HEAD2_IN04")]
         H2_Disassemble_Check_Timeout,
         H2_Balance_NotStable,
         H2_Balance_RequestWeight_Fail,
@@ -127,15 +144,20 @@ namespace SDV_MoldingInjection.Defines
         H2_PAxis_BubbleRemove_Timeout,
         H2_GAxis_BubbleRemove_Timeout,
         H2_BubbleRemove_InjectPosOverBasePos,
+        [Description("HEAD2_IN05")]
         H2_Syringe_Not_Detected,
 
 
         //--------- 2500 -> 3000 : SPD Head #3 Process Warning ---------
         P3Axis_Origin_Timeout = 2500,
         G3Axis_Origin_Timeout,
+        [Description("HEAD3_IN00")]
         H3_PistonCyl_UpFail,
+        [Description("HEAD3_IN01")]
         H3_PistonCyl_DownFail,
+        [Description("HEAD3_IN04")]
         H3_Assemble_Check_Timeout,
+        [Description("HEAD3_IN04")]
         H3_Disassemble_Check_Timeout,
         H3_Balance_NotStable,
         H3_Balance_RequestWeight_Fail,
@@ -147,14 +169,19 @@ namespace SDV_MoldingInjection.Defines
         H3_PAxis_BubbleRemove_Timeout,
         H3_GAxis_BubbleRemove_Timeout,
         H3_BubbleRemove_InjectPosOverBasePos,
+        [Description("HEAD3_IN05")]
         H3_Syringe_Not_Detected,
 
         //--------- 3000 -> 3499 : SPD Head #3 Process Warning ---------
         P4Axis_Origin_Timeout = 3000,
         G4Axis_Origin_Timeout,
+        [Description("HEAD4_IN00")]
         H4_PistonCyl_UpFail,
+        [Description("HEAD4_IN01")]
         H4_PistonCyl_DownFail,
+        [Description("HEAD4_IN04")]
         H4_Assemble_Check_Timeout,
+        [Description("HEAD4_IN04")]
         H4_Disassemble_Check_Timeout,
         H4_Balance_NotStable,
         H4_Balance_RequestWeight_Fail,
@@ -166,6 +193,7 @@ namespace SDV_MoldingInjection.Defines
         H4_PAxis_BubbleRemove_Timeout,
         H4_GAxis_BubbleRemove_Timeout,
         H4_BubbleRemove_InjectPosOverBasePos,
+        [Description("HEAD4_IN05")]
         H4_Syringe_Not_Detected,
     }
 }
