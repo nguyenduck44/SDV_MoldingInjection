@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
+using EQX.UI.Controls;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Recipe;
 using System.Windows.Input;
@@ -40,6 +41,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _recipeSelector = recipeSelector;
         }
         #endregion
+
+        protected override bool ConfirmSemiSequence(string message)
+        {
+            return MessageBoxEx.ShowDialog(message, "Confirm") == true;
+        }
 
         #region Privates
         private readonly RecipeSelector _recipeSelector;
