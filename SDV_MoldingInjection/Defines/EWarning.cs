@@ -6,8 +6,6 @@ namespace SDV_MoldingInjection.Defines
     {
         //--------- 20 -> 499 : Global Warning ---------
         Root = 20,
-        [Description("IN15")]
-        MainAirNotSupplied,
         [Description("IN16~IN19 - IN69~IN72")]
         DoorOpen,
         [Description("OUT16")]

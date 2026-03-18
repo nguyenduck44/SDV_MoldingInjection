@@ -10,6 +10,8 @@ namespace SDV_MoldingInjection.Defines
         // System Level Alarms
         [Description("IN14")]
         MainPowerDown = 20,
+        [Description("IN15")]
+        MainAirNotSupplied,
         [Description("IN16~IN19 - IN69~IN72")]
         DoorOpen,
         [Description("IN03")]
