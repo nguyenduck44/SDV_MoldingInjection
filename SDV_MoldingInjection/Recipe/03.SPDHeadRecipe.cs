@@ -178,20 +178,6 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "P-Axis INJECT position", Unit = Unit.mm)]
-        public double PAxisInjectPos
-        {
-            get { return _pAxisInjectPos; }
-            set
-            {
-                if (_pAxisInjectPos == value) return;
-
-                OnRecipeChanged(_pAxisInjectPos, value);
-                _pAxisInjectPos = value;
-                OnPropertyChanged();
-            }
-        }
-
         [SingleRecipeDescription(Description = "P-Axis Dummy Charge position", Unit = Unit.mm)]
         public double PAxisDummyChargePos
         {
@@ -234,8 +220,6 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         #region Privates
-        private bool _headSkip;
-
         private double _zAxisSafetyPos;
         private double _zAxisInjectPos;
         private double _zAxisNeedleCleanPos;
@@ -247,7 +231,6 @@ namespace SDV_MoldingInjection.Recipe
         private double _gateClosePos;
         private double _gateOpenPos;
 
-        private double _pAxisInjectPos;
         private double _pAxisInjectChargePos;
 
         private double _resinWeight;

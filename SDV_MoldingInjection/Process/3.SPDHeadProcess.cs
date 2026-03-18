@@ -805,7 +805,7 @@ namespace SDV_MoldingInjection.Process
                         case ESequence.BubbleRemove_H4:
                             if (_bubbleRemoveRotateCount != _currentRecipe.AdditionalMolding_Recipe.BubbleRemoveRotateCount)
                             {
-                                _pAxisInject_Pos = _pAxisCharge_Pos + (_bubbleRemoveCount * Math.Abs(_pAxisCharge_Pos - _pAxisBase_Pos) / _currentRecipe.AdditionalMolding_Recipe.BubbleRemoveRotateCount);
+                                _pAxisInject_Pos = _pAxisCharge_Pos + (_bubbleRemoveRotateCount * Math.Abs(_pAxisCharge_Pos - _pAxisBase_Pos) / _currentRecipe.AdditionalMolding_Recipe.BubbleRemoveRotateCount);
                             }
 
                             _gAxisBubbleRemove_Pos = GAxis.Status.ActualPosition + 180;
@@ -929,7 +929,7 @@ namespace SDV_MoldingInjection.Process
                         sequence == ESequence.BubbleRemove_H4)
                     {
                         _bubbleRemoveRotateCount++;
-                        Log.Debug($"Bubble remove turn: {_bubbleRemoveCount}");
+                        Log.Debug($"Bubble remove rotate count: {_bubbleRemoveRotateCount}");
                         if (_bubbleRemoveRotateCount <= _currentRecipe.AdditionalMolding_Recipe.BubbleRemoveRotateCount)
                         {
                             Step.RunStep = (int)ESPDHeadProcCommonStep.Base_PosVel_Calculte;
