@@ -870,7 +870,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    if (_currentRecipe.AdditionalMolding_Recipe.SkipAddTail)
+                    if (InjectAddTail == false)
                     {
                         Log.Debug($"Input detect {ESPDHeadProcInput.WorkRequest}");
                         Step.RunStep = (int)ESPDHeadProcCommonStep.PAxis_InjectPos_Move;
@@ -984,6 +984,12 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESPDHeadProcCommonStep.WorkDone_Clear:
                     if (procInputs[ESPDHeadProcInput.WorkRequest].Value == true && InjectAddTail == false)
+                    {
+                        Wait(10);
+                        break;
+                    }
+
+                    if (InjectAddTail && procInputs[ESPDHeadProcInput.ZAxis_InjectAddTail_Ready].Value == true)
                     {
                         Wait(10);
                         break;
