@@ -9,6 +9,7 @@ using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Recipe;
 using TOPENG_Device;
+using Windows.Media.FaceAnalysis;
 
 namespace SDV_MoldingInjection.Process
 {
@@ -664,6 +665,24 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    Log.Debug("Wait SPDHead Ready Inject Add Tail");
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectStep.Wait_SPDHeadReady_InjectAddTail:
+                    if (IsSPDHeadInjectAddTailReady(ESPDHead.SPDHead1) == false ||
+                        IsSPDHeadInjectAddTailReady(ESPDHead.SPDHead2) == false ||
+                        IsSPDHeadInjectAddTailReady(ESPDHead.SPDHead3) == false ||
+                        IsSPDHeadInjectAddTailReady(ESPDHead.SPDHead4) == false)
+                    {
+                        Wait(20);
+                        break;
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectStep.SPDHead_InjectAddTail_Request:
+                    Log.Debug($"Set Output {EInjectProcOutput.SPDHead_InjectAddTail_Request}");
+                    procOutputs[EInjectProcOutput.SPDHead_InjectAddTail_Request].Value = true;
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.ZAxis_UpDistance_Move:
@@ -683,11 +702,6 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("ZAxis move up distance for add tail done");
                     Step.RunStep++;
                     break;
-                case EMoldProcResinInjectStep.SDPHead_AddTail_Request:
-                    Log.Debug($"Set Output {EInjectProcOutput.SPDHeadInjectAddTailRequest}");
-                    procOutputs[EInjectProcOutput.SPDHeadInjectAddTailRequest].Value = true;
-                    Step.RunStep++;
-                    break;
                 case EMoldProcResinInjectStep.SDPHead_AddTail_DoneWait:
                     if (IsSPDHeadInjectAddTailDone(ESPDHead.SPDHead1) == false ||
                         IsSPDHeadInjectAddTailDone(ESPDHead.SPDHead2) == false ||
@@ -698,7 +712,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    procOutputs[EInjectProcOutput.SPDHeadInjectAddTailRequest].Value = false;
+                    procOutputs[EInjectProcOutput.SPDHead_InjectAddTail_Request].Value = false;
                     Log.Debug("SPDHead Inject AddTail done");
                     Step.RunStep++;
                     break;
@@ -1638,14 +1652,16 @@ namespace SDV_MoldingInjection.Process
 
         private void ZAxisAddTailPosMove()
         {
+            double ZAxis_Vel = _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail / _currentRecipe.AdditionalMolding_Recipe.AddTailTime;
+
             if (!_currentRecipe.OptionRecipe.SkipHead12)
-                Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
+                Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail, ZAxis_Vel);
             if (!_currentRecipe.OptionRecipe.SkipHead12)
-                Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
+                Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail, ZAxis_Vel);
             if (!_currentRecipe.OptionRecipe.SkipHead34)
-                Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
+                Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail, ZAxis_Vel);
             if (!_currentRecipe.OptionRecipe.SkipHead34)
-                Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
+                Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail, ZAxis_Vel);
         }
 
         private bool AllZAxisInAddTailPos(ref ESPDHead failHead)
@@ -1960,6 +1976,18 @@ namespace SDV_MoldingInjection.Process
                 ESPDHead.SPDHead2 => procInputs[EInjectProcInput.SPDHead2_InjectAddTailDone].Value || _currentRecipe.OptionRecipe.SkipHead12,
                 ESPDHead.SPDHead3 => procInputs[EInjectProcInput.SPDHead3_InjectAddTailDone].Value || _currentRecipe.OptionRecipe.SkipHead34,
                 ESPDHead.SPDHead4 => procInputs[EInjectProcInput.SPDHead4_InjectAddTailDone].Value || _currentRecipe.OptionRecipe.SkipHead34,
+                _ => throw new Exception($"Invalid head: {head}")
+            };
+        }
+
+        private bool IsSPDHeadInjectAddTailReady(ESPDHead head)
+        {
+            return head switch
+            {
+                ESPDHead.SPDHead1 => procInputs[EInjectProcInput.Wait_SPDHead1_InjectAddTail].Value || _currentRecipe.OptionRecipe.SkipHead12,
+                ESPDHead.SPDHead2 => procInputs[EInjectProcInput.Wait_SPDHead1_InjectAddTail].Value || _currentRecipe.OptionRecipe.SkipHead12,
+                ESPDHead.SPDHead3 => procInputs[EInjectProcInput.Wait_SPDHead1_InjectAddTail].Value || _currentRecipe.OptionRecipe.SkipHead34,
+                ESPDHead.SPDHead4 => procInputs[EInjectProcInput.Wait_SPDHead1_InjectAddTail].Value || _currentRecipe.OptionRecipe.SkipHead34,
                 _ => throw new Exception($"Invalid head: {head}")
             };
         }

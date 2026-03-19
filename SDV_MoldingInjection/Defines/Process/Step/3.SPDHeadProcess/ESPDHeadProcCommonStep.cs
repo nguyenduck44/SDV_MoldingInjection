@@ -26,6 +26,9 @@
 
         WorkRequest_Wait,
 
+        ZAxis_Up_ForInjectAddTail_Requsest,
+        Wait_ZAxisReady_ForInjectAddTail,
+
         PAxis_InjectPos_Move,
         PAxis_InjectPos_MoveWait,
 
