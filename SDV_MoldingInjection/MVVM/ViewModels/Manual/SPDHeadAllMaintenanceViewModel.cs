@@ -119,6 +119,27 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
         }
 
+        protected override void ExternalTimerElapsedAction()
+        {
+            if (BalanceLeft.WeightData != null)
+            {
+                BalanceLeftStableWeight = BalanceLeft.WeightData.Weight * (BalanceLeft.WeightData.Unit == "g" ? 1000 : 1);
+                if ((MachineStatus as MachineStatus)!.IsStandByProcessMode)
+                {
+                    BalanceLeft.SendRequestImmediateWeightCommand();
+                }
+            }
+
+            if (BalanceRight.WeightData != null)
+            {
+                BalanceRightStableWeight = BalanceRight.WeightData.Weight * (BalanceRight.WeightData.Unit == "g" ? 1000 : 1);
+                if ((MachineStatus as MachineStatus)!.IsStandByProcessMode)
+                {
+                    BalanceRight.SendRequestImmediateWeightCommand();
+                }
+            }
+        }
+
         protected override void ActualInit()
         {
             Sequences = new ObservableCollection<ESemiSequence>
