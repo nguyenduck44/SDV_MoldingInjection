@@ -120,6 +120,7 @@ namespace SDV_MoldingInjection.Defines
         H1_BubbleRemove_InjectPosOverBasePos,
         [Description("HEAD1_IN05")]
         H1_Syringe_Not_Detected,
+        H1_Syringe_Amount_IsTimeOver,
 
         //--------- 2000 -> 2499 : SPD Head #2 Process Warning ---------
         P2Axis_Origin_Timeout = 2000,
@@ -144,6 +145,7 @@ namespace SDV_MoldingInjection.Defines
         H2_BubbleRemove_InjectPosOverBasePos,
         [Description("HEAD2_IN05")]
         H2_Syringe_Not_Detected,
+        H2_Syringe_Amount_IsTimeOver,
 
 
         //--------- 2500 -> 3000 : SPD Head #3 Process Warning ---------
@@ -169,6 +171,7 @@ namespace SDV_MoldingInjection.Defines
         H3_BubbleRemove_InjectPosOverBasePos,
         [Description("HEAD3_IN05")]
         H3_Syringe_Not_Detected,
+        H3_Syringe_Amount_IsTimeOver,
 
         //--------- 3000 -> 3499 : SPD Head #3 Process Warning ---------
         P4Axis_Origin_Timeout = 3000,
@@ -193,5 +196,6 @@ namespace SDV_MoldingInjection.Defines
         H4_BubbleRemove_InjectPosOverBasePos,
         [Description("HEAD4_IN05")]
         H4_Syringe_Not_Detected,
+        H4_Syringe_Amount_IsTimeOver,
     }
 }

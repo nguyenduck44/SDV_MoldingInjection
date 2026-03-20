@@ -149,6 +149,15 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("ToRun start");
                     Step.ToRunStep++;
                     break;
+                case ESPDHeadProcToRunStep.SyringeAmountCheck:
+                    Log.Debug("Syringe Amount Check");
+                    if (SyringeAmountIsTimeOver)
+                    {
+                        RaiseHeadWarning(EWarning.H1_Syringe_Amount_IsTimeOver);
+                    }
+
+                    Step.ToRunStep++;
+                    break;
                 case ESPDHeadProcToRunStep.GAxis_ClosePosition_Move:
                     if (IsGateOnClosePos)
                     {
@@ -1543,6 +1552,15 @@ namespace SDV_MoldingInjection.Process
             "SPDHead2" => _carrierJigStatusList.CarrierJigStatusH2,
             "SPDHead3" => _carrierJigStatusList.CarrierJigStatusH3,
             "SPDHead4" => _carrierJigStatusList.CarrierJigStatusH4,
+            _ => throw new Exception($"Invalid process name: {Name}")
+        };
+
+        private bool SyringeAmountIsTimeOver => Name switch
+        {
+            "SPDHead1" => _syringeAmountStatusList.SyringeAmounts[0].IsTimeOver,
+            "SPDHead2" => _syringeAmountStatusList.SyringeAmounts[1].IsTimeOver,
+            "SPDHead3" => _syringeAmountStatusList.SyringeAmounts[2].IsTimeOver,
+            "SPDHead4" => _syringeAmountStatusList.SyringeAmounts[3].IsTimeOver,
             _ => throw new Exception($"Invalid process name: {Name}")
         };
 

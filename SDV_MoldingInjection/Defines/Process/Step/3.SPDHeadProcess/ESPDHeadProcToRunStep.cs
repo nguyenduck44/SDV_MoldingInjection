@@ -4,6 +4,8 @@
     {
         Start,
 
+        SyringeAmountCheck,
+
         GAxis_ClosePosition_Move,
         GAxis_ClosePosition_MoveWait,
 
