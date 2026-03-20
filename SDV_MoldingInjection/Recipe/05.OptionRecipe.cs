@@ -12,6 +12,7 @@ namespace SDV_MoldingInjection.Recipe
         private bool _inputTypeManual;
         private bool _inputTypeAuto;
         private bool _savePressureLog;
+        private bool _1torrAndPurge;
 
         #endregion
 
@@ -92,6 +93,20 @@ namespace SDV_MoldingInjection.Recipe
                 {
                     OnRecipeChanged(_savePressureLog, value);
                     _savePressureLog = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool OneTorrAndPurge
+        {
+            get { return _1torrAndPurge; }
+            set
+            {
+                if (_1torrAndPurge != value)
+                {
+                    OnRecipeChanged(_1torrAndPurge, value);
+                    _1torrAndPurge = value;
                     OnPropertyChanged();
                 }
             }

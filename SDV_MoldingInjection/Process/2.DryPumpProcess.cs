@@ -327,13 +327,19 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Info($"Input detect {EDryPumpProcInput.Vacuum_WorkRequest}");
+                    EnableWritePressureLog = true;
+                    if (_currentRecipe.OptionRecipe.OneTorrAndPurge == false)
+                    {
+                        Step.RunStep = (int)EDryPumpProcResinInjectStep.AngleValve_Open_2nd;
+                        break;
+                    }
+
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.AngleValve_Open_1st:
                     Log.Debug($"Opening {AngleValve.Name} (1st)");
                     PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Valve Open 1st");
                     AngleValve.Open();
-                    EnableWritePressureLog = true;
                     Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, AngleValve.IsOpen);
                     Step.RunStep++;
                     break;
@@ -385,14 +391,14 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Out_ChamberPurgeOn.Value = false; 
+                    Out_ChamberPurgeOn.Value = false;
                     Log.Debug("Dry Pump Purge 1st complete");
                     PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Purge End");
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.AngleValve_Open_2nd:
                     Log.Debug($"Opening {AngleValve.Name}");
-                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Valve Open 2nd");
+                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Valve Open");
                     AngleValve.Open();
                     Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, AngleValve.IsOpen);
                     Step.RunStep++;
@@ -425,7 +431,7 @@ namespace SDV_MoldingInjection.Process
                 case EDryPumpProcResinInjectStep.AngleValve_Close_2nd:
                     Log.Debug($"Closing {AngleValve.Name} for pressure hold");
                     AngleValve.Close();
-                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Valve Close 2nd");
+                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Valve Close");
                     Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, AngleValve.IsClose);
                     Step.RunStep++;
                     break;
