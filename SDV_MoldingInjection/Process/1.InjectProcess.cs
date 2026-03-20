@@ -1473,16 +1473,16 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcDotWeightingStep.ClearFlag_DotWeighting_Request:
                     if (currentDotWeightingHead == EDotWeightingHead.HEAD13 &&
-                        (procInputs[EInjectProcInput.SPDHead1_DotWeightingDone].Value == false ||
-                         procInputs[EInjectProcInput.SPDHead3_DotWeightingDone].Value == false))
+                        ((procInputs[EInjectProcInput.SPDHead1_DotWeightingDone].Value == false && _machineStatus.IsSkipHead1 == false) ||
+                         (procInputs[EInjectProcInput.SPDHead3_DotWeightingDone].Value == false && _machineStatus.IsSkipHead3 == false)))
                     {
                         Wait(50);
                         break;
                     }
 
                     if (currentDotWeightingHead == EDotWeightingHead.HEAD24 &&
-                        (procInputs[EInjectProcInput.SPDHead2_DotWeightingDone].Value == false ||
-                         procInputs[EInjectProcInput.SPDHead4_DotWeightingDone].Value == false))
+                        ((procInputs[EInjectProcInput.SPDHead2_DotWeightingDone].Value == false && _machineStatus.IsSkipHead2 == false) ||
+                         (procInputs[EInjectProcInput.SPDHead4_DotWeightingDone].Value == false && _machineStatus.IsSkipHead3 == false)))
                     {
                         Wait(50);
                         break;
