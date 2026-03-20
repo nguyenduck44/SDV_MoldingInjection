@@ -8,82 +8,97 @@
              xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
              d:DataContext="{d:DesignInstance Type={x:Type vm:SPDHeadAllMaintenanceViewModel}}"
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+    <UserControl.Resources>
+        <Style TargetType="TextBlock">
+            <Setter
+                Property="TextAlignment"
+                Value="Center" />
+            <Setter
+                Property="FontWeight"
+                Value="Bold" />
+            <Setter
+                Property="FontSize"
+                Value="15" />
+        </Style>
+    </UserControl.Resources>
+    <Grid Margin="2 20">
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height="160"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="3*"/>
+            </Grid.RowDefinitions>
 
-        <UniformGrid Columns="4">
-            <Button Margin="0,0,0,4"
+            <UniformGrid
+                Columns="4"
+                VerticalAlignment="Center">
+                <TextBlock
+                    Text="HEAD1" />
+                <TextBlock
+                    Text="HEAD2" />
+                <TextBlock
+                    Text="HEAD3" />
+                <TextBlock
+                    Text="HEAD4" />
+            </UniformGrid>
+            <UniformGrid
+                Grid.Row="1"
+                Columns="4">
+                <Button
+                    Margin="0,0,0,4"
                     Command="{Binding SelectHeadCommand}"
                     CommandParameter="1"
                     Content="{Binding MachineStatus.IsSkipHead1, Converter={StaticResource HeadSkipStatusTextConverter}}"
                     Background="{Binding MachineStatus.IsSkipHead1, Converter={StaticResource HeadSkipStatusBrushConverter}}"
                     Foreground="White"
-                    FontSize="14"
+                    FontSize="16"
                     FontWeight="Bold">
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius"
-                                Value="2" />
-                    </Style>
-                </Button.Resources>
-            </Button>
-            <Button Margin="0,0,0,4"
+                </Button>
+                <Button
+                    Margin="0,0,0,4"
                     Command="{Binding SelectHeadCommand}"
                     CommandParameter="2"
                     Content="{Binding MachineStatus.IsSkipHead2, Converter={StaticResource HeadSkipStatusTextConverter}}"
                     Background="{Binding MachineStatus.IsSkipHead2, Converter={StaticResource HeadSkipStatusBrushConverter}}"
                     Foreground="White"
-                    FontSize="14"
+                    FontSize="16"
                     FontWeight="Bold">
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius"
-                                Value="2" />
-                    </Style>
-                </Button.Resources>
-            </Button>
-            <Button Margin="0,0,0,4"
+                </Button>
+                <Button
+                    Margin="0,0,0,4"
                     Command="{Binding SelectHeadCommand}"
                     CommandParameter="3"
                     Content="{Binding MachineStatus.IsSkipHead3, Converter={StaticResource HeadSkipStatusTextConverter}}"
                     Background="{Binding MachineStatus.IsSkipHead3, Converter={StaticResource HeadSkipStatusBrushConverter}}"
                     Foreground="White"
-                    FontSize="14"
+                    FontSize="16"
                     FontWeight="Bold">
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius"
-                                Value="2" />
-                    </Style>
-                </Button.Resources>
-            </Button>
-            <Button Margin="0,0,0,4"
+                </Button>
+                <Button
+                    Margin="0,0,0,4"
                     Command="{Binding SelectHeadCommand}"
                     CommandParameter="4"
                     Content="{Binding MachineStatus.IsSkipHead4, Converter={StaticResource HeadSkipStatusTextConverter}}"
                     Background="{Binding MachineStatus.IsSkipHead4, Converter={StaticResource HeadSkipStatusBrushConverter}}"
                     Foreground="White"
-                    FontSize="14"
+                    FontSize="16"
                     FontWeight="Bold">
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius"
-                                Value="2" />
-                    </Style>
-                </Button.Resources>
-            </Button>
-        </UniformGrid>
+                </Button>
+            </UniformGrid>
+        </Grid>
 
-        <GroupBox Grid.Column="1"
+        <GroupBox Grid.Row="1"
                   Style="{StaticResource TextBlockHeaderGroupBox}"
                   FontSize="14"
+                  Margin="0 5"
                   FontWeight="Bold"
                   Header="Semi Sequences">
             <ItemsControl ItemsSource="{Binding Sequences}"
@@ -106,5 +121,56 @@
             </ItemsControl>
         </GroupBox>
 
+        <GroupBox
+            Header="Balance"
+            Grid.Row="2"
+            Style="{StaticResource TextBlockHeaderGroupBox}">
+            <UniformGrid
+                Columns="2"
+                VerticalAlignment="Top">
+                <GroupBox
+                    Header="Balance Left"
+                    Margin="5 0">
+                    <StackPanel>
+                        <Border
+                            BorderThickness="2"
+                            Height="40"
+                            BorderBrush="LightGray">
+                            <TextBlock
+                                Text="{Binding BalanceLeftStableWeight,StringFormat='{}{0:0.###} mg'}"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                FontSize="14" />
+                        </Border>
+                        <Button
+                            Content="Set Zero"
+                            Height="40"
+                            Margin="0 5"
+                            Command="{Binding BalanceLeftSetZeroCommand}" />
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox
+                    Header="Balance Right"
+                    Margin="5 0">
+                    <StackPanel>
+                        <Border
+                            BorderThickness="2"
+                            Height="40"
+                            BorderBrush="LightGray">
+                            <TextBlock
+                                Text="{Binding BalanceRightStableWeight,StringFormat='{}{0:0.###} mg'}"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                FontSize="14" />
+                        </Border>
+                        <Button
+                            Content="Set Zero"
+                            Height="40"
+                            Margin="0 5"
+                            Command="{Binding BalanceRightSetZeroCommand}" />
+                    </StackPanel>
+                </GroupBox>
+            </UniformGrid>
+        </GroupBox>
     </Grid>
 </UserControl>

@@ -1482,7 +1482,7 @@ namespace SDV_MoldingInjection.Process
 
                     if (currentDotWeightingHead == EDotWeightingHead.HEAD24 &&
                         ((procInputs[EInjectProcInput.SPDHead2_DotWeightingDone].Value == false && _machineStatus.IsSkipHead2 == false) ||
-                         (procInputs[EInjectProcInput.SPDHead4_DotWeightingDone].Value == false && _machineStatus.IsSkipHead3 == false)))
+                         (procInputs[EInjectProcInput.SPDHead4_DotWeightingDone].Value == false && _machineStatus.IsSkipHead4 == false)))
                     {
                         Wait(50);
                         break;
