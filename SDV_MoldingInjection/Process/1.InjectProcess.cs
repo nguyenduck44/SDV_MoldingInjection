@@ -1188,7 +1188,7 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.Stop;
                     }
 
-                    if (sequence == ESequence.DummyShot)
+                    if (sequence == ESequence.DummyShot && Parent!.Sequence == ESequence.AutoRun)
                     {
                         Log.Info("Set next sequence to needdle clean");
                         _tactTimeList.DummyShot.SetTaktTime();
