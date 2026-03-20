@@ -8,8 +8,8 @@ namespace SDV_MoldingInjection.Defines
 
         ZAxisUpForInjectAddTailRequest,
 
-        InjectAddTailFinish,
+        SPDHeadDotWeightingDone,
 
-        SPDHeadRequestDotWeighting,
+        InjectAddTailFinish,
     }
 }

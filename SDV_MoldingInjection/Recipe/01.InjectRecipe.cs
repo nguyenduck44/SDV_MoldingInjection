@@ -65,6 +65,34 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        [SingleRecipeDescription(Description = "X-Axis H13 Weighting position", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "XAxis")]
+        public double XAxisH13DotWeightingPos
+        {
+            get { return _xAxisH13DotWeightPos; }
+            set
+            {
+                if (_xAxisH13DotWeightPos == value) return;
+                OnRecipeChanged(_xAxisH13DotWeightPos, value);
+                _xAxisH13DotWeightPos = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [SingleRecipeDescription(Description = "X-Axis H24 Weighting position", Unit = Unit.mm)]
+        [SinglePositionTeaching(Motion = "XAxis")]
+        public double XAxisH24DotWeightingPos
+        {
+            get { return _xAxisH24DotWeightPos; }
+            set
+            {
+                if (_xAxisH24DotWeightPos == value) return;
+                OnRecipeChanged(_xAxisH24DotWeightPos, value);
+                _xAxisH24DotWeightPos = value;
+                OnPropertyChanged();
+            }
+        }
+
         [SingleRecipeDescription(Description = "X-Axis Dummy Shot position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
         public double XAxisDummyPos
@@ -168,8 +196,10 @@ namespace SDV_MoldingInjection.Recipe
         private double _niddleCleanShiftDist;
 
         private double _yAxisNeedleClean;
+        private double _xAxisH13DotWeightPos;
+        private double _xAxisH24DotWeightPos;
 
-        
+
         #endregion
     }
 }

@@ -125,10 +125,10 @@ namespace SDV_MoldingInjection.Defines
         private bool _originDone;
         private readonly Inputs _inputs;
 
-        private bool isSkipHead1;
-        private bool isSkipHead2;
-        private bool isSkipHead3;
-        private bool isSkipHead4;
+        private bool isSkipHead1 = true;
+        private bool isSkipHead2 = true;
+        private bool isSkipHead3 = true;
+        private bool isSkipHead4 = true;
         #endregion
     }
 }

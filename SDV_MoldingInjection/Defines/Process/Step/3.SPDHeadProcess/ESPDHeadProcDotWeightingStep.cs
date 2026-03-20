@@ -5,8 +5,6 @@
         Start,
 
         // ----- CHARGING PHASE -----
-        Request_XYAxis_DotWeightingPos_Move,
-
         Charge_PosVel_Calculte,
 
         Gate_Close,
@@ -29,7 +27,8 @@
 
         Calibrate_Weight,
 
-        ClearFlag_Request_XYAxis_DotWeightingPos,
+        SetFlag_SPDHead_DotWeighting_Done,
+        ClearFlag_SPDHead_DotWeighting_Done,
 
         End,
     }

@@ -4,23 +4,20 @@
     {
         Start,
 
-        YAxis_ReadyPos_Move,
-        YAxis_ReadyPos_Wait,
+        SPDHead_DotWeighting_H13_Check,
+        SPDHead_DotWeighting_H24_Check,
 
-        ZAxis_SafetyPos_Move,
-        ZAxis_SafetyPos_Wait,
-        WaitSPDHeadRequest,
-
-        XAxis_DotWeightingPos_Move,
-        XAxis_DotWeightingPos_Move_Wait,
+        XYAxis_DotWeightingReadyPos_Move,
+        XYAxis_DotWeightingReadyPos_Wait,
 
         ZAxis_DotWeightingPos_Move,
         ZAxis_DotWeightingPos_Move_Wait,
+
         DotWeighting_Request,
         ClearFlag_DotWeighting_Request,
 
-        ZAxis_SafetyPos_Move_End,
-        ZAxis_SafetyPos_Move_End_Wait,
+        ZAxis_SafetyPos_Move,
+        ZAxis_SafetyPos__Wait,
 
         End,
     }

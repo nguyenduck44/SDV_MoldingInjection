@@ -489,6 +489,30 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.Stop;
                     }
                     break;
+                case ESequence.DotWeighting:
+                    if (head == ESPDHead.SPDHead1 && _machineStatus.IsSkipHead1)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
+                    if (head == ESPDHead.SPDHead2 && _machineStatus.IsSkipHead2)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
+                    if (head == ESPDHead.SPDHead3 && _machineStatus.IsSkipHead3)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
+                    if (head == ESPDHead.SPDHead4 && _machineStatus.IsSkipHead4)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
+
+                    Sequence_DotWeighting();
+                    break;
                 case ESequence.DotWeighting_H1:
                     if (head == ESPDHead.SPDHead1)
                     {
@@ -1133,11 +1157,6 @@ namespace SDV_MoldingInjection.Process
                     _removeResinCount = 0;
                     Step.RunStep++;
                     break;
-                case ESPDHeadProcDotWeightingStep.Request_XYAxis_DotWeightingPos_Move:
-                    Log.Debug($"Set flag {procOutputs[ESPDHeadProcOutput.SPDHeadRequestDotWeighting]}");
-                    procOutputs[ESPDHeadProcOutput.SPDHeadRequestDotWeighting].Value = true;
-                    Step.RunStep++;
-                    break;
                 case ESPDHeadProcDotWeightingStep.Charge_PosVel_Calculte:
                     Log.Debug("Calculate Charge Position");
                     if (_machineStatus.IsDotWeightingTest == false)
@@ -1302,7 +1321,7 @@ namespace SDV_MoldingInjection.Process
 
                     if (_machineStatus.IsDotWeightingTest)
                     {
-                        Step.RunStep = (int)ESPDHeadProcDotWeightingStep.ClearFlag_Request_XYAxis_DotWeightingPos;
+                        Step.RunStep = (int)ESPDHeadProcDotWeightingStep.SetFlag_SPDHead_DotWeighting_Done;
                         break;
                     }
 
@@ -1314,7 +1333,7 @@ namespace SDV_MoldingInjection.Process
                         Log.Debug("DotWeighting Pass");
                         _currentSPDHeadRecipe.PAxisInjectChargePos = _pAxisInjectCharge_Pos;
                         _recipeSelector.Save();
-                        Step.RunStep = (int)ESPDHeadProcDotWeightingStep.ClearFlag_Request_XYAxis_DotWeightingPos;
+                        Step.RunStep = (int)ESPDHeadProcDotWeightingStep.SetFlag_SPDHead_DotWeighting_Done;
                         break;
                     }
 
@@ -1322,10 +1341,21 @@ namespace SDV_MoldingInjection.Process
 
                     Step.RunStep = (int)ESPDHeadProcDotWeightingStep.Gate_Close;
                     break;
-                case ESPDHeadProcDotWeightingStep.ClearFlag_Request_XYAxis_DotWeightingPos:
+                case ESPDHeadProcDotWeightingStep.SetFlag_SPDHead_DotWeighting_Done:
+                    Log.Debug("Set flag Dot Weighting Done");
+                    procOutputs[ESPDHeadProcOutput.SPDHeadDotWeightingDone].Value = true;
                     _machineStatus.MachineCalibration[(int)head - 1] = true;
-                    procOutputs[ESPDHeadProcOutput.SPDHeadRequestDotWeighting].Value = false;
-                    Log.Debug($"Clear output {ESPDHeadProcOutput.SPDHeadRequestDotWeighting}");
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcDotWeightingStep.ClearFlag_SPDHead_DotWeighting_Done:
+                    if (procInputs[ESPDHeadProcInput.XYAxisInDotWeightingPos].Value)
+                    {
+                        Wait(20);
+                        break;
+                    }
+
+                    Log.Debug("CSlear flag SPDHead DotWeighting done");
+                    procOutputs[ESPDHeadProcOutput.SPDHeadDotWeightingDone].Value = false;
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.End:

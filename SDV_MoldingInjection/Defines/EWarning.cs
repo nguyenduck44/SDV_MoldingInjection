@@ -26,7 +26,8 @@ namespace SDV_MoldingInjection.Defines
         XAxis_ReadyPos_MoveTimeOut,
         XAxis_InjectPos_MoveTimeOut,
         XAxis_DummyPos_MoveTimeOut,
-        XAxis_DotWeightingPos_MoveTimeOut,
+        XAxis_H13DotWeightingPos_MoveTimeOut,
+        XAxis_H24DotWeightingPos_MoveTimeOut,
         XAxis_MoveNeedleCleanPos_Timeout,
 
         YAxis_Origin_TimeOut = 600,

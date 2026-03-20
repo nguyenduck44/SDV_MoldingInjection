@@ -14,9 +14,7 @@
 
         SPDHead_InjectAddTail_Request,
 
-        H1DotWeightingInPos,
-        H2DotWeightingInPos,
-        H3DotWeightingInPos,
-        H4DotWeightingInPos,
+        Request_H13DotWeighting,
+        Request_H24DotWeighting,
     }
 }
