@@ -76,6 +76,17 @@
                               Tag="Check to Save Pressure Log"/>
                 </StackPanel>
             </GroupBox>
+            
+            <GroupBox Header="Inject"
+                      Style="{x:Null}"
+                      Grid.Row="1">
+                <StackPanel Orientation="Vertical">
+                    <CheckBox Content="1 Torr And Purge" 
+                              Margin="5 0"
+                              IsChecked="{Binding RecipeList.OptionRecipe.OneTorrAndPurge}" 
+                              Tag="Check to start inject with 1 torr and purge"/>
+                </StackPanel>
+            </GroupBox>
         </Grid>
 
         <ui:ImageButton Content="{DynamicResource str_Save}"
