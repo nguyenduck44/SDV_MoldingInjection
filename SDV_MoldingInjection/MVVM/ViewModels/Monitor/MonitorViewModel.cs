@@ -53,6 +53,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     var monitorIOViewModel = _viewModelFactory.Create<MonitorIOViewModel>();
                     monitorIOViewModel.CurrentOutputList = _outputs.Head1;
                     monitorIOViewModel.CurrentInputList = _inputs.Head1;
+                    monitorIOViewModel.SelectedInputDeviceIndex = 0;
+                    monitorIOViewModel.SelectedOutputDeviceIndex = 0;
                     _navigationService.NavigateTo<MonitorIOViewModel>();
                 });
             }
@@ -66,6 +68,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     var monitorIOViewModel = _viewModelFactory.Create<MonitorIOViewModel>();
                     monitorIOViewModel.CurrentOutputList = _outputs.Head2;
                     monitorIOViewModel.CurrentInputList = _inputs.Head2;
+                    monitorIOViewModel.SelectedInputDeviceIndex = 0;
+                    monitorIOViewModel.SelectedOutputDeviceIndex = 0;
                     _navigationService.NavigateTo<MonitorIOViewModel>();
                 });
             }
@@ -79,6 +83,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     var monitorIOViewModel = _viewModelFactory.Create<MonitorIOViewModel>();
                     monitorIOViewModel.CurrentOutputList = _outputs.Head3;
                     monitorIOViewModel.CurrentInputList = _inputs.Head3;
+                    monitorIOViewModel.SelectedInputDeviceIndex = 0;
+                    monitorIOViewModel.SelectedOutputDeviceIndex = 0;
                     _navigationService.NavigateTo<MonitorIOViewModel>();
                 });
             }
@@ -92,6 +98,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     var monitorIOViewModel = _viewModelFactory.Create<MonitorIOViewModel>();
                     monitorIOViewModel.CurrentOutputList = _outputs.Head4;
                     monitorIOViewModel.CurrentInputList = _inputs.Head4;
+                    monitorIOViewModel.SelectedInputDeviceIndex = 0;
+                    monitorIOViewModel.SelectedOutputDeviceIndex = 0;
                     _navigationService.NavigateTo<MonitorIOViewModel>();
                 });
             }
