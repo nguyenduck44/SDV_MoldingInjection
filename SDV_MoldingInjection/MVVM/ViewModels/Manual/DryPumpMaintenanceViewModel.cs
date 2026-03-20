@@ -158,11 +158,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 specReached = true;
                 _devices.Cylinders.AngleValve.Close();
                 PressureLog(pressure, "Valve Close");
-                enableExternalTimerAction = false;
                 return;
             }
 
-            if (pressure > 1.0 && specReached)
+            if (pressure > _recipeSelector.CurrentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec && specReached)
             {
                 enableExternalTimerAction = false;
                 PressureLog(pressure, "Reach 1.0 Torr");
