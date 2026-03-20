@@ -12,6 +12,7 @@ namespace SDV_MoldingInjection.Recipe
         private double _addTailSpeed;
         private double _bubbleRemoveCount;
         private double _bubbleRemoveRotateCount;
+        private double _addTailTime;
 
         #endregion
 
@@ -90,6 +91,18 @@ namespace SDV_MoldingInjection.Recipe
                 if (_bubbleRemoveRotateCount == value) return;
                 OnRecipeChanged(_bubbleRemoveRotateCount, value);
                 _bubbleRemoveRotateCount = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double AddTailTime
+        {
+            get { return _addTailTime; }
+            set
+            {
+                if (_addTailTime == value) return;
+                OnRecipeChanged(_addTailTime, value);
+                _addTailTime = value;
                 OnPropertyChanged();
             }
         }

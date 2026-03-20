@@ -6,6 +6,8 @@ namespace SDV_MoldingInjection.Defines
 
         InjectFinish,
 
+        ZAxisUpForInjectAddTailRequest,
+
         InjectAddTailFinish,
 
         SPDHeadRequestDotWeighting,

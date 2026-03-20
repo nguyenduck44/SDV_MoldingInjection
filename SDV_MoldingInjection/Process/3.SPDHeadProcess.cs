@@ -763,6 +763,7 @@ namespace SDV_MoldingInjection.Process
                             else
                             {
                                 double height = (_pAxisBase_Pos - _currentSPDHeadRecipe.PAxisInjectChargePos) * (_currentRecipe.AdditionalMolding_Recipe.AddTailWeight / 100);
+                                _currentRecipe.AdditionalMolding_Recipe.AddTailTime = height / _currentRecipe.AdditionalMolding_Recipe.AddTailSpeed;
                                 _pAxisCharge_Pos = _pAxisBase_Pos - height;
                             }
 
@@ -802,7 +803,6 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Wait inject request work");
                     Step.RunStep++;
                     break;
-
                 case ESPDHeadProcCommonStep.Base_PosVel_Calculte:
                     Log.Debug("Calculate InjectPos and Velocity");
                     _pAxisInject_Pos = _pAxisBase_Pos;
@@ -892,27 +892,40 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.WorkRequest_Wait:
-                    if (procInputs[ESPDHeadProcInput.InjectAddTailRequest].Value == false && InjectAddTail)
-                    {
-                        Wait(50);
-                        break;
-                    }
-
                     if (procInputs[ESPDHeadProcInput.WorkRequest].Value == false && InjectAddTail == false)
                     {
                         Wait(50);
                         break;
                     }
 
-                    if (InjectAddTail)
-                    {
-                        Log.Debug($"Input detect {ESPDHeadProcInput.InjectAddTailRequest}");
-                    }
-                    else
+                    if (InjectAddTail == false)
                     {
                         Log.Debug($"Input detect {ESPDHeadProcInput.WorkRequest}");
+                        Step.RunStep = (int)ESPDHeadProcCommonStep.PAxis_InjectPos_Move;
+                        break;
                     }
 
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcCommonStep.ZAxis_Up_ForInjectAddTail_Requsest:
+                    if (_currentRecipe.AdditionalMolding_Recipe.SkipAddTail == false && InjectAddTail == true)
+                    {
+                        Log.Debug("Request Z Axis move up distance for inject add tail");
+                        procOutputs[ESPDHeadProcOutput.ZAxisUpForInjectAddTailRequest].Value = true;
+                    }
+
+                    Log.Debug("Wait Z Axis ready move up distance for inject add tail");
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcCommonStep.Wait_ZAxisReady_ForInjectAddTail:
+                    if (procInputs[ESPDHeadProcInput.ZAxis_InjectAddTail_Ready].Value == false)
+                    {
+                        Wait(50);
+                        break;
+                    }
+
+                    Log.Debug($"Clear Output {ESPDHeadProcOutput.ZAxisUpForInjectAddTailRequest}");
+                    procOutputs[ESPDHeadProcOutput.ZAxisUpForInjectAddTailRequest].Value = false;
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.PAxis_InjectPos_Move:
@@ -931,7 +944,7 @@ namespace SDV_MoldingInjection.Process
                         }
                         else
                         {
-                            Log.Debug("Start inject tail");
+                            Log.Debug("Start inject add tail");
                             Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout + Math.Abs(_pAxisBase_Pos - _pAxisInject_Pos) / _currentRecipe.AdditionalMolding_Recipe.AddTailSpeed,
                                 () => PAxis.IsOnPosition(_pAxisInject_Pos));
                         }
@@ -966,7 +979,7 @@ namespace SDV_MoldingInjection.Process
                         else
                         {
                             _bubbleRemoveCount++;
-                            if(_bubbleRemoveCount <= 2)
+                            if (_bubbleRemoveCount <= 2)
                             {
                                 _syringeAmountStatusList.ConsumeSyringeAmount(head, _pAxisBase_Pos - _pAxisCharge_Pos);
                                 Step.RunStep = (int)ESPDHeadProcCommonStep.BubbleRemoveResetCountRotate;
@@ -998,13 +1011,13 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.WorkDone_Clear:
-                    if (procInputs[ESPDHeadProcInput.InjectAddTailRequest].Value == true && InjectAddTail)
+                    if (procInputs[ESPDHeadProcInput.WorkRequest].Value == true && InjectAddTail == false)
                     {
                         Wait(10);
                         break;
                     }
 
-                    if (procInputs[ESPDHeadProcInput.WorkRequest].Value == true && InjectAddTail == false)
+                    if (InjectAddTail && procInputs[ESPDHeadProcInput.ZAxis_InjectAddTail_Ready].Value == true)
                     {
                         Wait(10);
                         break;
@@ -1014,6 +1027,9 @@ namespace SDV_MoldingInjection.Process
                     {
                         procOutputs[ESPDHeadProcOutput.InjectAddTailFinish].Value = false;
                         Log.Debug($"Clear output {ESPDHeadProcOutput.InjectAddTailFinish} done");
+
+                        procOutputs[ESPDHeadProcOutput.ZAxisUpForInjectAddTailRequest].Value = false;
+                        Log.Debug($"Clear output {ESPDHeadProcOutput.ZAxisUpForInjectAddTailRequest} done");
                     }
                     else
                     {

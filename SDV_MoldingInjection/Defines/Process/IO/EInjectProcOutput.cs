@@ -6,12 +6,13 @@
 
         DryPump_VacuumRequest,
         SPDHeadWorkRequest,
-        SPDHeadInjectAddTailRequest,
 
         SPDHead1_RemoveResinRequest,
         SPDHead2_RemoveResinRequest,
         SPDHead3_RemoveResinRequest,
         SPDHead4_RemoveResinRequest,
+
+        SPDHead_InjectAddTail_Request,
 
         H1DotWeightingInPos,
         H2DotWeightingInPos,
