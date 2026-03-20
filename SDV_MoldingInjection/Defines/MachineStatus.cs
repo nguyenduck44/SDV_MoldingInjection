@@ -68,6 +68,46 @@ namespace SDV_MoldingInjection.Defines
             }
         }
 
+        public bool IsSkipHead1
+        {
+            get { return isSkipHead1; }
+            set
+            {
+                isSkipHead1 = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsSkipHead2
+        {
+            get { return isSkipHead2; }
+            set
+            {
+                isSkipHead2 = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsSkipHead3
+        {
+            get { return isSkipHead3; }
+            set
+            {
+                isSkipHead3 = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsSkipHead4
+        {
+            get { return isSkipHead4; }
+            set
+            {
+                isSkipHead4 = value;
+                OnPropertyChanged();
+            }
+        }
+
         public override void MoveMultiPointPositionSequence(MultiPointPosition multiPointPosition)
         {
             if (multiPointPosition == null || multiPointPosition.Points.Count <= 0) return;
@@ -84,6 +124,11 @@ namespace SDV_MoldingInjection.Defines
         private bool isDotWeightingTest;
         private bool _originDone;
         private readonly Inputs _inputs;
+
+        private bool isSkipHead1;
+        private bool isSkipHead2;
+        private bool isSkipHead3;
+        private bool isSkipHead4;
         #endregion
     }
 }

@@ -15,9 +15,6 @@
             <Setter Property="Margin" Value="0,1"/>
             <Setter Property="Padding" Value="2"/>
         </Style>
-
-        <conv:HeadSkipStatusTextConverter x:Key="HeadSkipStatusTextConverter" />
-        <conv:HeadSkipStatusBrushConverter x:Key="HeadSkipStatusBrushConverter" />
     </UserControl.Resources>
 
     <Grid Background="White">

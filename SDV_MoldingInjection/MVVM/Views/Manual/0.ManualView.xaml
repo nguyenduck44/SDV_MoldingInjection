@@ -9,7 +9,7 @@
              d:DataContext="{d:DesignInstance Type=vm:ManualViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <ItemsControl ItemsSource="{Binding MaintenanceViewModels}"
+        <ItemsControl ItemsSource="{Binding ManualViewModels}"
                       Margin="20">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>

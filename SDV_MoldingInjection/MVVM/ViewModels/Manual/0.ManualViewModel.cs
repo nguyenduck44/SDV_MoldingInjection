@@ -10,19 +10,27 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
     public class ManualViewModel : ViewModelBase
     {
         private readonly INavigationService _navigationService;
+        private readonly SPDHeadAllMaintenanceViewModel _sPDHeadAllMaintenanceViewModel;
 
         public ManualViewModel(IEnumerable<MaintenanceViewModel<ESemiSequence, RecipeList>> maintenanceViewModels,
-            INavigationService navigationService)
+            INavigationService navigationService,
+            SPDHeadAllMaintenanceViewModel sPDHeadAllMaintenanceViewModel)
         {
             MaintenanceViewModels = maintenanceViewModels;
             _navigationService = navigationService;
+            _sPDHeadAllMaintenanceViewModel = sPDHeadAllMaintenanceViewModel;
 
             for (int i = 0; i < MaintenanceViewModels.Count(); i++)
             {
                 MaintenanceViewModels.ToList()[i].Name = Enum.GetName(typeof(EProcess), EProcess.Root + 1 + i);
             }
-            
-            foreach (var vm in MaintenanceViewModels)
+
+            ManualViewModels = new List<MaintenanceViewModel<ESemiSequence, RecipeList>>();
+            sPDHeadAllMaintenanceViewModel.Name = "SPDs";
+            ManualViewModels.AddRange(maintenanceViewModels.ToList());
+            ManualViewModels.Add(sPDHeadAllMaintenanceViewModel);
+
+            foreach (var vm in ManualViewModels)
             {
                 vm.Init();
             }
@@ -34,11 +42,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand<string>((name) =>
                 {
-                    MaintenanceViewModels.First(vm => vm.Name == name).MaintenanceView = EMaintenanceView.Manual;
-                    _navigationService.NavigateTo(MaintenanceViewModels.First(vm => vm.Name == name));
+                    ManualViewModels.First(vm => vm.Name == name).MaintenanceView = EMaintenanceView.Manual;
+                    _navigationService.NavigateTo(ManualViewModels.First(vm => vm.Name == name));
                 });
             }
         }
+
+        public List<MaintenanceViewModel<ESemiSequence, RecipeList>> ManualViewModels { get; }
 
         public IEnumerable<MaintenanceViewModel<ESemiSequence, RecipeList>> MaintenanceViewModels { get; }
     }

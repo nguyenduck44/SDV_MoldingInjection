@@ -23,8 +23,6 @@ namespace SDV_MoldingInjection.Defines
         [Description("Jig UNLOADING")]
         Unloading,
 
-        [Description("Dummy shot")]
-        DummyShot,
         [Description("Dummy shot H1")]
         DummyShot_H1,
         [Description("Dummy shot H2")]
@@ -34,8 +32,6 @@ namespace SDV_MoldingInjection.Defines
         [Description("Dummy shot H4")]
         DummyShot_H4,
 
-        [Description("Needle cleaning")]
-        NeedleCleaning,
         [Description("Needle cleaning H1")]
         NeedleCleaning_H1,
         [Description("Needle cleaning H2")]
@@ -80,6 +76,15 @@ namespace SDV_MoldingInjection.Defines
         BubbleRemove_H3,
         [Description("Bubble remove H4")]
         BubbleRemove_H4,
+
+        [Description("Dummy shot")]
+        DummyShot,
+        [Description("Needle cleaning")]
+        NeedleCleaning,
+        [Description("Bubble Remove")]
+        BubbleRemove,
+        [Description("Dot Weighting")]
+        DotWeighting,
 
         MoveMultiPoint,
     }
@@ -99,8 +104,7 @@ namespace SDV_MoldingInjection.Defines
         ResinInject,
         [Description("Jig UNLOADING")]
         Unloading,
-        [Description("Dummy shot")]
-        DummyShot,
+
         [Description("Dummy shot H1")]
         DummyShot_H1,
         [Description("Dummy shot H2")]
@@ -109,8 +113,7 @@ namespace SDV_MoldingInjection.Defines
         DummyShot_H3,
         [Description("Dummy shot H4")]
         DummyShot_H4,
-        [Description("Needle cleaning")]
-        NeedleCleaning,
+        
         [Description("Needle cleaning H1")]
         NeedleCleaning_H1,
         [Description("Needle cleaning H2")]
@@ -155,6 +158,15 @@ namespace SDV_MoldingInjection.Defines
         BubbleRemove_H3,
         [Description("Bubble remove H4")]
         BubbleRemove_H4,
+
+        [Description("Dummy shot")]
+        DummyShot,
+        [Description("Needle cleaning")]
+        NeedleCleaning,
+        [Description("Bubble Remove")]
+        BubbleRemove,
+        [Description("Dot Weighting")]
+        DotWeighting,
 
         MoveMultiPoint,
     }

@@ -410,7 +410,35 @@ namespace SDV_MoldingInjection.Process
                     Sequence_SPDHeadCommon(ESequence.ResinInject);
                     break;
                 case ESequence.DummyShot:
-                    Sequence_SPDHeadCommon(ESequence.DummyShot);
+                    if(Parent!.Sequence == ESequence.AutoRun)
+                    {
+                        Sequence_SPDHeadCommon(ESequence.DummyShot);
+                    }
+                    else
+                    {
+                        if (head == ESPDHead.SPDHead1 && _machineStatus.IsSkipHead1)
+                        {
+                            Sequence = ESequence.Stop;
+                            break;
+                        }
+                        if (head == ESPDHead.SPDHead2 && _machineStatus.IsSkipHead2)
+                        {
+                            Sequence = ESequence.Stop;
+                            break;
+                        }
+                        if (head == ESPDHead.SPDHead3 && _machineStatus.IsSkipHead3)
+                        {
+                            Sequence = ESequence.Stop;
+                            break;
+                        }
+                        if (head == ESPDHead.SPDHead4 && _machineStatus.IsSkipHead4)
+                        {
+                            Sequence = ESequence.Stop;
+                            break;
+                        }
+
+                        Sequence_SPDHeadCommon(ESequence.DummyShot);
+                    }
                     break;
                 case ESequence.DummyShot_H1:
                     if (head == ESPDHead.SPDHead1 && CurrentHeadSkip == false)

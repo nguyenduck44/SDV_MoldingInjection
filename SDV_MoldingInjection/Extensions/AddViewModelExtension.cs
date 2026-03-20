@@ -88,6 +88,7 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddSingleton<MaintenanceViewModel<ESemiSequence, RecipeList>, SPDHeadMaintenanceViewModel>();
                 services.AddSingleton<MaintenanceViewModel<ESemiSequence, RecipeList>, SPDHeadMaintenanceViewModel>();
                 services.AddSingleton<MaintenanceViewModel<ESemiSequence, RecipeList>, SPDHeadMaintenanceViewModel>();
+                services.AddSingleton<SPDHeadAllMaintenanceViewModel>();
             });
 
             return hostBuilder;
