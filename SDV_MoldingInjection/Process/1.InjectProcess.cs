@@ -1790,11 +1790,11 @@ namespace SDV_MoldingInjection.Process
                 if (_machineStatus.IsSkipHead1 == false && (head == ESPDHead.SPDHead1 || head == ESPDHead.All))
                     Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisDummyPos);
                 if (_machineStatus.IsSkipHead2 == false && (head == ESPDHead.SPDHead2 || head == ESPDHead.All))
-                    Z1Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisDummyPos);
+                    Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisDummyPos);
                 if (_machineStatus.IsSkipHead3 == false && (head == ESPDHead.SPDHead3 || head == ESPDHead.All))
-                    Z1Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisDummyPos);
+                    Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisDummyPos);
                 if (_machineStatus.IsSkipHead4 == false && (head == ESPDHead.SPDHead4 || head == ESPDHead.All))
-                    Z1Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisDummyPos);
+                    Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisDummyPos);
             }
         }
 
