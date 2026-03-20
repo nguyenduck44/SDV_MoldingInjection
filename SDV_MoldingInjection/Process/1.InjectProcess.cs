@@ -1033,7 +1033,7 @@ namespace SDV_MoldingInjection.Process
                             RaiseWarning(EWarning.YAxis_DummyPos_MoveTimeOut);
                         break;
                     }
-                    Log.Debug($"Reached dummy shot position for");
+                    Log.Debug($"Reached dummy shot position for {sequence}");
                     Step.RunStep++;
                     break;
                 case EMoldProcDummyShotStep.ZAxis_DummyPos_Move:
@@ -1058,7 +1058,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcDummyShotStep.ZAxis_DummyPos_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        if (sequence == ESequence.DummyShot)
+                        if (sequence == ESequence.DummyShot || sequence == ESequence.BubbleRemove)
                         {
                             if (Parent!.Sequence == ESequence.AutoRun)
                             {

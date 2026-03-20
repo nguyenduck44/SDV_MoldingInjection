@@ -419,7 +419,7 @@ namespace SDV_MoldingInjection.Process
                     Sequence_SPDHeadCommon(ESequence.ResinInject);
                     break;
                 case ESequence.DummyShot:
-                    if(Parent!.Sequence == ESequence.AutoRun)
+                    if (Parent!.Sequence == ESequence.AutoRun)
                     {
                         Sequence_SPDHeadCommon(ESequence.DummyShot);
                     }
@@ -527,6 +527,37 @@ namespace SDV_MoldingInjection.Process
                     else
                     {
                         Sequence = ESequence.Stop;
+                    }
+                    break;
+                case ESequence.BubbleRemove:
+                    if (Parent!.Sequence == ESequence.AutoRun)
+                    {
+                        Sequence_SPDHeadCommon(ESequence.BubbleRemove);
+                    }
+                    else
+                    {
+                        if (head == ESPDHead.SPDHead1 && _machineStatus.IsSkipHead1)
+                        {
+                            Sequence = ESequence.Stop;
+                            break;
+                        }
+                        if (head == ESPDHead.SPDHead2 && _machineStatus.IsSkipHead2)
+                        {
+                            Sequence = ESequence.Stop;
+                            break;
+                        }
+                        if (head == ESPDHead.SPDHead3 && _machineStatus.IsSkipHead3)
+                        {
+                            Sequence = ESequence.Stop;
+                            break;
+                        }
+                        if (head == ESPDHead.SPDHead4 && _machineStatus.IsSkipHead4)
+                        {
+                            Sequence = ESequence.Stop;
+                            break;
+                        }
+
+                        Sequence_SPDHeadCommon(ESequence.BubbleRemove);
                     }
                     break;
                 case ESequence.BubbleRemove_H1:
@@ -727,7 +758,8 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.BubbleRemoveResetCountRotate:
-                    if (sequence == ESequence.BubbleRemove_H1 ||
+                    if (sequence == ESequence.BubbleRemove ||
+                        sequence == ESequence.BubbleRemove_H1 ||
                         sequence == ESequence.BubbleRemove_H2 ||
                         sequence == ESequence.BubbleRemove_H3 ||
                         sequence == ESequence.BubbleRemove_H4)
@@ -784,6 +816,7 @@ namespace SDV_MoldingInjection.Process
                         case ESequence.DummyShot_H4:
                             _pAxisCharge_Pos = _currentSPDHeadRecipe.PAxisDummyChargePos;
                             break;
+                        case ESequence.BubbleRemove:
                         case ESequence.BubbleRemove_H1:
                         case ESequence.BubbleRemove_H2:
                         case ESequence.BubbleRemove_H3:
@@ -836,6 +869,7 @@ namespace SDV_MoldingInjection.Process
                         case ESequence.DummyShot_H4:
                             _pAxisInject_Vel = PAxis.Parameter.Velocity * 2;
                             break;
+                        case ESequence.BubbleRemove:
                         case ESequence.BubbleRemove_H1:
                         case ESequence.BubbleRemove_H2:
                         case ESequence.BubbleRemove_H3:
@@ -857,7 +891,8 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    if (sequence != ESequence.BubbleRemove_H1 &&
+                    if (sequence != ESequence.BubbleRemove &&
+                        sequence != ESequence.BubbleRemove_H2 &&
                         sequence != ESequence.BubbleRemove_H2 &&
                         sequence != ESequence.BubbleRemove_H3 &&
                         sequence != ESequence.BubbleRemove_H4)
@@ -973,7 +1008,8 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    if (sequence == ESequence.BubbleRemove_H1 ||
+                    if (sequence == ESequence.BubbleRemove ||
+                        sequence == ESequence.BubbleRemove_H1 ||
                         sequence == ESequence.BubbleRemove_H2 ||
                         sequence == ESequence.BubbleRemove_H3 ||
                         sequence == ESequence.BubbleRemove_H4)

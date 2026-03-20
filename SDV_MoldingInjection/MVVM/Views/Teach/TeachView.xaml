@@ -10,7 +10,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <ItemsControl ItemsSource="{Binding MaintenanceViewModels}"
-                      Margin="20">
+                      Margin="10">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <RadioButton

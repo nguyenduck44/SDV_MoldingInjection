@@ -26,7 +26,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
 
             ManualViewModels = new List<MaintenanceViewModel<ESemiSequence, RecipeList>>();
-            sPDHeadAllMaintenanceViewModel.Name = "SPDs";
+            sPDHeadAllMaintenanceViewModel.Name = "SPDHeadGroups";
             ManualViewModels.AddRange(maintenanceViewModels.ToList());
             ManualViewModels.Add(sPDHeadAllMaintenanceViewModel);
 
