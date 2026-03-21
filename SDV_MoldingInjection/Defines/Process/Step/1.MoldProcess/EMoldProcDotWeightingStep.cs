@@ -4,6 +4,8 @@
     {
         Start,
 
+        SPDHead_WorkCheck,
+
         SPDHead_DotWeighting_H13_Check,
         SPDHead_DotWeighting_H24_Check,
 
