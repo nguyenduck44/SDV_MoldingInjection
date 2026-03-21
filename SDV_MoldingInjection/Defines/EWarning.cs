@@ -15,6 +15,8 @@ namespace SDV_MoldingInjection.Defines
         Warning_OverTemperature_Detected,
         [Description("IN04")]
         OPSwitchKey_Not_In_AutoMode,
+        [Description("IN04")]
+        Machine_Not_In_AutoMode,
 
         //--------- 500 -> 999 : Mold Process Warning ---------
         Mold_Chamber_OpenWarning = 500,
