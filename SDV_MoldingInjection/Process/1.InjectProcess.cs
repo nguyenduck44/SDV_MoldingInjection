@@ -80,6 +80,30 @@ namespace SDV_MoldingInjection.Process
         #endregion
 
         #region Process Methods
+        public override bool ProcessToAlarm()
+        {
+            Log.Debug("Dissable Open Close Chamber");
+            _devices.Outputs.VacChamberClose.Value = false;
+            _devices.Outputs.VacChamberOpen.Value = false;
+            return base.ProcessToAlarm();
+        }
+
+        public override bool ProcessToStop()
+        {
+            Log.Debug("Dissable Open Close Chamber");
+            _devices.Outputs.VacChamberClose.Value = false;
+            _devices.Outputs.VacChamberOpen.Value = false;
+            return base.ProcessToStop();
+        }
+
+        public override bool ProcessToWarning()
+        {
+            Log.Debug("Dissable Open Close Chamber");
+            _devices.Outputs.VacChamberClose.Value = false;
+            _devices.Outputs.VacChamberOpen.Value = false;
+            return base.ProcessToWarning();
+        }
+
         public override bool ProcessToRun()
         {
             switch ((EMoldProcToRunStep)Step.ToRunStep)
@@ -243,19 +267,19 @@ namespace SDV_MoldingInjection.Process
                     Sequence_NeedleClean(ESequence.NeedleCleaning_H4, ESPDHead.SPDHead4);
                     break;
                 case ESequence.DotWeighting:
-                    Sequence_DotWeighting();
+                    Sequence_DotWeighting(ESequence.DotWeighting);
                     break;
                 case ESequence.DotWeighting_H1:
-                    Sequence_DotWeighting();
+                    Sequence_DotWeighting(ESequence.DotWeighting_H1);
                     break;
                 case ESequence.DotWeighting_H2:
-                    Sequence_DotWeighting();
+                    Sequence_DotWeighting(ESequence.DotWeighting_H2);
                     break;
                 case ESequence.DotWeighting_H3:
-                    Sequence_DotWeighting();
+                    Sequence_DotWeighting(ESequence.DotWeighting_H3);
                     break;
                 case ESequence.DotWeighting_H4:
-                    Sequence_DotWeighting();
+                    Sequence_DotWeighting(ESequence.DotWeighting_H4);
                     break;
                 case ESequence.HeadAssemble_H1:
                     Sequence_AtDummyPos(ESequence.HeadAssemble_H1, ESPDHead.SPDHead1);
@@ -1359,7 +1383,7 @@ namespace SDV_MoldingInjection.Process
             }
         }
 
-        private void Sequence_DotWeighting()
+        private void Sequence_DotWeighting(ESequence sequence)
         {
             switch ((EMoldProcDotWeightingStep)Step.RunStep)
             {

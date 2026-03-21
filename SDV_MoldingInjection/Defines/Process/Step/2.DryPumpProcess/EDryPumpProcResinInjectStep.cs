@@ -32,6 +32,12 @@
         DryPump_VacuumDone_Send,
 
         DryPump_WaitVentTime,
+
+        AngleValve_CloseCheck,
+        AngleValve_CloseWait,
+
+        SetStartVent,
+
         DryPump_PurgeAndWait,
 
         WaitToClear_ProcOutput,

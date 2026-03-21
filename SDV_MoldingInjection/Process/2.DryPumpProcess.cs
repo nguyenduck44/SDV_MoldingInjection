@@ -472,10 +472,35 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"Disable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
-                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Vent Start");
                     EnablePressureHold = false;
+                    Step.RunStep++;
+                    break;
+                case EDryPumpProcResinInjectStep.AngleValve_CloseCheck:
+                    if (AngleValve.IsClose())
+                    {
+                        Step.RunStep = (int)EDryPumpProcResinInjectStep.SetStartVent;
+                        break;
+                    }
+
+                    Log.Debug($"Closing AngleValve");
+                    AngleValve.Close();
+                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, AngleValve.IsClose);
+                    Step.RunStep++;
+                    break;
+                case EDryPumpProcResinInjectStep.AngleValve_CloseWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseWarning(EWarning.AngleValve_CloseFail);
+                        break;
+                    }
+
+                    Log.Debug($"Closing AngleValve Done");
+                    Step.RunStep++;
+                    break;
+                case EDryPumpProcResinInjectStep.SetStartVent:
                     Log.Debug("Vent start");
                     _ventStartTick = Environment.TickCount;
+                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Vent Start");
                     Out_ChamberPurgeOn.Value = true;
                     Step.RunStep++;
                     break;

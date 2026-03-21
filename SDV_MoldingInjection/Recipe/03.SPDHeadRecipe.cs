@@ -21,7 +21,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "Resin Weight Spec", Unit = Unit.Percentage)]
+        [SingleRecipeDescription(Description = "Resin Weight Spec", Unit = Unit.mg)]
         public double ResinWeightSpec
         {
             get { return _resinWeightSpec; }
