@@ -87,6 +87,36 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
         }
 
+        public ICommand AutoModeCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    if (Devices.Inputs.AutoSW.Value == false)
+                    {
+                        MessageBoxEx.ShowDialog("Switch Safety Key not in Auto Mode", false, "WARNING");
+                        return;
+                    }
+                    Devices.Outputs.EQPStop.Value = false;
+                    Devices.Outputs.SWKeyLock.Value = false;
+                    MachineStatus.MachineMode = EMachineMode.Auto;
+                });
+            }
+        }
+
+        public ICommand TeachModeCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    Devices.Outputs.SWKeyLock.Value = true;
+                    MachineStatus.MachineMode = EMachineMode.Teach;
+                });
+            }
+        }
+
         public ICommand NeedleCleanCommand
         {
             get

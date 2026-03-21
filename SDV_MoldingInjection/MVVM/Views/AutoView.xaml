@@ -349,14 +349,6 @@
             <UniformGrid Rows="1"
                          Columns="3"
                          HorizontalAlignment="Center">
-                <ui:ImageButton Image="/EQX.UI;component/Resources/Images/Components/Common/alarm_selected.png"
-                                DisabledImage="/EQX.UI;component/Resources/Images/Components/Common/alarm_normal_dark.png"
-                                Content="{DynamicResource str_Buzzer_Off}"
-                                Command="{Binding BuzzerOffCommand}"
-                                Width="85"
-                                Height="42"
-                                Margin="2" />
-
                 <ui:ImageButton Image="/EQX.UI;component/Resources/Images/Components/Common/lock_selected.png"
                                 DisabledImage="/EQX.UI;component/Resources/Images/Components/Common/lock_selected.png"
                                 Command="{Binding DoorOpenCommand}"
@@ -377,33 +369,6 @@
                                              Value="False">
                                     <Setter Property="Content"
                                             Value="Door Unlock" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ui:ImageButton.Style>
-                </ui:ImageButton>
-
-                <ui:ImageButton Image="/EQX.UI;component/Resources/Images/KEYGRAY.png"
-                                DisabledImage="/EQX.UI;component/Resources/Images/KEYGRAY.png"
-                                Content="SafetyKey"
-                                Command="{Binding SafetyKeyCommand}"
-                                IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
-                                Width="85"
-                                Height="42"
-                                Margin="2">
-                    <ui:ImageButton.Style>
-                        <Style TargetType="{x:Type ui:ImageButton}"
-                               BasedOn="{StaticResource {x:Type ui:ImageButton}}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Devices.Outputs.SWKeyLock.Value}"
-                                             Value="True">
-                                    <Setter Property="Image"
-                                            Value="/EQX.UI;component/Resources/Images/KEY.png" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Devices.Outputs.SWKeyLock.Value}"
-                                             Value="False">
-                                    <Setter Property="Image"
-                                            Value="/EQX.UI;component/Resources/Images/KEYGRAY.png" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>

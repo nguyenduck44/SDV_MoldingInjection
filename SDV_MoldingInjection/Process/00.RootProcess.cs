@@ -1,4 +1,4 @@
-using EQX.Core.Common;
+    using EQX.Core.Common;
 using EQX.Core.Communication;
 using EQX.Core.Communication.CIM;
 using EQX.Core.Communication.CIM.Custom;
@@ -258,6 +258,12 @@ namespace SDV_MoldingInjection.Process
                         RaiseWarning(EWarning.OPSwitchKey_Not_In_AutoMode);
                         break;
                     }
+
+                    if (_machineStatus.IsAutoMode == false)
+                    {
+                        RaiseWarning(EWarning.Machine_Not_In_AutoMode);
+                        break;
+                    }
 #endif
                     Step.OriginStep++;
                     break;
@@ -374,6 +380,12 @@ namespace SDV_MoldingInjection.Process
                     if (_devices.Inputs.AutoSW.Value == false)
                     {
                         RaiseWarning(EWarning.OPSwitchKey_Not_In_AutoMode);
+                        break;
+                    }
+
+                    if (_machineStatus.IsAutoMode == false)
+                    {
+                        RaiseWarning(EWarning.Machine_Not_In_AutoMode);
                         break;
                     }
 #endif

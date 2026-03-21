@@ -1,11 +1,12 @@
-using System;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
+using EQX.UI.Controls;
 using log4net;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Recipe;
+using System;
+using System.Windows.Input;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
@@ -188,6 +189,12 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
+                    if (MachineStatus.IsAutoMode)
+                    {
+                        MessageBoxEx.ShowDialog("MACHINE IN AUTO MODE, CAN NOT OPEN THE DOOR!!!", false, "WARNING");
+                        return;
+                    }
+
                     Devices.Outputs.EQPStop.Value = !Devices.Outputs.EQPStop.Value;
                 });
             }

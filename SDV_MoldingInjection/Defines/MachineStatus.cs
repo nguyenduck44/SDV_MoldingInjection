@@ -108,6 +108,21 @@ namespace SDV_MoldingInjection.Defines
             }
         }
 
+        public bool IsAutoMode => MachineMode == EMachineMode.Auto;
+        public bool IsTeachMode => MachineMode == EMachineMode.Teach;
+
+        public EMachineMode MachineMode
+        {
+            get { return machineMode; }
+            set
+            {
+                machineMode = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsAutoMode));
+                OnPropertyChanged(nameof(IsTeachMode));
+            }
+        }
+
         public override void MoveMultiPointPositionSequence(MultiPointPosition multiPointPosition)
         {
             if (multiPointPosition == null || multiPointPosition.Points.Count <= 0) return;
@@ -129,6 +144,7 @@ namespace SDV_MoldingInjection.Defines
         private bool isSkipHead2 = true;
         private bool isSkipHead3 = true;
         private bool isSkipHead4 = true;
+        private EMachineMode machineMode;
         #endregion
     }
 }
