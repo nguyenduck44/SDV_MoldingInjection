@@ -50,6 +50,19 @@ namespace SDV_MoldingInjection.Process
         private bool RightJigDetect => In_Jig3Detect.Value && In_Jig4Detect.Value;
         #endregion
 
+        #region Outputs
+        private bool Out_ChamberOpen
+        {
+            get => _devices.Outputs.VacChamberOpen.Value;
+            set => _devices.Outputs.VacChamberOpen.Value = value;
+        }
+        private bool Out_ChamberClose
+        {
+            get => _devices.Outputs.VacChamberClose.Value;
+            set => _devices.Outputs.VacChamberClose.Value = value;
+        }
+        #endregion
+
         #region Process IOs
         private IDInputDevice<EInjectProcInput> procInputs;
         private IDOutputDevice<EInjectProcOutput> procOutputs;
@@ -82,25 +95,19 @@ namespace SDV_MoldingInjection.Process
         #region Process Methods
         public override bool ProcessToAlarm()
         {
-            Log.Debug("Dissable Open Close Chamber");
-            _devices.Outputs.VacChamberClose.Value = false;
-            _devices.Outputs.VacChamberOpen.Value = false;
+            DisableChamberOpenCloes();
             return base.ProcessToAlarm();
         }
 
         public override bool ProcessToStop()
         {
-            Log.Debug("Dissable Open Close Chamber");
-            _devices.Outputs.VacChamberClose.Value = false;
-            _devices.Outputs.VacChamberOpen.Value = false;
+            DisableChamberOpenCloes();
             return base.ProcessToStop();
         }
 
         public override bool ProcessToWarning()
         {
-            Log.Debug("Dissable Open Close Chamber");
-            _devices.Outputs.VacChamberClose.Value = false;
-            _devices.Outputs.VacChamberOpen.Value = false;
+            DisableChamberOpenCloes();
             return base.ProcessToWarning();
         }
 
@@ -2238,6 +2245,17 @@ namespace SDV_MoldingInjection.Process
             }
 
             return Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisWeightingPos);
+        }
+
+        private void DisableChamberOpenCloes()
+        {
+            if (Out_ChamberOpen == true || Out_ChamberClose == true)
+            {
+                Log.Debug("Dissable Open Close Chamber");
+                Out_ChamberClose = false;
+                Out_ChamberOpen = false;
+            }
+            
         }
         #endregion
 
