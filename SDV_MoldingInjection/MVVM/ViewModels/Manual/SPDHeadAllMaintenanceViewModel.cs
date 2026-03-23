@@ -2,6 +2,7 @@
 using EQX.Core.Common;
 using EQX.Core.Recipe;
 using EQX.Device.Balance;
+using EQX.UI.Controls;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Defines.Devices.Balance;
@@ -92,6 +93,27 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 return new RelayCommand(() =>
                 {
                     BalanceRight.SendZeroCommand();
+                });
+            }
+        }
+
+        public ICommand SkipCalCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    if (MessageBoxEx.ShowDialog($"Do you want to Skip Cal?") == true)
+                    {
+                        if (MachineStatus.MachineCalibrationSkip[0] == false)
+                            MachineStatus.MachineCalibrationSkip[0] = !MachineStatus.IsSkipHead1;
+                        if (MachineStatus.MachineCalibrationSkip[1] == false)
+                            MachineStatus.MachineCalibrationSkip[1] = !MachineStatus.IsSkipHead2;
+                        if (MachineStatus.MachineCalibrationSkip[2] == false)
+                            MachineStatus.MachineCalibrationSkip[2] = !MachineStatus.IsSkipHead3;
+                        if (MachineStatus.MachineCalibrationSkip[3] == false)
+                            MachineStatus.MachineCalibrationSkip[3] = !MachineStatus.IsSkipHead4;
+                    }
                 });
             }
         }
