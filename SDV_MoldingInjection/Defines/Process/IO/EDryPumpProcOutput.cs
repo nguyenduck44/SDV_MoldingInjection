@@ -4,5 +4,6 @@
     {
         ChamberVacuumSuccess,
         VentComplete,
+        PurgeComplete,
     }
 }

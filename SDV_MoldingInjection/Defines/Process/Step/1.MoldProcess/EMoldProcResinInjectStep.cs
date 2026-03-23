@@ -27,8 +27,16 @@
 
         Update_BothJigStatus,
 
+        Request_DryPump_Purge,
+        Wait_DryPump_PurgeEnd,
+
+        BellowCylDown,
+        BellowCylDown_Wait,
+
         ZAxis_SafetyPos_Move,
         ZAxis_SafetyPos_MoveWait,
+
+        ClearFlag,
 
         End,
     }

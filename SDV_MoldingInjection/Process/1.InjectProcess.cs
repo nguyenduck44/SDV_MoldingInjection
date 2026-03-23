@@ -686,7 +686,6 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    procOutputs[EInjectProcOutput.DryPump_VacuumRequest].Value = false;
                     procOutputs[EInjectProcOutput.SPDHeadWorkRequest].Value = false;
                     Log.Debug($"Input detect EInjectProcInput.SPDHead(1~4)_WorkDone");
                     Step.RunStep++;
@@ -753,25 +752,67 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcResinInjectStep.Update_BothJigStatus:
                     Log.Debug($"Update both jig status: {EJigStatus.MoldingFinish}");
                     UpdateBothJigStatus(EJigStatus.MoldingFinish);
+                    if(_currentRecipe.OptionRecipe.SkipVentTime == false)
+                    {
+                        Step.RunStep = (int)EMoldProcResinInjectStep.BellowCylDown;
+                        break;
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectStep.Request_DryPump_Purge:
+                    Log.Debug("Set flag request dry pump purge");
+                    procOutputs[EInjectProcOutput.DryPump_PurgeRequest].Value = true;
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectStep.Wait_DryPump_PurgeEnd:
+                    if (procInputs[EInjectProcInput.DryPump_PurgeDone].Value == false)
+                    {
+                        Wait(50);
+                        break;
+                    }
+
+                    Log.Debug("Detected flag DryPump_PurgeDone");
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectStep.BellowCylDown:
+                    Log.Debug("Bellow cylinder downing");
+                    BellowCyl.Down();
+                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => BellowCyl.IsDown());
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectStep.BellowCylDown_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseWarning(EWarning.BellowCyl_DownFail);
+                        break;
+                    }
+
+                    Log.Debug("Bellow cylinder down finish");
+                    Wait(1000); // Delay 1s after bellow cylinder down
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.ZAxis_SafetyPos_Move:
+                    Log.Debug("All Z Axis moving to Safety position");
                     ZAxisSafetyPosMove();
-                    BellowCyl.Down();
-
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
-                        () => AllZAxisInSafetyPos(ref _failHead) && BellowCyl.IsDown());
+                        () => AllZAxisInSafetyPos(ref _failHead));
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.ZAxis_SafetyPos_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        if (!BellowCyl.IsDown()) RaiseWarning(EWarning.BellowCyl_DownFail);
                         RaiseHeadWarning(EWarning.Z1Axis_SafetyPos_MoveTimeOut, _failHead);
                         break;
                     }
 
                     Log.Debug($"Z-Axes move to safety pos done");
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectStep.ClearFlag:
+                    Log.Debug("Clear flag"); 
+                    procOutputs[EInjectProcOutput.DryPump_VacuumRequest].Value = false;
+                    procOutputs[EInjectProcOutput.DryPump_PurgeRequest].Value = false;
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.End:
@@ -2255,7 +2296,7 @@ namespace SDV_MoldingInjection.Process
                 Out_ChamberClose = false;
                 Out_ChamberOpen = false;
             }
-            
+
         }
         #endregion
 

@@ -3,5 +3,6 @@
     public enum EDryPumpProcInput
     {
         Vacuum_WorkRequest,
+        Purge_WorkRequest,
     }
 }

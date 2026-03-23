@@ -1057,7 +1057,6 @@ namespace SDV_MoldingInjection.Process
                         }
                     }
 
-
                     EnableTimerInject = false;
                     Log.Debug($"{PAxis.Name} moving to InjectPos done");
 

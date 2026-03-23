@@ -8,6 +8,7 @@
         SPDHead4_OriginDone,
 
         DryPump_VacuumDone,
+        DryPump_PurgeDone,
 
         SPDHead1_WorkDone,
         SPDHead2_WorkDone,

@@ -39,7 +39,7 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
-                <RowDefinition/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             
@@ -82,9 +82,14 @@
                       Grid.Row="1">
                 <StackPanel Orientation="Vertical">
                     <CheckBox Content="1 Torr And Purge" 
-                              Margin="5 0"
+                              Margin="5"
                               IsChecked="{Binding RecipeList.OptionRecipe.OneTorrAndPurge}" 
                               Tag="Check to start inject with 1 torr and purge"/>
+                    <CheckBox
+                        Content="Skip Vent Time"
+                        Margin="5"
+                        IsChecked="{Binding RecipeList.OptionRecipe.SkipVentTime}"
+                        Tag="Check to skip vent time" />
                 </StackPanel>
             </GroupBox>
         </Grid>

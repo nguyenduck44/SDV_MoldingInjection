@@ -3,42 +3,39 @@
     public enum EDryPumpProcResinInjectStep
     {
         Start,
+
         DryPump_Run,
         DryPump_RunWait,
 
+        InitQueue,
+        StepQueue_EmptyCheck,
+
         DryPump_Vacuum_RequestWait,
 
-        AngleValve_Open_1st,
-        AngleValve_OpenWait_1st,
+        AngleValve_Open,
+        AngleValve_OpenWait,
 
-        VacuumGauge_SpecIn_Wait_1st,
+        VacuumGauge_SpecIn_Wait_1torr,
 
-        AngleValve_Close_1st,
-        AngleValve_CloseWait_1st,
+        AngleValve_Close,
+        AngleValve_CloseWait,
 
-        DryPump_Purge_1st,
-        DryPump_Purge_Wait_1st,
-        //
-        AngleValve_Open_2nd,
-        AngleValve_OpenWait_2nd,
+        DryPump_Purge,
+        DryPump_Purge_Wait,
 
-        VacuumGauge_SpecIn_Wait_2nd,
-
-        AngleValve_Close_2nd,
-        AngleValve_CloseWait_2st,
+        VacuumGauge_Target_Wait,
 
         Delay_BeforeInject,
 
         DryPump_VacuumDone_Send,
 
         DryPump_WaitVentTime,
-
-        AngleValve_CloseCheck,
-        AngleValve_CloseWait,
-
         SetStartVent,
-
         DryPump_PurgeAndWait,
+
+        Inject_PurgeRequest_Wait,
+        Wait_PurgeEnd,
+        SetFlag_PurgeFinish,
 
         WaitToClear_ProcOutput,
 

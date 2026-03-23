@@ -6,6 +6,7 @@ using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Recipe;
 using System.IO;
+using WinRT;
 
 namespace SDV_MoldingInjection.Process
 {
@@ -297,7 +298,7 @@ namespace SDV_MoldingInjection.Process
                 case EDryPumpProcResinInjectStep.DryPump_Run:
                     if (In_DryPumpRun.Value)
                     {
-                        Step.RunStep = (int)EDryPumpProcResinInjectStep.DryPump_Vacuum_RequestWait;
+                        Step.RunStep = (int)EDryPumpProcResinInjectStep.InitQueue;
                         break;
                     }
 
@@ -307,12 +308,10 @@ namespace SDV_MoldingInjection.Process
 #if SIMULATION
                     SimulationInputSetter.SetSimInput(_devices.Inputs.DryPumpRun, true);
 #endif
-
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_RunWait:
-                    if (WaitTimeOutOccurred &&
-                        _machineStatus.IsDryRunMode == false)
+                    if (WaitTimeOutOccurred && _machineStatus.IsDryRunMode == false)
                     {
                         RaiseWarning(EWarning.DryPump_Run_Timeout);
                         break;
@@ -320,90 +319,51 @@ namespace SDV_MoldingInjection.Process
 
                     Step.RunStep++;
                     break;
+                case EDryPumpProcResinInjectStep.InitQueue:
+                    Log.Debug("Init queue");
+                    if (_currentRecipe.OptionRecipe.OneTorrAndPurge)
+                    {
+                        DryPumpResinInjectStep = new Queue<EDryPumpProcResinInjectStep>(ProcessesWorkSequence.DryPumpResinInjectSequence_Use1Torr);
+                    }
+                    else if (_currentRecipe.OptionRecipe.SkipVentTime)
+                    {
+                        DryPumpResinInjectStep = new Queue<EDryPumpProcResinInjectStep>(ProcessesWorkSequence.DryPumpResinInjectSequence_SkipVent);
+                    }
+                    else
+                    {
+                        DryPumpResinInjectStep = new Queue<EDryPumpProcResinInjectStep>(ProcessesWorkSequence.DryPumpResinInjectSequence);
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case EDryPumpProcResinInjectStep.StepQueue_EmptyCheck:
+                    if (DryPumpResinInjectStep.Count <= 0)
+                    {
+                        Step.RunStep = (int)EDryPumpProcResinInjectStep.End;
+                        break;
+                    }
+
+                    Step.RunStep = (int)DryPumpResinInjectStep.Dequeue();
+                    break;
                 case EDryPumpProcResinInjectStep.DryPump_Vacuum_RequestWait:
                     if (procInputs[EDryPumpProcInput.Vacuum_WorkRequest].Value == false)
                     {
+                        Wait(20);
                         break;
                     }
 
                     Log.Info($"Input detect {EDryPumpProcInput.Vacuum_WorkRequest}");
                     EnableWritePressureLog = true;
-                    if (_currentRecipe.OptionRecipe.OneTorrAndPurge == false)
-                    {
-                        Step.RunStep = (int)EDryPumpProcResinInjectStep.AngleValve_Open_2nd;
-                        break;
-                    }
-
-                    Step.RunStep++;
+                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
-                case EDryPumpProcResinInjectStep.AngleValve_Open_1st:
-                    Log.Debug($"Opening {AngleValve.Name} (1st)");
-                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Valve Open 1st");
-                    AngleValve.Open();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, AngleValve.IsOpen);
-                    Step.RunStep++;
-                    break;
-                case EDryPumpProcResinInjectStep.AngleValve_OpenWait_1st:
-                    if (WaitTimeOutOccurred)
-                    {
-                        RaiseWarning(EWarning.AngleValve_OpenFail);
-                        break;
-                    }
-                    Log.Debug($"{AngleValve.Name} Opened (1st)");
-                    Step.RunStep++;
-                    break;
-                case EDryPumpProcResinInjectStep.VacuumGauge_SpecIn_Wait_1st:
-                    if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureSpecFirst &&
-                        _machineStatus.IsDryRunMode == false)
-                    {
-                        Wait(50);
-                        break;
-                    }
-                    Log.Info($"DryPump vacuum 1st in-spec {_currentRecipe.DryPumpRecipe.VacuumPressureSpecFirst} Torr");
-                    Step.RunStep++;
-                    break;
-                case EDryPumpProcResinInjectStep.AngleValve_Close_1st:
-                    Log.Debug($"Closing {AngleValve.Name} (1st)");
-                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Valve Close 1st");
-                    AngleValve.Close();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, AngleValve.IsClose);
-                    Step.RunStep++;
-                    break;
-                case EDryPumpProcResinInjectStep.AngleValve_CloseWait_1st:
-                    if (WaitTimeOutOccurred)
-                    {
-                        RaiseWarning(EWarning.AngleValve_CloseFail);
-                        break;
-                    }
-                    Step.RunStep++;
-                    break;
-                case EDryPumpProcResinInjectStep.DryPump_Purge_1st:
-                    Log.Debug("Dry Pump Purge 1st start");
-                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Purge Start");
-                    Out_ChamberPurgeOn.Value = true;
-                    Step.RunStep++;
-                    break;
-                case EDryPumpProcResinInjectStep.DryPump_Purge_Wait_1st:
-                    if (_devices.AnalogInputs.VacuumPressureInTorr < 740 &&
-                        _machineStatus.IsDryRunMode == false)
-                    {
-                        Wait(10);
-                        break;
-                    }
-
-                    Out_ChamberPurgeOn.Value = false;
-                    Log.Debug("Dry Pump Purge 1st complete");
-                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Purge End");
-                    Step.RunStep++;
-                    break;
-                case EDryPumpProcResinInjectStep.AngleValve_Open_2nd:
+                case EDryPumpProcResinInjectStep.AngleValve_Open:
                     Log.Debug($"Opening {AngleValve.Name}");
                     PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Valve Open");
                     AngleValve.Open();
                     Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, AngleValve.IsOpen);
-                    Step.RunStep++;
+                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
-                case EDryPumpProcResinInjectStep.AngleValve_OpenWait_2nd:
+                case EDryPumpProcResinInjectStep.AngleValve_OpenWait:
                     if (WaitTimeOutOccurred)
                     {
                         RaiseWarning(EWarning.AngleValve_OpenFail);
@@ -411,9 +371,55 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"{AngleValve.Name} Opened");
-                    Step.RunStep++;
+                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
-                case EDryPumpProcResinInjectStep.VacuumGauge_SpecIn_Wait_2nd:
+                case EDryPumpProcResinInjectStep.VacuumGauge_SpecIn_Wait_1torr:
+                    if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureSpecFirst &&
+                        _machineStatus.IsDryRunMode == false)
+                    {
+                        Wait(50);
+                        break;
+                    }
+                    Log.Info($"DryPump vacuum 1st in-spec {_currentRecipe.DryPumpRecipe.VacuumPressureSpecFirst} Torr");
+                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
+                    break;
+                case EDryPumpProcResinInjectStep.AngleValve_Close:
+                    Log.Debug($"Closing {AngleValve.Name}");
+                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Valve Close");
+                    AngleValve.Close();
+                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, AngleValve.IsClose);
+                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
+                    break;
+                case EDryPumpProcResinInjectStep.AngleValve_CloseWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseWarning(EWarning.AngleValve_CloseFail);
+                        break;
+                    }
+
+                    Log.Debug("Angle valve close success");
+                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
+                    break;
+                case EDryPumpProcResinInjectStep.DryPump_Purge:
+                    Log.Debug("DryPump purge start");
+                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Purge Start");
+                    Out_ChamberPurgeOn.Value = true;
+                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
+                    break;
+                case EDryPumpProcResinInjectStep.DryPump_Purge_Wait:
+                    if (_devices.AnalogInputs.VacuumPressureInTorr < 749 &&
+                        _machineStatus.IsDryRunMode == false)
+                    {
+                        Wait(10);
+                        break;
+                    }
+
+                    Out_ChamberPurgeOn.Value = false;
+                    Log.Debug("DryPump purge complete");
+                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Purge End");
+                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
+                    break;
+                case EDryPumpProcResinInjectStep.VacuumGauge_Target_Wait:
                     if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureSpec &&
                         _machineStatus.IsDryRunMode == false)
                     {
@@ -421,28 +427,12 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Info($"DryPump vacuum in-spec {_devices.AnalogInputs.VacuumPressureInTorr} Torr");
+                    Log.Info($"DryPump vacuum in-target {_devices.AnalogInputs.VacuumPressureInTorr} Torr");
                     Log.Debug($"Enable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
                     EnablePressureHold = true;
                     EnableTimerDelay = true;
                     _delayStartTick = Environment.TickCount;
-                    Step.RunStep++;
-                    break;
-                case EDryPumpProcResinInjectStep.AngleValve_Close_2nd:
-                    Log.Debug($"Closing {AngleValve.Name} for pressure hold");
-                    AngleValve.Close();
-                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Valve Close");
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, AngleValve.IsClose);
-                    Step.RunStep++;
-                    break;
-                case EDryPumpProcResinInjectStep.AngleValve_CloseWait_2st:
-                    if (WaitTimeOutOccurred)
-                    {
-                        RaiseWarning(EWarning.AngleValve_CloseFail);
-                        break;
-                    }
-
-                    Step.RunStep++;
+                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.Delay_BeforeInject:
                     if (((Environment.TickCount - _delayStartTick) / 1000.0) < InjectTimeRecipe.DelayTime)
@@ -453,13 +443,13 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"Delay before inject complete: {InjectTimeRecipe.DelayTime}s");
                     EnableTimerDelay = false;
-                    Step.RunStep++;
+                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_VacuumDone_Send:
                     procOutputs[EDryPumpProcOutput.ChamberVacuumSuccess].Value = true;
                     Log.Info($"Set output {EDryPumpProcOutput.ChamberVacuumSuccess}");
                     Log.Debug("Wait Vent");
-                    Step.RunStep++;
+                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_WaitVentTime:
                     if (((_carrierJigStatusList.CarrierJigStatusH1.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead12) ||
@@ -473,36 +463,14 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"Disable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
                     EnablePressureHold = false;
-                    Step.RunStep++;
-                    break;
-                case EDryPumpProcResinInjectStep.AngleValve_CloseCheck:
-                    if (AngleValve.IsClose())
-                    {
-                        Step.RunStep = (int)EDryPumpProcResinInjectStep.SetStartVent;
-                        break;
-                    }
-
-                    Log.Debug($"Closing AngleValve");
-                    AngleValve.Close();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, AngleValve.IsClose);
-                    Step.RunStep++;
-                    break;
-                case EDryPumpProcResinInjectStep.AngleValve_CloseWait:
-                    if (WaitTimeOutOccurred)
-                    {
-                        RaiseWarning(EWarning.AngleValve_CloseFail);
-                        break;
-                    }
-
-                    Log.Debug($"Closing AngleValve Done");
-                    Step.RunStep++;
+                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.SetStartVent:
                     Log.Debug("Vent start");
                     _ventStartTick = Environment.TickCount;
                     PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Vent Start");
                     Out_ChamberPurgeOn.Value = true;
-                    Step.RunStep++;
+                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_PurgeAndWait:
                     if (((Environment.TickCount - _ventStartTick) / 1000.0) < InjectTimeRecipe.VentTime)
@@ -515,7 +483,36 @@ namespace SDV_MoldingInjection.Process
                     PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Vent Complete");
                     procOutputs[EDryPumpProcOutput.VentComplete].Value = true;
                     Out_ChamberPurgeOn.Value = false;
-                    Step.RunStep++;
+
+                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
+                    break;
+                case EDryPumpProcResinInjectStep.Inject_PurgeRequest_Wait:
+                    if (procInputs[EDryPumpProcInput.Purge_WorkRequest].Value == false)
+                    {
+                        Wait(50);
+                        break;
+                    }
+
+                    Log.Debug("Detected inject request purge");
+                    Log.Debug($"Disable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
+                    EnablePressureHold = false;
+                    Out_ChamberPurgeOn.Value = true;
+                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
+                    break;
+                case EDryPumpProcResinInjectStep.Wait_PurgeEnd:
+                    if(_devices.AnalogInputs.VacuumPressureInTorr < 749)
+                    {
+                        Wait(50);
+                        break;
+                    }
+
+                    Log.Debug("Purge end");
+                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
+                    break;
+                case EDryPumpProcResinInjectStep.SetFlag_PurgeFinish:
+                    Log.Debug("Set flag purge finish for inject");
+                    procOutputs[EDryPumpProcOutput.PurgeComplete].Value = true;
+                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.WaitToClear_ProcOutput:
                     if (procInputs[EDryPumpProcInput.Vacuum_WorkRequest].Value == true)
@@ -527,10 +524,11 @@ namespace SDV_MoldingInjection.Process
                     Log.Info($"Clear output {EDryPumpProcOutput.ChamberVacuumSuccess}");
                     procOutputs[EDryPumpProcOutput.ChamberVacuumSuccess].Value = false;
                     procOutputs[EDryPumpProcOutput.VentComplete].Value = false;
+                    procOutputs[EDryPumpProcOutput.PurgeComplete].Value = false;
 
                     PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "End cycle");
                     EnableWritePressureLog = false;
-                    Step.RunStep++;
+                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.End:
                     if (Parent?.Sequence != ESequence.AutoRun)
@@ -620,6 +618,8 @@ namespace SDV_MoldingInjection.Process
         private bool EnableWritePressureLog;
 
         private string logFileName = $"D:\\MoldInjection\\Log\\PressureLog\\{DateTime.Now:yyyymmdd_hhmmss}.txt";
+        private Queue<EDryPumpProcResinInjectStep> DryPumpResinInjectStep = new Queue<EDryPumpProcResinInjectStep>();
+
         #endregion
     }
 }

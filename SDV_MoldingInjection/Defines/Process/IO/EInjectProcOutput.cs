@@ -5,6 +5,7 @@
         XYAxisInDummyPos,
 
         DryPump_VacuumRequest,
+        DryPump_PurgeRequest,
         SPDHeadWorkRequest,
 
         SPDHead1_RemoveResinRequest,

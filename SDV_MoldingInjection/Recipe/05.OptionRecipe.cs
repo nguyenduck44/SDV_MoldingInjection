@@ -13,6 +13,7 @@ namespace SDV_MoldingInjection.Recipe
         private bool _inputTypeAuto;
         private bool _savePressureLog;
         private bool _1torrAndPurge;
+        private bool _skipVentTime;
 
         #endregion
 
@@ -109,6 +110,18 @@ namespace SDV_MoldingInjection.Recipe
                     _1torrAndPurge = value;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        public bool SkipVentTime
+        {
+            get { return _skipVentTime; }
+            set
+            {
+                if (_skipVentTime == value) return;
+                OnRecipeChanged(_skipVentTime, value);
+                _skipVentTime = value;
+                OnPropertyChanged();
             }
         }
     }
