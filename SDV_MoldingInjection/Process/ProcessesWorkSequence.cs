@@ -64,5 +64,30 @@ namespace SDV_MoldingInjection.Process
             EDryPumpProcResinInjectStep.SetFlag_PurgeFinish,
             EDryPumpProcResinInjectStep.WaitToClear_ProcOutput,
         };
+
+        public static readonly List<EDryPumpProcResinInjectStep> DryPumpResinInjectSequence_Use1Torr_SkipVent = new List<EDryPumpProcResinInjectStep>
+        {
+            EDryPumpProcResinInjectStep.DryPump_Vacuum_RequestWait,
+            EDryPumpProcResinInjectStep.AngleValve_Open,
+            EDryPumpProcResinInjectStep.AngleValve_OpenWait,
+            EDryPumpProcResinInjectStep.VacuumGauge_SpecIn_Wait_1torr,
+            EDryPumpProcResinInjectStep.AngleValve_Close,
+            EDryPumpProcResinInjectStep.AngleValve_CloseWait,
+            EDryPumpProcResinInjectStep.DryPump_Purge,
+            EDryPumpProcResinInjectStep.DryPump_Purge_Wait,
+            EDryPumpProcResinInjectStep.AngleValve_Open,
+            EDryPumpProcResinInjectStep.AngleValve_OpenWait,
+            EDryPumpProcResinInjectStep.VacuumGauge_Target_Wait,
+            EDryPumpProcResinInjectStep.AngleValve_Close,
+            EDryPumpProcResinInjectStep.AngleValve_CloseWait,
+            EDryPumpProcResinInjectStep.Delay_BeforeInject,
+            EDryPumpProcResinInjectStep.DryPump_VacuumDone_Send,
+            EDryPumpProcResinInjectStep.Inject_PurgeRequest_Wait,
+            EDryPumpProcResinInjectStep.AngleValve_Close,
+            EDryPumpProcResinInjectStep.AngleValve_CloseWait,
+            EDryPumpProcResinInjectStep.Wait_PurgeEnd,
+            EDryPumpProcResinInjectStep.SetFlag_PurgeFinish,
+            EDryPumpProcResinInjectStep.WaitToClear_ProcOutput,
+        };
     }
 }

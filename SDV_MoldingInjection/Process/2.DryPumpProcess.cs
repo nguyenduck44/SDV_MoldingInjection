@@ -321,7 +321,11 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EDryPumpProcResinInjectStep.InitQueue:
                     Log.Debug("Init queue");
-                    if (_currentRecipe.OptionRecipe.OneTorrAndPurge)
+                    if (_currentRecipe.OptionRecipe.OneTorrAndPurge && _currentRecipe.OptionRecipe.SkipVentTime)
+                    {
+                        DryPumpResinInjectStep = new Queue<EDryPumpProcResinInjectStep>(ProcessesWorkSequence.DryPumpResinInjectSequence_Use1Torr_SkipVent);
+                    }
+                    else if (_currentRecipe.OptionRecipe.OneTorrAndPurge)
                     {
                         DryPumpResinInjectStep = new Queue<EDryPumpProcResinInjectStep>(ProcessesWorkSequence.DryPumpResinInjectSequence_Use1Torr);
                     }
@@ -448,7 +452,11 @@ namespace SDV_MoldingInjection.Process
                 case EDryPumpProcResinInjectStep.DryPump_VacuumDone_Send:
                     procOutputs[EDryPumpProcOutput.ChamberVacuumSuccess].Value = true;
                     Log.Info($"Set output {EDryPumpProcOutput.ChamberVacuumSuccess}");
-                    Log.Debug("Wait Vent");
+                    if (_currentRecipe.OptionRecipe.SkipVentTime == false)
+                    {
+                        Log.Debug("Wait Vent");
+                    }
+
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_WaitVentTime:
@@ -500,13 +508,14 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.Wait_PurgeEnd:
-                    if(_devices.AnalogInputs.VacuumPressureInTorr < 749)
+                    if (_devices.AnalogInputs.VacuumPressureInTorr < 749)
                     {
                         Wait(50);
                         break;
                     }
 
                     Log.Debug("Purge end");
+                    Out_ChamberPurgeOn.Value = false;
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.SetFlag_PurgeFinish:

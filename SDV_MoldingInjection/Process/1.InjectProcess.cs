@@ -679,10 +679,15 @@ namespace SDV_MoldingInjection.Process
                     if (IsSPDHeadWorkDone(ESPDHead.SPDHead1) == false ||
                         IsSPDHeadWorkDone(ESPDHead.SPDHead2) == false ||
                         IsSPDHeadWorkDone(ESPDHead.SPDHead3) == false ||
-                        IsSPDHeadWorkDone(ESPDHead.SPDHead4) == false ||
-                        procInputs[EInjectProcInput.VentComplete].Value == false)
+                        IsSPDHeadWorkDone(ESPDHead.SPDHead4) == false )
                     {
-                        Wait(100);
+                        Wait(50);
+                        break;
+                    }
+
+                    if (_currentRecipe.OptionRecipe.SkipVentTime == false && procInputs[EInjectProcInput.VentComplete].Value == false)
+                    {
+                        Wait(20);
                         break;
                     }
 
