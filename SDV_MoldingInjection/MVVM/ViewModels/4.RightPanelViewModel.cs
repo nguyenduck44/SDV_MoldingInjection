@@ -93,6 +93,12 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
+                    if (Devices.Inputs.DoorClose == false)
+                    {
+                        MessageBoxEx.ShowDialog("DOOR IS OPEN", false, "WARNING");
+                        return;
+                    }
+
                     if (Devices.Inputs.AutoSW.Value == false)
                     {
                         MessageBoxEx.ShowDialog("Switch Safety Key not in Auto Mode", false, "WARNING");

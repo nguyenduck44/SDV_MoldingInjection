@@ -60,7 +60,7 @@ namespace SDV_MoldingInjection.Defines.Devices
             if (disable) _devices.Motions.StageYAxis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>();
             _devices.Motions.StageYAxis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>
             {
-                { "Door is not CLOSE", () => _devices.Inputs.DoorClose },
+                { "Door is not CLOSE", () => DoorCloseOrTeachJogAuthorized()},
                 { "Chamber is not CLOSE", () => _devices.Cylinders.ChamberOpenClose.IsClose() },
                 { "Bellow cylinder is not DOWN", () => _devices.Cylinders.BellowCyl.IsDown() },
                 { "Z1Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z1Axis) },
@@ -72,7 +72,7 @@ namespace SDV_MoldingInjection.Defines.Devices
             if (disable) _devices.Motions.StageYAxis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>();
             _devices.Motions.StageYAxis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>
             {
-                { "Door is not CLOSE", () => _devices.Inputs.DoorClose },
+                { "Door is not CLOSE", () => DoorCloseOrTeachJogAuthorized()},
                 { "Chamber is not CLOSE", () => _devices.Cylinders.ChamberOpenClose.IsClose() },
                 { "Bellow cylinder is not DOWN", () => _devices.Cylinders.BellowCyl.IsDown() },
                 { "Z1Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z1Axis) },
@@ -84,7 +84,7 @@ namespace SDV_MoldingInjection.Defines.Devices
             if (disable) _devices.Motions.XAxis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>();
             _devices.Motions.XAxis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>
             {
-                { "Door is not CLOSE", () => _devices.Inputs.DoorClose },
+                { "Door is not CLOSE", () => DoorCloseOrTeachJogAuthorized()},
                 { "Z1Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z1Axis) },
                 { "Z2Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z2Axis) },
                 { "Z3Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z3Axis) },
@@ -94,7 +94,7 @@ namespace SDV_MoldingInjection.Defines.Devices
             if (disable) _devices.Motions.XAxis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>();
             _devices.Motions.XAxis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>
             {
-                { "Door is not CLOSE", () => _devices.Inputs.DoorClose },
+                { "Door is not CLOSE", () => DoorCloseOrTeachJogAuthorized() },
                 { "Z1Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z1Axis) },
                 { "Z2Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z2Axis) },
                 { "Z3Axis not in Safety Pos", () => IsZAxisOnSafetyPosition(_devices.Motions.Z3Axis) },
@@ -104,45 +104,45 @@ namespace SDV_MoldingInjection.Defines.Devices
             if (disable) _devices.Motions.Z1Axis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>();
             _devices.Motions.Z1Axis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>
             {
-                { "Door is not CLOSE", () => _devices.Inputs.DoorClose },
+                { "Door is not CLOSE", () => DoorCloseOrTeachJogAuthorized() },
             };
             if (disable) _devices.Motions.Z1Axis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>();
             _devices.Motions.Z1Axis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>
             {
-                { "Door is not CLOSE", () => _devices.Inputs.DoorClose },
+                { "Door is not CLOSE", () => DoorCloseOrTeachJogAuthorized() },
             };
 
             if (disable) _devices.Motions.Z2Axis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>();
             _devices.Motions.Z2Axis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>
             {
-                { "Door is not CLOSE", () => _devices.Inputs.DoorClose },
+                { "Door is not CLOSE", () => DoorCloseOrTeachJogAuthorized() },
             };
             if (disable) _devices.Motions.Z2Axis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>();
             _devices.Motions.Z2Axis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>
             {
-                { "Door is not CLOSE", () => _devices.Inputs.DoorClose },
+                { "Door is not CLOSE", () => DoorCloseOrTeachJogAuthorized() },
             };
 
             if (disable) _devices.Motions.Z3Axis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>();
             _devices.Motions.Z3Axis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>
             {
-                { "Door is not CLOSE", () => _devices.Inputs.DoorClose },
+                { "Door is not CLOSE", () => DoorCloseOrTeachJogAuthorized() },
             };
             if (disable) _devices.Motions.Z3Axis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>();
             _devices.Motions.Z3Axis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>
             {
-                { "Door is not CLOSE", () => _devices.Inputs.DoorClose },
+                { "Door is not CLOSE", () => DoorCloseOrTeachJogAuthorized() },
             };
 
             if (disable) _devices.Motions.Z4Axis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>();
             _devices.Motions.Z4Axis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>
             {
-                { "Door is not CLOSE", () => _devices.Inputs.DoorClose },
+                { "Door is not CLOSE", () => DoorCloseOrTeachJogAuthorized() },
             };
             if (disable) _devices.Motions.Z4Axis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>();
             _devices.Motions.Z4Axis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>
             {
-                { "Door is not CLOSE", () => _devices.Inputs.DoorClose },
+                { "Door is not CLOSE", () => DoorCloseOrTeachJogAuthorized() },
             };
         }
 
@@ -153,6 +153,11 @@ namespace SDV_MoldingInjection.Defines.Devices
         #endregion
 
         #region Private Methods
+        private bool DoorCloseOrTeachJogAuthorized()
+        {
+            return _devices.Inputs.DoorClose || _machineStatus.CanJogWithDoorOpen;
+        }
+
         private void HandleInterlockBlocked(object? sender, InterlockEventAgrs e)
         {
             string message = $"{e.Obj.Name} blocked by '{e.Message}' while '{e.Action}'";

@@ -19,28 +19,67 @@
         Loaded="Window_Loaded"
         Closing="Window_Closing"
         Title="MainWindowView">
+    <Grid>
+        <DockPanel
+            Margin="7 7 0 0">
+            <Grid
+                Height="11"
+                DockPanel.Dock="Bottom"
+                Background="{StaticResource SecondaryBackgroundColor}" />
+            <ContentControl
+                Content="{Binding HeaderVM}"
+                DockPanel.Dock="Top"
+                Height="Auto" />
+            <ContentControl
+                Content="{Binding FooterVM}"
+                DockPanel.Dock="Bottom" />
 
-    <DockPanel Margin="7 7 0 0">
-        <Grid Height="11"
-              DockPanel.Dock="Bottom"
-              Background="{StaticResource SecondaryBackgroundColor}" />
-        <ContentControl Content="{Binding HeaderVM}"
-                        DockPanel.Dock="Top"
-                        Height="Auto" />
-        <ContentControl Content="{Binding FooterVM}"
-                        DockPanel.Dock="Bottom" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition
+                        Width="6*" />
+                    <ColumnDefinition
+                        Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="6*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+                <ContentControl
+                    Content="{Binding CurrentFrameVM}" />
+                <ContentControl
+                    Grid.Column="1"
+                    Width="180"
+                    Content="{Binding RightPanelVM}"
+                    Visibility="{Binding ShowRightPanelVM, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </Grid>
+        </DockPanel>
 
-            <ContentControl Content="{Binding CurrentFrameVM}" />
-            <ContentControl Grid.Column="1"
-                            Width="180"
-                            Content="{Binding RightPanelVM}"
-                            Visibility="{Binding ShowRightPanelVM, Converter={StaticResource BooleanToVisibilityConverter}}" />
-        </Grid>
-    </DockPanel>
+        <Border
+            Background="#CC000000"
+            Visibility="{Binding IsDoorSafetyOverlayVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid>
+                <StackPanel
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Width="860">
+                    <TextBlock
+                        Text="{Binding DoorSafetyOverlayMessage}"
+                        TextAlignment="Center"
+                        TextWrapping="Wrap"
+                        FontSize="52"
+                        FontWeight="Bold"
+                        Foreground="#FFFF5555"
+                        Margin="0,0,0,24" />
+                    <Button
+                        Content="Enter Password"
+                        Command="{Binding ConfirmDoorSafetyCommand}"
+                        Height="58"
+                        Width="420"
+                        HorizontalAlignment="Center"
+                        FontSize="24"
+                        FontWeight="Bold" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+    
+    
 </Window>

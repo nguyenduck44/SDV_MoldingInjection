@@ -110,6 +110,19 @@ namespace SDV_MoldingInjection.Defines
 
         public bool IsAutoMode => MachineMode == EMachineMode.Auto;
         public bool IsTeachMode => MachineMode == EMachineMode.Teach;
+        public bool IsDoorPasswordVerified
+        {
+            get => _isDoorPasswordVerified;
+            set
+            {
+                if (_isDoorPasswordVerified == value) return;
+                _isDoorPasswordVerified = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(CanJogWithDoorOpen));
+            }
+        }
+
+        public bool CanJogWithDoorOpen => IsTeachMode && IsDoorPasswordVerified;
 
         public EMachineMode MachineMode
         {
@@ -120,6 +133,7 @@ namespace SDV_MoldingInjection.Defines
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsAutoMode));
                 OnPropertyChanged(nameof(IsTeachMode));
+                OnPropertyChanged(nameof(CanJogWithDoorOpen));
             }
         }
 
@@ -145,6 +159,7 @@ namespace SDV_MoldingInjection.Defines
         private bool isSkipHead3 = true;
         private bool isSkipHead4 = true;
         private EMachineMode machineMode;
+        private bool _isDoorPasswordVerified;
         #endregion
     }
 }
