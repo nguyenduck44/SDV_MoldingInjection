@@ -137,7 +137,7 @@
                                                    IncStep="{Binding IncStep, Mode=TwoWay}"/>
                         <UniformGrid Grid.Row="3"
                                      Columns="2"
-                                     Margin="0 5 0 0">
+                                     Margin="0 2 0 0">
                             <Button Background="LightBlue"
                                     Command="{Binding TeachPositionSaveCommand}"
                                     Content="Save"

@@ -142,7 +142,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             };
             Cylinders = new ObservableCollection<ICylinder>
             {
-                PistonCyl
+                PistonCyl,
+                NozzleClean,
             };
             Sequences = new ObservableCollection<ESemiSequence>
             {
@@ -164,11 +165,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     _devices.Inputs.H1_AssembleCheck,
                     _devices.Inputs.H1_SyringeCheck,
                     _devices.Inputs.H1_SyringeAir,
+                    _devices.Inputs.Nozzle1Clean,
                 };
                 Outputs = new ObservableCollection<IDOutput>
                 {
                     _devices.Outputs.H1_CylUp,
                     _devices.Outputs.H1_CylDown,
+                    _devices.Outputs.NozzleCleanH1H2,
                 };
             }
             if (Name == EProcess.SPDHead2.ToString())
@@ -180,11 +183,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     _devices.Inputs.H2_AssembleCheck,
                     _devices.Inputs.H2_SyringeCheck,
                     _devices.Inputs.H2_SyringeAir,
+                    _devices.Inputs.Nozzle2Clean,
                 };
                 Outputs = new ObservableCollection<IDOutput>
                 {
                     _devices.Outputs.H2_CylUp,
                     _devices.Outputs.H2_CylDown,
+                    _devices.Outputs.NozzleCleanH1H2,
                 };
             }
 
@@ -197,11 +202,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     _devices.Inputs.H3_AssembleCheck,
                     _devices.Inputs.H3_SyringeCheck,
                     _devices.Inputs.H3_SyringeAir,
+                    _devices.Inputs.Nozzle3Clean,
                 };
                 Outputs = new ObservableCollection<IDOutput>
                 {
                     _devices.Outputs.H3_CylUp,
                     _devices.Outputs.H3_CylDown,
+                    _devices.Outputs.NozzleCleanH3H4,
                 };
             }
 
@@ -214,11 +221,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     _devices.Inputs.H4_AssembleCheck,
                     _devices.Inputs.H4_SyringeCheck,
                     _devices.Inputs.H4_SyringeAir,
+                    _devices.Inputs.Nozzle4Clean,
                 };
                 Outputs = new ObservableCollection<IDOutput>
                 {
                     _devices.Outputs.H4_CylUp,
                     _devices.Outputs.H4_CylDown,
+                    _devices.Outputs.NozzleCleanH3H4,
                 };
             }
 
@@ -828,6 +837,14 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             "SPDHead2" => _devices.Cylinders.PistonCyl_H2,
             "SPDHead3" => _devices.Cylinders.PistonCyl_H3,
             "SPDHead4" => _devices.Cylinders.PistonCyl_H4,
+            _ => throw new Exception($"Invalid process name: {Name}")
+        };
+        private ICylinder NozzleClean => Name switch
+        {
+            "SPDHead1" => _devices.Cylinders.NozzleClean_H1,
+            "SPDHead2" => _devices.Cylinders.NozzleClean_H2,
+            "SPDHead3" => _devices.Cylinders.NozzleClean_H3,
+            "SPDHead4" => _devices.Cylinders.NozzleClean_H4,
             _ => throw new Exception($"Invalid process name: {Name}")
         };
         private SPDHeadRecipe headRecipe => Name switch

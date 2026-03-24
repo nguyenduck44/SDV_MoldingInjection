@@ -626,7 +626,7 @@ namespace SDV_MoldingInjection.Process
         private bool EnableTimerDelay;
         private bool EnableWritePressureLog;
 
-        private string logFileName = $"D:\\MoldInjection\\Log\\PressureLog\\{DateTime.Now:yyyymmdd_hhmmss}.txt";
+        private string logFileName = $"D:\\MoldInjection\\Log\\PressureLog\\{DateTime.Now:yyyyMMdd_hhmmss}.txt";
         private Queue<EDryPumpProcResinInjectStep> DryPumpResinInjectStep = new Queue<EDryPumpProcResinInjectStep>();
 
         #endregion
