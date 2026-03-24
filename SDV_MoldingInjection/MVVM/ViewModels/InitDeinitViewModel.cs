@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.Defines.Devices;
+using SDV_MoldingInjection.Defines.Productions;
 using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;
 using System.Globalization;
@@ -90,7 +91,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             InterlockService interlockService,
             SyringAmountStatusList syringAmountStatusList,
             CarrierJigStatusList carrierJigStatusList,
-            CIMAction cimAction)
+            CIMAction cimAction,
+            ProductionService productionService)
         {
             _devices = devices;
             _processes = processes;
@@ -106,6 +108,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _syringAmountStatusList = syringAmountStatusList;
             _carrierJigStatusList = carrierJigStatusList;
             _cimAction = cimAction;
+            _productionService = productionService;
             _task = new Task(() => { });
             ErrorMessages = new List<string>();
 
@@ -176,6 +179,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         break;
                     case EHandleStep.FileSystemHandle:
                         _syringAmountStatusList.Load();
+                        _productionService.Load();
                         Thread.Sleep(50);
                         _step++;
                         break;
@@ -322,6 +326,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         break;
                     case EHandleStep.FileSystemHandle:
                         _syringAmountStatusList.Save();
+                        _productionService.Save();
                         Thread.Sleep(50);
                         _step++;
                         break;
@@ -530,6 +535,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly SyringAmountStatusList _syringAmountStatusList;
         private readonly CarrierJigStatusList _carrierJigStatusList;
         private readonly CIMAction _cimAction;
+        private readonly ProductionService _productionService;
         private readonly ICamera _alignCamera1;
         private readonly IVisionFlowRepository _visionFlowRepository;
         private readonly Devices _devices;

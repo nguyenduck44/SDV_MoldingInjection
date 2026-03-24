@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
+using SDV_MoldingInjection.Defines.Productions;
 using SDV_MoldingInjection.Services;
 using SDV_MoldingInjection.Services.Security;
 
@@ -33,6 +34,7 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddSingleton<CellStatusToColorConverter>();
                 services.AddSingleton<SyringAmountStatusList>();
                 services.AddSingleton<CarrierJigStatusList>();
+                services.AddSingleton<ProductionService>();
 
                 services.AddKeyedScoped<IAlertService, AlarmService<EAlarm>>("AlarmService");
                 services.AddKeyedScoped<IAlertService, WarningService<EWarning>>("WarningService");

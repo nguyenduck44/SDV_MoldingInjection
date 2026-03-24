@@ -6,6 +6,7 @@ using EQX.InOut;
 using EQX.UI.Controls;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
+using SDV_MoldingInjection.Defines.Productions;
 using SDV_MoldingInjection.Recipe;
 
 namespace SDV_MoldingInjection.Process
@@ -74,13 +75,15 @@ namespace SDV_MoldingInjection.Process
             MachineStatus machineStatus,
             RecipeSelector recipeSelector,
             TactTimeList tactTimeList,
-            ICIMMapHelper mapHelper)
+            ICIMMapHelper mapHelper,
+            ProductionService productionService)
         {
             _devices = devices;
             _machineStatus = machineStatus;
             _recipeSelector = recipeSelector;
             _tactTimeList = tactTimeList;
             _mapHelper = mapHelper;
+            _productionService = productionService;
             procInputs = processIO.InjectProcInput;
             procOutputs = processIO.InjectProcOutput;
 
@@ -2311,6 +2314,7 @@ namespace SDV_MoldingInjection.Process
         private readonly RecipeSelector _recipeSelector;
         private readonly TactTimeList _tactTimeList;
         private readonly ICIMMapHelper _mapHelper;
+        private readonly ProductionService _productionService;
 
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
         private OptionRecipe _optionRecipe => _currentRecipe.OptionRecipe;
