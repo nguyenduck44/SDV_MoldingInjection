@@ -98,6 +98,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             Devices.Inputs.DoorReleaseLeft.RaiseValueUpdated();
             Devices.Inputs.DoorOpenRight.RaiseValueUpdated();
             Devices.Inputs.DoorReleaseRight.RaiseValueUpdated();
+            Devices.Inputs.DoorOpenRearLeft.RaiseValueUpdated();
+            Devices.Inputs.DoorReleaseRearLeft.RaiseValueUpdated();
+            Devices.Inputs.DoorOpenRearRight.RaiseValueUpdated();
+            Devices.Inputs.DoorReleaseRearRight.RaiseValueUpdated();
             Devices.Inputs.ChamberOpen.RaiseValueUpdated();
             Devices.Inputs.Jig1Detect.RaiseValueUpdated();
             Devices.Inputs.Jig2Detect.RaiseValueUpdated();

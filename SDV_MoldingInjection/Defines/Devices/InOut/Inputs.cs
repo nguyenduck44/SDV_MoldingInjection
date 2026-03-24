@@ -186,10 +186,10 @@ namespace SDV_MoldingInjection.Defines
         #endregion
 
         public bool DoorClose =>
-            //DoorOpenRearLeft.Value == false &&
-            //DoorOpenRearRight.Value == false &&
-            //DoorReleaseRearLeft.Value == false &&
-            //DoorReleaseRearRight.Value == false &&
+            DoorOpenRearLeft.Value == false &&
+            DoorOpenRearRight.Value == false &&
+            DoorReleaseRearLeft.Value == false &&
+            DoorReleaseRearRight.Value == false &&
             DoorOpenLeft.Value == false &&
             DoorReleaseLeft.Value == false &&
             DoorOpenRight.Value == false &&

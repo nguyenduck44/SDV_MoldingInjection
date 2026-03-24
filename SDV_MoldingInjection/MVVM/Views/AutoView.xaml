@@ -46,11 +46,11 @@
         <GroupBox Header="Carrier Jig Status"
                   Style="{x:Null}">
             <UniformGrid Margin="0 6 0 0"
-                     Rows="1">
-                <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH1}"/>
-                <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH2}"/>
-                <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH3}"/>
-                <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH4}"/>
+                         Rows="1">
+                <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH1}" />
+                <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH2}" />
+                <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH3}" />
+                <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH4}" />
             </UniformGrid>
         </GroupBox>
         <!-- Machine Image -->
@@ -63,13 +63,14 @@
         <Grid Grid.Column="1"
               IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
               Width="215"
-              HorizontalAlignment="Left" >
+              HorizontalAlignment="Left">
             <StackPanel Margin="5 1">
                 <GroupBox Header="Syringe Amount (g)"
                           FontSize="14"
                           Style="{x:Null}">
                     <GroupBox.LayoutTransform>
-                        <ScaleTransform ScaleX="0.8" ScaleY="0.8" />
+                        <ScaleTransform ScaleX="0.8"
+                                        ScaleY="0.8" />
                     </GroupBox.LayoutTransform>
                     <DockPanel>
                         <StackPanel DockPanel.Dock="Top"
@@ -142,13 +143,16 @@
             <Canvas>
                 <Border Canvas.Top="136"
                         Canvas.Left="239"
-                        BorderBrush="{StaticResource SecondaryBackgroundColor}" 
+                        BorderBrush="{StaticResource SecondaryBackgroundColor}"
                         BorderThickness="1.5"
                         CornerRadius="3"
                         Background="White"
-                        Padding="1" HorizontalAlignment="Center" VerticalAlignment="Top">
+                        Padding="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top">
                     <Border.RenderTransform>
-                        <ScaleTransform ScaleX="0.7" ScaleY="0.7" />
+                        <ScaleTransform ScaleX="0.7"
+                                        ScaleY="0.7" />
                     </Border.RenderTransform>
                     <StackPanel Width="190">
                         <Border Background="{StaticResource SecondaryBackgroundColor}"
@@ -202,7 +206,7 @@
                             </MultiBinding>
                         </Rectangle.Fill>
                     </Rectangle>
-                    <TextBlock Text="DOOR CLOSE LEFT"
+                    <TextBlock Text="DOOR LEFT CLOSE"
                                Foreground="Black"
                                FontWeight="Bold"
                                HorizontalAlignment="Center"
@@ -227,7 +231,7 @@
                             </MultiBinding>
                         </Rectangle.Fill>
                     </Rectangle>
-                    <TextBlock Text="DOOR CLOSE RIGHT"
+                    <TextBlock Text="DOOR RIGHT CLOSE"
                                Foreground="Black"
                                FontWeight="Bold"
                                HorizontalAlignment="Center"
@@ -240,9 +244,59 @@
                 </Grid>
             </Canvas>
             <Canvas>
+                <Grid Width="146"
+                      Height="17"
+                      Canvas.Left="232"
+                      Canvas.Top="188">
+                    <Rectangle Style="{StaticResource DoorIndicatorRectangleStyle}">
+                        <Rectangle.Fill>
+                            <MultiBinding Converter="{StaticResource DoorStatusToBrushConverterRevers}">
+                                <Binding Path="Devices.Inputs.DoorOpenRearLeft.Value" />
+                                <Binding Path="Devices.Inputs.DoorReleaseRearLeft.Value" />
+                            </MultiBinding>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <TextBlock Text="DOOR REAR LEFT CLOSE"
+                               Width="146"
+                               Foreground="Black"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Top"
+                               TextAlignment="Center"
+                               FontSize="11">
+                    </TextBlock>
+                </Grid>
+            </Canvas>
+
+            <Canvas>
+                <Grid Width="147"
+                      Height="16"
+                      Canvas.Left="378"
+                      Canvas.Top="188">
+                    <Rectangle Style="{StaticResource DoorIndicatorRectangleStyle}">
+                        <Rectangle.Fill>
+                            <MultiBinding Converter="{StaticResource DoorStatusToBrushConverterRevers}">
+                                <Binding Path="Devices.Inputs.DoorOpenRearRight.Value" />
+                                <Binding Path="Devices.Inputs.DoorReleaseRearRight.Value" />
+                            </MultiBinding>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <TextBlock Text="DOOR REAR RIGHT CLOSE"
+                               Width="147"
+                               Foreground="Black"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Top"
+                               TextAlignment="Center"
+                               FontSize="11">
+                    </TextBlock>
+                </Grid>
+            </Canvas>
+
+            <Canvas>
                 <Grid Width="310"
                       Height="15"
-                      Canvas.Right="20"
+                      Canvas.Right="23"
                       Canvas.Top="375">
                     <Rectangle Style="{StaticResource DoorIndicatorRectangleStyle}">
                         <Rectangle.Fill>
@@ -315,19 +369,23 @@
                        RenderTransformOrigin="1.243,1.841">
                     <Image.Style>
                         <Style TargetType="Image">
-                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Setter Property="Visibility"
+                                    Value="Collapsed" />
 
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Devices.Inputs.Emergency.Value}" Value="True">
-                                    <Setter Property="Visibility" Value="Visible" />
+                                <DataTrigger Binding="{Binding Devices.Inputs.Emergency.Value}"
+                                             Value="True">
+                                    <Setter Property="Visibility"
+                                            Value="Visible" />
                                     <DataTrigger.EnterActions>
                                         <BeginStoryboard Name="BlinkAnimation">
                                             <Storyboard>
                                                 <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                                 From="1.0" To="0.0" 
-                                                 Duration="0:0:0.5" 
-                                                 AutoReverse="True" 
-                                                 RepeatBehavior="Forever" />
+                                                                 From="1.0"
+                                                                 To="0.0"
+                                                                 Duration="0:0:0.5"
+                                                                 AutoReverse="True"
+                                                                 RepeatBehavior="Forever" />
                                             </Storyboard>
                                         </BeginStoryboard>
                                     </DataTrigger.EnterActions>
