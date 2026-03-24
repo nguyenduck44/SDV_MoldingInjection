@@ -1,90 +1,71 @@
-﻿<UserControl
-    x:Class="SDV_MoldingInjection.MVVM.Views.ProductionInforView"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
-    mc:Ignorable="d"
-    xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
-    d:DataContext="{d:DesignInstance Type={x:Type vm:ProductionInforViewModel}}"
-    xmlns:controls="clr-namespace:SDV_MoldingInjection.Controls"
-    d:DesignHeight="450"
-    d:DesignWidth="800">
+﻿<UserControl x:Class="SDV_MoldingInjection.MVVM.Views.ProductionInforView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
+             mc:Ignorable="d"
+             xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
+             d:DataContext="{d:DesignInstance Type={x:Type vm:ProductionInforViewModel}}"
+             xmlns:controls="clr-namespace:SDV_MoldingInjection.Controls"
+             d:DesignHeight="450"
+             d:DesignWidth="800">
     <UserControl.Resources>
-        <Style
-            x:Key="FlatActionButtonStyle"
-            TargetType="Button">
-            <Setter
-                Property="Background"
-                Value="#f2f2f2" />
-            <Setter
-                Property="BorderBrush"
-                Value="#bfbfbf" />
-            <Setter
-                Property="BorderThickness"
-                Value="1" />
-            <Setter
-                Property="Foreground"
-                Value="#202020" />
-            <Setter
-                Property="FontWeight"
-                Value="SemiBold" />
-            <Setter
-                Property="Height"
-                Value="30" />
-            <Setter
-                Property="Padding"
-                Value="14,2" />
+        <Style x:Key="FlatActionButtonStyle"
+               TargetType="Button">
+            <Setter Property="Background"
+                    Value="#f2f2f2" />
+            <Setter Property="BorderBrush"
+                    Value="#bfbfbf" />
+            <Setter Property="BorderThickness"
+                    Value="1" />
+            <Setter Property="Foreground"
+                    Value="#202020" />
+            <Setter Property="FontWeight"
+                    Value="SemiBold" />
+            <Setter Property="Height"
+                    Value="30" />
+            <Setter Property="Padding"
+                    Value="14,2" />
         </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition
-                Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <DockPanel
-            Grid.Row="0"
-            Margin="0,0,0,10"
-            LastChildFill="False">
-            <TextBlock
-                Text="Production"
-                FontSize="20"
-                FontWeight="SemiBold"
-                Foreground="#273c75"
-                HorizontalAlignment="Center"
-                Margin="0"
-                DockPanel.Dock="Top" />
+        <DockPanel Grid.Row="0"
+                   LastChildFill="False">
+            <TextBlock Text="PRODUCTION"
+                       FontSize="20"
+                       FontWeight="SemiBold"
+                       Foreground="#273c75"
+                       HorizontalAlignment="Center"
+                       DockPanel.Dock="Top" />
 
-            <StackPanel
-                Orientation="Horizontal"
-                DockPanel.Dock="Left"
-                HorizontalAlignment="Center"
-                Height="30"
-                Margin="0,8,0,0">
-                <DatePicker
-                    SelectedDate="{Binding SelectedDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    SelectedDateFormat="Short"
-                    Background="White"
-                    BorderBrush="#bfbfbf"
-                    BorderThickness="1"
-                    Foreground="#202020"
-                    Margin="5 0 0 0"
-                    VerticalContentAlignment="Center"
-                    Width="140" />
-                <Button
-                    Content="Today"
-                    Width="100"
-                    Command="{Binding TodayCommand}"
-                    Margin="8,0,0,0"
-                    Style="{StaticResource FlatActionButtonStyle}" />
+            <StackPanel Orientation="Horizontal"
+                        DockPanel.Dock="Left"
+                        HorizontalAlignment="Center"
+                        Height="30">
+                <DatePicker SelectedDate="{Binding SelectedDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            SelectedDateFormat="Short"
+                            Background="White"
+                            BorderBrush="#bfbfbf"
+                            BorderThickness="1"
+                            Foreground="#202020"
+                            Margin="5 0 0 0"
+                            VerticalContentAlignment="Center"
+                            Width="140" />
+                <Button Content="Today"
+                        Width="100"
+                        Command="{Binding TodayCommand}"
+                        Margin="8,0,0,0"
+                        Style="{StaticResource FlatActionButtonStyle}" />
             </StackPanel>
         </DockPanel>
 
-        <controls:ProductionDayView
-            Grid.Row="1"
-            DataContext="{Binding SelectedProduction}" />
+        <controls:ProductionDayView Grid.Row="1"
+                                    DataContext="{Binding SelectedProduction}" />
     </Grid>
 </UserControl>

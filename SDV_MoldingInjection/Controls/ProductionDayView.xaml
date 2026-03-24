@@ -106,22 +106,6 @@
                     Value="0,0,6,0" />
         </Style>
 
-        <Style x:Key="SumNGStyle"
-               TargetType="TextBlock">
-            <Setter Property="Foreground"
-                    Value="#d63031" />
-            <Setter Property="FontSize"
-                    Value="13" />
-            <Setter Property="FontWeight"
-                    Value="SemiBold" />
-            <Setter Property="VerticalAlignment"
-                    Value="Center" />
-            <Setter Property="HorizontalAlignment"
-                    Value="Right" />
-            <Setter Property="Margin"
-                    Value="0,0,6,0" />
-        </Style>
-
         <Style x:Key="DataGridCellTextStyle"
                TargetType="TextBlock">
             <Setter Property="HorizontalAlignment"
@@ -293,16 +277,18 @@
                             <TextBlock Grid.Row="0"
                                        Grid.Column="1"
                                        Text="{Binding TotalInput}"
-                                       Style="{StaticResource SumValueStyle}" />
-
+                                       Style="{StaticResource SumValueStyle}"
+                                       HorizontalAlignment="Left"/>
                             <TextBlock Grid.Row="1"
                                        Grid.Column="0"
                                        Text="Output"
                                        Style="{StaticResource SumLabelKey}" />
                             <TextBlock Grid.Row="1"
                                        Grid.Column="1"
+                                       TextAlignment="Left"
                                        Text="{Binding TotalOutput}"
-                                       Style="{StaticResource SumValueStyle}" />
+                                       Style="{StaticResource SumValueStyle}"
+                                       HorizontalAlignment="Left"/>
                         </Grid>
                     </Border>
 
@@ -351,20 +337,22 @@
 
                             <TextBlock Grid.Row="0"
                                        Grid.Column="0"
-                                       Text="Input"
+                                       Text="Input :"
                                        Style="{StaticResource SumLabelKey}" />
                             <TextBlock Grid.Row="0"
                                        Grid.Column="1"
                                        Text="{Binding TotalInputShiftDay}"
-                                       Style="{StaticResource SumValueStyle}" />
+                                       Style="{StaticResource SumValueStyle}"
+                                       HorizontalAlignment="Left"/>
                             <TextBlock Grid.Row="1"
                                        Grid.Column="0"
-                                       Text="Output"
+                                       Text="Output :"
                                        Style="{StaticResource SumLabelKey}" />
                             <TextBlock Grid.Row="1"
                                        Grid.Column="1"
                                        Text="{Binding TotalOutputShiftDay}"
-                                       Style="{StaticResource SumValueStyle}" />
+                                       Style="{StaticResource SumValueStyle}"
+                                       HorizontalAlignment="Left" />
                         </Grid>
                     </Border>
 
@@ -418,8 +406,8 @@
                             <TextBlock Grid.Row="0"
                                        Grid.Column="1"
                                        Text="{Binding TotalInputShiftNight}"
-                                       Style="{StaticResource SumValueStyle}" />
-
+                                       Style="{StaticResource SumValueStyle}"
+                                       HorizontalAlignment="Left"/>
                             <TextBlock Grid.Row="1"
                                        Grid.Column="0"
                                        Text="Output"
@@ -427,7 +415,8 @@
                             <TextBlock Grid.Row="1"
                                        Grid.Column="1"
                                        Text="{Binding TotalOutputShiftNight}"
-                                       Style="{StaticResource SumValueStyle}" />
+                                       Style="{StaticResource SumValueStyle}"
+                                       HorizontalAlignment="Left"/>
                         </Grid>
                     </Border>
 
