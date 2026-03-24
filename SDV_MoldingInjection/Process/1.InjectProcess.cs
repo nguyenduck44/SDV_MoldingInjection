@@ -939,8 +939,13 @@ namespace SDV_MoldingInjection.Process
                     }
                     else
                     {
-
-                    }
+                        int outputCount = 0;
+                        if (_optionRecipe.SkipHead12 == false && LeftJigDetect)
+                            outputCount++;
+                        if (_optionRecipe.SkipHead34 == false && RightJigDetect)
+                            outputCount++;
+                        _productionService.WriteData(EProductionWriteType.Output, outputCount);
+                    } 
 
                     if (isLoading) Log.Debug($"Transfer LOAD done");
                     else Log.Debug($"Transfer UNLOAD done");
@@ -952,6 +957,7 @@ namespace SDV_MoldingInjection.Process
 
                 case EMoldProcLoadingUnloadingStep.Jig_Check:
                     Log.Debug("Jig check");
+                    int inputCount = 0;
                     if (isLoading == false && _machineStatus.DisableDetectJig == false && _machineStatus.IsDryRunMode == false)
                     {
 #if SIMULATION
@@ -988,6 +994,7 @@ namespace SDV_MoldingInjection.Process
                                 RaiseWarning(EWarning.Left_Jig_Not_Detect);
                                 break;
                             }
+                            inputCount++;
                         }
 
                         if (_optionRecipe.SkipHead34 == false && _machineStatus.DisableDetectJig == false && _machineStatus.IsDryRunMode == false)
@@ -1002,6 +1009,8 @@ namespace SDV_MoldingInjection.Process
                                 RaiseWarning(EWarning.Right_Jig_Not_Detect);
                                 break;
                             }
+
+                            inputCount++;
                         }
                     }
 
@@ -1012,6 +1021,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    _productionService.WriteData(EProductionWriteType.Input, inputCount);
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.MCR_Read:

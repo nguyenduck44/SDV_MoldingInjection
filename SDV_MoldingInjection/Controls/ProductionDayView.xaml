@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="SDV_MoldingInjection.Controls.ProductionDayView"
+<UserControl x:Class="SDV_MoldingInjection.Controls.ProductionDayView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -140,20 +140,6 @@
                     Value="0,6" />
         </Style>
 
-        <Style x:Key="SideTitleStyle"
-               TargetType="TextBlock">
-            <Setter Property="FontSize"
-                    Value="14" />
-            <Setter Property="FontWeight"
-                    Value="Bold" />
-            <Setter Property="Foreground"
-                    Value="#111111" />
-            <Setter Property="HorizontalAlignment"
-                    Value="Center" />
-            <Setter Property="Margin"
-                    Value="0,4,0,8" />
-        </Style>
-
         <Style x:Key="SummaryBorderStyle"
                TargetType="Border">
             <Setter Property="Background"
@@ -276,16 +262,8 @@
 
         <Grid x:Name="ShiftContentGrid"
               Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="6" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-
             <!-- ═══════════════════ ALL SHIFT ═══════════════════ -->
             <GroupBox x:Name="AllShiftGroupBox"
-                      Grid.Column="0"
-                      Grid.ColumnSpan="3"
                       Padding="4"
                       Style="{StaticResource FlatGroupBoxStyle}">
                 <GroupBox.Header>
@@ -295,128 +273,60 @@
                                FontSize="13" />
                 </GroupBox.Header>
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="4" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
+                <DockPanel>
+                    <Border DockPanel.Dock="Bottom"
+                            Style="{StaticResource SummaryBorderStyle}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="70" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="24" />
+                                <RowDefinition Height="24" />
+                            </Grid.RowDefinitions>
 
-                    <DockPanel Grid.Column="0">
-                        <TextBlock DockPanel.Dock="Top"
-                                   Text="◀  LEFT"
-                                   Style="{StaticResource SideTitleStyle}" />
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="0"
+                                       Text="Input"
+                                       Style="{StaticResource SumLabelKey}" />
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="1"
+                                       Text="{Binding TotalInput}"
+                                       Style="{StaticResource SumValueStyle}" />
 
-                        <Border DockPanel.Dock="Bottom"
-                                Style="{StaticResource SummaryBorderStyle}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="70" />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="24" />
-                                    <RowDefinition Height="24" />
-                                </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="1"
+                                       Grid.Column="0"
+                                       Text="Output"
+                                       Style="{StaticResource SumLabelKey}" />
+                            <TextBlock Grid.Row="1"
+                                       Grid.Column="1"
+                                       Text="{Binding TotalOutput}"
+                                       Style="{StaticResource SumValueStyle}" />
+                        </Grid>
+                    </Border>
 
-                                <TextBlock Grid.Row="0"
-                                           Grid.Column="0"
-                                           Text="Input"
-                                           Style="{StaticResource SumLabelKey}" />
-                                <TextBlock Grid.Row="0"
-                                           Grid.Column="1"
-                                           Text="{Binding TotalInputLeft}"
-                                           Style="{StaticResource SumValueStyle}" />
-
-                                <TextBlock Grid.Row="1"
-                                           Grid.Column="0"
-                                           Text="Output"
-                                           Style="{StaticResource SumLabelKey}" />
-                                <TextBlock Grid.Row="1"
-                                           Grid.Column="1"
-                                           Text="{Binding TotalOutputLeft}"
-                                           Style="{StaticResource SumValueStyle}" />
-                            </Grid>
-                        </Border>
-
-                        <DataGrid ItemsSource="{Binding AllShiftLeft}">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Hour"
-                                                    Binding="{Binding Hour , StringFormat={}{0:00}h}"
-                                                    Width="*"
-                                                    ElementStyle="{StaticResource DataGridCellTextStyle}" />
-                                <DataGridTextColumn Header="Input"
-                                                    Binding="{Binding InputCount}"
-                                                    Width="*"
-                                                    ElementStyle="{StaticResource DataGridCellTextStyle}" />
-                                <DataGridTextColumn Header="Output"
-                                                    Binding="{Binding OutputCount}"
-                                                    Width="*"
-                                                    ElementStyle="{StaticResource DataGridCellTextStyle}" />
-                            </DataGrid.Columns>
-                        </DataGrid>
-                    </DockPanel>
-
-                    <DockPanel Grid.Column="2">
-                        <TextBlock DockPanel.Dock="Top"
-                                   Text="RIGHT  ▶"
-                                   Style="{StaticResource SideTitleStyle}" />
-
-                        <Border DockPanel.Dock="Bottom"
-                                Style="{StaticResource SummaryBorderStyle}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="70" />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="24" />
-                                    <RowDefinition Height="24" />
-                                </Grid.RowDefinitions>
-
-                                <TextBlock Grid.Row="0"
-                                           Grid.Column="0"
-                                           Text="Input"
-                                           Style="{StaticResource SumLabelKey}" />
-                                <TextBlock Grid.Row="0"
-                                           Grid.Column="1"
-                                           Text="{Binding TotalInputRight}"
-                                           Style="{StaticResource SumValueStyle}" />
-
-                                <TextBlock Grid.Row="1"
-                                           Grid.Column="0"
-                                           Text="Output"
-                                           Style="{StaticResource SumLabelKey}" />
-                                <TextBlock Grid.Row="1"
-                                           Grid.Column="1"
-                                           Text="{Binding TotalOutputRight}"
-                                           Style="{StaticResource SumValueStyle}" />
-                            </Grid>
-                        </Border>
-
-                        <DataGrid ItemsSource="{Binding AllShiftRight}">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Hour"
-                                                    Binding="{Binding Hour , StringFormat={}{0:00}h}"
-                                                    Width="*"
-                                                    ElementStyle="{StaticResource DataGridCellTextStyle}" />
-                                <DataGridTextColumn Header="Input"
-                                                    Binding="{Binding InputCount}"
-                                                    Width="*"
-                                                    ElementStyle="{StaticResource DataGridCellTextStyle}" />
-                                <DataGridTextColumn Header="Output"
-                                                    Binding="{Binding OutputCount}"
-                                                    Width="*"
-                                                    ElementStyle="{StaticResource DataGridCellTextStyle}" />
-                            </DataGrid.Columns>
-                        </DataGrid>
-                    </DockPanel>
-                </Grid>
+                    <DataGrid ItemsSource="{Binding ProductionHours}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Hour"
+                                                Binding="{Binding Hour , StringFormat={}{0:00}h}"
+                                                Width="*"
+                                                ElementStyle="{StaticResource DataGridCellTextStyle}" />
+                            <DataGridTextColumn Header="Input"
+                                                Binding="{Binding InputCount}"
+                                                Width="*"
+                                                ElementStyle="{StaticResource DataGridCellTextStyle}" />
+                            <DataGridTextColumn Header="Output"
+                                                Binding="{Binding OutputCount}"
+                                                Width="*"
+                                                ElementStyle="{StaticResource DataGridCellTextStyle}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
             </GroupBox>
 
             <!-- ═══════════════════ SHIFT DAY ═══════════════════ -->
             <GroupBox x:Name="DayShiftGroupBox"
-                      Grid.Column="0"
                       Padding="4"
                       Style="{StaticResource FlatGroupBoxStyle}">
                 <GroupBox.Header>
@@ -426,129 +336,59 @@
                                FontSize="13" />
                 </GroupBox.Header>
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="4" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
+                <DockPanel>
+                    <Border DockPanel.Dock="Bottom"
+                            Style="{StaticResource SummaryBorderStyle}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="70" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="24" />
+                                <RowDefinition Height="24" />
+                            </Grid.RowDefinitions>
 
-                    <!-- ── Left / Day ── -->
-                    <DockPanel Grid.Column="0">
-                        <TextBlock DockPanel.Dock="Top"
-                                   Text="◀  LEFT"
-                                   Style="{StaticResource SideTitleStyle}" />
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="0"
+                                       Text="Input"
+                                       Style="{StaticResource SumLabelKey}" />
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="1"
+                                       Text="{Binding TotalInputShiftDay}"
+                                       Style="{StaticResource SumValueStyle}" />
+                            <TextBlock Grid.Row="1"
+                                       Grid.Column="0"
+                                       Text="Output"
+                                       Style="{StaticResource SumLabelKey}" />
+                            <TextBlock Grid.Row="1"
+                                       Grid.Column="1"
+                                       Text="{Binding TotalOutputShiftDay}"
+                                       Style="{StaticResource SumValueStyle}" />
+                        </Grid>
+                    </Border>
 
-                        <Border DockPanel.Dock="Bottom"
-                                Style="{StaticResource SummaryBorderStyle}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="70" />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="24" />
-                                    <RowDefinition Height="24" />
-                                </Grid.RowDefinitions>
-
-                                <TextBlock Grid.Row="0"
-                                           Grid.Column="0"
-                                           Text="Input"
-                                           Style="{StaticResource SumLabelKey}" />
-                                <TextBlock Grid.Row="0"
-                                           Grid.Column="1"
-                                           Text="{Binding TotalInputLeftShiftDay}"
-                                           Style="{StaticResource SumValueStyle}" />
-                                <TextBlock Grid.Row="1"
-                                           Grid.Column="0"
-                                           Text="Output"
-                                           Style="{StaticResource SumLabelKey}" />
-                                <TextBlock Grid.Row="1"
-                                           Grid.Column="1"
-                                           Text="{Binding TotalOutputLeftShiftDay}"
-                                           Style="{StaticResource SumValueStyle}" />
-                            </Grid>
-                        </Border>
-
-                        <DataGrid ItemsSource="{Binding ShiftDayLeft}">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Hour"
-                                                    Binding="{Binding Hour , StringFormat={}{0:00}h}"
-                                                    Width="*"
-                                                    ElementStyle="{StaticResource DataGridCellTextStyle}" />
-                                <DataGridTextColumn Header="Input"
-                                                    Binding="{Binding InputCount}"
-                                                    Width="*"
-                                                    ElementStyle="{StaticResource DataGridCellTextStyle}" />
-                                <DataGridTextColumn Header="Output"
-                                                    Binding="{Binding OutputCount}"
-                                                    Width="*"
-                                                    ElementStyle="{StaticResource DataGridCellTextStyle}" />
-                            </DataGrid.Columns>
-                        </DataGrid>
-                    </DockPanel>
-
-                    <!-- ── Right / Day ── -->
-                    <DockPanel Grid.Column="2">
-                        <TextBlock DockPanel.Dock="Top"
-                                   Text="RIGHT  ▶"
-                                   Style="{StaticResource SideTitleStyle}" />
-
-                        <Border DockPanel.Dock="Bottom"
-                                Style="{StaticResource SummaryBorderStyle}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="70" />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="24" />
-                                    <RowDefinition Height="24" />
-                                </Grid.RowDefinitions>
-
-                                <TextBlock Grid.Row="0"
-                                           Grid.Column="0"
-                                           Text="Input"
-                                           Style="{StaticResource SumLabelKey}" />
-                                <TextBlock Grid.Row="0"
-                                           Grid.Column="1"
-                                           Text="{Binding TotalInputRightShiftDay}"
-                                           Style="{StaticResource SumValueStyle}" />
-
-                                <TextBlock Grid.Row="1"
-                                           Grid.Column="0"
-                                           Text="Output"
-                                           Style="{StaticResource SumLabelKey}" />
-                                <TextBlock Grid.Row="1"
-                                           Grid.Column="1"
-                                           Text="{Binding TotalOutputRightShiftDay}"
-                                           Style="{StaticResource SumValueStyle}" />
-                            </Grid>
-                        </Border>
-
-                        <DataGrid ItemsSource="{Binding ShiftDayRight}">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Hour"
-                                                    Binding="{Binding Hour , StringFormat={}{0:00}h}"
-                                                    Width="*"
-                                                    ElementStyle="{StaticResource DataGridCellTextStyle}" />
-                                <DataGridTextColumn Header="Input"
-                                                    Binding="{Binding InputCount}"
-                                                    Width="*"
-                                                    ElementStyle="{StaticResource DataGridCellTextStyle}" />
-                                <DataGridTextColumn Header="Output"
-                                                    Binding="{Binding OutputCount}"
-                                                    Width="*"
-                                                    ElementStyle="{StaticResource DataGridCellTextStyle}" />
-                            </DataGrid.Columns>
-                        </DataGrid>
-                    </DockPanel>
-                </Grid>
+                    <DataGrid ItemsSource="{Binding ShiftDay}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Hour"
+                                                Binding="{Binding Hour , StringFormat={}{0:00}h}"
+                                                Width="*"
+                                                ElementStyle="{StaticResource DataGridCellTextStyle}" />
+                            <DataGridTextColumn Header="Input"
+                                                Binding="{Binding InputCount}"
+                                                Width="*"
+                                                ElementStyle="{StaticResource DataGridCellTextStyle}" />
+                            <DataGridTextColumn Header="Output"
+                                                Binding="{Binding OutputCount}"
+                                                Width="*"
+                                                ElementStyle="{StaticResource DataGridCellTextStyle}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
             </GroupBox>
 
             <!-- ═══════════════════ SHIFT NIGHT ═══════════════════ -->
             <GroupBox x:Name="NightShiftGroupBox"
-                      Grid.Column="2"
                       Padding="4"
                       Style="{StaticResource FlatGroupBoxStyle}">
                 <GroupBox.Header>
@@ -558,125 +398,56 @@
                                FontSize="13" />
                 </GroupBox.Header>
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="4" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
+                <DockPanel>
+                    <Border DockPanel.Dock="Bottom"
+                            Style="{StaticResource SummaryBorderStyle}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="70" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="24" />
+                                <RowDefinition Height="24" />
+                            </Grid.RowDefinitions>
 
-                    <!-- ── Left / Night ── -->
-                    <DockPanel Grid.Column="0">
-                        <TextBlock DockPanel.Dock="Top"
-                                   Text="◀  LEFT"
-                                   Style="{StaticResource SideTitleStyle}" />
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="0"
+                                       Text="Input"
+                                       Style="{StaticResource SumLabelKey}" />
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="1"
+                                       Text="{Binding TotalInputShiftNight}"
+                                       Style="{StaticResource SumValueStyle}" />
 
-                        <Border DockPanel.Dock="Bottom"
-                                Style="{StaticResource SummaryBorderStyle}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="70" />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="24" />
-                                    <RowDefinition Height="24" />
-                                </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="1"
+                                       Grid.Column="0"
+                                       Text="Output"
+                                       Style="{StaticResource SumLabelKey}" />
+                            <TextBlock Grid.Row="1"
+                                       Grid.Column="1"
+                                       Text="{Binding TotalOutputShiftNight}"
+                                       Style="{StaticResource SumValueStyle}" />
+                        </Grid>
+                    </Border>
 
-                                <TextBlock Grid.Row="0"
-                                           Grid.Column="0"
-                                           Text="Input"
-                                           Style="{StaticResource SumLabelKey}" />
-                                <TextBlock Grid.Row="0"
-                                           Grid.Column="1"
-                                           Text="{Binding TotalInputLeftShiftNight}"
-                                           Style="{StaticResource SumValueStyle}" />
-
-                                <TextBlock Grid.Row="1"
-                                           Grid.Column="0"
-                                           Text="Output"
-                                           Style="{StaticResource SumLabelKey}" />
-                                <TextBlock Grid.Row="1"
-                                           Grid.Column="1"
-                                           Text="{Binding TotalOutputLeftShiftNight}"
-                                           Style="{StaticResource SumValueStyle}" />
-                            </Grid>
-                        </Border>
-
-                        <DataGrid ItemsSource="{Binding ShiftNightLeft}">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Hour"
-                                                    Binding="{Binding Hour , StringFormat={}{0:00}h}"
-                                                    Width="*"
-                                                    ElementStyle="{StaticResource DataGridCellTextStyle}" />
-                                <DataGridTextColumn Header="Input"
-                                                    Binding="{Binding InputCount}"
-                                                    Width="*"
-                                                    ElementStyle="{StaticResource DataGridCellTextStyle}" />
-                                <DataGridTextColumn Header="Output"
-                                                    Binding="{Binding OutputCount}"
-                                                    Width="*"
-                                                    ElementStyle="{StaticResource DataGridCellTextStyle}" />
-                            </DataGrid.Columns>
-                        </DataGrid>
-                    </DockPanel>
-
-                    <!-- ── Right / Night ── -->
-                    <DockPanel Grid.Column="2">
-                        <TextBlock DockPanel.Dock="Top"
-                                   Text="RIGHT  ▶"
-                                   Style="{StaticResource SideTitleStyle}" />
-
-                        <Border DockPanel.Dock="Bottom"
-                                Style="{StaticResource SummaryBorderStyle}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="70" />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="24" />
-                                    <RowDefinition Height="24" />
-                                </Grid.RowDefinitions>
-
-                                <TextBlock Grid.Row="0"
-                                           Grid.Column="0"
-                                           Text="Input"
-                                           Style="{StaticResource SumLabelKey}" />
-                                <TextBlock Grid.Row="0"
-                                           Grid.Column="1"
-                                           Text="{Binding TotalInputRightShiftNight}"
-                                           Style="{StaticResource SumValueStyle}" />
-
-                                <TextBlock Grid.Row="1"
-                                           Grid.Column="0"
-                                           Text="Output"
-                                           Style="{StaticResource SumLabelKey}" />
-                                <TextBlock Grid.Row="1"
-                                           Grid.Column="1"
-                                           Text="{Binding TotalOutputRightShiftNight}"
-                                           Style="{StaticResource SumValueStyle}" />
-                            </Grid>
-                        </Border>
-
-                        <DataGrid ItemsSource="{Binding ShiftNightRight}">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Hour"
-                                                    Binding="{Binding Hour , StringFormat={}{0:00}h}"
-                                                    Width="*"
-                                                    ElementStyle="{StaticResource DataGridCellTextStyle}" />
-                                <DataGridTextColumn Header="Input"
-                                                    Binding="{Binding InputCount}"
-                                                    Width="*"
-                                                    ElementStyle="{StaticResource DataGridCellTextStyle}" />
-                                <DataGridTextColumn Header="Output"
-                                                    Binding="{Binding OutputCount}"
-                                                    Width="*"
-                                                    ElementStyle="{StaticResource DataGridCellTextStyle}" />
-                            </DataGrid.Columns>
-                        </DataGrid>
-                    </DockPanel>
-                </Grid>
+                    <DataGrid ItemsSource="{Binding ShiftNight}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Hour"
+                                                Binding="{Binding Hour , StringFormat={}{0:00}h}"
+                                                Width="*"
+                                                ElementStyle="{StaticResource DataGridCellTextStyle}" />
+                            <DataGridTextColumn Header="Input"
+                                                Binding="{Binding InputCount}"
+                                                Width="*"
+                                                ElementStyle="{StaticResource DataGridCellTextStyle}" />
+                            <DataGridTextColumn Header="Output"
+                                                Binding="{Binding OutputCount}"
+                                                Width="*"
+                                                ElementStyle="{StaticResource DataGridCellTextStyle}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
             </GroupBox>
         </Grid>
 

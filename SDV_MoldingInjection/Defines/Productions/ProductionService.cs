@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -76,7 +76,7 @@ namespace SDV_MoldingInjection.Defines.Productions
             return newData;
         }
 
-        public void WriteData(EProductionWriteType writeType, EPort side, int qty = 1)
+        public void WriteData(EProductionWriteType writeType, int qty = 1)
         {
             lock (lockObj)
             {
@@ -102,9 +102,7 @@ namespace SDV_MoldingInjection.Defines.Productions
                     }
                 }
 
-                var productionHours = side == EPort.Left
-                    ? currentProductionDay.ProductionHoursLeft
-                    : currentProductionDay.ProductionHoursRight;
+                ObservableCollection<ProductionHourItem> productionHours = currentProductionDay.ProductionHours;
 
                 ProductionHourItem? currentProductionHour = productionHours.FirstOrDefault(ph => ph.Hour == now.Hour);
                 if (currentProductionHour == null) return;

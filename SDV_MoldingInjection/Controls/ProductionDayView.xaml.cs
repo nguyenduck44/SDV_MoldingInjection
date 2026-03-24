@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -51,16 +51,12 @@ namespace SDV_MoldingInjection.Controls
                 AllShiftGroupBox.Visibility = Visibility.Collapsed;
                 DayShiftGroupBox.Visibility = Visibility.Visible;
                 NightShiftGroupBox.Visibility = Visibility.Collapsed;
-                Grid.SetColumn(DayShiftGroupBox, 0);
-                Grid.SetColumnSpan(DayShiftGroupBox, 3);
                 return;
             }
 
             AllShiftGroupBox.Visibility = Visibility.Collapsed;
             DayShiftGroupBox.Visibility = Visibility.Collapsed;
             NightShiftGroupBox.Visibility = Visibility.Visible;
-            Grid.SetColumn(NightShiftGroupBox, 0);
-            Grid.SetColumnSpan(NightShiftGroupBox, 3);
         }
     }
 }
