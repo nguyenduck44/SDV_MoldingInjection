@@ -34,7 +34,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
                     _devices.Cylinders.AngleValve.Open();
 
-                    logFileName = $"D:\\MoldInjection\\Log\\PressureLog\\{DateTime.Now:yyyymmdd_hhmmss}.txt";
+                    logFileName = $"D:\\MoldInjection\\Log\\PressureLog\\LeakTest\\{DateTime.Now:yyyy-MM-dd}\\{DateTime.Now:yyyy-MM-dd_HH}.txt";
                     PressureLog(CurrentPressure, "Valve Open");
 
                     tickCount = Environment.TickCount;
@@ -175,7 +175,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         {
             if (string.IsNullOrEmpty(logFileName)) return;
 
-            string message = $"{DateTime.Now:yyyy/mm/dd hh:mm:ss:ff},{pressure}";
+            string message = $"{DateTime.Now:yyyy/MM/dd HH:mm:ss},{pressure:F3}";
             if (action != string.Empty)
                 message += $",{action}";
             message += "\r\n";

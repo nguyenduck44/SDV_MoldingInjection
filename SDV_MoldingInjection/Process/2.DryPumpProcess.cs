@@ -1,4 +1,4 @@
-﻿using EQX.Core.InOut;
+using EQX.Core.InOut;
 using EQX.Core.Motion;
 using EQX.Core.Sequence;
 using EQX.InOut;
@@ -595,7 +595,7 @@ namespace SDV_MoldingInjection.Process
         {
             if (string.IsNullOrEmpty(logFileName)) return;
 
-            string message = $"{DateTime.Now:yyyy/mm/dd hh:mm:ss:ff},{pressure}";
+            string message = $"{DateTime.Now:yyyy/MM/dd HH:mm:ss},{pressure:F3}";
             if (action != string.Empty)
                 message += $",{action}";
             message += "\r\n";
@@ -626,7 +626,7 @@ namespace SDV_MoldingInjection.Process
         private bool EnableTimerDelay;
         private bool EnableWritePressureLog;
 
-        private string logFileName = $"D:\\MoldInjection\\Log\\PressureLog\\{DateTime.Now:yyyyMMdd_hhmmss}.txt";
+        private string logFileName = $"D:\\MoldInjection\\Log\\PressureLog\\{DateTime.Now:yyyy-MM}\\{DateTime.Now:yyyy-MM-dd}\\{DateTime.Now:yyyy-MM-dd_HH}.txt";
         private Queue<EDryPumpProcResinInjectStep> DryPumpResinInjectStep = new Queue<EDryPumpProcResinInjectStep>();
 
         #endregion
