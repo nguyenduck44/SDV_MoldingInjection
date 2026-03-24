@@ -10,14 +10,17 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
     public class ManualViewModel : ViewModelBase
     {
         private readonly INavigationService _navigationService;
+        private readonly NavigationStore _navigationStore;
         private readonly SPDHeadAllMaintenanceViewModel _sPDHeadAllMaintenanceViewModel;
 
         public ManualViewModel(IEnumerable<MaintenanceViewModel<ESemiSequence, RecipeList>> maintenanceViewModels,
             INavigationService navigationService,
+            NavigationStore navigationStore,
             SPDHeadAllMaintenanceViewModel sPDHeadAllMaintenanceViewModel)
         {
             MaintenanceViewModels = maintenanceViewModels;
             _navigationService = navigationService;
+            _navigationStore = navigationStore;
             _sPDHeadAllMaintenanceViewModel = sPDHeadAllMaintenanceViewModel;
 
             for (int i = 0; i < MaintenanceViewModels.Count(); i++)
@@ -33,6 +36,14 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             foreach (var vm in ManualViewModels)
             {
                 vm.Init();
+                vm.RelatedViewModelNavigateEvent += (name) =>
+                {
+                    if (_navigationStore.CurrentViewModel is AppMaintenanceViewModel maintenanceViewModel == false) return;
+                    if (maintenanceViewModel.MaintenanceView != EMaintenanceView.Manual) return;
+
+                    ManualViewModels.First(vm => vm.Name == name).MaintenanceView = maintenanceViewModel.MaintenanceView;
+                    _navigationService.NavigateTo(ManualViewModels.First(vm => vm.Name == name));
+                };
             }
         }
 
