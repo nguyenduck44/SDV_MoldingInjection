@@ -137,6 +137,17 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 });
             }
         }
+
+        public ICommand MotionsStatusNavigateCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    _navigationService.NavigateTo<MotionsStatusViewModel>();
+                });
+            }
+        }
         #endregion
 
         public MonitorViewModel(INavigationService navigationService,

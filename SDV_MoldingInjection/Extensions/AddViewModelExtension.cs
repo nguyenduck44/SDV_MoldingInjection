@@ -60,6 +60,13 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddViewModel<OPCallMessageViewModel>();
                 services.AddViewModel<InterlockMessageViewModel>();
                 services.AddViewModel<TerminalMessageViewModel>();
+                services.AddSingleton<MotionsStatusViewModel>((s) =>
+                {
+                    return new MotionsStatusViewModel()
+                    {
+                        AllMotions = s.GetRequiredService<Motions>().All
+                    };
+                });
 
                 services.AddViewModel<CIMTestViewModel>();
 

@@ -197,6 +197,9 @@
             <DataTemplate DataType="{x:Type inout:CylinderBase}">
                 <viewsLib:CylinderSimpleView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type uiMVVM:MotionsStatusViewModel}">
+                <uiMVVM:MotionsStatusView />
+            </DataTemplate>
             <!-- TODO: CIM -->
             <DataTemplate DataType="{x:Type uiMVVM:MaterialPort}">
                 <uiMVVM:MaterialPortView />
