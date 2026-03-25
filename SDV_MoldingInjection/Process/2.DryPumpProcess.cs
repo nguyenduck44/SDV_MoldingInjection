@@ -90,7 +90,11 @@ namespace SDV_MoldingInjection.Process
 
             if (EnableWritePressureLog && _currentRecipe.OptionRecipe.SavePressureLog == true)
             {
-                PressureLog(_devices.AnalogInputs.VacuumPressureInTorr);
+                if ((DateTime.Now - pressureLogWatchTime).TotalMilliseconds > _recipeSelector.CurrentRecipe.DryPumpRecipe.PressureLogTimelaps)
+                {
+                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr);
+                    pressureLogWatchTime = DateTime.Now;
+                }
             }
 
             return base.PreProcess();
@@ -117,7 +121,6 @@ namespace SDV_MoldingInjection.Process
             EnableTimerDelay = false;
             return base.ProcessToStop();
         }
-
 
         public override bool ProcessToRun()
         {
@@ -554,6 +557,7 @@ namespace SDV_MoldingInjection.Process
         }
         #endregion
 
+        #region Private Methods
         private void ZAxisSafetyPosMove()
         {
             Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos);
@@ -611,6 +615,7 @@ namespace SDV_MoldingInjection.Process
                 File.AppendAllText(path, message);
             }
         }
+        #endregion
 
         #region Privates
         private readonly Devices _devices;
@@ -633,6 +638,7 @@ namespace SDV_MoldingInjection.Process
 
         private Queue<EDryPumpProcResinInjectStep> DryPumpResinInjectStep = new Queue<EDryPumpProcResinInjectStep>();
 
+        private DateTime pressureLogWatchTime = DateTime.Now;
         #endregion
     }
 }

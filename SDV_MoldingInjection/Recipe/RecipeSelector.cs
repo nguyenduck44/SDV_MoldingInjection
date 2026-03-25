@@ -91,6 +91,7 @@ namespace SDV_MoldingInjection.Recipe
         private void SingleRecipe_RecipeChanged(object oldValue, object newValue, string? propertyName = null)
         {
             if (_navigationStore.CurrentViewModel.GetType() == typeof(InitDeinitViewModel)) return;
+
             bool result1 = CIMHelpers.TryParseRecipeNumber(RecipeSetting.CurrentRecipe, out int index);
             if (result1 == false)
             {

@@ -122,10 +122,8 @@ namespace SDV_MoldingInjection.Recipe
             get => selectLanguage;
             set
             {
-                if (selectLanguage == value) return;
-                OnRecipeChanged(selectLanguage, value);
-                selectLanguage = value;
-                OnPropertyChanged(nameof(SelectedLanguage));
+                SetRecipe(ref selectLanguage, value, nameof(SelectedLanguage));
+
                 SelectedLanguageEvent?.Invoke(SelectedLanguage);
                 SelectedLanguageLoadAllRecipe?.Invoke();
             }

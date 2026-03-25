@@ -9,7 +9,10 @@ namespace SDV_MoldingInjection.Recipe
         public double VacuumPressureSpec
         {
             get { return _vacuumPressureSpec; }
-            set { _vacuumPressureSpec = value; }
+            set
+            {
+                SetRecipe(ref _vacuumPressureSpec, value, nameof(VacuumPressureSpec));
+            }
         }
 
         [SingleRecipeDescription(Description = "Chamber vacuum hold pressure under spec", Unit = Unit.Torr)]
@@ -22,14 +25,22 @@ namespace SDV_MoldingInjection.Recipe
         [SingleRecipeDescription(Description = "Chamber vacuum pressure spec firsr", Unit = Unit.Torr)]
         public double VacuumPressureSpecFirst
         {
-            get { return _vacuumPressureSpecFirst; }
+            get => _vacuumPressureSpecFirst;
             set { _vacuumPressureSpecFirst = value; }
         }
 
+        [SingleRecipeDescription(Description = "Pressure log timelaps", Unit = Unit.Second)]
+        public double PressureLogTimelaps
+        {
+            get => _pressureLogTimelaps;
+            set => SetRecipe(ref _pressureLogTimelaps, value, nameof(PressureLogTimelaps));
+        }
+        
         #region Privates
         private double _vacuumPressureSpec;
         private double _vacuumPressureSpecFirst;
         private double _vacuumPressureHoldUnderSpec;
+        private double _pressureLogTimelaps;
         #endregion
     }
 }
