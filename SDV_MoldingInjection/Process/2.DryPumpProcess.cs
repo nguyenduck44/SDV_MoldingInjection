@@ -90,7 +90,7 @@ namespace SDV_MoldingInjection.Process
 
             if (EnableWritePressureLog && _currentRecipe.OptionRecipe.SavePressureLog == true)
             {
-                if ((DateTime.Now - pressureLogWatchTime).TotalMilliseconds > _recipeSelector.CurrentRecipe.DryPumpRecipe.PressureLogTimelaps)
+                if ((DateTime.Now - pressureLogWatchTime).TotalMilliseconds > _recipeSelector.CurrentRecipe.DryPumpRecipe.PressureLogTimelaps * 1000)
                 {
                     PressureLog(_devices.AnalogInputs.VacuumPressureInTorr);
                     pressureLogWatchTime = DateTime.Now;

@@ -86,6 +86,7 @@ namespace SDV_MoldingInjection.Recipe
             CurrentRecipe.SPDHead4_Recipe.RecipeChanged += SingleRecipe_RecipeChanged;
             CurrentRecipe.AdditionalMolding_Recipe.RecipeChanged += SingleRecipe_RecipeChanged;
             CurrentRecipe.OptionRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
+            CurrentRecipe.InjectTimeRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
         }
 
         private void SingleRecipe_RecipeChanged(object oldValue, object newValue, string? propertyName = null)
