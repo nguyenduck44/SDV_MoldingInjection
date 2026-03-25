@@ -23,7 +23,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             MachineStatus = machineStatus;
             _navigationStore = navigationStore;
 
-            System.Timers.Timer timer = new System.Timers.Timer(100);
+            NonOverlappingTimer timer = new NonOverlappingTimer(100);
             timer.Elapsed += Timer_Elapsed;
             timer.Start();
 

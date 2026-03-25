@@ -93,7 +93,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
             _navigationStore.CurrentViewModelChanged += FrameNavigationStore_CurrentViewModelChanged;
 
-            _doorSafetyTimer = new System.Timers.Timer(150);
+            _doorSafetyTimer = new NonOverlappingTimer(150);
             _doorSafetyTimer.Elapsed += DoorSafetyTimer_Elapsed;
             _doorSafetyTimer.Start();
         }
@@ -163,7 +163,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly IViewModelFactory _viewModelFactory;
         private readonly MachineStatus _machineStatus;
         private readonly ISecurityControlStore _securityControlStore;
-        private readonly System.Timers.Timer _doorSafetyTimer;
+        private readonly NonOverlappingTimer _doorSafetyTimer;
         private bool _lastDoorClose;
         private bool _isDoorSafetyOverlayVisible;
         private string _doorSafetyOverlayMessage = string.Empty;

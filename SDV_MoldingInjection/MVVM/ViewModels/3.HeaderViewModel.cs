@@ -78,7 +78,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
             _navigationStore.CurrentViewModelChanged += _navigationStore_CurrentViewModelChanged;
 
-            System.Timers.Timer timer = new System.Timers.Timer(500);
+            NonOverlappingTimer timer = new NonOverlappingTimer(500);
             timer.Elapsed += Timer_Elapsed;
             timer.Start();
         }

@@ -47,7 +47,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
             Log = LogManager.GetLogger("AutoVM");
 
-            statusUpdateTimer = new System.Timers.Timer(100);
+            statusUpdateTimer = new NonOverlappingTimer(100);
             statusUpdateTimer.Elapsed += StatusUpdateTimerHandler;
             statusUpdateTimer.Start();
         }
@@ -254,7 +254,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly INavigationService _navigationService;
         private readonly NavigationStore _navigationStore;
         private readonly ILanguageService _languageService;
-        System.Timers.Timer statusUpdateTimer;
+        NonOverlappingTimer statusUpdateTimer;
         #endregion
     }
 }

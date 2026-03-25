@@ -84,7 +84,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             CarrierJigStatusList = carrierJigStatusList;
             Log = LogManager.GetLogger("AutoVM");
 
-            statusUpdateTimer = new System.Timers.Timer(100);
+            statusUpdateTimer = new NonOverlappingTimer(100);
             statusUpdateTimer.Elapsed += StatusUpdateTimerHandler;
             statusUpdateTimer.Start();
         }
@@ -233,7 +233,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         #region Privates
         private readonly NavigationStore _navigationStore;
         private readonly RecipeSelector _recipeSelector;
-        private readonly System.Timers.Timer statusUpdateTimer;
+        private readonly NonOverlappingTimer statusUpdateTimer;
         #endregion
     }
 }
