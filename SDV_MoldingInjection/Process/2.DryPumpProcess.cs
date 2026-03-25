@@ -593,17 +593,22 @@ namespace SDV_MoldingInjection.Process
 
         private void PressureLog(double pressure, string action = "")
         {
-            if (string.IsNullOrEmpty(logFileName)) return;
+            var now = DateTime.Now;
+            string path = Path.Combine(
+                @"D:\MoldInjection\Log\PressureLog",
+                now.ToString("yyyy-MM"),
+                now.ToString("yyyy-MM-dd"),
+                $"{now:yyyy-MM-dd_HH}.txt");
 
-            string message = $"{DateTime.Now:yyyy/MM/dd HH:mm:ss},{pressure:F3}";
+            string message = $"{now:yyyy/MM/dd HH:mm:ss},{pressure:F3}";
             if (action != string.Empty)
                 message += $",{action}";
             message += "\r\n";
 
             lock (_fileLock)
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(logFileName));
-                File.AppendAllText(logFileName, message);
+                Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+                File.AppendAllText(path, message);
             }
         }
 
@@ -626,7 +631,6 @@ namespace SDV_MoldingInjection.Process
         private bool EnableTimerDelay;
         private bool EnableWritePressureLog;
 
-        private string logFileName = $"D:\\MoldInjection\\Log\\PressureLog\\{DateTime.Now:yyyy-MM}\\{DateTime.Now:yyyy-MM-dd}\\{DateTime.Now:yyyy-MM-dd_HH}.txt";
         private Queue<EDryPumpProcResinInjectStep> DryPumpResinInjectStep = new Queue<EDryPumpProcResinInjectStep>();
 
         #endregion
