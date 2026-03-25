@@ -916,6 +916,12 @@ namespace SDV_MoldingInjection.Process
                         }
                         if (isLoading == false)
                         {
+                            int outputCount = 0;
+                            if (_optionRecipe.SkipHead12 == false && LeftJigDetect)
+                                outputCount++;
+                            if (_optionRecipe.SkipHead34 == false && RightJigDetect)
+                                outputCount++;
+                            _productionService.WriteData(EProductionWriteType.Output, outputCount);
                             Step.RunStep = Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
                             break;
                         }
@@ -939,12 +945,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     else
                     {
-                        int outputCount = 0;
-                        if (_optionRecipe.SkipHead12 == false && LeftJigDetect)
-                            outputCount++;
-                        if (_optionRecipe.SkipHead34 == false && RightJigDetect)
-                            outputCount++;
-                        _productionService.WriteData(EProductionWriteType.Output, outputCount);
+                        
                     } 
 
                     if (isLoading) Log.Debug($"Transfer LOAD done");
