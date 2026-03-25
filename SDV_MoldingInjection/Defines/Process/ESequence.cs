@@ -85,6 +85,8 @@ namespace SDV_MoldingInjection.Defines
         BubbleRemove,
         [Description("Dot Weighting")]
         DotWeighting,
+        [Description("Drain Shot")]
+        DrainShot,
 
         MoveMultiPoint,
     }
@@ -167,6 +169,8 @@ namespace SDV_MoldingInjection.Defines
         BubbleRemove,
         [Description("Dot Weighting")]
         DotWeighting,
+        [Description("Drain Shot")]
+        DrainShot,
 
         MoveMultiPoint,
     }

@@ -97,7 +97,9 @@
         </Grid>
 
         <GroupBox
-            Grid.Row="1">
+            Grid.Row="1"
+            Style="{StaticResource TextBlockHeaderGroupBox}"
+            Header="Function">
             <UniformGrid Columns="2">
                 <Button
                     Content="Skip Calibration"
@@ -139,7 +141,9 @@
 
         <GroupBox
             Header="Balance"
-            Grid.Row="3"
+            Grid.Row="0"
+            Margin="5"
+            Grid.Column="1"
             Style="{StaticResource TextBlockHeaderGroupBox}">
             <UniformGrid
                 Columns="2"

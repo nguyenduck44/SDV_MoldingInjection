@@ -381,13 +381,13 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.VacuumGauge_SpecIn_Wait_1torr:
-                    if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureSpecFirst &&
+                    if (_devices.AnalogInputs.VacuumPressureInTorr > 1.0 &&
                         _machineStatus.IsDryRunMode == false)
                     {
                         Wait(50);
                         break;
                     }
-                    Log.Info($"DryPump vacuum 1st in-spec {_currentRecipe.DryPumpRecipe.VacuumPressureSpecFirst} Torr");
+                    Log.Info($"DryPump vacuum 1st in-spec 1.0 Torr");
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.AngleValve_Close:

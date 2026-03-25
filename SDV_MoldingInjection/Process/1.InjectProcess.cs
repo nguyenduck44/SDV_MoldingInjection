@@ -246,6 +246,9 @@ namespace SDV_MoldingInjection.Process
                 case ESequence.Unloading:
                     Sequence_LoadingUnloading(isLoading: false);
                     break;
+                case ESequence.DrainShot:
+                    Sequence_AtDummyPos(ESequence.DummyShot, ESPDHead.All);
+                    break;
                 case ESequence.DummyShot:
                     Sequence_AtDummyPos(ESequence.DummyShot, ESPDHead.All);
                     break;

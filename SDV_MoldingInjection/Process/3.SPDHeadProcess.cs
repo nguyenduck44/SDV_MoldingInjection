@@ -704,6 +704,30 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.Stop;
                     }
                     break;
+                case ESequence.DrainShot:
+                    if (head == ESPDHead.SPDHead1 && _machineStatus.IsSkipHead1)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
+                    if (head == ESPDHead.SPDHead2 && _machineStatus.IsSkipHead2)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
+                    if (head == ESPDHead.SPDHead3 && _machineStatus.IsSkipHead3)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
+                    if (head == ESPDHead.SPDHead4 && _machineStatus.IsSkipHead4)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
+
+                    Sequence_SPDHeadCommon(ESequence.DrainShot);
+                    break;
                 default:
                     Sequence = ESequence.Stop;
                     break;
@@ -833,6 +857,9 @@ namespace SDV_MoldingInjection.Process
                             }
 
                             break;
+                        case ESequence.DrainShot:
+                            _pAxisCharge_Pos = 1;
+                            break;
                         case ESequence.DummyShot:
                         case ESequence.DummyShot_H1:
                         case ESequence.DummyShot_H2:
@@ -888,6 +915,7 @@ namespace SDV_MoldingInjection.Process
                             }
 
                             break;
+                        case ESequence.DrainShot:
                         case ESequence.DummyShot:
                         case ESequence.DummyShot_H1:
                         case ESequence.DummyShot_H2:
