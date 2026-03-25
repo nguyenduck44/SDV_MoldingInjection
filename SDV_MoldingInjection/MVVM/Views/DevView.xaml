@@ -1,40 +1,46 @@
 ﻿<UserControl x:Class="SDV_MoldingInjection.MVVM.Views.DevView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ui="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
              xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
              d:DataContext="{d:DesignInstance Type={x:Type vm:DevViewModel}}"
-             d:DesignHeight="1200" d:DesignWidth="1900">
+             d:DesignHeight="1200"
+             d:DesignWidth="1900">
     <UserControl.Resources>
         <Style TargetType="{x:Type TextBox}">
-            <Setter Property="Margin" Value="0 5"/>
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Margin"
+                    Value="0 5" />
+            <Setter Property="Height"
+                    Value="30" />
+            <Setter Property="VerticalContentAlignment"
+                    Value="Center" />
         </Style>
     </UserControl.Resources>
     <DockPanel>
         <StackPanel DockPanel.Dock="Left">
             <CheckBox IsChecked="{Binding MachineStatus.IsDotWeightingTest}"
                       Content="Dot Weighting Test"
-                      Tag="Check to Enable Dot Weighting Test Mode"/>
+                      Tag="Check to Enable Dot Weighting Test Mode" />
             <CheckBox IsChecked="{Binding MachineStatus.DisableSyringeCheck}"
                       Content="Disable Syringe Check"
-                      Tag="Check to Disable Syringe Check"/>
+                      Tag="Check to Disable Syringe Check" />
             <CheckBox IsChecked="{Binding MachineStatus.DisableDetectJig}"
                       Content="Disable Detect Jig"
-                      Tag="Check to Disable Detect Jig"/>
-            <Button
-                Height="50" Width="200"
-                Content="CIM Test View"
-                Command="{Binding CIMTetstViewNavigate}"
-                />
+                      Tag="Check to Disable Detect Jig" />
+            <Button Height="50"
+                    Width="200"
+                    Content="CIM Test View"
+                    Command="{Binding CIMTetstViewNavigate}" />
+            <Button Height="50"
+                    Width="200"
+                    Content="Set Torque ZAxis"
+                    Command="{Binding SetTorqueZAxisCommand}" />
         </StackPanel>
-        <ui:LogDisplayer
-            DockPanel.Dock="Right"
-            Width="600"/>
+        <ui:LogDisplayer DockPanel.Dock="Right"
+                         Width="600" />
     </DockPanel>
 </UserControl>

@@ -28,6 +28,21 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 });
             }
         }
+
+        public ICommand SetTorqueZAxisCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+
+                    AXM.AxmMotSetTorqueLimit(_devices.Motions.Z1Axis.Id, 1, 1);
+                    AXM.AxmMotSetTorqueLimit(_devices.Motions.Z2Axis.Id, 1, 1);
+                    AXM.AxmMotSetTorqueLimit(_devices.Motions.Z3Axis.Id, 1, 1);
+                    AXM.AxmMotSetTorqueLimit(_devices.Motions.Z4Axis.Id, 1, 1);
+                });
+            }
+        }
         #endregion
 
         public MachineStatus MachineStatus { get; }
