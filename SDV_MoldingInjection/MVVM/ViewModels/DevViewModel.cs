@@ -36,10 +36,14 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 return new RelayCommand(() =>
                 {
 
-                    AXM.AxmMotSetTorqueLimit(_devices.Motions.Z1Axis.Id, 1, 1);
-                    AXM.AxmMotSetTorqueLimit(_devices.Motions.Z2Axis.Id, 1, 1);
-                    AXM.AxmMotSetTorqueLimit(_devices.Motions.Z3Axis.Id, 1, 1);
-                    AXM.AxmMotSetTorqueLimit(_devices.Motions.Z4Axis.Id, 1, 1);
+                    AXM.AxmMotSetTorqueLimit(_devices.Motions.Z1Axis.Id, 0.1, 0.1);
+                    AXM.AxmMotSetTorqueLimit(_devices.Motions.Z2Axis.Id, 0.1, 0.1);
+                    AXM.AxmMotSetTorqueLimit(_devices.Motions.Z3Axis.Id, 0.1, 0.1);
+                    AXM.AxmMotSetTorqueLimit(_devices.Motions.Z4Axis.Id, 0.1, 0.1);
+
+                    double plusTorque = -1;
+                    double minusTorque = -1;
+                    AXM.AxmMotGetTorqueLimit(_devices.Motions.Z3Axis.Id, ref plusTorque, ref minusTorque);
                 });
             }
         }
