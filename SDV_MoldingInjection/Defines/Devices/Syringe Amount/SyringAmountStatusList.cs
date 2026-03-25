@@ -1,3 +1,4 @@
+using log4net;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.IO;
@@ -25,12 +26,13 @@ namespace SDV_MoldingInjection.Defines.Devices
 
         public void ConsumeSyringeAmount(ESPDHead head, double height)
         {
-            double weight = Math.Pow(2.5,2) * Math.PI * Math.Abs(height); // mm^3 = mg
+            double weight = Math.Pow(2.5,2) * Math.PI * 1.136 * Math.Abs(height); // mm^3 = mg
             int index = (int)head - 1;
             if (index < 0 || index >= SyringeAmounts.Count) return;
 
             var syringeAmount = SyringeAmounts[index];
             syringeAmount.RemainVolume = Math.Max(0, syringeAmount.RemainVolume - weight / 1000);
+            LogManager.GetLogger("SyringeAmount").Info($"{head} consume: {weight}mg");
         }
 
         public void Save()

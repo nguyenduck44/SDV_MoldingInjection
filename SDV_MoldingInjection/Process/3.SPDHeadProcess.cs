@@ -838,14 +838,16 @@ namespace SDV_MoldingInjection.Process
                         case ESequence.DummyShot_H2:
                         case ESequence.DummyShot_H3:
                         case ESequence.DummyShot_H4:
-                            _pAxisCharge_Pos = _currentSPDHeadRecipe.PAxisDummyChargePos;
+                            double heightChargeDummyShot = _currentSPDHeadRecipe.DummyShotWeight * ((_pAxisBase_Pos - _currentSPDHeadRecipe.PAxisInjectChargePos) / _currentSPDHeadRecipe.ResinWeight);
+                            _pAxisCharge_Pos = _pAxisBase_Pos - heightChargeDummyShot;
                             break;
                         case ESequence.BubbleRemove:
                         case ESequence.BubbleRemove_H1:
                         case ESequence.BubbleRemove_H2:
                         case ESequence.BubbleRemove_H3:
                         case ESequence.BubbleRemove_H4:
-                            _pAxisCharge_Pos = _currentSPDHeadRecipe.PAxisBubbleRemoveChargePos;
+                            double heightChargeBubbleRemove = _currentSPDHeadRecipe.BubbleRemoveWeight * ((_pAxisBase_Pos - _currentSPDHeadRecipe.PAxisInjectChargePos) / _currentSPDHeadRecipe.ResinWeight);
+                            _pAxisCharge_Pos = _pAxisBase_Pos - heightChargeBubbleRemove;
                             break;
                         default: throw new NotImplementedException();
                     }
@@ -904,7 +906,7 @@ namespace SDV_MoldingInjection.Process
                             }
 
                             _gAxisBubbleRemove_Pos = GAxis.Status.ActualPosition + 180;
-                            _pAxisInject_Vel = PAxis.Parameter.Velocity * 2;
+                            _pAxisInject_Vel = PAxis.Parameter.Velocity * 3;
                             break;
                         default: throw new NotImplementedException();
                     }
