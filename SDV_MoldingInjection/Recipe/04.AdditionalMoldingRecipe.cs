@@ -1,4 +1,4 @@
-﻿using EQX.Core.Recipe;
+using EQX.Core.Recipe;
 using EQX.Core.Units;
 
 namespace SDV_MoldingInjection.Recipe
@@ -19,92 +19,52 @@ namespace SDV_MoldingInjection.Recipe
         [SingleRecipeDescription(Description = "Skip Add Tail", Detail = "Check to Skip Add Tail")]
         public bool SkipAddTail
         {
-            get { return _skipAddTail; }
-            set
-            {
-                if (_skipAddTail == value) return;
-                OnRecipeChanged(_skipAddTail, value);
-                _skipAddTail = value;
-                OnPropertyChanged();
-            }
+            get => _skipAddTail;
+            set => SetRecipe(ref _skipAddTail, value, nameof(SkipAddTail));
         }
 
         [SingleRecipeDescription(Description = "Z-UP Distance Add Tail", Unit = Unit.mm)]
         public double ZUpDistanceAddTail
         {
-            get { return _zUpDistanceAddTail; }
-            set
-            {
-                if (_zUpDistanceAddTail == value) return;
-                OnRecipeChanged(_zUpDistanceAddTail, value);
-                _zUpDistanceAddTail = value;
-                OnPropertyChanged();
-            }
+            get => _zUpDistanceAddTail;
+            set => SetRecipe(ref _zUpDistanceAddTail, value, nameof(ZUpDistanceAddTail));
         }
 
         [SingleRecipeDescription(Description = "Add Tail Weight", Unit = Unit.Percentage)]
         public double AddTailWeight
         {
-            get { return _addTailWeight; }
-            set
-            {
-                if (_addTailWeight == value) return;
-                OnRecipeChanged(_addTailWeight, value);
-                _addTailWeight = value;
-                OnPropertyChanged();
-            }
+            get => _addTailWeight;
+            set => SetRecipe(ref _addTailWeight, value, nameof(AddTailWeight));
         }
 
         [SingleRecipeDescription(Description = "Add Tail Speed", Unit = Unit.mmPerSecond)]
         public double AddTailSpeed
         {
-            get { return _addTailSpeed; }
-            set
-            {
-                if (_addTailSpeed == value) return;
-                OnRecipeChanged(_addTailSpeed, value);
-                _addTailSpeed = value;
-                OnPropertyChanged();
-            }
+            get => _addTailSpeed;
+            set => SetRecipe(ref _addTailSpeed, value, nameof(AddTailSpeed));
         }
 
         [SingleRecipeDescription(Description = "Bubble remove count")]
         [CIMParameterAddress((int)ECIMParamter.BubbleRemoveCount)]
+        [SingleRecipeMinMax(Min = 1)]
         public double BubbleRemoveCount
         {
-            get { return _bubbleRemoveCount; }
-            set
-            {
-                if (_bubbleRemoveCount == value) return;
-                OnRecipeChanged(_bubbleRemoveCount, value);
-                _bubbleRemoveCount = value;
-                OnPropertyChanged();
-            }
+            get => _bubbleRemoveCount;
+            set => SetRecipe(ref _bubbleRemoveCount, value, nameof(BubbleRemoveCount));
         }
 
         [SingleRecipeDescription(Description = "Bubble remove rotate count")]
+        [SingleRecipeMinMax(Min = 0)]
         public double BubbleRemoveRotateCount
         {
-            get { return _bubbleRemoveRotateCount; }
-            set
-            {
-                if (_bubbleRemoveRotateCount == value) return;
-                OnRecipeChanged(_bubbleRemoveRotateCount, value);
-                _bubbleRemoveRotateCount = value;
-                OnPropertyChanged();
-            }
+            get => _bubbleRemoveRotateCount;
+            set => SetRecipe(ref _bubbleRemoveRotateCount, value, nameof(BubbleRemoveRotateCount));
         }
 
         public double AddTailTime
         {
-            get { return _addTailTime; }
-            set
-            {
-                if (_addTailTime == value) return;
-                OnRecipeChanged(_addTailTime, value);
-                _addTailTime = value;
-                OnPropertyChanged();
-            }
+            get => _addTailTime;
+            set => SetRecipe(ref _addTailTime, value, nameof(AddTailTime));
         }
     }
 }

@@ -20,109 +20,75 @@ namespace SDV_MoldingInjection.Recipe
         [SingleRecipeDescription(Description = "Skip Head 1 & 2", Detail = "Check to Skip Head 1 & Head 2")]
         public bool SkipHead12
         {
-            get { return _skipHead12; }
+            get => _skipHead12;
             set
             {
-                if (_skipHead12 == value) return;
-                OnRecipeChanged(_skipHead12, value);
+                if (!SetRecipe(ref _skipHead12, value, nameof(SkipHead12)))
+                    return;
                 Head12SkipChanged?.Invoke(value);
-                _skipHead12 = value;
-                OnPropertyChanged();
             }
         }
 
         [SingleRecipeDescription(Description = "Skip Head 3 & 4", Detail = "Check to Skip Head 3 & Head 4")]
         public bool SkipHead34
         {
-            get { return _skipHead34; }
+            get => _skipHead34;
             set
             {
-                if (_skipHead34 == value) return;
-                OnRecipeChanged(_skipHead34, value);
+                if (!SetRecipe(ref _skipHead34, value, nameof(SkipHead34)))
+                    return;
                 Head34SkipChanged?.Invoke(value);
-                _skipHead34 = value;
-                OnPropertyChanged();
             }
         }
 
         public bool InputTypeManual
         {
-            get { return _inputTypeManual; }
+            get => _inputTypeManual;
             set
             {
-                if (_inputTypeManual != value)
-                {
-                    OnRecipeChanged(_inputTypeManual, value);
-                    _inputTypeManual = value;
-                    OnPropertyChanged();
+                if (!SetRecipe(ref _inputTypeManual, value, nameof(InputTypeManual)))
+                    return;
 
-                    if (value == true && InputTypeAuto == true)
-                    {
-                        _inputTypeAuto = false;
-                        OnPropertyChanged(nameof(InputTypeAuto));
-                    }
+                if (value && _inputTypeAuto)
+                {
+                    _inputTypeAuto = false;
+                    OnPropertyChanged(nameof(InputTypeAuto));
                 }
             }
         }
 
         public bool InputTypeAuto
         {
-            get { return _inputTypeAuto; }
+            get => _inputTypeAuto;
             set
             {
-                if (_inputTypeAuto != value)
-                {
-                    OnRecipeChanged(_inputTypeAuto, value);
-                    _inputTypeAuto = value;
-                    OnPropertyChanged();
+                if (!SetRecipe(ref _inputTypeAuto, value, nameof(InputTypeAuto)))
+                    return;
 
-                    if (value == true && InputTypeManual == true)
-                    {
-                        _inputTypeManual = false;
-                        OnPropertyChanged(nameof(InputTypeManual));
-                    }
+                if (value && _inputTypeManual)
+                {
+                    _inputTypeManual = false;
+                    OnPropertyChanged(nameof(InputTypeManual));
                 }
             }
         }
 
         public bool SavePressureLog
         {
-            get { return _savePressureLog; }
-            set
-            {
-                if (_savePressureLog != value)
-                {
-                    OnRecipeChanged(_savePressureLog, value);
-                    _savePressureLog = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _savePressureLog;
+            set => SetRecipe(ref _savePressureLog, value, nameof(SavePressureLog));
         }
 
         public bool OneTorrAndPurge
         {
-            get { return _1torrAndPurge; }
-            set
-            {
-                if (_1torrAndPurge != value)
-                {
-                    OnRecipeChanged(_1torrAndPurge, value);
-                    _1torrAndPurge = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _1torrAndPurge;
+            set => SetRecipe(ref _1torrAndPurge, value, nameof(OneTorrAndPurge));
         }
 
         public bool SkipVentTime
         {
-            get { return _skipVentTime; }
-            set
-            {
-                if (_skipVentTime == value) return;
-                OnRecipeChanged(_skipVentTime, value);
-                _skipVentTime = value;
-                OnPropertyChanged();
-            }
+            get => _skipVentTime;
+            set => SetRecipe(ref _skipVentTime, value, nameof(SkipVentTime));
         }
     }
 }

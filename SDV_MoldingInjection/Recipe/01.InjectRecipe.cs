@@ -1,4 +1,4 @@
-﻿using EQX.Core.Recipe;
+using EQX.Core.Recipe;
 using EQX.Core.Units;
 
 namespace SDV_MoldingInjection.Recipe
@@ -9,175 +9,96 @@ namespace SDV_MoldingInjection.Recipe
         [SinglePositionTeaching(Motion = "XAxis")]
         public double XAxisReadyPos
         {
-            get { return _xAxisReadyPos; }
-            set
-            {
-                if (_xAxisReadyPos == value) return;
-
-                OnRecipeChanged(_xAxisReadyPos, value);
-                _xAxisReadyPos = value;
-                OnPropertyChanged();
-            }
+            get => _xAxisReadyPos;
+            set => SetRecipe(ref _xAxisReadyPos, value, nameof(XAxisReadyPos));
         }
 
         [SingleRecipeDescription(Description = "XAxis work (inject) position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
         public double XAxisInjectPos
         {
-            get { return _xAxisInjectPos; }
-            set
-            {
-                if (_xAxisInjectPos == value) return;
-
-                OnRecipeChanged(_xAxisInjectPos, value);
-                _xAxisInjectPos = value;
-                OnPropertyChanged();
-            }
+            get => _xAxisInjectPos;
+            set => SetRecipe(ref _xAxisInjectPos, value, nameof(XAxisInjectPos));
         }
 
         [SingleRecipeDescription(Description = "YAxis ready position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "YAxis")]
         public double YAxisReadyPos
         {
-            get { return _yAxisReadyPos; }
-            set
-            {
-                if (_yAxisReadyPos == value) return;
-
-                OnRecipeChanged(_yAxisReadyPos, value);
-                _yAxisReadyPos = value;
-                OnPropertyChanged();
-            }
+            get => _yAxisReadyPos;
+            set => SetRecipe(ref _yAxisReadyPos, value, nameof(YAxisReadyPos));
         }
 
         [SingleRecipeDescription(Description = "YAxis work position (inject, chamber vacuum...)", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "YAxis")]
         public double YAxisInjectPos
         {
-            get { return _yAxisInjectPos; }
-            set
-            {
-                if (_yAxisInjectPos == value) return;
-
-                OnRecipeChanged(_yAxisInjectPos, value);
-                _yAxisInjectPos = value;
-                OnPropertyChanged();
-            }
+            get => _yAxisInjectPos;
+            set => SetRecipe(ref _yAxisInjectPos, value, nameof(YAxisInjectPos));
         }
 
         [SingleRecipeDescription(Description = "X-Axis H13 Weighting position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
         public double XAxisH13DotWeightingPos
         {
-            get { return _xAxisH13DotWeightPos; }
-            set
-            {
-                if (_xAxisH13DotWeightPos == value) return;
-                OnRecipeChanged(_xAxisH13DotWeightPos, value);
-                _xAxisH13DotWeightPos = value;
-                OnPropertyChanged();
-            }
+            get => _xAxisH13DotWeightPos;
+            set => SetRecipe(ref _xAxisH13DotWeightPos, value, nameof(XAxisH13DotWeightingPos));
         }
 
         [SingleRecipeDescription(Description = "X-Axis H24 Weighting position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
         public double XAxisH24DotWeightingPos
         {
-            get { return _xAxisH24DotWeightPos; }
-            set
-            {
-                if (_xAxisH24DotWeightPos == value) return;
-                OnRecipeChanged(_xAxisH24DotWeightPos, value);
-                _xAxisH24DotWeightPos = value;
-                OnPropertyChanged();
-            }
+            get => _xAxisH24DotWeightPos;
+            set => SetRecipe(ref _xAxisH24DotWeightPos, value, nameof(XAxisH24DotWeightingPos));
         }
 
         [SingleRecipeDescription(Description = "X-Axis Dummy Shot position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
         public double XAxisDummyPos
         {
-            get { return _xAxisDummyPos; }
-            set
-            {
-                if (_xAxisDummyPos == value) return;
-
-                OnRecipeChanged(_xAxisDummyPos, value);
-                _xAxisDummyPos = value;
-                OnPropertyChanged();
-            }
+            get => _xAxisDummyPos;
+            set => SetRecipe(ref _xAxisDummyPos, value, nameof(XAxisDummyPos));
         }
 
         [SingleRecipeDescription(Description = "Y-Axis Dummy Shot position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "YAxis")]
         public double YAxisDummyPos
         {
-            get { return _yAxisDummyPos; }
-            set
-            {
-                if (_yAxisDummyPos == value) return;
-
-                OnRecipeChanged(_yAxisDummyPos, value);
-                _yAxisDummyPos = value;
-                OnPropertyChanged();
-            }
+            get => _yAxisDummyPos;
+            set => SetRecipe(ref _yAxisDummyPos, value, nameof(YAxisDummyPos));
         }
 
         [SingleRecipeDescription(Description = "X-Axis needle clean position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
         public double XAxisNeedleCleanPos
         {
-            get { return _xAxisNeedleCleanPos; }
-            set
-            {
-                if (_xAxisNeedleCleanPos == value) return;
-                OnRecipeChanged(_xAxisNeedleCleanPos, value);
-                _xAxisNeedleCleanPos = value;
-                OnPropertyChanged();
-            }
+            get => _xAxisNeedleCleanPos;
+            set => SetRecipe(ref _xAxisNeedleCleanPos, value, nameof(XAxisNeedleCleanPos));
         }
 
         [SingleRecipeDescription(Description = "Y-Axis needle clean position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "YAxis")]
         public double YAxisNeddleClean
         {
-            get { return _yAxisNeedleClean; }
-            set
-            {
-                if (_yAxisNeedleClean == value) return;
-
-                OnRecipeChanged(_yAxisNeedleClean, value);
-                _yAxisNeedleClean = value;
-                OnPropertyChanged();
-            }
+            get => _yAxisNeedleClean;
+            set => SetRecipe(ref _yAxisNeedleClean, value, nameof(YAxisNeddleClean));
         }
 
         [SingleRecipeDescription(Description = "Needle Clean Cycle Count")]
+        [SingleRecipeMinMax(Min = 0)]
         public double NiddleCleanCycleCount
         {
-            get { return _niddleCleanCycleCount; }
-            set
-            {
-                if (_niddleCleanCycleCount == value) return;
-
-                OnRecipeChanged(_niddleCleanCycleCount, value);
-                _niddleCleanCycleCount = value;
-                OnPropertyChanged();
-            }
+            get => _niddleCleanCycleCount;
+            set => SetRecipe(ref _niddleCleanCycleCount, value, nameof(NiddleCleanCycleCount));
         }
 
         [SingleRecipeDescription(Description = "Needle Clean Shift Dist", Unit = Unit.mm)]
+        [SingleRecipeMinMax(Min = 0)]
         public double NiddleCleanShiftDist
         {
-            get { return _niddleCleanShiftDist; }
-            set
-            {
-                if (_niddleCleanShiftDist == value) return;
-
-                OnRecipeChanged(_niddleCleanShiftDist, value);
-                _niddleCleanShiftDist = value;
-                OnPropertyChanged();
-            }
+            get => _niddleCleanShiftDist;
+            set => SetRecipe(ref _niddleCleanShiftDist, value, nameof(NiddleCleanShiftDist));
         }
 
         #region Privates

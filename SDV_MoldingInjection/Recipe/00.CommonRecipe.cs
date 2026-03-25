@@ -1,4 +1,4 @@
-﻿using EQX.Core.Recipe;
+using EQX.Core.Recipe;
 using EQX.Core.Units;
 using EQX.UI.Language;
 
@@ -18,53 +18,29 @@ namespace SDV_MoldingInjection.Recipe
         [CIMParameterAddress((int)ECIMParamter.CylinderMoveTimeout)]
         public double CylinderMoveTimeout
         {
-            get { return cylinderMoveTimeout; }
-            set
-            {
-                if (cylinderMoveTimeout == value) return;
-
-                OnRecipeChanged(cylinderMoveTimeout, value);
-                cylinderMoveTimeout = value;
-            }
+            get => cylinderMoveTimeout;
+            set => SetRecipe(ref cylinderMoveTimeout, value, nameof(CylinderMoveTimeout));
         }
 
         [SingleRecipeDescription(Description = "Motion Origin Timeout", Unit = Unit.Second)]
         public double MotionOriginTimeout
         {
-            get { return motionOriginTimeout; }
-            set
-            {
-                if (motionOriginTimeout == value) return;
-
-                OnRecipeChanged(motionOriginTimeout, value);
-                motionOriginTimeout = value;
-            }
+            get => motionOriginTimeout;
+            set => SetRecipe(ref motionOriginTimeout, value, nameof(MotionOriginTimeout));
         }
 
         [SingleRecipeDescription(Description = "Motion move timeout", Unit = Unit.Second)]
         public double MotionMoveTimeout
         {
-            get { return motionMoveTimeout; }
-            set
-            {
-                if (motionMoveTimeout == value) return;
-
-                OnRecipeChanged(motionMoveTimeout, value);
-                motionMoveTimeout = value;
-            }
+            get => motionMoveTimeout;
+            set => SetRecipe(ref motionMoveTimeout, value, nameof(MotionMoveTimeout));
         }
 
         [SingleRecipeDescription(Description = "Vacuum Delay", Unit = Unit.Second)]
         public double VacDelay
         {
-            get { return vacDelay; }
-            set
-            {
-                if (vacDelay == value) return;
-
-                OnRecipeChanged(vacDelay, value);
-                vacDelay = value;
-            }
+            get => vacDelay;
+            set => SetRecipe(ref vacDelay, value, nameof(VacDelay));
         }
 
         private double materialInputTimeout = 1800.0;
@@ -73,48 +49,30 @@ namespace SDV_MoldingInjection.Recipe
             Detail = "Time Machine Not Have Material To Stop", Unit = Unit.Second)]
         public double MaterialInputTimeout
         {
-            get { return materialInputTimeout; }
-            set
-            {
-                OnRecipeChanged(materialInputTimeout, value);
-                materialInputTimeout = value;
-            }
+            get => materialInputTimeout;
+            set => SetRecipe(ref materialInputTimeout, value, nameof(MaterialInputTimeout));
         }
 
         [SingleRecipeDescription(Description = "Syringe Mount Time Change", Unit = Unit.Hour)]
         public double SyringeMountTimeChange
         {
-            get { return _syringeAmountTimeChange; }
-            set
-            {
-                OnRecipeChanged(_syringeAmountTimeChange, value);
-                _syringeAmountTimeChange = value;
-            }
+            get => _syringeAmountTimeChange;
+            set => SetRecipe(ref _syringeAmountTimeChange, value, nameof(SyringeMountTimeChange));
         }
 
         [SingleRecipeDescription(Description = "Syringe Amount Weight", Unit = Unit.Gram)]
         public double SyringeAmountWeight
         {
-            get { return _syringeAmountWeight; }
-            set
-            {
-                if (_syringeAmountWeight == value) return;
-
-                OnRecipeChanged(_syringeAmountWeight, value);
-                _syringeAmountWeight = value;
-                OnPropertyChanged();
-            }
+            get => _syringeAmountWeight;
+            set => SetRecipe(ref _syringeAmountWeight, value, nameof(SyringeAmountWeight));
         }
 
         [SingleRecipeDescription(Description = "Log Save Day")]
         [SingleRecipeMinMax(Max = 100, Min = 5)]
         public int LogSaveDay
         {
-            get { return logSaveDay; }
-            set
-            {
-                SetRecipe(ref logSaveDay, value, nameof(LogSaveDay));
-            }
+            get => logSaveDay;
+            set => SetRecipe(ref logSaveDay, value, nameof(LogSaveDay));
         }
 
         public ILanguageDefinition SelectedLanguage
@@ -123,7 +81,6 @@ namespace SDV_MoldingInjection.Recipe
             set
             {
                 SetRecipe(ref selectLanguage, value, nameof(SelectedLanguage));
-
                 SelectedLanguageEvent?.Invoke(SelectedLanguage);
                 SelectedLanguageLoadAllRecipe?.Invoke();
             }

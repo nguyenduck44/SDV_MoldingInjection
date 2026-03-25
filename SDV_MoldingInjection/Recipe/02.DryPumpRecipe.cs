@@ -1,4 +1,4 @@
-﻿using EQX.Core.Recipe;
+using EQX.Core.Recipe;
 using EQX.Core.Units;
 
 namespace SDV_MoldingInjection.Recipe
@@ -8,25 +8,15 @@ namespace SDV_MoldingInjection.Recipe
         [SingleRecipeDescription(Description = "Chamber vacuum pressure spec", Unit = Unit.Torr)]
         public double VacuumPressureSpec
         {
-            get { return _vacuumPressureSpec; }
-            set
-            {
-                SetRecipe(ref _vacuumPressureSpec, value, nameof(VacuumPressureSpec));
-            }
+            get => _vacuumPressureSpec;
+            set => SetRecipe(ref _vacuumPressureSpec, value, nameof(VacuumPressureSpec));
         }
 
         [SingleRecipeDescription(Description = "Chamber vacuum hold pressure under spec", Unit = Unit.Torr)]
         public double VacuumPressureHoldUnderSpec
         {
-            get { return _vacuumPressureHoldUnderSpec; }
-            set { _vacuumPressureHoldUnderSpec = value; }
-        }
-
-        [SingleRecipeDescription(Description = "Chamber vacuum pressure spec firsr", Unit = Unit.Torr)]
-        public double VacuumPressureSpecFirst
-        {
-            get => _vacuumPressureSpecFirst;
-            set { _vacuumPressureSpecFirst = value; }
+            get => _vacuumPressureHoldUnderSpec;
+            set => SetRecipe(ref _vacuumPressureHoldUnderSpec, value, nameof(VacuumPressureHoldUnderSpec));
         }
 
         [SingleRecipeDescription(Description = "Pressure log timelaps", Unit = Unit.Second)]
@@ -35,10 +25,9 @@ namespace SDV_MoldingInjection.Recipe
             get => _pressureLogTimelaps;
             set => SetRecipe(ref _pressureLogTimelaps, value, nameof(PressureLogTimelaps));
         }
-        
+
         #region Privates
         private double _vacuumPressureSpec;
-        private double _vacuumPressureSpecFirst;
         private double _vacuumPressureHoldUnderSpec;
         private double _pressureLogTimelaps;
         #endregion
