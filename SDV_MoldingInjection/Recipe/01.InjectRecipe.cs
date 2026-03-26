@@ -86,7 +86,6 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Needle Clean Cycle Count")]
-        [SingleRecipeMinMax(Min = 0)]
         public double NiddleCleanCycleCount
         {
             get => _niddleCleanCycleCount;
@@ -94,7 +93,6 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Needle Clean Shift Dist", Unit = Unit.mm)]
-        [SingleRecipeMinMax(Min = 0)]
         public double NiddleCleanShiftDist
         {
             get => _niddleCleanShiftDist;

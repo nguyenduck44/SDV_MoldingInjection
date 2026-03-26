@@ -46,7 +46,7 @@ namespace SDV_MoldingInjection.Recipe
 
         [SingleRecipeDescription(Description = "Bubble remove count")]
         [CIMParameterAddress((int)ECIMParamter.BubbleRemoveCount)]
-        [SingleRecipeMinMax(Min = 1)]
+        [SingleRecipeMinMax(Min = 1, Max = 100)]
         public double BubbleRemoveCount
         {
             get => _bubbleRemoveCount;
@@ -54,7 +54,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Bubble remove rotate count")]
-        [SingleRecipeMinMax(Min = 0)]
+        [SingleRecipeMinMax(Min = 1, Max = 100)]
         public double BubbleRemoveRotateCount
         {
             get => _bubbleRemoveRotateCount;

@@ -6,7 +6,6 @@ namespace SDV_MoldingInjection.Recipe
     public class InjectTimeRecipe : RecipeBase
     {
         [SingleRecipeDescription(Description = "Delay Time", Unit = Unit.Second)]
-        [SingleRecipeMinMax(Min = 0)]
         public double DelayTime
         {
             get => _delayTime;
@@ -14,7 +13,6 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Inject Time", Unit = Unit.Second)]
-        [SingleRecipeMinMax(Min = 0)]
         public double InjectTime
         {
             get => _injectTime;
@@ -22,7 +20,6 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Vent Time After Inject", Unit = Unit.Second)]
-        [SingleRecipeMinMax(Min = 0)]
         public double VentTimeAfterInject
         {
             get => _ventTimeAfterInject;
@@ -30,7 +27,6 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Vent Time", Unit = Unit.Second)]
-        [SingleRecipeMinMax(Min = 0)]
         public double VentTime
         {
             get => _ventTime;

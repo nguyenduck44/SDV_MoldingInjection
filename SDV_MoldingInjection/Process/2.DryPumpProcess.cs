@@ -40,6 +40,7 @@ namespace SDV_MoldingInjection.Process
 
         #region Cylinders
         private ICylinder AngleValve => _devices.Cylinders.AngleValve;
+        private ICylinder BellowCyl => _devices.Cylinders.BellowCyl;
         #endregion
 
         #region Constructors
@@ -239,6 +240,74 @@ namespace SDV_MoldingInjection.Process
                     Log.Info("Ready start");
                     Step.RunStep++;
                     break;
+                case EDryPumpProcReadyStep.YAxis_Position_Check:
+                    if (!YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisInjectPos))
+                    {
+                        Log.Debug("Y Axis not in inject position");
+                        Step.RunStep = (int)EDryPumpProcReadyStep.ZAxis_ReadyPos_Move;
+                        break;
+                    }
+
+                    Log.Debug("Y Axis in inject position");
+                    Step.RunStep++;
+                    break;
+                case EDryPumpProcReadyStep.AngleValve_Close:
+                    Log.Debug($"Closing {AngleValve.Name}");
+                    AngleValve.Close();
+                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, AngleValve.IsClose);
+                    Step.RunStep++;
+                    break;
+                case EDryPumpProcReadyStep.AngleValve_Close_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseWarning(EWarning.AngleValve_CloseFail);
+                        break;
+                    }
+
+                    Log.Debug("Angle valve close success");
+                    Step.RunStep++;
+                    break;
+                case EDryPumpProcReadyStep.PurgeCheck:
+                    Log.Debug($"Vacuum Pressure detected: {_devices.AnalogInputs.VacuumPressureInTorr}");
+                    if (_devices.AnalogInputs.VacuumPressureInTorr > 749.0)
+                    {
+                        Step.RunStep = (int)EDryPumpProcReadyStep.ZAxis_ReadyPos_Move;
+                        break;
+                    }
+
+                    Log.Debug("Purge start");
+                    Out_ChamberPurgeOn.Value = true;
+                    Log.Debug("Puger wait");
+                    Step.RunStep++;
+                    break;
+                case EDryPumpProcReadyStep.PurgeWait:
+                    if(_devices.AnalogInputs.VacuumPressureInTorr < 749.0)
+                    {
+                        Wait(20);
+                        break;
+                    }
+
+                    Log.Debug("Purge success");
+                    Out_ChamberPurgeOn.Value = false;
+                    Step.RunStep++;
+                    break;
+                case EDryPumpProcReadyStep.BellowCylDown:
+                    Log.Debug("Bellow cylinder downing");
+                    BellowCyl.Down();
+                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => BellowCyl.IsDown());
+                    Step.RunStep++;
+                    break;
+                case EDryPumpProcReadyStep.BellowCylDown_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseWarning(EWarning.BellowCyl_DownFail);
+                        break;
+                    }
+
+                    Log.Debug("Bellow cylinder down finish");
+                    Wait(1000); // Delay 1s after bellow cylinder down
+                    Step.RunStep++;
+                    break;
                 case EDryPumpProcReadyStep.ZAxis_ReadyPos_Move:
                     if (AllZAxisInSafetyPos(ref _failHead))
                     {
@@ -287,6 +356,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Ready run end");
                     Sequence = ESequence.Stop;
                     break;
+
                 default:
                     Wait(20);
                     break;

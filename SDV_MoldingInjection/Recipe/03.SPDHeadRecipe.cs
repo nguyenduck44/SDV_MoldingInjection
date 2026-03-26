@@ -21,7 +21,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Resin Weight Spec", Unit = Unit.mg)]
-        [SingleRecipeMinMax(Max = 50, Min = 0)]
+        [SingleRecipeMinMax(Max = 100, Min = 0)]
         public double ResinWeightSpec
         {
             get => _resinWeightSpec;
