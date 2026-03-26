@@ -5,6 +5,7 @@
         Start,
 
         SyringeAmountCheck,
+        SyringeAirCheck,
 
         GAxis_ClosePosition_Move,
         GAxis_ClosePosition_MoveWait,

@@ -7,6 +7,8 @@
         AngleValve_Close,
         AngleValve_CloseWait,
 
+        ChamperPurge_Off,
+
         DryPump_Run,
 
         End,

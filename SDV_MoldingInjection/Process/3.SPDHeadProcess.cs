@@ -151,9 +151,18 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESPDHeadProcToRunStep.SyringeAmountCheck:
                     Log.Debug("Syringe Amount Check");
-                    if (SyringeAmountIsTimeOver)
+                    if (SyringeAmountIsTimeOver && In_SyringeCheck.Value == true && CurrentHeadSkip == false)
                     {
                         RaiseHeadWarning(EWarning.H1_Syringe_Amount_IsTimeOver);
+                    }
+
+                    Step.ToRunStep++;
+                    break;
+                case ESPDHeadProcToRunStep.SyringeAirCheck:
+                    Log.Debug("Syringe Amount Check");
+                    if (In_SyringeAir.Value == false && CurrentHeadSkip == false)
+                    {
+                        RaiseHeadWarning(EWarning.H1_Syringe_Not_Detected);
                     }
 
                     Step.ToRunStep++;

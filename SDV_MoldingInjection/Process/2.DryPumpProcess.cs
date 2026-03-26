@@ -154,6 +154,11 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"{AngleValve.Name} closed");
                     Step.ToRunStep++;
                     break;
+                case EDryPumpProcToRunStep.ChamperPurge_Off:
+                    Log.Debug("Champer Purge Off");
+                    Out_ChamberPurgeOn.Value = false;
+                    Step.ToRunStep++;
+                    break;
                 case EDryPumpProcToRunStep.DryPump_Run:
                     if (In_DryPumpRun.Value)
                     {
