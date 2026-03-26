@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
 using EQX.Core.Recipe;
 using EQX.Device.Balance;
@@ -177,6 +177,19 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         protected override RecipePositionManagerBase<RecipeList> UpdatePositionManager()
         {
             return new RecipePositionManagerBase<RecipeList>(_recipeSelector.CurrentRecipe, _devices.Motions.All);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                MachineStatus.IsSkipHead1 = true;
+                MachineStatus.IsSkipHead2 = true;
+                MachineStatus.IsSkipHead3 = true;
+                MachineStatus.IsSkipHead4 = true;
+            }
+                
+            base.Dispose(disposing);
         }
         #endregion
     }

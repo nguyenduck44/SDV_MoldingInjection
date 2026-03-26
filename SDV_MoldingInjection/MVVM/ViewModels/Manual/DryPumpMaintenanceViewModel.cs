@@ -109,14 +109,22 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 _devices.Inputs.PumpVentCDACheck,
                 _devices.Inputs.PumpFanRun1,
                 _devices.Inputs.PumpFanRun2,
+                _devices.Inputs.ChamberClose,
+                _devices.Inputs.ChamberOpen,
+                _devices.Inputs.AngleValveClose,
+                _devices.Inputs.AngleValveOpen,
+                _devices.Inputs.BelowsDown,
+                _devices.Inputs.BelowsUp,
             };
             Outputs = new ObservableCollection<IDOutput>
             {
                 _devices.Outputs.DryPumpRun,
                 _devices.Outputs.ChamberPurgeOn,
+                _devices.Outputs.DryPumpAlarmReset,
                  _devices.Outputs.VacChamberOpen,
                 _devices.Outputs.VacChamberClose,
-                _devices.Outputs.DryPumpAlarmReset,
+                _devices.Outputs.BellowsDown,
+                _devices.Outputs.BellowsUp,
             };
         }
 
