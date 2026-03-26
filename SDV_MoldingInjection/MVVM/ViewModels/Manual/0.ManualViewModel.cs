@@ -13,7 +13,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly NavigationStore _navigationStore;
         private readonly SPDHeadAllMaintenanceViewModel _sPDHeadAllMaintenanceViewModel;
 
-        public ManualViewModel(IEnumerable<MaintenanceViewModel<ESemiSequence, RecipeList>> maintenanceViewModels,
+        public ManualViewModel(IEnumerable<MaintenanceViewModel<ESemiSequence, 
+            RecipeList>> maintenanceViewModels,
             INavigationService navigationService,
             NavigationStore navigationStore,
             SPDHeadAllMaintenanceViewModel sPDHeadAllMaintenanceViewModel)
@@ -44,7 +45,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     ManualViewModels.First(vm => vm.Name == name).MaintenanceView = maintenanceViewModel.MaintenanceView;
                     _navigationService.NavigateTo(ManualViewModels.First(vm => vm.Name == name));
                 };
-            }
+            }   
         }
 
         public ICommand ManualUnitSelectCommand

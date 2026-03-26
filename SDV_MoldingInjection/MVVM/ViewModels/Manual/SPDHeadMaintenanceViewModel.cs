@@ -165,7 +165,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     _devices.Inputs.H1_AssembleCheck,
                     _devices.Inputs.H1_SyringeCheck,
                     _devices.Inputs.H1_SyringeAir,
-                    _devices.Inputs.Nozzle1Clean,
                 };
                 Outputs = new ObservableCollection<IDOutput>
                 {
@@ -183,7 +182,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     _devices.Inputs.H2_AssembleCheck,
                     _devices.Inputs.H2_SyringeCheck,
                     _devices.Inputs.H2_SyringeAir,
-                    _devices.Inputs.Nozzle2Clean,
                 };
                 Outputs = new ObservableCollection<IDOutput>
                 {
@@ -202,7 +200,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     _devices.Inputs.H3_AssembleCheck,
                     _devices.Inputs.H3_SyringeCheck,
                     _devices.Inputs.H3_SyringeAir,
-                    _devices.Inputs.Nozzle3Clean,
                 };
                 Outputs = new ObservableCollection<IDOutput>
                 {
@@ -221,7 +218,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     _devices.Inputs.H4_AssembleCheck,
                     _devices.Inputs.H4_SyringeCheck,
                     _devices.Inputs.H4_SyringeAir,
-                    _devices.Inputs.Nozzle4Clean,
                 };
                 Outputs = new ObservableCollection<IDOutput>
                 {

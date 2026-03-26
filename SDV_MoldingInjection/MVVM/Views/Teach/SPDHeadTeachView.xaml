@@ -30,6 +30,8 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Button Content="{Binding .}"
+                                Command="{Binding DataContext.RelatedViewModelNavigateCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                CommandParameter="{Binding .}"
                                 Height="40"
                                 Width="130" />
                     </DataTemplate>

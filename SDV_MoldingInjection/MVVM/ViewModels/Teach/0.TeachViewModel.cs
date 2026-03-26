@@ -18,7 +18,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly INavigationService _navigationService;
         private readonly NavigationStore _navigationStore;
 
-        public TeachViewModel(IEnumerable<MaintenanceViewModel<ESemiSequence, RecipeList>> maintenanceViewModels,
+        public TeachViewModel(IEnumerable<MaintenanceViewModel<ESemiSequence, 
+            RecipeList>> maintenanceViewModels,
             INavigationService navigationService,
             NavigationStore navigationStore)
         {

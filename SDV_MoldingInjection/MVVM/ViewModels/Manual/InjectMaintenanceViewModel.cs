@@ -62,6 +62,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 _devices.Inputs.Jig4Detect,
                 _devices.Inputs.BelowsUp,
                 _devices.Inputs.BelowsDown,
+                _devices.Inputs.Nozzle1Clean,
+                _devices.Inputs.Nozzle2Clean,
+                _devices.Inputs.Nozzle3Clean,
+                _devices.Inputs.Nozzle4Clean,
+
             };
             Outputs = new ObservableCollection<IDOutput>
             {
