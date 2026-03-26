@@ -125,7 +125,7 @@ namespace SDV_MoldingInjection.Defines
         H1_Syringe_Not_Detected,
         H1_Syringe_Amount_IsTimeOver,
         [Description("HEAD1_IN06")]
-        H1_Syringe_Air_NotDetected,
+        H1_Syringe_Air_Not_Detected,
 
         //--------- 2000 -> 2499 : SPD Head #2 Process Warning ---------
         P2Axis_Origin_Timeout = 2000,
@@ -152,7 +152,7 @@ namespace SDV_MoldingInjection.Defines
         H2_Syringe_Not_Detected,
         H2_Syringe_Amount_IsTimeOver,
         [Description("HEAD2_IN06")]
-        H2_Syringe_Air_NotDetected,
+        H2_Syringe_Air_Not_Detected,
 
 
         //--------- 2500 -> 3000 : SPD Head #3 Process Warning ---------
@@ -180,7 +180,7 @@ namespace SDV_MoldingInjection.Defines
         H3_Syringe_Not_Detected,
         H3_Syringe_Amount_IsTimeOver,
         [Description("HEAD3_IN06")]
-        H3_Syringe_Air_NotDetected,
+        H3_Syringe_Air_Not_Detected,
 
         //--------- 3000 -> 3499 : SPD Head #3 Process Warning ---------
         P4Axis_Origin_Timeout = 3000,
