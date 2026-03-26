@@ -89,24 +89,25 @@ namespace SDV_MoldingInjection.Recipe
             CurrentRecipe.InjectTimeRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
         }
 
-        private void SingleRecipe_RecipeChanged(object oldValue, object newValue, string? propertyName = null)
+        private async void SingleRecipe_RecipeChanged(object oldValue, object newValue, string? propertyName = null)
         {
             if (_navigationStore.CurrentViewModel.GetType() == typeof(InitDeinitViewModel)) return;
-
             bool result1 = CIMHelpers.TryParseRecipeNumber(RecipeSetting.CurrentRecipe, out int index);
             if (result1 == false)
             {
                 throw new Exception("PPID Name format is not match");
             }
-
-            var parameterArea = new ParameterWordArea
+            await Task.Run(() =>
             {
-                PPIDName = RecipeSetting.CurrentRecipe,
-            };
-            parameterArea.Parameters[0] = CurrentRecipe.CommonRecipe.LogSaveDay;
-            EquipEventHelpers.ParameterChange(parameterArea, index);
+                var parameterArea = new ParameterWordArea
+                {
+                    PPIDName = RecipeSetting.CurrentRecipe,
+                };
+                parameterArea.Parameters[0] = CurrentRecipe.CommonRecipe.LogSaveDay;
+                EquipEventHelpers.ParameterChange(parameterArea, index);
+            });
 
-            LogManager.GetLogger("Data").Info($"{propertyName} value updated : {oldValue} -> {newValue}");
+            LogManager.GetLogger("Data").Info($"{propertyName} value changed {oldValue} -> {newValue}");
         }
 
         private void CommonRecipe_SelectedLanguageEvent(ILanguageDefinition obj)
