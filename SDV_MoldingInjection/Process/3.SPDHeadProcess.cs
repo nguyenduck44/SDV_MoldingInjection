@@ -159,9 +159,9 @@ namespace SDV_MoldingInjection.Process
                     Step.ToRunStep++;
                     break;
                 case ESPDHeadProcToRunStep.SyringeAirCheck:
-                    Log.Debug("Syringe Amount Check");
+                    Log.Debug("Syringe Air Check");
 #if !SIMULATION
-                    if (In_SyringeAir.Value == false && CurrentHeadSkip == false)
+                    if (In_SyringeAir.Value == false && In_SyringeCheck.Value && CurrentHeadSkip == false)
                     {
                         RaiseHeadWarning(EWarning.H1_Syringe_Air_Not_Detected);
                     }
