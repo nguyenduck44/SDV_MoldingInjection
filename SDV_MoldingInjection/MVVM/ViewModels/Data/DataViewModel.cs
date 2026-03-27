@@ -25,6 +25,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
            _navigationService.NavigateTo<AdditionalMoldingViewModel>();
         });
 
+        public ICommand IdlePurgeDataNavigateCommand => new RelayCommand(() =>
+        {
+           _navigationService.NavigateTo<IdlePurgeViewModel>();
+        });
+
         public ICommand OptionNavigateCommand => new RelayCommand(() =>
         {
            _navigationService.NavigateTo<OptionViewModel>();

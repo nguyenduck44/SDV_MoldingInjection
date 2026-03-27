@@ -91,6 +91,9 @@
             <DataTemplate DataType="{x:Type vm:AdditionalMoldingViewModel}">
                 <views:AdditionalMoldingView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:IdlePurgeViewModel}">
+                <views:IdlePurgeRecipeView />
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:OptionViewModel}">
                 <views:OptionView />
             </DataTemplate>

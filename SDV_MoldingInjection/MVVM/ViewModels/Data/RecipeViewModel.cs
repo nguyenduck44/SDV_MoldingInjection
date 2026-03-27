@@ -75,7 +75,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                                     .Where(p => typeof(RecipeBase).IsAssignableFrom(p.PropertyType))
                                     .Select(p => p.GetValue(RecipeSelector.CurrentRecipe))
                                     .OfType<RecipeBase>()
-                                    .Where(r => r is not AdditionalMoldingRecipe && r is not OptionRecipe && r is not InjectTimeRecipe)
+                                    .Where(r => r is not AdditionalMoldingRecipe && 
+                                    r is not OptionRecipe && 
+                                    r is not IdlePurgeRecipe && 
+                                    r is not InjectTimeRecipe)
                                     .ToList();
 
                 return new ObservableCollection<RecipeBase>(recipeObjects);
