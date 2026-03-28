@@ -685,10 +685,10 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.SDPHead_Work_DoneWait:
-                    if (IsSPDHeadWorkDone(ESPDHead.SPDHead1) == false ||
-                        IsSPDHeadWorkDone(ESPDHead.SPDHead2) == false ||
-                        IsSPDHeadWorkDone(ESPDHead.SPDHead3) == false ||
-                        IsSPDHeadWorkDone(ESPDHead.SPDHead4) == false)
+                    if (IsSPDHeadWorkDone(ESequence.ResinInject, ESPDHead.SPDHead1) == false ||
+                        IsSPDHeadWorkDone(ESequence.ResinInject, ESPDHead.SPDHead2) == false ||
+                        IsSPDHeadWorkDone(ESequence.ResinInject, ESPDHead.SPDHead3) == false ||
+                        IsSPDHeadWorkDone(ESequence.ResinInject, ESPDHead.SPDHead4) == false)
                     {
                         Wait(50);
                         break;
@@ -1244,7 +1244,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     else
                     {
-                        if (IsSPDHeadWorkDone(head) == false)
+                        if (IsSPDHeadWorkDone(sequence ,head) == false)
                         {
                             Wait(50);
                             break;
@@ -2124,11 +2124,11 @@ namespace SDV_MoldingInjection.Process
             return _currentRecipe.OptionRecipe.SkipHead34 || NozzleClean_H4.IsUngrip();
         }
 
-        private bool IsSPDHeadWorkDone(ESPDHead head)
+        private bool IsSPDHeadWorkDone(ESequence sequence, ESPDHead head)
         {
             if (head == ESPDHead.All)
             {
-                if (Parent!.Sequence == ESequence.AutoRun)
+                if (Parent!.Sequence == ESequence.AutoRun || sequence == ESequence.IdlePurge)
                 {
                     return
                     (procInputs[EInjectProcInput.SPDHead1_WorkDone].Value || _currentRecipe.OptionRecipe.SkipHead12) &&
