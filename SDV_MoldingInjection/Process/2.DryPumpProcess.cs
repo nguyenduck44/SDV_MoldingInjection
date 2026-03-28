@@ -456,7 +456,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.VacuumGauge_SpecIn_Wait_1torr:
-                    if (_devices.AnalogInputs.VacuumPressureInTorr > 1.0 &&
+                    if (_devices.AnalogInputs.VacuumPressureInTorr > 0.1 &&
                         _machineStatus.IsDryRunMode == false)
                     {
                         Wait(50);

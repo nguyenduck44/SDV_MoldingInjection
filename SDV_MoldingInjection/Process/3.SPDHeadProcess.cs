@@ -1105,7 +1105,7 @@ namespace SDV_MoldingInjection.Process
                         else
                         {
                             _bubbleRemoveCount++;
-                            if (_bubbleRemoveCount <= 2)
+                            if (_bubbleRemoveCount <= _currentRecipe.AdditionalMolding_Recipe.BubbleRemoveCount)
                             {
                                 _syringeAmountStatusList.ConsumeSyringeAmount(head, _pAxisBase_Pos - _pAxisCharge_Pos);
                                 Step.RunStep = (int)ESPDHeadProcCommonStep.BubbleRemoveResetCountRotate;

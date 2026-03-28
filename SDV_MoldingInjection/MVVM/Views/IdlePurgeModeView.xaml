@@ -39,13 +39,13 @@
                         Background="#F4E8E8"
                         BorderBrush="Red"
                         BorderThickness="2"
-                        Padding="20">
+                        Padding="10">
                     <StackPanel>
                         <Canvas>
                             <Image Source="/Resource/Images/WorkerStopSign.png"
-                                   Height="215"
+                                   Height="218"
                                    Width="200"
-                                   Canvas.Top="-18"
+                                   Canvas.Top="-10"
                                    Canvas.Left="70"/>
                         </Canvas>
                         <TextBlock Text="NO OPERATION"

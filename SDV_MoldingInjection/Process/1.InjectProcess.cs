@@ -1108,10 +1108,11 @@ namespace SDV_MoldingInjection.Process
                     if (sequence == ESequence.IdlePurge)
                     {
                         Log.Debug("Idle Purge start");
-                        IdlePurgeCount = 0;
+                        IdlePurgeCount++;
                         IdlePurgeLastShotTick = Environment.TickCount;
                     }
 
+                    IdlePurgeCount = 0;
                     Log.Info($"Dummy position for {head} start");
                     Step.RunStep++;
                     break;
@@ -1282,7 +1283,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcDummyShotStep.End:
                     Log.Info($"{Sequence} for {head} end");
-                    IdlePurgeLastShotTick = Environment.TickCount;
+                    _machineStatus.MachineIdleTick = Environment.TickCount;
                     if (Parent?.Sequence != ESequence.AutoRun && sequence != ESequence.IdlePurge)
                     {
                         MessageBoxEx.Show($"{sequence} Finish!", false);
