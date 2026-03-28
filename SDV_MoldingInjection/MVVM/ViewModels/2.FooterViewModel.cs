@@ -14,7 +14,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         {
             get
             {
-                return _navigationStore?.CurrentViewModel?.GetType() != typeof(InitDeinitViewModel);
+                return _navigationStore?.CurrentViewModel?.GetType() != typeof(InitDeinitViewModel) &&
+                      _navigationStore?.CurrentViewModel?.GetType() != typeof(IdlePurgeModeViewModel);
             }
         }
 

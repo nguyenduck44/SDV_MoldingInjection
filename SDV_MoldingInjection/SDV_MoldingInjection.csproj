@@ -45,6 +45,7 @@
     <None Remove="Resource\Images\Inject_IsoView.png" />
     <None Remove="Resource\Images\MoldInjection_TopView.png" />
     <None Remove="Resource\Images\SPDHead_IsoView.png" />
+    <None Remove="Resource\Images\WorkerStopSign.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -67,6 +68,10 @@
     <Resource Include="Resource\Images\Pump.png" />
 	  
     <Resource Include="Resource\Images\SPDHead_IsoView.png" />
+	  
+    <Resource Include="Resource\Images\WorkerStopSign.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="TopIcon.ico" />
   </ItemGroup>
 

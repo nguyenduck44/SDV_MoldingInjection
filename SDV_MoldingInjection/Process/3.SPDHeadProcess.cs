@@ -429,6 +429,15 @@ namespace SDV_MoldingInjection.Process
 
                     Sequence_SPDHeadCommon(ESequence.ResinInject);
                     break;
+                case ESequence.IdlePurge:
+                    if (CurrentHeadSkip)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
+
+                    Sequence_SPDHeadCommon(ESequence.IdlePurge);
+                    break;
                 case ESequence.DummyShot:
                     if (Parent!.Sequence == ESequence.AutoRun)
                     {
@@ -871,6 +880,10 @@ namespace SDV_MoldingInjection.Process
                         case ESequence.DrainShot:
                             _pAxisCharge_Pos = 1;
                             break;
+                        case ESequence.IdlePurge:
+                            double heightChargeIdlePurge = _currentRecipe.IdlePurgeRecipe.IdlePurgeWeight * ((_pAxisBase_Pos - _currentSPDHeadRecipe.PAxisInjectChargePos) / _currentSPDHeadRecipe.ResinWeight);
+                            _pAxisCharge_Pos = _pAxisBase_Pos - heightChargeIdlePurge;
+                            break;
                         case ESequence.DummyShot:
                         case ESequence.DummyShot_H1:
                         case ESequence.DummyShot_H2:
@@ -927,12 +940,15 @@ namespace SDV_MoldingInjection.Process
 
                             break;
                         case ESequence.DrainShot:
+                        case ESequence.IdlePurge:
+                            _pAxisInject_Vel = 10;
+                            break;
                         case ESequence.DummyShot:
                         case ESequence.DummyShot_H1:
                         case ESequence.DummyShot_H2:
                         case ESequence.DummyShot_H3:
                         case ESequence.DummyShot_H4:
-                            _pAxisInject_Vel = PAxis.Parameter.Velocity * 2;
+                            _pAxisInject_Vel = 10;
                             break;
                         case ESequence.BubbleRemove:
                         case ESequence.BubbleRemove_H1:
@@ -945,7 +961,7 @@ namespace SDV_MoldingInjection.Process
                             }
 
                             _gAxisBubbleRemove_Pos = GAxis.Status.ActualPosition + 180;
-                            _pAxisInject_Vel = PAxis.Parameter.Velocity * 3;
+                            _pAxisInject_Vel = 20;
                             break;
                         default: throw new NotImplementedException();
                     }
@@ -1168,7 +1184,6 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.End:
-
                     if (Parent?.Sequence != ESequence.AutoRun)
                     {
                         Sequence = ESequence.Stop;

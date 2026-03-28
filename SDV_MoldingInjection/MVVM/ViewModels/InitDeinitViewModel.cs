@@ -92,9 +92,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             SyringAmountStatusList syringAmountStatusList,
             CarrierJigStatusList carrierJigStatusList,
             CIMAction cimAction,
-            ProductionService productionService)
+            ProductionService productionService,
+            MachineStatus machineStatus)
         {
             _devices = devices;
+            _machineStatus = machineStatus;
             _processes = processes;
             _navigationService = navigationService;
             _authenticationService = authenticationService;
@@ -297,7 +299,9 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
                         // TODO: Remove this on Production
                         _authenticationService.ValidatePermission(EPermission.SuperUser, "3141");
-                        
+
+                        _machineStatus.MachineIdleTick = Environment.TickCount;
+
                         _navigationService.NavigateTo<AutoViewModel>();
                         _step++;
                         break;

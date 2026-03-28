@@ -1,4 +1,5 @@
-    using EQX.Core.Common;
+using Accessibility;
+using EQX.Core.Common;
 using EQX.Core.Communication;
 using EQX.Core.Communication.CIM;
 using EQX.Core.Communication.CIM.Custom;
@@ -27,7 +28,10 @@ namespace SDV_MoldingInjection.Process
         private readonly Devices _devices;
         private readonly MachineStatus _machineStatus;
         private readonly NavigationStore _viewModelavigationStore;
+        private readonly INavigationService _navigationService;
         private readonly RecipeSelector _recipeSelector;
+        private readonly RecipeList _recipeList;
+        private readonly ProcessIO _processIO;
         private int raisedAlarmCode = 2;
         private int raisedWarningCode = 2;
         private readonly IAlertService _alarmService;
@@ -42,14 +46,20 @@ namespace SDV_MoldingInjection.Process
         public RootProcess(Devices devices,
             MachineStatus machineStatus,
             NavigationStore viewModelavigationStore,
+            INavigationService navigationService,
             RecipeSelector recipeSelector,
+            RecipeList recipeList,
+            ProcessIO processIO,
             [FromKeyedServices("AlarmService")] IAlertService alarmService,
             [FromKeyedServices("WarningService")] IAlertService warningService)
         {
             _devices = devices;
             _machineStatus = machineStatus;
             _viewModelavigationStore = viewModelavigationStore;
+            _navigationService = navigationService;
             _recipeSelector = recipeSelector;
+            _recipeList = recipeList;
+            _processIO = processIO;
             _alarmService = alarmService;
             _warningService = warningService;
 
@@ -95,6 +105,29 @@ namespace SDV_MoldingInjection.Process
                 {
                     command = EOperationCommand.Stop;
                 }
+
+                if (command == EOperationCommand.None &&
+                    _recipeList.IdlePurgeRecipe.EnableIdlePurge &&
+                    Sequence == ESequence.AutoRun &&
+                    ProcessMode == EProcessMode.Run)
+                {
+                    if (IsAutoRunWaitingNoPanel())
+                    {
+                        if ((Environment.TickCount - _machineStatus.MachineIdleTick) >
+                            _recipeList.IdlePurgeRecipe.IdlePurgeAfterStopTime * 60000 &&
+                            _recipeSelector.CurrentRecipe.IdlePurgeRecipe.IdlePurgeAfterStopTime != 0 &&
+                            _recipeSelector.CurrentRecipe.IdlePurgeRecipe.IdlePurgeCycleTime != 0)
+                        {
+                            command = EOperationCommand.SemiAuto;
+                            _machineStatus.SemiAutoSequence = ESemiSequence.IdlePurge;
+                        }
+                    }
+                    else
+                    {
+                        _machineStatus.MachineIdleTick = Environment.TickCount;
+                    }
+                }
+
                 // Block run OPCommand actived while machine is Runiing
                 _machineStatus.OPCommand = EOperationCommand.None;
             }
@@ -136,11 +169,19 @@ namespace SDV_MoldingInjection.Process
                     MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_ResetAlarmBeforeRun"], (string)Application.Current.Resources["str_Confirm"]);
                     _machineStatus.OPCommand = EOperationCommand.None;
                 }
-
                 else if (_machineStatus.OPCommand == EOperationCommand.SemiAuto &&
                     _machineStatus.SemiAutoSequence == ESemiSequence.MoveMultiPoint)
                 {
                     command = EOperationCommand.SemiAuto;
+                }
+
+                if (_recipeSelector.CurrentRecipe.IdlePurgeRecipe.EnableIdlePurge &&
+                    _recipeSelector.CurrentRecipe.IdlePurgeRecipe.IdlePurgeAfterStopTime != 0 &&
+                    _recipeSelector.CurrentRecipe.IdlePurgeRecipe.IdlePurgeCycleTime != 0 &&
+                   (Environment.TickCount - _machineStatus.MachineIdleTick) > _recipeSelector.CurrentRecipe.IdlePurgeRecipe.IdlePurgeAfterStopTime * 60000)
+                {
+                    command = EOperationCommand.SemiAuto;
+                    _machineStatus.SemiAutoSequence = ESemiSequence.IdlePurge;
                 }
             }
 
@@ -158,6 +199,8 @@ namespace SDV_MoldingInjection.Process
                 _machineStatus.OriginDone = false;
 
                 _machineStatus.EquipState.IsAvailable = false;
+
+                _machineStatus.MachineIdleTick = Environment.TickCount;
 
                 _devices.Outputs.Lamp_Alarm(true);
 
@@ -198,6 +241,8 @@ namespace SDV_MoldingInjection.Process
                 AlertNotifyView.ShowDialog(_warningService.GetById(raisedWarningCode), true);
 
                 _machineStatus.EquipState.IsAvailable = false;
+
+                _machineStatus.MachineIdleTick = Environment.TickCount;
 
                 // TODO: CIM
                 CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmRelease, new CIMScenarioContext
@@ -326,6 +371,9 @@ namespace SDV_MoldingInjection.Process
             if (Childs!.Count(child => child.ProcessStatus != EProcessStatus.ToStopDone) == 0)
             {
                 _devices.Motions.All.ForEach(r => r.Stop());
+
+                _machineStatus.MachineIdleTick = Environment.TickCount;
+
                 _machineStatus.EquipState.IsRunning = false;
 
                 ProcessMode = EProcessMode.Stop;
@@ -685,6 +733,7 @@ namespace SDV_MoldingInjection.Process
                     {
                         MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_TurnOnAllMotionsFirst"], (string)Application.Current.Resources["str_Confirm"]);
                         _machineStatus.OPCommand = EOperationCommand.None;
+                        _machineStatus.MachineIdleTick = Environment.TickCount;
                         return;
                     }
 
@@ -692,6 +741,7 @@ namespace SDV_MoldingInjection.Process
                     {
                         MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_MachineNeedToBeOriginBeforeRun"]);
                         _machineStatus.OPCommand = EOperationCommand.None;
+                        _machineStatus.MachineIdleTick = Environment.TickCount;
                         return;
                     }
 
@@ -701,6 +751,11 @@ namespace SDV_MoldingInjection.Process
                     {
                         process.ProcessStatus = EProcessStatus.None;
                         process.Sequence = Sequence;
+                    }
+
+                    if (Sequence == ESequence.IdlePurge)
+                    {
+                        _navigationService.NavigateTo<IdlePurgeModeViewModel>();
                     }
 
                     if (Sequence == ESequence.MoveMultiPoint)
@@ -770,6 +825,11 @@ namespace SDV_MoldingInjection.Process
                 raisedWarningCode = warningId;
                 ProcessMode = EProcessMode.ToWarning;
             }
+        }
+
+        private bool IsAutoRunWaitingNoPanel()
+        {
+            return _processIO.InjectProcOutput[EInjectProcOutput.SPDHeadWorkRequest].Value == false;
         }
 
         private Queue<IGrouping<uint, PositionPoint>> MoveMultiPointQueueSteps = new Queue<IGrouping<uint, PositionPoint>>();

@@ -1,4 +1,4 @@
-using EQX.Core.Communication.CIM;
+﻿using EQX.Core.Communication.CIM;
 using EQX.Core.InOut;
 using EQX.Core.Motion;
 using EQX.Core.Sequence;
@@ -332,6 +332,9 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESequence.BubbleRemove_H4:
                     Sequence_AtDummyPos(ESequence.BubbleRemove_H4, ESPDHead.SPDHead4);
+                    break;
+                case ESequence.IdlePurge:
+                    Sequence_AtDummyPos(ESequence.IdlePurge, ESPDHead.All);
                     break;
                 default:
                     Sequence = ESequence.Stop;
@@ -685,7 +688,7 @@ namespace SDV_MoldingInjection.Process
                     if (IsSPDHeadWorkDone(ESPDHead.SPDHead1) == false ||
                         IsSPDHeadWorkDone(ESPDHead.SPDHead2) == false ||
                         IsSPDHeadWorkDone(ESPDHead.SPDHead3) == false ||
-                        IsSPDHeadWorkDone(ESPDHead.SPDHead4) == false )
+                        IsSPDHeadWorkDone(ESPDHead.SPDHead4) == false)
                     {
                         Wait(50);
                         break;
@@ -763,7 +766,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcResinInjectStep.Update_BothJigStatus:
                     Log.Debug($"Update both jig status: {EJigStatus.MoldingFinish}");
                     UpdateBothJigStatus(EJigStatus.MoldingFinish);
-                    if(_currentRecipe.OptionRecipe.SkipVentTime == false)
+                    if (_currentRecipe.OptionRecipe.SkipVentTime == false)
                     {
                         Step.RunStep = (int)EMoldProcResinInjectStep.BellowCylDown;
                         break;
@@ -821,7 +824,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.ClearFlag:
-                    Log.Debug("Clear flag"); 
+                    Log.Debug("Clear flag");
                     procOutputs[EInjectProcOutput.DryPump_VacuumRequest].Value = false;
                     procOutputs[EInjectProcOutput.DryPump_PurgeRequest].Value = false;
                     Step.RunStep++;
@@ -948,8 +951,8 @@ namespace SDV_MoldingInjection.Process
                     }
                     else
                     {
-                        
-                    } 
+
+                    }
 
                     if (isLoading) Log.Debug($"Transfer LOAD done");
                     else Log.Debug($"Transfer UNLOAD done");
@@ -1094,14 +1097,19 @@ namespace SDV_MoldingInjection.Process
                        sequence != ESequence.HeadDisassemble_H4)
 
                     {
-                        Log.Debug("SKIP dummy shot for head " + head);
+                        Log.Debug("SKIP move dummy shot for head " + head);
                         Step.RunStep = (int)EMoldProcDummyShotStep.End;
                         break;
                     }
-
                     if (sequence == ESequence.DummyShot && Parent?.Sequence == ESequence.AutoRun)
                     {
                         _tactTimeList.DummyShot.TaktTimeCounter = Environment.TickCount;
+                    }
+                    if (sequence == ESequence.IdlePurge)
+                    {
+                        Log.Debug("Idle Purge start");
+                        IdlePurgeCount = 0;
+                        IdlePurgeLastShotTick = Environment.TickCount;
                     }
 
                     Log.Info($"Dummy position for {head} start");
@@ -1141,7 +1149,7 @@ namespace SDV_MoldingInjection.Process
                     else
                     {
                         Log.Debug("ZAxis move dummy position");
-                        ZAxisDummyPosMove(head);
+                        ZAxisDummyPosMove(sequence, head);
                         Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => ZAxisInDummyPos(head));
                     }
 
@@ -1150,9 +1158,9 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcDummyShotStep.ZAxis_DummyPos_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        if (sequence == ESequence.DummyShot || sequence == ESequence.BubbleRemove)
+                        if (sequence == ESequence.DummyShot || sequence == ESequence.BubbleRemove || sequence == ESequence.IdlePurge)
                         {
-                            if (Parent!.Sequence == ESequence.AutoRun)
+                            if (Parent!.Sequence == ESequence.AutoRun || sequence == ESequence.IdlePurge)
                             {
                                 if (_currentRecipe.OptionRecipe.SkipHead12 == false && !Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisDummyPos))
                                 {
@@ -1274,7 +1282,8 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcDummyShotStep.End:
                     Log.Info($"{Sequence} for {head} end");
-                    if (Parent?.Sequence != ESequence.AutoRun)
+                    IdlePurgeLastShotTick = Environment.TickCount;
+                    if (Parent?.Sequence != ESequence.AutoRun && sequence != ESequence.IdlePurge)
                     {
                         MessageBoxEx.Show($"{sequence} Finish!", false);
                         Sequence = ESequence.Stop;
@@ -1894,9 +1903,9 @@ namespace SDV_MoldingInjection.Process
 
         }
 
-        private void ZAxisDummyPosMove(ESPDHead head)
+        private void ZAxisDummyPosMove(ESequence sequence, ESPDHead head)
         {
-            if (Parent!.Sequence != ESequence.AutoRun && head == ESPDHead.All)
+            if (Parent!.Sequence != ESequence.AutoRun && head == ESPDHead.All && sequence != ESequence.IdlePurge)
             {
                 if (_machineStatus.IsSkipHead1 == false)
                     Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisDummyPos);
@@ -2338,6 +2347,8 @@ namespace SDV_MoldingInjection.Process
         private int _yAxisCleaningPhase; // 0=chưa bắt đầu, 1=đang chờ tiến xong, 2=đang chờ lùi xong
         private double _yAxisCleaningTargetMm;
         private long _yAxisCleaningMoveStartTicks;
+        public int IdlePurgeCount { get; private set; }
+        public int IdlePurgeLastShotTick { get; private set; } = Environment.TickCount;
 
         private ESPDHead currentHead;
         private ESPDHead _failHead;

@@ -1,5 +1,6 @@
 ﻿using EQX.Core.Interlock;
 using EQX.Core.Motion;
+using EQX.Core.Sequence;
 using EQX.InOut;
 using EQX.UI.Controls;
 using log4net;
@@ -164,11 +165,13 @@ namespace SDV_MoldingInjection.Defines.Devices
             if (_machineStatus.IsStandByProcessMode)
             {
                 MessageBoxEx.Show(message, false, "WARNING");
+                _machineStatus.OPCommand = EOperationCommand.Stop;
             }
             else
             {
                 MessageBoxEx.Show(message, false);
                 LogManager.GetLogger("Interlock").Error(message);
+                _machineStatus.OPCommand = EOperationCommand.Stop;
             }
         }
         

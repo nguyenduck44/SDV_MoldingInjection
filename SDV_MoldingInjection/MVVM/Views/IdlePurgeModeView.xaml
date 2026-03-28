@@ -1,0 +1,130 @@
+﻿<UserControl x:Class="SDV_MoldingInjection.MVVM.Views.IdlePurgeModeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
+             mc:Ignorable="d"
+             xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
+             d:DataContext="{d:DesignInstance Type={x:Type vm:IdlePurgeModeViewModel}}"
+             xmlns:ui="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
+             d:DesignHeight="595"
+             d:DesignWidth="1024">
+    <Grid>
+        <Border Background="#F2F2F2"
+                BorderBrush="#2E3A56"
+                BorderThickness="2"
+                Margin="8">
+            <Grid Margin="12">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Border Background="#A9B9CF"
+                        BorderBrush="#2E3A56"
+                        BorderThickness="1"
+                        Padding="20,12">
+                    <TextBlock Text="IDLE PURGE MODE"
+                               HorizontalAlignment="Center"
+                               FontSize="50"
+                               FontWeight="Bold"
+                               Foreground="Black" />
+                </Border>
+
+                <Border Grid.Row="1"
+                        Margin="0"
+                        Background="#F4E8E8"
+                        BorderBrush="Red"
+                        BorderThickness="2"
+                        Padding="20">
+                    <StackPanel>
+                        <Canvas>
+                            <Image Source="/Resource/Images/WorkerStopSign.png"
+                                   Height="215"
+                                   Width="200"
+                                   Canvas.Top="-18"
+                                   Canvas.Left="70"/>
+                        </Canvas>
+                        <TextBlock Text="NO OPERATION"
+                                   FontSize="64"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   Foreground="red" />
+                        <TextBlock Text="조작금지"
+                                   FontSize="54"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   Foreground="red"
+                                   Margin="0,8,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <Grid Grid.Row="2"
+                      Margin="0 10"
+                      HorizontalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="260" />
+                        <ColumnDefinition Width="18" />
+                        <ColumnDefinition Width="260" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0"
+                            BorderBrush="#2E3A56"
+                            BorderThickness="1"
+                            Background="White"
+                            Padding="0,8">
+                        <StackPanel>
+                            <Border Background="#A9B9CF"
+                                    BorderBrush="#2E3A56"
+                                    BorderThickness="0,0,0,1"
+                                    Padding="0,6">
+                                <TextBlock Text="Count"
+                                           HorizontalAlignment="Center"
+                                           FontSize="30"
+                                           FontWeight="Bold" />
+                            </Border>
+                            <TextBlock Text="{Binding IdlePurgeCount}"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,16,0,8"
+                                       FontSize="42"
+                                       FontWeight="Bold" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="2"
+                            BorderBrush="#2E3A56"
+                            BorderThickness="1"
+                            Background="White"
+                            Padding="0,8">
+                        <StackPanel>
+                            <Border Background="#A9B9CF"
+                                    BorderBrush="#2E3A56"
+                                    BorderThickness="0,0,0,1"
+                                    Padding="0,6">
+                                <TextBlock Text="Time"
+                                           HorizontalAlignment="Center"
+                                           FontSize="30"
+                                           FontWeight="Bold" />
+                            </Border>
+                            <TextBlock Text="{Binding IdlePurgeRemainTime}"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,16,0,8"
+                                       FontSize="42"
+                                       FontWeight="Bold" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+                <ui:ImageButton Image="/EQX.UI;component/Resources/Images/Components/Common/pause_selected.png"
+                                Content="{DynamicResource str_Pause}"
+                                Command="{Binding IdlePurgeStopCommand}"
+                                Grid.Row="3"
+                                Width="220"
+                                Height="64"
+                                HorizontalAlignment="Right" />
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

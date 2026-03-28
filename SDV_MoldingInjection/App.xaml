@@ -62,7 +62,9 @@
             <DataTemplate DataType="{x:Type vm:NavigateMenuViewModel}">
                 <views:NavigateMenuView />
             </DataTemplate>
-
+            <DataTemplate DataType="{x:Type vm:IdlePurgeModeViewModel}">
+                <views:IdlePurgeModeView />
+            </DataTemplate>
             <DataTemplate DataType="{x:Type uiMVVM:CIMHostMessageViewModelBase}">
                 <uiMVVM:CIMHostMessageView />
             </DataTemplate>

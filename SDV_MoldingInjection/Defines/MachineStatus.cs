@@ -15,6 +15,7 @@ namespace SDV_MoldingInjection.Defines
         public bool DisableSyringeCheck { get; set; }
         public bool DisableDetectJig { get; set; }
         public bool ConfirmLoadingFinish { get; set; }
+        public int MachineIdleTick { get; set; } = Environment.TickCount;
 
         public MachineStatus(Inputs inputs)
         {
