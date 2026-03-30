@@ -4,6 +4,10 @@
     {
         Start,
 
+        Machine_Calibration_Check,
+
+        Wait_DryPump_Request_Run,
+        SetFlag_ChamberReadyOut,
         ChamberClose,
         ChamberClose_Wait,
 
@@ -12,6 +16,8 @@
 
         ZAxis_SafetyPos_Move,
         ZAxis_SafetyPos_MoveWait,
+
+        ClearFlag_ChamberReadyOut,
 
         End,
     }

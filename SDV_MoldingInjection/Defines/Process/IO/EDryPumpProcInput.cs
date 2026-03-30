@@ -4,5 +4,6 @@
     {
         Vacuum_WorkRequest,
         Purge_WorkRequest,
+        Inject_Chamber_ReadyOut,
     }
 }

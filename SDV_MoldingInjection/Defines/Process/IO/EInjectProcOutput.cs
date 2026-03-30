@@ -4,6 +4,8 @@
     {
         XYAxisInDummyPos,
 
+        ChamberReadyOut,
+
         DryPump_VacuumRequest,
         DryPump_PurgeRequest,
         SPDHeadWorkRequest,

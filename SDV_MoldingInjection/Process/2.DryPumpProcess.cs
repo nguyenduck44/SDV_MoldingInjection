@@ -155,9 +155,37 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"{AngleValve.Name} closed");
                     Step.ToRunStep++;
                     break;
+                case EDryPumpProcToRunStep.ChamberTorrCheck:
+                    Log.Debug($"Chamber torr check: {_devices.AnalogInputs.VacuumPressureInTorr}");
+                    if(_devices.AnalogInputs.VacuumPressureInTorr > 749)
+                    {
+                        Log.Debug("Chamber pressure over 740 torr, skip purge");
+                        Step.ToRunStep = (int)EDryPumpProcToRunStep.ChamperPurge_Off;
+                        break;
+                    }
+
+                    Step.ToRunStep++;
+                    break;
+                case EDryPumpProcToRunStep.ChamperPurge_On:
+                    Log.Debug("Purge start");
+                    Out_ChamberPurgeOn.Value = true;
+                    Step.ToRunStep++;
+                    break;
                 case EDryPumpProcToRunStep.ChamperPurge_Off:
+                    if (_devices.AnalogInputs.VacuumPressureInTorr < 749)
+                    {
+                        Wait(20);
+                        break;
+                    }
+
+                    Log.Debug($"Vaccum pressure detected: {_devices.AnalogInputs.VacuumPressureInTorr}");
                     Log.Debug("Champer Purge Off");
                     Out_ChamberPurgeOn.Value = false;
+                    Step.ToRunStep++;
+                    break;
+                case EDryPumpProcToRunStep.SetFlag_DryPump_PurgeDone:
+                    Log.Debug("Set flag purge done");
+                    procOutputs[EDryPumpProcOutput.PurgeComplete].Value = true;
                     Step.ToRunStep++;
                     break;
                 case EDryPumpProcToRunStep.DryPump_Run:
@@ -171,9 +199,19 @@ namespace SDV_MoldingInjection.Process
                     Out_DryPumpRun.Value = true;
                     Step.ToRunStep++;
                     break;
+                case EDryPumpProcToRunStep.ClearFlag_DryPump_PurgeDone:
+                    if (procInputs[EDryPumpProcInput.Inject_Chamber_ReadyOut].Value == false)
+                    {
+                        Wait(20);
+                        break;
+                    }
+
+                    Log.Debug("Clear flag purge done for inject");
+                    procOutputs[EDryPumpProcOutput.PurgeComplete].Value = false;
+                    Step.ToRunStep++;
+                    break;
                 case EDryPumpProcToRunStep.End:
                     procOutputs.ClearOutputs();
-
                     Log.Debug("ToRun end");
                     Step.ToRunStep++;
                     base.ProcessToRun();
@@ -240,128 +278,14 @@ namespace SDV_MoldingInjection.Process
                     Log.Info("Ready start");
                     Step.RunStep++;
                     break;
-                case EDryPumpProcReadyStep.YAxis_Position_Check:
-                    if (!YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisInjectPos))
-                    {
-                        Log.Debug("Y Axis not in inject position");
-                        Step.RunStep = (int)EDryPumpProcReadyStep.ZAxis_ReadyPos_Move;
-                        break;
-                    }
-
-                    Log.Debug("Y Axis in inject position");
-                    Step.RunStep++;
-                    break;
-                case EDryPumpProcReadyStep.AngleValve_Close:
-                    Log.Debug($"Closing {AngleValve.Name}");
-                    AngleValve.Close();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, AngleValve.IsClose);
-                    Step.RunStep++;
-                    break;
-                case EDryPumpProcReadyStep.AngleValve_Close_Wait:
-                    if (WaitTimeOutOccurred)
-                    {
-                        RaiseWarning(EWarning.AngleValve_CloseFail);
-                        break;
-                    }
-
-                    Log.Debug("Angle valve close success");
-                    Step.RunStep++;
-                    break;
-                case EDryPumpProcReadyStep.PurgeCheck:
-                    Log.Debug($"Vacuum Pressure detected: {_devices.AnalogInputs.VacuumPressureInTorr}");
-                    if (_devices.AnalogInputs.VacuumPressureInTorr > 749.0)
-                    {
-                        Step.RunStep = (int)EDryPumpProcReadyStep.ZAxis_ReadyPos_Move;
-                        break;
-                    }
-
-                    Log.Debug("Purge start");
-                    Out_ChamberPurgeOn.Value = true;
-                    Log.Debug("Puger wait");
-                    Step.RunStep++;
-                    break;
-                case EDryPumpProcReadyStep.PurgeWait:
-                    if(_devices.AnalogInputs.VacuumPressureInTorr < 749.0)
-                    {
-                        Wait(20);
-                        break;
-                    }
-
-                    Log.Debug("Purge success");
-                    Out_ChamberPurgeOn.Value = false;
-                    Step.RunStep++;
-                    break;
-                case EDryPumpProcReadyStep.BellowCylDown:
-                    Log.Debug("Bellow cylinder downing");
-                    BellowCyl.Down();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => BellowCyl.IsDown());
-                    Step.RunStep++;
-                    break;
-                case EDryPumpProcReadyStep.BellowCylDown_Wait:
-                    if (WaitTimeOutOccurred)
-                    {
-                        RaiseWarning(EWarning.BellowCyl_DownFail);
-                        break;
-                    }
-
-                    Log.Debug("Bellow cylinder down finish");
-                    Wait(1000); // Delay 1s after bellow cylinder down
-                    Step.RunStep++;
-                    break;
-                case EDryPumpProcReadyStep.ZAxis_ReadyPos_Move:
-                    if (AllZAxisInSafetyPos(ref _failHead))
-                    {
-                        Log.Debug($"ZAxis is on safety position already");
-                        Step.RunStep = (int)EDryPumpProcReadyStep.XYAxis_ReadyPos_Move;
-                        break;
-                    }
-
-                    Log.Debug($"Moving Z-Axes to safety position");
-                    ZAxisSafetyPosMove();
-                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => AllZAxisInSafetyPos(ref _failHead));
-                    Step.RunStep++;
-                    break;
-                case EDryPumpProcReadyStep.ZAxis_ReadyPos_Wait:
-                    if (WaitTimeOutOccurred)
-                    {
-                        RaiseHeadWarning(EWarning.Z1Axis_SafetyPos_MoveTimeOut, _failHead);
-                        break;
-                    }
-
-                    Log.Debug($"Z-Axes move to safety position done");
-                    Step.RunStep++;
-                    break;
-                case EDryPumpProcReadyStep.XYAxis_ReadyPos_Move:
-                    XAxis.MoveAbs(_currentRecipe.InjectRecipe.XAxisReadyPos);
-                    YAxis.MoveAbs(_currentRecipe.InjectRecipe.YAxisReadyPos);
-                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
-                        () => XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisReadyPos) &&
-                              YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisReadyPos));
-                    Step.RunStep++;
-                    break;
-                case EDryPumpProcReadyStep.XYAxis_ReadyPos_Wait:
-                    if (WaitTimeOutOccurred)
-                    {
-                        if (!XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisReadyPos))
-                            RaiseWarning(EWarning.XAxis_ReadyPos_MoveTimeOut);
-                        else
-                            RaiseWarning(EWarning.YAxis_ReadyPos_MoveTimeOut);
-                        break;
-                    }
-
-                    Log.Debug($"{XAxis.Name}|{YAxis.Name} move to ready pos done");
-                    Step.RunStep++;
-                    break;
                 case EDryPumpProcReadyStep.End:
                     Log.Debug("Ready run end");
                     Sequence = ESequence.Stop;
                     break;
-
                 default:
                     Wait(20);
                     break;
             }
-
         }
 
         private void Sequence_ResinInject()
