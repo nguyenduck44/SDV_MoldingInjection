@@ -1,6 +1,7 @@
 using EQX.Core.Common;
 using EQX.Core.Communication;
 using EQX.Core.Process;
+using EQX.Core.Sequence;
 using EQX.InOut;
 using log4net;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,23 +14,27 @@ namespace SDV_MoldingInjection.Defines
     {
         private readonly SerialCommunicator _serialCommunicator;
         private readonly RecipeSelector _recipeSelector;
-        private readonly Processes _processes;
+        private readonly IServiceProvider _serviceProvider;
         private readonly Devices _devices;
+        private readonly MachineStatus _machineStatus;
         private readonly object _lockObject = new object();
         private string messageBuffer = string.Empty;
 
+        private Processes _processes => _serviceProvider.GetRequiredService<Processes>();
         private IProcess<ESequence> RootProcess => _processes.RootProcess;
         private InjectProcess InjectProcess => _processes.All.OfType<InjectProcess>().First();
 
         public InOutHandler([FromKeyedServices("InOutHandlerSerialCommunication")] SerialCommunicator serialCommunicator,
             RecipeSelector recipeSelector,
-            Processes processes,
-            Devices devices)
+            IServiceProvider serviceProvider,
+            Devices devices,
+            MachineStatus machineStatus)
         {
             _serialCommunicator = serialCommunicator;
             _recipeSelector = recipeSelector;
-            _processes = processes;
+            _serviceProvider = serviceProvider;
             _devices = devices;
+            _machineStatus = machineStatus;
         }
 
         public bool IsConnected => _serialCommunicator.IsConnected;
@@ -117,6 +122,18 @@ namespace SDV_MoldingInjection.Defines
                 case "CRUS": // HEAD USE
                     Handler_HeadUse_Received(messageBuffer);
                     break;
+                case "CRST": // START
+                    Handler_Start_Received(messageBuffer);
+                    break;
+                case "CRSP": // STOP
+                    Handler_Stop_Received(messageBuffer);
+                    break;
+                case "CRSI": //SET IDLE PURGE MODE
+                    Handler_SetIdlePurgeMode_Received(messageBuffer);
+                    break;
+                case "CRCI": //CLEAR ILDE PURGE MODE
+                    Handler_ClearIdlePurgeMode_Received(messageBuffer);
+                    break;
             }
         }
 
@@ -199,17 +216,17 @@ namespace SDV_MoldingInjection.Defines
 
         private void Handler_HeadUse_Received(string message)
         {
-            Response_HeadUse();
+            Response_HeadUse_Received();
             int head = message[5] - 0x31;
             bool isUse = message[6] == 0x16;
 
             if (head == 0) _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 = isUse;
             else if (head == 1) _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34 = isUse;
 
-            Send_HeadUse_Success(head);
+            Handler_Send_HeadUse_Success(head);
         }
 
-        private void Response_HeadUse()
+        private void Response_HeadUse_Received()
         {
             byte[] buffer = new byte[] {
                 0x02,
@@ -220,7 +237,7 @@ namespace SDV_MoldingInjection.Defines
             TransmitData(buffer);
         }
 
-        private void Send_HeadUse_Success(int head)
+        private void Handler_Send_HeadUse_Success(int head)
         {
             bool isUse = head == 0 ? _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 : _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34;
             byte[] buffer = new byte[] {
@@ -233,6 +250,102 @@ namespace SDV_MoldingInjection.Defines
 
             TransmitData(buffer);
         }
+
+        private void Handler_Start_Received(string message)
+        {
+            _machineStatus.InOutHandlerStartRequest = true;
+
+            byte[] buffer = new byte[] {
+                0x02,
+                0x43, 0x54, 0x53, 0x54,
+                0x03
+            };
+
+            TransmitData(buffer);
+        }
+
+        private void Handler_Stop_Received(string message)
+        {
+            _machineStatus.OPCommand = EOperationCommand.Stop;
+
+            byte[] buffer = new byte[] {
+                0x02,
+                0x43, 0x54, 0x53, 0x50,
+                0x03
+            };
+
+            TransmitData(buffer);
+        }
+
+        private void Handler_SetIdlePurgeMode_Received(string message)
+        {
+            _machineStatus.OPCommand = EOperationCommand.SemiAuto;
+            _machineStatus.SemiAutoSequence = ESemiSequence.IdlePurge;
+
+            byte[] buffer = new byte[] {
+                0x02,
+                0x43, 0x54, 0x53, 0x49,
+                0x03
+            };
+
+            TransmitData(buffer);
+        }
+
+        private void Handler_ClearIdlePurgeMode_Received(string message)
+        {
+            _machineStatus.OPCommand = EOperationCommand.Stop;
+
+            byte[] buffer = new byte[] {
+                0x02,
+                0x43, 0x54, 0x43, 0x49,
+                0x03
+            };
+
+            TransmitData(buffer);
+        }
+
+        public void Handler_Send_End(EJigStatus[] jigStatuses)
+        {
+            if(jigStatuses.Length != 2) return;
+
+            bool isChamberOpen = _devices.Cylinders.ChamberOpenClose.IsOpen();
+
+            var opt = _recipeSelector.CurrentRecipe.OptionRecipe;
+            var inj = InjectProcess;
+
+            byte jig1Status = MapJigPairToProtocolStatus(opt.SkipHead12,
+                inj.JigStatuses[0],
+                _devices.Inputs.Jig1Detect.Value,
+                _devices.Inputs.Jig2Detect.Value);
+
+            byte jig2Status = MapJigPairToProtocolStatus(opt.SkipHead34,
+                inj.JigStatuses[1],
+                _devices.Inputs.Jig3Detect.Value,
+                _devices.Inputs.Jig4Detect.Value);
+
+            byte[] buffer = new byte[] {
+                0x02,
+                0x43, 0x54, 0x45, 0x4E,
+                jig1Status,
+                jig2Status,
+                (byte)(isChamberOpen ? 0x32 : 0x31),
+                0x03
+            };
+        }
+
+        public void Handler_SendError(int errorCode)
+        {
+            byte[] buffer = new byte[] {
+                0x02,
+                0x43, 0x54, 0x45, 0x52,
+                (byte)(0x30 + (errorCode/1000)),
+                (byte)(0x30 + ((errorCode % 1000) /100)),
+                (byte)(0x30 + ((errorCode % 100) /10)),
+                (byte)(0x30 + (errorCode % 10)),
+                0x03
+            };
+        }
+
         /// <summary>11–15 theo bảng 제품 상태 protocol.</summary>
         private byte MapJigPairToProtocolStatus(bool skipPair, EJigStatus jigStatus, bool jigDet1, bool jigDet2)
         {
@@ -257,13 +370,13 @@ namespace SDV_MoldingInjection.Defines
 
         private bool MachineReadyCheck()
         {
-            if(RootProcess.ProcessMode != EQX.Core.Sequence.EProcessMode.Run ||
+            if (RootProcess.ProcessMode != EQX.Core.Sequence.EProcessMode.Run ||
                 RootProcess.Sequence != ESequence.AutoRun)
             {
                 return false;
             }
 
-            if(InjectProcess.Sequence != ESequence.Loading ||
+            if (InjectProcess.Sequence != ESequence.Loading ||
                InjectProcess.Step.RunStep != (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request)
             {
                 return false;

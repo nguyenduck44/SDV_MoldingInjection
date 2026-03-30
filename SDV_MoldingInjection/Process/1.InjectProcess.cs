@@ -75,7 +75,8 @@ namespace SDV_MoldingInjection.Process
             RecipeSelector recipeSelector,
             TactTimeList tactTimeList,
             ICIMMapHelper mapHelper,
-            ProductionService productionService)
+            ProductionService productionService,
+            InOutHandler inOutHandler)
         {
             _devices = devices;
             _machineStatus = machineStatus;
@@ -83,6 +84,7 @@ namespace SDV_MoldingInjection.Process
             _tactTimeList = tactTimeList;
             _mapHelper = mapHelper;
             _productionService = productionService;
+            _inOutHandler = inOutHandler;
             procInputs = processIO.InjectProcInput;
             procOutputs = processIO.InjectProcOutput;
 
@@ -916,7 +918,7 @@ namespace SDV_MoldingInjection.Process
                         {
                             Log.Debug("Loading manual done");
                             _machineStatus.ConfirmLoadingFinish = false;
-                            Step.RunStep = Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Jig_Check;
+                            Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Jig_Check;
                             break;
                         }
                         if (isLoading == false)
@@ -927,7 +929,7 @@ namespace SDV_MoldingInjection.Process
                             if (_optionRecipe.SkipHead34 == false && RightJigDetect)
                                 outputCount++;
                             _productionService.WriteData(EProductionWriteType.Output, outputCount);
-                            Step.RunStep = Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
+                            Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
                             break;
                         }
                     }
@@ -958,42 +960,16 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.Update_Jig_Status:
                     if (isLoading)
                     {
-                        //TODO: 
+                        UpdateBothJigStatus(EJigStatus.None);
                     }
-                    else
-                    {
-
-                    }
-
-                    if (isLoading) Log.Debug($"Transfer LOAD done");
-                    else Log.Debug($"Transfer UNLOAD done");
-
-                    UpdateBothJigStatus(EJigStatus.None);
 
                     Step.RunStep++;
                     break;
-
                 case EMoldProcLoadingUnloadingStep.Jig_Check:
-                    Log.Debug("Jig check");
-                    int inputCount = 0;
-                    if (isLoading == false && _machineStatus.DisableDetectJig == false && _machineStatus.IsDryRunMode == false)
-                    {
-#if SIMULATION
-                        SimulationInputSetter.SetSimInput(In_Jig1Detect, false);
-                        SimulationInputSetter.SetSimInput(In_Jig2Detect, false);
-                        SimulationInputSetter.SetSimInput(In_Jig3Detect, false);
-                        SimulationInputSetter.SetSimInput(In_Jig4Detect, false);
-#endif
-                        if ((_optionRecipe.SkipHead12 == false && (In_Jig1Detect.Value || In_Jig2Detect.Value)) ||
-                            (_optionRecipe.SkipHead34 == false && (In_Jig3Detect.Value || In_Jig4Detect.Value)))
-                        {
-                            RaiseWarning(EWarning.Jig_Detected_Unload_Fail);
-                            break;
-                        }
-                    }
-
                     if (isLoading && _machineStatus.DisableDetectJig == false && _machineStatus.IsDryRunMode == false)
                     {
+                        Log.Debug("Jig check");
+                        int inputCount = 0;
 #if SIMULATION
                         SimulationInputSetter.SetSimInput(In_Jig1Detect, true);
                         SimulationInputSetter.SetSimInput(In_Jig2Detect, true);
@@ -1030,16 +1006,31 @@ namespace SDV_MoldingInjection.Process
 
                             inputCount++;
                         }
+
+                        _productionService.WriteData(EProductionWriteType.Input, inputCount);
                     }
 
                     if (isLoading == false)
                     {
-                        UpdateBothJigStatus(EJigStatus.None);
+                        if(_optionRecipe.SkipHead12 == false || LeftJigDetect == false)
+                        {
+                            JigStatuses[0] = EJigStatus.None;
+                        }
+                        if (_optionRecipe.SkipHead34 == false || RightJigDetect == false)
+                        {
+                            JigStatuses[1] = EJigStatus.None;
+                        }
+
+                        if (JigStatuses[0] != EJigStatus.None || JigStatuses[1] != EJigStatus.None)
+                        {
+                            Wait(20);
+                            break;
+                        }
+
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
                         break;
                     }
 
-                    _productionService.WriteData(EProductionWriteType.Input, inputCount);
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.MCR_Read:
@@ -2350,6 +2341,7 @@ namespace SDV_MoldingInjection.Process
         private readonly TactTimeList _tactTimeList;
         private readonly ICIMMapHelper _mapHelper;
         private readonly ProductionService _productionService;
+        private readonly InOutHandler _inOutHandler;
 
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
         private OptionRecipe _optionRecipe => _currentRecipe.OptionRecipe;
