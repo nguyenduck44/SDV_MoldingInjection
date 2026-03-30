@@ -122,7 +122,9 @@ namespace SDV_MoldingInjection.Process
                     Log.Info("ToRun start");
                     Log.Debug($"{procOutputs.Name} ClearOutputs");
                     procOutputs.ClearOutputs();
-
+                    Step.ToRunStep++;
+                    break;
+                case EMoldProcToRunStep.Machine_Calibration_Check:
                     if (Parent!.Sequence != ESequence.AutoRun)
                     {
                         Step.ToRunStep++;
@@ -142,6 +144,28 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    Step.ToRunStep++;
+                    break;
+                case EMoldProcToRunStep.Wait_DryPump_Request_Run:
+                    if (ChamberOpenClose.IsOpen())
+                    {
+                        Log.Debug("Chamber is opened");
+                        Step.ToRunStep = (int)EMoldProcToRunStep.SetFlag_ChamberReadyOut;
+                        break;
+                    }
+
+                    if (procInputs[EInjectProcInput.DryPump_PurgeDone].Value == false)
+                    {
+                        Wait(50);
+                        break;
+                    }
+
+                    Log.Debug($"Input detect {EInjectProcInput.DryPump_PurgeDone}");
+                    Step.ToRunStep++;
+                    break;
+                case EMoldProcToRunStep.SetFlag_ChamberReadyOut:
+                    Log.Debug($"Set Output {EInjectProcOutput.ChamberReadyOut}");
+                    procOutputs[EInjectProcOutput.ChamberReadyOut].Value = true;
                     Step.ToRunStep++;
                     break;
                 case EMoldProcToRunStep.ChamberClose:
@@ -196,7 +220,7 @@ namespace SDV_MoldingInjection.Process
                     if (AllZAxisInSafetyPos(ref _failHead))
                     {
                         Log.Debug($"ZAxis is on safety position already");
-                        Step.ToRunStep = (int)EMoldProcToRunStep.End;
+                        Step.ToRunStep = (int)EMoldProcToRunStep.ClearFlag_ChamberReadyOut;
                         break;
                     }
 
@@ -215,7 +239,19 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Z-Axes move to safety position done");
                     Step.ToRunStep++;
                     break;
+                case EMoldProcToRunStep.ClearFlag_ChamberReadyOut:
+                    if (procInputs[EInjectProcInput.DryPump_PurgeDone].Value == true)
+                    {
+                        Wait(20);
+                        break;
+                    }
+
+                    Log.Debug($"Clear Output ChamberReadyOut");
+                    procOutputs[EInjectProcOutput.ChamberReadyOut].Value = false;
+                    Step.ToRunStep++;
+                    break;
                 case EMoldProcToRunStep.End:
+                    procOutputs.ClearOutputs();
                     Log.Info("ToRun end");
                     Step.ToRunStep++;
                     base.ProcessToRun();
@@ -544,7 +580,65 @@ namespace SDV_MoldingInjection.Process
         #region Sequence Methods
         private void Sequence_Ready()
         {
-            Sequence = ESequence.Stop;
+            switch((EMoldProcReadyStep)Step.RunStep)
+            {
+                case EMoldProcReadyStep.Start:
+                    Log.Info("Ready start");
+                    Step.RunStep++;
+                    break;
+                case EMoldProcReadyStep.BellowCyl_Down:
+                    if (BellowCyl.IsDown())
+                    {
+                        Log.Debug($"{BellowCyl} is down already");
+                        Step.RunStep = (int)EMoldProcReadyStep.XYAxis_ReadyPos_Move;
+                        break;
+                    }
+
+                    Log.Debug($"{BellowCyl} moving down");
+                    BellowCyl.Down();
+                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout,
+                        () => BellowCyl.IsDown());
+                    Step.RunStep++;
+                    break;
+                case EMoldProcReadyStep.BellowCyl_Down_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseWarning(EWarning.BellowCyl_DownFail);
+                        break;
+                    }
+
+                    Log.Debug($"Move {BellowCyl} down done");
+                    Step.RunStep++;
+                    break;
+                case EMoldProcReadyStep.XYAxis_ReadyPos_Move:
+                    XAxis.MoveAbs(_currentRecipe.InjectRecipe.XAxisReadyPos);
+                    YAxis.MoveAbs(_currentRecipe.InjectRecipe.YAxisReadyPos);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
+                        () => XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisReadyPos) &&
+                              YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisReadyPos));
+                    Step.RunStep++;
+                    break;
+                case EMoldProcReadyStep.XYAxis_ReadyPos_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        if (!XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisReadyPos))
+                            RaiseWarning(EWarning.XAxis_ReadyPos_MoveTimeOut);
+                        else
+                            RaiseWarning(EWarning.YAxis_ReadyPos_MoveTimeOut);
+                        break;
+                    }
+
+                    Log.Debug($"{XAxis.Name}|{YAxis.Name} move to ready pos done");
+                    Step.RunStep++;
+                    break;
+                case EMoldProcReadyStep.End:
+                    Log.Debug("Ready run end");
+                    Sequence = ESequence.Stop;
+                    break;
+                default:
+                    Wait(20);
+                    break;
+            }
         }
 
         private void Sequence_AutoRun()
@@ -778,7 +872,7 @@ namespace SDV_MoldingInjection.Process
                     if (_optionRecipe.DelayAfterInjectFinish)
                     {
                         Log.Debug("Delay after inject finish");
-                        Wait(_currentRecipe.InjectTimeRecipe.DelayAfterInjectFinish * 1000);
+                        Wait(_currentRecipe.InjectTimeRecipe.DelayAfterInjectFinish);
                     }
                     
                     Step.RunStep++;
