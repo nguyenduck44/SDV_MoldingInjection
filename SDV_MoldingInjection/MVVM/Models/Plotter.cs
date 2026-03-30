@@ -19,7 +19,7 @@ namespace SDV_MoldingInjection.MVVM.Models
             {
                 ChamberPressurePlot = new WpfPlot();
             });
-            logFolderPath = configuration.GetValue<string>("Files:PressureLogFolder");
+            logFolderPath = configuration.GetValue<string>("Folders:PressureLogFolder");
 
             ClearData();
 
@@ -48,10 +48,7 @@ namespace SDV_MoldingInjection.MVVM.Models
 
         public void Save(string? specificText = null)
         {
-            if (string.IsNullOrEmpty(logFolderPath))
-            {
-                logFolderPath = "D:\\MoldInjection\\Log\\PressureLog";
-            }
+            if (string.IsNullOrEmpty(logFolderPath)) return;
             string folder = Path.Combine(logFolderPath, DateTime.Now.ToString("yyyy-MM"), DateTime.Now.ToString("yyyy-MM-dd"));
             string file = Path.Combine(folder, $"ChamberPressure_{DateTime.Now:HH-mm-ss}.svg");
             if (string.IsNullOrEmpty(specificText) == false) file = Path.Combine(folder, $"ChamberPressure_{DateTime.Now:HH-mm-ss}_{specificText}.svg");

@@ -2,6 +2,7 @@ using EQX.Core.InOut;
 using EQX.Core.Motion;
 using EQX.Core.Sequence;
 using EQX.InOut;
+using Microsoft.Extensions.Configuration;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.MVVM.Models;
@@ -48,12 +49,14 @@ namespace SDV_MoldingInjection.Process
         public DryPumpProcess(Devices devices, RecipeSelector recipeSelector,
             ProcessIO processIO, MachineStatus machineStatus,
             CarrierJigStatusList carrierJigStatusList,
+            IConfiguration configuration,
             Plotter plotter)
         {
             _devices = devices;
             _recipeSelector = recipeSelector;
             _machineStatus = machineStatus;
             _carrierJigStatusList = carrierJigStatusList;
+            _configuration = configuration;
             _plotter = plotter;
 
             procInputs = processIO.DryPumpProcInput;
@@ -614,12 +617,6 @@ namespace SDV_MoldingInjection.Process
         private void PressureLog(double pressure, EPumpAction? action = null)
         {
             var now = DateTime.Now;
-            string path = Path.Combine(
-                @"D:\MoldInjection\Log\PressureLog",
-                now.ToString("yyyy-MM"),
-                now.ToString("yyyy-MM-dd"),
-                $"{now:yyyy-MM-dd_HH}.txt");
-
             string message = $"{now:yyyy/MM/dd HH:mm:ss},{pressure:F3}";
             if (action != null)
                 message += $",{action}";
@@ -630,6 +627,15 @@ namespace SDV_MoldingInjection.Process
             {
                 _plotter.Save();
             }
+
+            if (string.IsNullOrEmpty(pressureLogFolder))
+                return;
+
+            string path = Path.Combine(
+                pressureLogFolder,
+                now.ToString("yyyy-MM"),
+                now.ToString("yyyy-MM-dd"),
+                $"{now:yyyy-MM-dd_HH}.txt");
 
             lock (_fileLock)
             {
@@ -645,11 +651,12 @@ namespace SDV_MoldingInjection.Process
         private readonly object _fileLock = new object();
         private readonly RecipeSelector _recipeSelector;
         private readonly CarrierJigStatusList _carrierJigStatusList;
+        private readonly IConfiguration _configuration;
         private readonly Plotter _plotter;
 
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
         private InjectTimeRecipe InjectTimeRecipe => _recipeSelector.CurrentRecipe.InjectTimeRecipe;
-
+        private string pressureLogFolder => _configuration.GetValue<string>("Folders:PressureLogFolder");
         private ESPDHead _failHead;
         private double _ventStartTick;
         private double _delayStartTick;
