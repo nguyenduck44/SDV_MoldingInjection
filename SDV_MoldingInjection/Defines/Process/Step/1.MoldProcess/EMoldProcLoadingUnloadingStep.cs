@@ -11,7 +11,8 @@
         Chamber_CoverOpenWait,
 
         Transfer_Load_SendRequest,
-        Transfer_Load_Wait,
+        Wait_InOutHandlerStart_Request,
+        Update_Jig_Status,
 
         Jig_Check,
 

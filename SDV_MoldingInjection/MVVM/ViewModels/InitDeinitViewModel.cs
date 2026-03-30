@@ -93,10 +93,12 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             CarrierJigStatusList carrierJigStatusList,
             CIMAction cimAction,
             ProductionService productionService,
-            MachineStatus machineStatus)
+            MachineStatus machineStatus,
+            InOutHandler inOutHandler)
         {
             _devices = devices;
             _machineStatus = machineStatus;
+            _inOutHandler = inOutHandler;
             _processes = processes;
             _navigationService = navigationService;
             _authenticationService = authenticationService;
@@ -189,7 +191,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         Log.Debug("Connect Modbus Communication");
                         _balanceLeft.Connect();
                         _balanceRight.Connect();
-
+                        _inOutHandler.Connect();
                         if(_balanceLeft.IsConnected == false || _balanceRight.IsConnected == false)
                         {
                             ErrorMessages.Add("Balance Connection Failed.");
@@ -338,7 +340,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         MessageText = "Disconnect Balance Devices";
                         _balanceLeft.Disconnect();
                         _balanceRight.Disconnect();
-                        
+                        _inOutHandler.Disconnect();
                         Thread.Sleep(50);
                         _step++;
                         break;
@@ -544,6 +546,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly IVisionFlowRepository _visionFlowRepository;
         private readonly Devices _devices;
         private readonly MachineStatus _machineStatus;
+        private readonly InOutHandler _inOutHandler;
         private readonly Processes _processes;
 
         private string _messageText = "";

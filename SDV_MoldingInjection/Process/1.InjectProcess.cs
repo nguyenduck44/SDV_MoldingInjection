@@ -935,16 +935,27 @@ namespace SDV_MoldingInjection.Process
 
                     if (_optionRecipe.InputTypeAuto)
                     {
-                        if (isLoading) Log.Debug($"Request transfer to LOAD");
-                        else Log.Debug($"Request transfer to UNLOAD");
-                        //TODO : Send request to transfer
+                        if (isLoading)
+                        {
+                            Step.RunStep++;
+                            break;
+                        }
 
-                        Step.RunStep++;
+                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Update_Jig_Status;
                         break;
                     }
 
                     break;
-                case EMoldProcLoadingUnloadingStep.Transfer_Load_Wait:
+                case EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request:
+                    if (_machineStatus.InOutHandlerStartRequest == false)
+                    {
+                        Wait(20);
+                        break;
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case EMoldProcLoadingUnloadingStep.Update_Jig_Status:
                     if (isLoading)
                     {
                         //TODO: 
@@ -1245,7 +1256,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     else
                     {
-                        if (IsSPDHeadWorkDone(sequence ,head) == false)
+                        if (IsSPDHeadWorkDone(sequence, head) == false)
                         {
                             Wait(50);
                             break;
