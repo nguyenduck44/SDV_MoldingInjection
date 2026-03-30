@@ -1,6 +1,7 @@
 using EQX.Core.Common;
 using EQX.Core.Communication;
 using EQX.Core.Process;
+using EQX.InOut;
 using log4net;
 using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Process;
@@ -110,6 +111,12 @@ namespace SDV_MoldingInjection.Defines
                 case "CRCH": //CHECK PRODUCT
                     Handler_ProductCheck_Received(messageBuffer);
                     break;
+                case "CRPT": //CHECK POSITION
+                    Handler_PositionCheck_Received(messageBuffer);
+                    break;
+                case "CRUS": // HEAD USE
+                    Handler_HeadUse_Received(messageBuffer);
+                    break;
             }
         }
 
@@ -148,7 +155,8 @@ namespace SDV_MoldingInjection.Defines
 
         private void Handler_ProductCheck_Received(string message)
         {
-            bool isChamberOpen = _devices.Cylinders.ChamberOpenClose.IsForward;
+            bool isChamberOpen = _devices.Cylinders.ChamberOpenClose.IsOpen();
+
             var opt = _recipeSelector.CurrentRecipe.OptionRecipe;
             var inj = InjectProcess;
 
@@ -172,6 +180,26 @@ namespace SDV_MoldingInjection.Defines
             };
 
             TransmitData(buffer);
+        }
+
+        private void Handler_PositionCheck_Received(string message)
+        {
+            if (_devices.Motions.StageYAxis.IsOnPosition(_recipeSelector.CurrentRecipe.InjectRecipe.YAxisReadyPos) == false) return;
+
+            bool isChamberOpen = _devices.Cylinders.ChamberOpenClose.IsOpen();
+
+            byte[] buffer = new byte[] {
+                0x02,
+                0x43, 0x54, 0x50, 0x54,
+                (byte)(isChamberOpen ? 0x32 : 0x31),
+                0x03
+            };
+            TransmitData(buffer);
+        }
+
+        private void Handler_HeadUse_Received(string message)
+        {
+
         }
 
         /// <summary>11–15 theo bảng 제품 상태 protocol.</summary>
