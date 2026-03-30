@@ -1,4 +1,4 @@
-﻿using EQX.Core.Common;
+using EQX.Core.Common;
 using EQX.Core.Communication;
 using EQX.Core.Process;
 using log4net;
@@ -18,7 +18,7 @@ namespace SDV_MoldingInjection.Defines
         private string messageBuffer = string.Empty;
 
         private IProcess<ESequence> RootProcess => _processes.RootProcess;
-        private IProcess<ESequence> InjectProcess => _processes.All.OfType<InjectProcess>().First();
+        private InjectProcess InjectProcess => _processes.All.OfType<InjectProcess>().First();
 
         public InOutHandler([FromKeyedServices("InOutHandlerSerialCommunication")] SerialCommunicator serialCommunicator,
             RecipeSelector recipeSelector,
@@ -148,7 +148,45 @@ namespace SDV_MoldingInjection.Defines
 
         private void Handler_ProductCheck_Received(string message)
         {
+            bool isChamberOpen = _devices.Cylinders.ChamberOpenClose.IsForward;
+            var opt = _recipeSelector.CurrentRecipe.OptionRecipe;
+            var inj = InjectProcess;
 
+            byte jig1Status = MapJigPairToProtocolStatus(opt.SkipHead12,
+                inj.JigStatuses[0],
+                _devices.Inputs.Jig1Detect.Value,
+                _devices.Inputs.Jig2Detect.Value);
+
+            byte jig2Status = MapJigPairToProtocolStatus(opt.SkipHead34,
+                inj.JigStatuses[1],
+                _devices.Inputs.Jig3Detect.Value,
+                _devices.Inputs.Jig4Detect.Value);
+
+            byte[] buffer = new byte[] {
+                0x02,
+                0x43, 0x54, 0x43, 0x48,
+                jig1Status,
+                jig2Status,
+                (byte)(isChamberOpen ? 0x32 : 0x31),
+                0x03
+            };
+
+            TransmitData(buffer);
+        }
+
+        /// <summary>11–15 theo bảng 제품 상태 protocol.</summary>
+        private byte MapJigPairToProtocolStatus(bool skipPair, EJigStatus jigStatus, bool jigDet1, bool jigDet2)
+        {
+            if (skipPair) return 0x15;
+            if (!jigDet1 && !jigDet2) return 0x14;
+
+            return jigStatus switch
+            {
+                EJigStatus.MoldingFinish => 0x12,
+                EJigStatus.InMolding => 0x11,
+                EJigStatus.Ready => 0x13,
+                _ => 0x13,
+            };
         }
 
         private void TransmitData(byte[] buffer)
