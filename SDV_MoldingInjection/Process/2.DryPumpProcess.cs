@@ -4,6 +4,7 @@ using EQX.Core.Sequence;
 using EQX.InOut;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
+using SDV_MoldingInjection.MVVM.Models;
 using SDV_MoldingInjection.Recipe;
 using System.IO;
 using WinRT;
@@ -46,12 +47,15 @@ namespace SDV_MoldingInjection.Process
         #region Constructors
         public DryPumpProcess(Devices devices, RecipeSelector recipeSelector,
             ProcessIO processIO, MachineStatus machineStatus,
-            CarrierJigStatusList carrierJigStatusList)
+            CarrierJigStatusList carrierJigStatusList,
+            Plotter plotter)
         {
             _devices = devices;
             _recipeSelector = recipeSelector;
             _machineStatus = machineStatus;
             _carrierJigStatusList = carrierJigStatusList;
+            _plotter = plotter;
+
             procInputs = processIO.DryPumpProcInput;
             procOutputs = processIO.DryPumpProcOutput;
         }
@@ -371,6 +375,7 @@ namespace SDV_MoldingInjection.Process
                 case EDryPumpProcResinInjectStep.Start:
                     Log.Info("ResinInject start");
                     _delayTime = 0;
+                    _plotter.ClearData();
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_Run:
@@ -440,7 +445,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EDryPumpProcResinInjectStep.AngleValve_Open:
                     Log.Debug($"Opening {AngleValve.Name}");
-                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Valve Open");
+                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.ValveOpen);
                     AngleValve.Open();
                     Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, AngleValve.IsOpen);
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
@@ -467,7 +472,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EDryPumpProcResinInjectStep.AngleValve_Close:
                     Log.Debug($"Closing {AngleValve.Name}");
-                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Valve Close");
+                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.ValveClose);
                     AngleValve.Close();
                     Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, AngleValve.IsClose);
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
@@ -484,7 +489,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_Purge:
                     Log.Debug("DryPump purge start");
-                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Purge Start");
+                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.PurgeStart);
                     Out_ChamberPurgeOn.Value = true;
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
@@ -498,7 +503,7 @@ namespace SDV_MoldingInjection.Process
 
                     Out_ChamberPurgeOn.Value = false;
                     Log.Debug("DryPump purge complete");
-                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Purge End");
+                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.PurgeEnd);
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.VacuumGauge_Target_Wait:
@@ -554,7 +559,7 @@ namespace SDV_MoldingInjection.Process
                 case EDryPumpProcResinInjectStep.SetStartVent:
                     Log.Debug("Vent start");
                     _ventStartTick = Environment.TickCount;
-                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Vent Start");
+                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.VentStart);
                     Out_ChamberPurgeOn.Value = true;
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
@@ -566,7 +571,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"Vent Complete: {InjectTimeRecipe.VentTime}s");
-                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "Vent Complete");
+                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.VentComplete);
                     procOutputs[EDryPumpProcOutput.VentComplete].Value = true;
                     Out_ChamberPurgeOn.Value = false;
 
@@ -613,7 +618,7 @@ namespace SDV_MoldingInjection.Process
                     procOutputs[EDryPumpProcOutput.VentComplete].Value = false;
                     procOutputs[EDryPumpProcOutput.PurgeComplete].Value = false;
 
-                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, "End cycle");
+                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.EndCycle);
                     EnableWritePressureLog = false;
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
@@ -670,7 +675,19 @@ namespace SDV_MoldingInjection.Process
             RaiseWarning(warning + ((int)(EWarning.Z2Axis_Origin_TimeOut - EWarning.Z1Axis_Origin_TimeOut)) * (_failHead - ESPDHead.SPDHead1));
         }
 
-        private void PressureLog(double pressure, string action = "")
+
+        private enum EPumpAction
+        {
+            ValveOpen,
+            ValveClose,
+            PurgeStart,
+            PurgeEnd,
+            VentStart,
+            VentComplete,
+            EndCycle
+        }
+
+        private void PressureLog(double pressure, EPumpAction? action = null)
         {
             var now = DateTime.Now;
             string path = Path.Combine(
@@ -680,9 +697,15 @@ namespace SDV_MoldingInjection.Process
                 $"{now:yyyy-MM-dd_HH}.txt");
 
             string message = $"{now:yyyy/MM/dd HH:mm:ss},{pressure:F3}";
-            if (action != string.Empty)
+            if (action != null)
                 message += $",{action}";
             message += "\r\n";
+
+            _plotter.AddChamberPressureData(pressure);
+            if (action == EPumpAction.EndCycle)
+            {
+                _plotter.Save();
+            }
 
             lock (_fileLock)
             {
@@ -698,6 +721,7 @@ namespace SDV_MoldingInjection.Process
         private readonly object _fileLock = new object();
         private readonly RecipeSelector _recipeSelector;
         private readonly CarrierJigStatusList _carrierJigStatusList;
+        private readonly Plotter _plotter;
 
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
         private InjectTimeRecipe InjectTimeRecipe => _recipeSelector.CurrentRecipe.InjectTimeRecipe;

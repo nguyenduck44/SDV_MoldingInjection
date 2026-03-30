@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SDV_MoldingInjection.Defines;
+using SDV_MoldingInjection.MVVM.Models;
 
 namespace SDV_MoldingInjection.Extensions
 {
@@ -11,6 +12,7 @@ namespace SDV_MoldingInjection.Extensions
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
                 services.AddSingleton<Information>();
+                services.AddSingleton<Plotter>();
                 services.AddSingleton<MachineStatus>();
             });
 

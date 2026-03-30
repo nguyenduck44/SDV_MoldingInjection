@@ -39,6 +39,10 @@
                     Width="200"
                     Content="Set Torque ZAxis"
                     Command="{Binding SetTorqueZAxisCommand}" />
+            <Button Height="50"
+                    Width="200"
+                    Content="Test Button"
+                    Command="{Binding TestButtonCommand}" />
         </StackPanel>
         <ui:LogDisplayer DockPanel.Dock="Right"
                          Width="600" />

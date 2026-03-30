@@ -4,6 +4,7 @@ using EQX.UI.Controls;
 using log4net;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
+using SDV_MoldingInjection.MVVM.Models;
 using SDV_MoldingInjection.Recipe;
 using System;
 using System.Windows.Input;
@@ -17,6 +18,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public MachineStatus MachineStatus { get; }
         public SyringAmountStatusList SyringeAmountStatusList { get; }
         public CarrierJigStatusList CarrierJigStatusList { get; }
+        public Plotter Plotter { get; }
+
         public double PanelTemperature => Devices.PanelIndicator.Temperature;
         public double PanelHumidity => Devices.PanelIndicator.Humidity;
 
@@ -74,7 +77,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             NavigationStore navigationStore,
             SyringAmountStatusList syringeAmountStatusList,
             RecipeSelector recipeSelector,
-            CarrierJigStatusList carrierJigStatusList)
+            CarrierJigStatusList carrierJigStatusList,
+            Plotter plotter)
         {
             Devices = devices;
             MachineStatus = machineStatus;
@@ -82,6 +86,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             SyringeAmountStatusList = syringeAmountStatusList;
             _recipeSelector = recipeSelector;
             CarrierJigStatusList = carrierJigStatusList;
+            Plotter = plotter;
             Log = LogManager.GetLogger("AutoVM");
 
             statusUpdateTimer = new NonOverlappingTimer(100);

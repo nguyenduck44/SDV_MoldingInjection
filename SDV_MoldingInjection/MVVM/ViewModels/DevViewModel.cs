@@ -5,6 +5,7 @@ using log4net;
 using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Devices;
+using SDV_MoldingInjection.MVVM.Models;
 using System.Windows.Input;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
@@ -13,6 +14,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
     {
         private readonly Devices _devices;
         private readonly INavigationService _navigationService;
+        private readonly Plotter _plotter;
 
         #region Properties
         #endregion
@@ -47,6 +49,17 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 });
             }
         }
+
+        public ICommand TestButtonCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    _plotter.AddChamberPressureData(101);
+                });
+            }
+        }
         #endregion
 
         public MachineStatus MachineStatus { get; }
@@ -55,11 +68,14 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public DevViewModel(
             Devices devices,
             MachineStatus machineStatus,
-            INavigationService navigationService)
+            INavigationService navigationService,
+            Plotter plotter)
         {
             _devices = devices;
             MachineStatus = machineStatus;
             _navigationService = navigationService;
+            _plotter = plotter;
+
             Log = LogManager.GetLogger("DevVM");
         }
 
