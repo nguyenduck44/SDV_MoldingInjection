@@ -23,7 +23,8 @@ namespace SDV_MoldingInjection.MVVM.Models
 
             ClearData();
 
-            ChamberPressurePlot!.Plot.Add.Scatter(pressureDateTimes!, pressureValues!);
+            var scatter = ChamberPressurePlot!.Plot.Add.Scatter(pressureDateTimes!, pressureValues!);
+            scatter.MarkerSize = 3;
 
             FormatAxis();
         }

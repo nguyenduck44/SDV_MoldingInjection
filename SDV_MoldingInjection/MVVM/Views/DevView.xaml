@@ -22,27 +22,27 @@
     </UserControl.Resources>
     <DockPanel>
         <StackPanel DockPanel.Dock="Left">
-            <CheckBox IsChecked="{Binding MachineStatus.IsDotWeightingTest}"
-                      Content="Dot Weighting Test"
-                      Tag="Check to Enable Dot Weighting Test Mode" />
-            <CheckBox IsChecked="{Binding MachineStatus.DisableSyringeCheck}"
-                      Content="Disable Syringe Check"
-                      Tag="Check to Disable Syringe Check" />
-            <CheckBox IsChecked="{Binding MachineStatus.DisableDetectJig}"
-                      Content="Disable Detect Jig"
-                      Tag="Check to Disable Detect Jig" />
-            <Button Height="50"
-                    Width="200"
-                    Content="CIM Test View"
-                    Command="{Binding CIMTetstViewNavigate}" />
-            <Button Height="50"
-                    Width="200"
-                    Content="Set Torque ZAxis"
-                    Command="{Binding SetTorqueZAxisCommand}" />
-            <Button Height="50"
-                    Width="200"
-                    Content="Test Button"
-                    Command="{Binding TestButtonCommand}" />
+            <UniformGrid Columns="1">
+                <CheckBox IsChecked="{Binding MachineStatus.IsDotWeightingTest}"
+                          Content="Dot Weighting Test"
+                          Tag="Check to Enable Dot Weighting Test Mode" />
+                <CheckBox IsChecked="{Binding MachineStatus.DisableSyringeCheck}"
+                          Content="Disable Syringe Check"
+                          Tag="Check to Disable Syringe Check" />
+                <CheckBox IsChecked="{Binding MachineStatus.DisableDetectJig}"
+                          Content="Disable Detect Jig"
+                          Tag="Check to Disable Detect Jig" />
+                <Button Height="50"
+                        Content="CIM Test View"
+                        Command="{Binding CIMTetstViewNavigate}" />
+                <Button Height="50"
+                        Content="Set Torque ZAxis"
+                        Command="{Binding SetTorqueZAxisCommand}" />
+                <Button Height="50"
+                        Content="Test Pilot"
+                        Command="{Binding TestButtonCommand}" />
+            </UniformGrid>
+            
         </StackPanel>
         <ui:LogDisplayer DockPanel.Dock="Right"
                          Width="600" />
