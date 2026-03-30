@@ -220,7 +220,7 @@ namespace SDV_MoldingInjection.Process
                     if (AllZAxisInSafetyPos(ref _failHead))
                     {
                         Log.Debug($"ZAxis is on safety position already");
-                        Step.ToRunStep = (int)EMoldProcToRunStep.End;
+                        Step.ToRunStep = (int)EMoldProcToRunStep.ClearFlag_ChamberReadyOut;
                         break;
                     }
 

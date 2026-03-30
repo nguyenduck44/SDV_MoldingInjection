@@ -135,7 +135,7 @@ namespace SDV_MoldingInjection.Process
                 case EDryPumpProcToRunStep.AngleValve_Close:
                     if (AngleValve.IsClose())
                     {
-                        Step.ToRunStep = (int)EDryPumpProcToRunStep.End;
+                        Step.ToRunStep = (int)EDryPumpProcToRunStep.ChamberTorrCheck;
                         break;
                     }
 
@@ -191,7 +191,7 @@ namespace SDV_MoldingInjection.Process
                 case EDryPumpProcToRunStep.DryPump_Run:
                     if (In_DryPumpRun.Value)
                     {
-                        Step.ToRunStep = (int)EDryPumpProcToRunStep.End;
+                        Step.ToRunStep = (int)EDryPumpProcToRunStep.ClearFlag_DryPump_PurgeDone;
                         break;
                     }
 
