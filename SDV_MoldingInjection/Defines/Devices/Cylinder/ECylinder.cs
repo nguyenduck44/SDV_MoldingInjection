@@ -1,4 +1,4 @@
-﻿namespace SDV_MoldingInjection.Defines.Cylinder
+﻿namespace SDV_MoldingInjection.Defines
 {
     public enum ECylinder
     {

@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.CIM;
-using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Process;
 using System;
 using System.Collections.Generic;

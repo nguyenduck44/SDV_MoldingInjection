@@ -8,7 +8,7 @@ using SDV_MoldingInjection.Recipe;
 using System.CodeDom;
 using System.Windows;
 
-namespace SDV_MoldingInjection.Defines.Devices
+namespace SDV_MoldingInjection.Defines
 {
     public class InterlockService : IDisposable
     {

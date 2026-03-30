@@ -1,7 +1,6 @@
 using EQX.Core.Common;
 using EQX.Core.Recipe;
 using EQX.Core.Sequence;
-using SDV_MoldingInjection.Defines.Devices;
 
 namespace SDV_MoldingInjection.Defines
 {

@@ -11,7 +11,7 @@
              xmlns:local="clr-namespace:SDV_MoldingInjection"
              xmlns:define="clr-namespace:SDV_MoldingInjection.Defines"
              xmlns:controls="clr-namespace:SDV_MoldingInjection.Controls"
-             xmlns:devices="clr-namespace:SDV_MoldingInjection.Defines.Devices"
+             xmlns:devices="clr-namespace:SDV_MoldingInjection.Defines"
              xmlns:services="clr-namespace:SDV_MoldingInjection.Services">
     <Application.Resources>
         <ResourceDictionary>

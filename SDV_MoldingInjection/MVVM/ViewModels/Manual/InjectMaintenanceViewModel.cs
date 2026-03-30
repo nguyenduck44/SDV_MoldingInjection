@@ -3,7 +3,6 @@ using EQX.Core.InOut;
 using EQX.Core.Motion;
 using EQX.Core.Recipe;
 using SDV_MoldingInjection.Defines;
-using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;
 using System.Collections.ObjectModel;

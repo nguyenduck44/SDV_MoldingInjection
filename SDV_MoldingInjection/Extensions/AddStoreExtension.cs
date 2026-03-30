@@ -4,7 +4,6 @@ using EQX.UI.Language;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SDV_MoldingInjection.Defines;
-using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Defines.Productions;
 using SDV_MoldingInjection.Services;
 using SDV_MoldingInjection.Services.Security;

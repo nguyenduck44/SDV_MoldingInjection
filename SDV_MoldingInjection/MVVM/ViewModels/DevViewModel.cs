@@ -4,7 +4,6 @@ using EQX.Core.Robot;
 using log4net;
 using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Defines;
-using SDV_MoldingInjection.Defines.Devices;
 using System.Windows.Input;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels

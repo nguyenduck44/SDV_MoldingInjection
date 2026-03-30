@@ -1,7 +1,7 @@
 ﻿using EQX.Device.Balance;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace SDV_MoldingInjection.Defines.Devices.Balance
+namespace SDV_MoldingInjection.Defines
 {
     public class Balances
     {

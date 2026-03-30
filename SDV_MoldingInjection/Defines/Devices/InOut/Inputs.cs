@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using EQX.Core.InOut;
 using Microsoft.Extensions.DependencyInjection;
-using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Extensions;
 using System.Linq;
 

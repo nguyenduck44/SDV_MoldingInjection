@@ -6,7 +6,6 @@ using EQX.InOut;
 using EQX.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Defines;
-using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Recipe;
 using System.Threading.Tasks;
 

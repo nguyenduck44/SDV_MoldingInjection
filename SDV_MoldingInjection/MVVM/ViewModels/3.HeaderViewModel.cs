@@ -2,7 +2,6 @@
 using EQX.Core.Common;
 using EQX.UI.Controls;
 using SDV_MoldingInjection.Defines;
-using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Recipe;
 using System;
 using System.Collections.Generic;

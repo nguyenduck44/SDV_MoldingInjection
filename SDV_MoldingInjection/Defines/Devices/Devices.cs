@@ -1,9 +1,7 @@
 using EQX.Device.Indicator;
 using Microsoft.Extensions.DependencyInjection;
-using SDV_MoldingInjection.Defines.Devices.Balance;
-using SDV_MoldingInjection.Defines.Devices.Cylinder;
 
-namespace SDV_MoldingInjection.Defines.Devices
+namespace SDV_MoldingInjection.Defines
 {
     public class Devices
     {

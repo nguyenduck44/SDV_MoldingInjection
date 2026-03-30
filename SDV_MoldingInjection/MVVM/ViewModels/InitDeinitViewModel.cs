@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.CIM;
-using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Defines.Productions;
 using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;

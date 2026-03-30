@@ -11,7 +11,6 @@ using EQX.UI.Language;
 using EQX.UI.MVVM;
 using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Defines;
-using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.MVVM.ViewModels;
 using SDV_MoldingInjection.MVVM.Views;
 using SDV_MoldingInjection.Recipe;

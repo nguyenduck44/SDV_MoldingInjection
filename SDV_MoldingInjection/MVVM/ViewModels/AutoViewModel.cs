@@ -3,7 +3,6 @@ using EQX.Core.Common;
 using EQX.UI.Controls;
 using log4net;
 using SDV_MoldingInjection.Defines;
-using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Recipe;
 using System;
 using System.Windows.Input;

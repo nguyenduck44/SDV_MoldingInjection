@@ -7,8 +7,6 @@ using EQX.Core.Sequence;
 using EQX.Device.Balance;
 using EQX.UI.Controls;
 using SDV_MoldingInjection.Defines;
-using SDV_MoldingInjection.Defines.Devices;
-using SDV_MoldingInjection.Defines.Devices.Balance;
 using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;
 using System.Collections.ObjectModel;

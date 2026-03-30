@@ -5,7 +5,6 @@ using EQX.Core.Sequence;
 using EQX.InOut;
 using EQX.UI.Controls;
 using SDV_MoldingInjection.Defines;
-using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.Defines.Productions;
 using SDV_MoldingInjection.Recipe;
 
@@ -953,6 +952,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    _machineStatus.InOutHandlerStartRequest = false;
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Update_Jig_Status:

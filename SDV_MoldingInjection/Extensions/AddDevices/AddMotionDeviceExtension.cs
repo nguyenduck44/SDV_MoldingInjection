@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 using System.IO;
 using SDV_MoldingInjection.Defines;
 using EQX.Motion.ByVendor.Inovance;
-using SDV_MoldingInjection.Defines.Devices;
 using EQX.Motion.ByVendor.Ajinextek;
 
 namespace SDV_MoldingInjection.Extensions

@@ -7,7 +7,6 @@ using EQX.Motion.ByVendor.Inovance;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SDV_MoldingInjection.Defines;
-using SDV_MoldingInjection.Defines.Devices;
 
 namespace SDV_MoldingInjection.Extensions
 {

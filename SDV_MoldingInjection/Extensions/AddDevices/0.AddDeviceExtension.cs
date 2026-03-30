@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SDV_MoldingInjection.Defines.Devices;
+using SDV_MoldingInjection.Defines;
 
 namespace SDV_MoldingInjection.Extensions
 {

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.IO;
 
-namespace SDV_MoldingInjection.Defines.Devices
+namespace SDV_MoldingInjection.Defines
 {
     public class SyringAmountStatusList
     {

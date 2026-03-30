@@ -2,7 +2,7 @@ using EQX.Core.Communication;
 using EQX.Device.Balance;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SDV_MoldingInjection.Defines.Devices.Balance;
+using SDV_MoldingInjection.Defines;
 
 namespace SDV_MoldingInjection.Extensions
 {

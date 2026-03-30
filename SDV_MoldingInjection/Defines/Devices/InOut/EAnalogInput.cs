@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SDV_MoldingInjection.Defines.Devices
+namespace SDV_MoldingInjection.Defines
 {
     public enum EAnalogInput
     {

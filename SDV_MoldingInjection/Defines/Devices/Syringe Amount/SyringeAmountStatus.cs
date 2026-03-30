@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json;
 
-namespace SDV_MoldingInjection.Defines.Devices
+namespace SDV_MoldingInjection.Defines
 {
     public class SyringeAmountStatus : ObservableObject
     {

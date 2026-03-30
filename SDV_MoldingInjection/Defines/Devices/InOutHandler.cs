@@ -13,6 +13,7 @@ namespace SDV_MoldingInjection.Defines
         private readonly SerialCommunicator _serialCommunicator;
         private readonly RecipeSelector _recipeSelector;
         private readonly Processes _processes;
+        private readonly Devices _devices;
         private readonly object _lockObject = new object();
         private string messageBuffer = string.Empty;
 
@@ -21,11 +22,13 @@ namespace SDV_MoldingInjection.Defines
 
         public InOutHandler([FromKeyedServices("InOutHandlerSerialCommunication")] SerialCommunicator serialCommunicator,
             RecipeSelector recipeSelector,
-            Processes processes)
+            Processes processes,
+            Devices devices)
         {
             _serialCommunicator = serialCommunicator;
             _recipeSelector = recipeSelector;
             _processes = processes;
+            _devices = devices;
         }
 
         public bool IsConnected => _serialCommunicator.IsConnected;
@@ -89,12 +92,23 @@ namespace SDV_MoldingInjection.Defines
 
             if (_recipeSelector.CurrentRecipe.OptionRecipe.InputTypeManual) return;
 
+            if (messageBuffer.First() != 0x02 || messageBuffer.Last() != 0x03 || messageBuffer.Length < 6)
+            {
+                return;
+            }
+
             string command = messageBuffer.Substring(1, 4);
 
             switch (command)
             {
                 case "CRRD": // READY CHECK
                     Handler_ReadyCheck_Received(messageBuffer);
+                    break;
+                case "CRRN": //CHECK RUN
+                    Handler_CheckRun_Received(messageBuffer);
+                    break;
+                case "CRCH": //CHECK PRODUCT
+                    Handler_ProductCheck_Received(messageBuffer);
                     break;
             }
         }
@@ -111,6 +125,30 @@ namespace SDV_MoldingInjection.Defines
             };
 
             TransmitData(buffer);
+        }
+
+        private void Handler_CheckRun_Received(string message)
+        {
+            bool isOnIdlePurgeMode = RootProcess.ProcessMode == EQX.Core.Sequence.EProcessMode.Run && RootProcess.Sequence == ESequence.IdlePurge;
+            bool isMachineRun = RootProcess.ProcessMode == EQX.Core.Sequence.EProcessMode.Run;
+
+            bool isDoorOpen = _devices.Inputs.DoorClose == false;
+            bool isMachineError = RootProcess.ProcessMode == EQX.Core.Sequence.EProcessMode.Alarm || RootProcess.ProcessMode == EQX.Core.Sequence.EProcessMode.ToAlarm ||
+                                  RootProcess.ProcessMode == EQX.Core.Sequence.EProcessMode.Warning || RootProcess.ProcessMode == EQX.Core.Sequence.EProcessMode.ToWarning;
+            byte[] buffer = new byte[] {
+                0x02,
+                0x43, 0x54, 0x52, 0x4E,
+                (byte)(isOnIdlePurgeMode ? 0x17 : isMachineRun ? 0x15 : 0x16),
+                (byte)(isMachineError ? 0x31 : isDoorOpen ? 0x32 : 0x30),
+                0x03
+            };
+
+            TransmitData(buffer);
+        }
+
+        private void Handler_ProductCheck_Received(string message)
+        {
+
         }
 
         private void TransmitData(byte[] buffer)
