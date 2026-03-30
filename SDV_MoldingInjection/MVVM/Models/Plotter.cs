@@ -62,6 +62,7 @@ namespace SDV_MoldingInjection.MVVM.Models
         private void Refresh()
         {
             ChamberPressurePlot.Plot.Axes.AutoScale(true);
+            ChamberPressurePlot.Plot.Axes.RectifyX();
 
             ChamberPressurePlot.Refresh();
             OnPropertyChanged(nameof(ChamberPressurePlot));

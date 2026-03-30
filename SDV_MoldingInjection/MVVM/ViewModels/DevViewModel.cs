@@ -56,7 +56,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    _plotter.Save();
+                    Random rnd = new Random();
+                    _plotter.AddChamberPressureData(rnd.Next(0, 749));
                 });
             }
         }
