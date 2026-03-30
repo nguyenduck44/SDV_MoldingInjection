@@ -33,11 +33,19 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _ventTime, value, nameof(VentTime));
         }
 
+        [SingleRecipeDescription(Description = "Delay after inject finish", Unit = Unit.Second)]
+        public double DelayAfterInjectFinish
+        {
+            get => _delayAfterInjectFinish;
+            set => SetRecipe(ref _delayAfterInjectFinish, value, nameof(DelayAfterInjectFinish));
+        }
+
         #region Privates
         private double _injectTime;
         private double _delayTime;
         private double _ventTimeAfterInject;
         private double _ventTime;
+        private double _delayAfterInjectFinish;
         #endregion
     }
 }

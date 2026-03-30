@@ -774,6 +774,15 @@ namespace SDV_MoldingInjection.Process
 
                     Step.RunStep++;
                     break;
+                case EMoldProcResinInjectStep.Delay_AfterInjectFinish:
+                    if (_optionRecipe.DelayAfterInjectFinish)
+                    {
+                        Log.Debug("Delay after inject finish");
+                        Wait(_currentRecipe.InjectTimeRecipe.DelayAfterInjectFinish * 1000);
+                    }
+                    
+                    Step.RunStep++;
+                    break;
                 case EMoldProcResinInjectStep.Request_DryPump_Purge:
                     Log.Debug("Set flag request dry pump purge");
                     procOutputs[EInjectProcOutput.DryPump_PurgeRequest].Value = true;

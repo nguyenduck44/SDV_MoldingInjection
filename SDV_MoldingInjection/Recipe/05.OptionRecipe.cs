@@ -14,6 +14,7 @@ namespace SDV_MoldingInjection.Recipe
         private bool _savePressureLog;
         private bool _1torrAndPurge;
         private bool _skipVentTime;
+        private bool _delayAfterInjectFinish;
 
         #endregion
 
@@ -89,6 +90,12 @@ namespace SDV_MoldingInjection.Recipe
         {
             get => _skipVentTime;
             set => SetRecipe(ref _skipVentTime, value, nameof(SkipVentTime));
+        }
+
+        public bool DelayAfterInjectFinish
+        {
+            get => _delayAfterInjectFinish;
+            set => SetRecipe(ref _delayAfterInjectFinish, value, nameof(DelayAfterInjectFinish));
         }
     }
 }
