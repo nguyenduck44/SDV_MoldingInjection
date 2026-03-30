@@ -199,9 +199,40 @@ namespace SDV_MoldingInjection.Defines
 
         private void Handler_HeadUse_Received(string message)
         {
+            Response_HeadUse();
+            int head = message[5] - 0x31;
+            bool isUse = message[6] == 0x16;
 
+            if (head == 0) _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 = isUse;
+            else if (head == 1) _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34 = isUse;
+
+            Send_HeadUse_Success(head);
         }
 
+        private void Response_HeadUse()
+        {
+            byte[] buffer = new byte[] {
+                0x02,
+                0x43, 0x54, 0x55, 0x53,
+                0x03
+            };
+
+            TransmitData(buffer);
+        }
+
+        private void Send_HeadUse_Success(int head)
+        {
+            bool isUse = head == 0 ? _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 : _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34;
+            byte[] buffer = new byte[] {
+                0x02,
+                0x43, 0x54, 0x55, 0x45,
+                head == 0 ? (byte)0x31 : (byte)0x32,
+                isUse ? (byte)0x16 : (byte)0x15,
+                0x03
+            };
+
+            TransmitData(buffer);
+        }
         /// <summary>11–15 theo bảng 제품 상태 protocol.</summary>
         private byte MapJigPairToProtocolStatus(bool skipPair, EJigStatus jigStatus, bool jigDet1, bool jigDet2)
         {
