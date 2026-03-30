@@ -39,18 +39,21 @@ namespace SDV_MoldingInjection.MVVM.Models
 
         public void ClearData()
         {
-            pressureDateTimes = new List<DateTime>();
-            pressureValues = new List<double>();
+            pressureDateTimes.Clear();
+            pressureValues.Clear();
 
             Refresh();
         }
 
         public void Save(string? specificText = null)
         {
-            if (string.IsNullOrEmpty(logFolderPath)) return;
-            string folder = Path.Combine(logFolderPath, DateTime.Now.ToString("yyyy-mm"), DateTime.Now.ToString("yyyy-mm-dd"));
-            string file = Path.Combine(folder, $"ChamberPressure_{DateTime.Now:HH-mm-ss}.png");
-            if (string.IsNullOrEmpty(specificText) == false) file = Path.Combine(folder, $"ChamberPressure_{DateTime.Now:HH-mm-ss}_{specificText}.png");
+            if (string.IsNullOrEmpty(logFolderPath))
+            {
+                logFolderPath = "D:\\MoldInjection\\Log\\PressureLog";
+            }
+            string folder = Path.Combine(logFolderPath, DateTime.Now.ToString("yyyy-MM"), DateTime.Now.ToString("yyyy-MM-dd"));
+            string file = Path.Combine(folder, $"ChamberPressure_{DateTime.Now:HH-mm-ss}.svg");
+            if (string.IsNullOrEmpty(specificText) == false) file = Path.Combine(folder, $"ChamberPressure_{DateTime.Now:HH-mm-ss}_{specificText}.svg");
             Directory.CreateDirectory(folder);
 
             ChamberPressurePlot.Plot.SaveSvg(file, 1920, 1080);
@@ -69,7 +72,7 @@ namespace SDV_MoldingInjection.MVVM.Models
             var dtGen = new ScottPlot.TickGenerators.DateTimeAutomatic();
             dtGen.LabelFormatter = (DateTime dt) =>
             {
-                return dt.ToString("HH:ss:mm.f");
+                return dt.ToString("HH:mm:ss");
             };
             ChamberPressurePlot.Plot.Axes.Bottom.TickLabelStyle.Rotation = -45;
             ChamberPressurePlot.Plot.Axes.Bottom.TickLabelStyle.Alignment = Alignment.MiddleRight;
@@ -78,7 +81,7 @@ namespace SDV_MoldingInjection.MVVM.Models
         }
 
         private string? logFolderPath;
-        private List<DateTime> pressureDateTimes;
-        private List<double> pressureValues;
+        private List<DateTime> pressureDateTimes = new List<DateTime>();
+        private List<double> pressureValues = new List<double>();
     }
 }
