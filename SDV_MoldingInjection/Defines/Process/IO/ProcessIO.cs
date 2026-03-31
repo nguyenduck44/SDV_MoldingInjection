@@ -137,6 +137,8 @@ namespace SDV_MoldingInjection.Defines
                 .MapTo(InjectProcOutput[EInjectProcOutput.DryPump_VacuumRequest]);
             DryPumpProcInput[EDryPumpProcInput.Purge_WorkRequest]
                 .MapTo(InjectProcOutput[EInjectProcOutput.DryPump_PurgeRequest]);
+            DryPumpProcInput[EDryPumpProcInput.Inject_Chamber_ReadyOut]
+                .MapTo(InjectProcOutput[EInjectProcOutput.ChamberReadyOut]);
 
             SPDHead1_ProcInput[ESPDHeadProcInput.WorkRequest]
                .MapTo(InjectProcOutput[EInjectProcOutput.SPDHeadWorkRequest]);

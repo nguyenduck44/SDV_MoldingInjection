@@ -79,17 +79,23 @@
             
             <GroupBox Header="Inject"
                       Style="{x:Null}"
-                      Grid.Row="1">
+                      Grid.Row="1"
+                      Grid.ColumnSpan="2">
                 <StackPanel Orientation="Vertical">
-                    <CheckBox Content="1 Torr And Purge" 
-                              Margin="5"
-                              IsChecked="{Binding RecipeList.OptionRecipe.OneTorrAndPurge}" 
-                              Tag="Check to start inject with 1 torr and purge"/>
-                    <CheckBox
-                        Content="Skip Vent Time"
-                        Margin="5"
-                        IsChecked="{Binding RecipeList.OptionRecipe.SkipVentTime}"
-                        Tag="Check to skip vent time" />
+                    <UniformGrid Columns="2">
+                        <CheckBox Content="Skip Vent Time"
+                                  Margin="5"
+                                  IsChecked="{Binding RecipeList.OptionRecipe.SkipVentTime}"
+                                  Tag="Check to skip vent time" />
+                        <CheckBox Content="Delay After Inject Finish"
+                                  Margin="5"
+                                  IsChecked="{Binding RecipeList.OptionRecipe.DelayAfterInjectFinish}"
+                                  Tag="Check to delay after inject finish" />
+                        <CheckBox Content="1 Torr And Purge"
+                                  Margin="5"
+                                  IsChecked="{Binding RecipeList.OptionRecipe.OneTorrAndPurge}"
+                                  Tag="Check to start inject with 1 torr and purge" />
+                    </UniformGrid>
                 </StackPanel>
             </GroupBox>
         </Grid>

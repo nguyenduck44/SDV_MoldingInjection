@@ -27,6 +27,7 @@
 
         Update_BothJigStatus,
 
+        Delay_AfterInjectFinish,
         Request_DryPump_Purge,
         Wait_DryPump_PurgeEnd,
 

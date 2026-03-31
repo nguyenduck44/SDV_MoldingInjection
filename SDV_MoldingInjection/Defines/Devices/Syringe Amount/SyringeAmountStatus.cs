@@ -84,6 +84,9 @@ namespace SDV_MoldingInjection.Defines
                 }
 
                 isHeadAvailable = value;
+    #if SIMULATION
+                    isHeadAvailable = true;
+    #endif
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(ElapsedTime));
             }
