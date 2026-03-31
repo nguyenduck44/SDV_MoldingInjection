@@ -299,7 +299,6 @@ namespace SDV_MoldingInjection.Process
                 case EDryPumpProcResinInjectStep.Start:
                     Log.Info("ResinInject start");
                     _delayTime = 0;
-                    _plotter.ClearData();
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_Run:
@@ -365,6 +364,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Info($"Input detect {EDryPumpProcInput.Vacuum_WorkRequest}");
                     EnableWritePressureLog = true;
+                    _plotter.ClearData();
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.AngleValve_Open:
@@ -554,7 +554,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Info("ResinInject end, starting new cycle");
-                    Step.RunStep = (int)EDryPumpProcResinInjectStep.DryPump_Run;
+                    Step.RunStep = (int)EDryPumpProcResinInjectStep.Start;
                     break;
 
             }
