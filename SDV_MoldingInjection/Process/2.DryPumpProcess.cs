@@ -102,7 +102,7 @@ namespace SDV_MoldingInjection.Process
                     AngleValve.Open();
                 }
 
-                if (_devices.AnalogInputs.VacuumPressureInTorr <= _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpecSecond)
+                if (_devices.AnalogInputs.VacuumPressureInTorr <= _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpecSecond - 0.2)
                 {
                     AngleValve.Close();
                 }

@@ -586,7 +586,7 @@ namespace SDV_MoldingInjection.Process
         #region Sequence Methods
         private void Sequence_Ready()
         {
-            switch((EMoldProcReadyStep)Step.RunStep)
+            switch ((EMoldProcReadyStep)Step.RunStep)
             {
                 case EMoldProcReadyStep.Start:
                     Log.Info("Ready start");
@@ -880,7 +880,7 @@ namespace SDV_MoldingInjection.Process
                         Log.Debug("Delay after inject finish");
                         Wait(_currentRecipe.InjectTimeRecipe.DelayAfterInjectFinish);
                     }
-                    
+
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.Request_DryPump_Purge:
@@ -2304,8 +2304,14 @@ namespace SDV_MoldingInjection.Process
 
         private void UpdateBothJigStatus(EJigStatus status)
         {
-            JigStatuses[(int)EJig.JigLeft] = status;
-            JigStatuses[(int)EJig.JigRight] = status;
+            if (_optionRecipe.SkipHead12 == false)
+            {
+                JigStatuses[(int)EJig.JigLeft] = status;
+            }
+            if(_optionRecipe.SkipHead34 == false)
+            {
+                JigStatuses[(int)EJig.JigRight] = status;
+            }
         }
 
         private void RaiseHeadWarning(EWarning warning, ESPDHead _failHead)
