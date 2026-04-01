@@ -95,6 +95,19 @@ namespace SDV_MoldingInjection.Process
                 }
             }
 
+            if (EnablePressureHold2nd && _machineStatus.IsDryRunMode == false)
+            {
+                if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpecSecond)
+                {
+                    AngleValve.Open();
+                }
+
+                if (_devices.AnalogInputs.VacuumPressureInTorr <= _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpecSecond)
+                {
+                    AngleValve.Close();
+                }
+            }
+
             if (EnableWritePressureLog && _currentRecipe.OptionRecipe.SavePressureLog == true)
             {
                 if ((DateTime.Now - pressureLogWatchTime).TotalMilliseconds > _recipeSelector.CurrentRecipe.DryPumpRecipe.PressureLogTimelaps * 1000)
@@ -468,6 +481,28 @@ namespace SDV_MoldingInjection.Process
 
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
+                case EDryPumpProcResinInjectStep.WaitEndHoldPressure1st_StartHoldPressure2nd:
+                    if(_currentRecipe.DryPumpRecipe.TimeStartHoldUnderSpecSecond <= 0 || _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpecSecond <= 0)
+                    {
+                        Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
+                        break;
+                    }
+
+                    if (((_carrierJigStatusList.CarrierJigStatusH1.InjectTime < _currentRecipe.DryPumpRecipe.TimeStartHoldUnderSpecSecond) && !_currentRecipe.OptionRecipe.SkipHead12) ||
+                        ((_carrierJigStatusList.CarrierJigStatusH2.InjectTime < _currentRecipe.DryPumpRecipe.TimeStartHoldUnderSpecSecond) && !_currentRecipe.OptionRecipe.SkipHead12) ||
+                        ((_carrierJigStatusList.CarrierJigStatusH3.InjectTime < _currentRecipe.DryPumpRecipe.TimeStartHoldUnderSpecSecond) && !_currentRecipe.OptionRecipe.SkipHead34) ||
+                        ((_carrierJigStatusList.CarrierJigStatusH4.InjectTime < _currentRecipe.DryPumpRecipe.TimeStartHoldUnderSpecSecond) && !_currentRecipe.OptionRecipe.SkipHead34))
+                    {
+                        Wait(10);
+                        break;
+                    }
+
+                    Log.Debug($"Disable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
+                    EnablePressureHold = false;
+                    Log.Debug($"Enable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpecSecond}");
+                    EnablePressureHold2nd = true;
+                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
+                    break;
                 case EDryPumpProcResinInjectStep.DryPump_WaitVentTime:
                     if (((_carrierJigStatusList.CarrierJigStatusH1.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead12) ||
                         ((_carrierJigStatusList.CarrierJigStatusH2.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead12) ||
@@ -480,6 +515,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"Disable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
                     EnablePressureHold = false;
+                    EnablePressureHold2nd = false;
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.SetStartVent:
@@ -513,6 +549,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Detected inject request purge");
                     Log.Debug($"Disable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
                     EnablePressureHold = false;
+                    EnablePressureHold2nd = false;
                     Out_ChamberPurgeOn.Value = true;
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
@@ -662,6 +699,7 @@ namespace SDV_MoldingInjection.Process
         private double _delayTime;
 
         private bool EnablePressureHold;
+        private bool EnablePressureHold2nd;
         private bool EnableTimerDelay;
         private bool EnableWritePressureLog;
 

@@ -43,6 +43,8 @@ namespace SDV_MoldingInjection.Process
         private IDInput In_Jig2Detect => _devices.Inputs.Jig2Detect;
         private IDInput In_Jig3Detect => _devices.Inputs.Jig3Detect;
         private IDInput In_Jig4Detect => _devices.Inputs.Jig4Detect;
+        private IDInput In_ChamberClose => _devices.Inputs.ChamberClose;
+        private IDInput In_ChamberOpen => _devices.Inputs.ChamberOpen;
 
         private bool LeftJigTiltState => In_Jig1Detect.Value ^ In_Jig2Detect.Value;
         private bool RightJigTiltState => In_Jig3Detect.Value ^ In_Jig4Detect.Value;
@@ -131,7 +133,7 @@ namespace SDV_MoldingInjection.Process
                         Step.ToRunStep++;
                         break;
                     }
-
+#if !SIMULATION
                     Log.Debug("Machine Calibration check");
                     _machineStatus.MachineCalibration[0] |= _currentRecipe.OptionRecipe.SkipHead12 || _machineStatus.MachineCalibrationSkip[0];
                     _machineStatus.MachineCalibration[1] |= _currentRecipe.OptionRecipe.SkipHead12 || _machineStatus.MachineCalibrationSkip[1];
@@ -144,7 +146,7 @@ namespace SDV_MoldingInjection.Process
                         RaiseWarning(EWarning.Machine_Need_Calibration);
                         break;
                     }
-
+#endif
                     Step.ToRunStep++;
                     break;
                 case EMoldProcToRunStep.Wait_DryPump_Request_Run:
@@ -399,6 +401,10 @@ namespace SDV_MoldingInjection.Process
                     Step.OriginStep++;
                     break;
                 case EMoldProcOriginStep.CheckIfChamberOpen:
+#if SIMULATION
+                    SimulationInputSetter.SetSimInput(In_ChamberClose, true);
+                    SimulationInputSetter.SetSimInput(In_ChamberOpen, false);
+#endif
                     if (ChamberOpenClose.IsOpen())
                     {
                         RaiseWarning(EWarning.Mold_Chamber_OpenWarning);
@@ -1025,13 +1031,7 @@ namespace SDV_MoldingInjection.Process
                         }
                         if (isLoading == false)
                         {
-                            int outputCount = 0;
-                            if (_optionRecipe.SkipHead12 == false && LeftJigDetect)
-                                outputCount++;
-                            if (_optionRecipe.SkipHead34 == false && RightJigDetect)
-                                outputCount++;
-                            _productionService.WriteData(EProductionWriteType.Output, outputCount);
-                            Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
+                            Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Jig_Check;
                             break;
                         }
                     }
@@ -1071,7 +1071,7 @@ namespace SDV_MoldingInjection.Process
                     if (isLoading && _machineStatus.DisableDetectJig == false && _machineStatus.IsDryRunMode == false)
                     {
                         Log.Debug("Jig check");
-                        int inputCount = 0;
+                        inputCount = 0;
 #if SIMULATION
                         SimulationInputSetter.SetSimInput(In_Jig1Detect, true);
                         SimulationInputSetter.SetSimInput(In_Jig2Detect, true);
@@ -1090,6 +1090,7 @@ namespace SDV_MoldingInjection.Process
                                 RaiseWarning(EWarning.Left_Jig_Not_Detect);
                                 break;
                             }
+
                             inputCount++;
                         }
 
@@ -1114,13 +1115,16 @@ namespace SDV_MoldingInjection.Process
 
                     if (isLoading == false)
                     {
-                        if(_optionRecipe.SkipHead12 == false || LeftJigDetect == false)
+                        outputCount = 0;
+                        if (_optionRecipe.SkipHead12 == false && LeftJigDetect == false)
                         {
                             JigStatuses[0] = EJigStatus.None;
+                            outputCount++;
                         }
-                        if (_optionRecipe.SkipHead34 == false || RightJigDetect == false)
+                        if (_optionRecipe.SkipHead34 == false && RightJigDetect == false)
                         {
                             JigStatuses[1] = EJigStatus.None;
+                            outputCount++;
                         }
 
                         if (JigStatuses[0] != EJigStatus.None || JigStatuses[1] != EJigStatus.None)
@@ -1129,6 +1133,7 @@ namespace SDV_MoldingInjection.Process
                             break;
                         }
 
+                        _productionService.WriteData(EProductionWriteType.Output, outputCount);
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
                         break;
                     }
@@ -2448,6 +2453,8 @@ namespace SDV_MoldingInjection.Process
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
         private OptionRecipe _optionRecipe => _currentRecipe.OptionRecipe;
         private InjectRecipe Recipe => _currentRecipe.InjectRecipe;
+        private int inputCount;
+        private int outputCount;
         private int _needleCleanCount = 0;
         private int _nzlCleanCount = 0;
         private int _yAxisCleaningPhase; // 0=chưa bắt đầu, 1=đang chờ tiến xong, 2=đang chờ lùi xong
@@ -2459,7 +2466,6 @@ namespace SDV_MoldingInjection.Process
         private ESPDHead currentHead;
         private ESPDHead _failHead;
         private EDotWeightingHead currentDotWeightingHead;
-
         #endregion
     }
 }
