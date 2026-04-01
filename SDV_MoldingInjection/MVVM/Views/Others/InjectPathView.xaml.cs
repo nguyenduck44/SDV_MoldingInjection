@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using EQX.UI.Controls;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace SDV_MoldingInjection.MVVM.Views
 {
@@ -10,6 +12,16 @@ namespace SDV_MoldingInjection.MVVM.Views
         public InjectPathView()
         {
             InitializeComponent();
+        }
+
+        private void TextBox_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is TextBox textBox == false) return;
+
+            DataEditor dataEditor = new DataEditor(Convert.ToDouble(textBox.Text), null);
+            dataEditor.ShowDialog();
+
+            textBox.Text = dataEditor.NewValue.ToString();
         }
     }
 }

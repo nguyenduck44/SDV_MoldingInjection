@@ -23,6 +23,7 @@
                    DockPanel.Dock="Top" />
             <TextBox Text="{Binding VelocityRate, Mode=TwoWay}"
                      IsEnabled="True"
+                     PreviewMouseUp="TextBox_MouseUp"
                      HorizontalContentAlignment="Center"
                      VerticalContentAlignment="Center" />
         </DockPanel>
@@ -36,6 +37,7 @@
                    DockPanel.Dock="Top" />
             <TextBox Text="{Binding TimeInSecond, Mode=TwoWay}"
                      HorizontalContentAlignment="Center"
+                     PreviewMouseUp="TextBox_MouseUp"
                      VerticalContentAlignment="Center"
                      IsEnabled="{Binding IsEnabled}"/>
         </DockPanel>
