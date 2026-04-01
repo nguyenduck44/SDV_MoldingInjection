@@ -819,7 +819,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcCommonStep.ResetInjectTime:
                     if (sequence == ESequence.ResinInject)
                     {
-
+                        CarrierJigStatus.InjectTime = 0;
                     }
 
                     Step.RunStep++;
