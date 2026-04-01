@@ -252,7 +252,6 @@ namespace SDV_MoldingInjection.Process
                     Step.ToRunStep++;
                     break;
                 case EMoldProcToRunStep.End:
-                    procOutputs.ClearOutputs();
                     Log.Info("ToRun end");
                     Step.ToRunStep++;
                     base.ProcessToRun();

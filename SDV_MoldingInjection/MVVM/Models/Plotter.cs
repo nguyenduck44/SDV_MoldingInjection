@@ -145,12 +145,18 @@ namespace SDV_MoldingInjection.MVVM.Models
 
         private void Refresh()
         {
+            if (DateTime.Now - lastRefresh < TimeSpan.FromMilliseconds(800))
+                return; // Giới hạn tần suất refresh để tránh lag
+            lastRefresh = DateTime.Now;
+
             ChamberPressurePlot.Plot.Axes.AutoScale(true);
             ChamberPressurePlot.Plot.Axes.RectifyX();
 
             ChamberPressurePlot.Refresh();
             OnPropertyChanged(nameof(ChamberPressurePlot));
         }
+
+        DateTime lastRefresh = DateTime.Now;
 
         private void FormatAxis()
         {

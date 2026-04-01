@@ -120,7 +120,7 @@ namespace SDV_MoldingInjection.Defines
         H1_Balance_ZeroWeighting_Fail,
         H1_PAxis_BubbleRemove_Timeout,
         H1_GAxis_BubbleRemove_Timeout,
-        H1_BubbleRemove_InjectPosOverBasePos,
+        H1_InjectPosOverBasePos,
         [Description("HEAD1_IN05")]
         H1_Syringe_Not_Detected,
         H1_Syringe_Amount_IsTimeOver,
@@ -147,7 +147,7 @@ namespace SDV_MoldingInjection.Defines
         H2_Balance_ZeroWeighting_Fail,
         H2_PAxis_BubbleRemove_Timeout,
         H2_GAxis_BubbleRemove_Timeout,
-        H2_BubbleRemove_InjectPosOverBasePos,
+        H2_InjectPosOverBasePos,
         [Description("HEAD2_IN05")]
         H2_Syringe_Not_Detected,
         H2_Syringe_Amount_IsTimeOver,
@@ -175,7 +175,7 @@ namespace SDV_MoldingInjection.Defines
         H3_Balance_ZeroWeighting_Fail,
         H3_PAxis_BubbleRemove_Timeout,
         H3_GAxis_BubbleRemove_Timeout,
-        H3_BubbleRemove_InjectPosOverBasePos,
+        H3_InjectPosOverBasePos,
         [Description("HEAD3_IN05")]
         H3_Syringe_Not_Detected,
         H3_Syringe_Amount_IsTimeOver,
@@ -202,7 +202,7 @@ namespace SDV_MoldingInjection.Defines
         H4_Balance_ZeroWeighting_Fail,
         H4_PAxis_BubbleRemove_Timeout,
         H4_GAxis_BubbleRemove_Timeout,
-        H4_BubbleRemove_InjectPosOverBasePos,
+        H4_InjectPosOverBasePos,
         [Description("HEAD4_IN05")]
         H4_Syringe_Not_Detected,
         H4_Syringe_Amount_IsTimeOver,

@@ -4,7 +4,6 @@ using EQX.Core.Sequence;
 using EQX.InOut;
 using Microsoft.Extensions.Configuration;
 using SDV_MoldingInjection.Defines;
-using SDV_MoldingInjection.Defines.Devices;
 using SDV_MoldingInjection.MVVM.Models;
 using SDV_MoldingInjection.Recipe;
 using System.IO;
@@ -136,6 +135,7 @@ namespace SDV_MoldingInjection.Process
             {
                 case EDryPumpProcToRunStep.Start:
                     Log.Debug("ToRun start");
+                    procOutputs.ClearOutputs();
                     EnableTimerDelay = false;
                     Step.ToRunStep++;
                     break;
@@ -218,7 +218,6 @@ namespace SDV_MoldingInjection.Process
                     Step.ToRunStep++;
                     break;
                 case EDryPumpProcToRunStep.End:
-                    procOutputs.ClearOutputs();
                     Log.Debug("ToRun end");
                     Step.ToRunStep++;
                     base.ProcessToRun();

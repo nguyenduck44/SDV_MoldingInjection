@@ -4,6 +4,7 @@
              xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
              xmlns:views="clr-namespace:SDV_MoldingInjection.MVVM.Views"
              xmlns:cvt="clr-namespace:SDV_MoldingInjection.Converters"
+             xmlns:models="clr-namespace:SDV_MoldingInjection.MVVM.Models"
              xmlns:uiCvt="clr-namespace:EQX.UI.Converters;assembly=EQX.UI"
              xmlns:inout="clr-namespace:EQX.InOut;assembly=EQX.InOut"
              xmlns:viewsLib="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
@@ -211,6 +212,9 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:CIMTestViewModel}">
                 <views:CIMTestView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type models:InjectPath}">
+                <views:InjectPathView />
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>

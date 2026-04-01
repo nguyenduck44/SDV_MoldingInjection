@@ -1,11 +1,9 @@
 ﻿namespace SDV_MoldingInjection.Defines
 {
-    public enum ESPDHeadProcCommonStep
+    public enum ESPDHeadProcAddTailStep
     {
         Start,
 
-        ResetInjectTime,
-        BubbleRemoveResetCountRotate,
         // ----- CHARGING PHASE -----
         Gate_Close,
         Gate_CloseWait,
@@ -18,13 +16,11 @@
         // ----- INJECT PHASE -----
         Base_PosVel_Calculte,
 
-        GAxis_BubbleRemove,
-        GAxis_BubbleRemove_Wait,
-
         Gate_Open,
         Gate_OpenWait,
 
-        WorkRequest_Wait,
+        ZAxis_Up_ForInjectAddTail_Requsest,
+        Wait_ZAxisReady_ForInjectAddTail,
 
         PAxis_InjectPos_Move,
         PAxis_InjectPos_MoveWait,
