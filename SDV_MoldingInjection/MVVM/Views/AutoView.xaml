@@ -98,7 +98,7 @@
         <!-- Machine Image -->
         <Image Grid.Column="1"
                Grid.RowSpan="2"
-               Margin="0 0 15 0"
+               Margin="0 30 0 0"
                Source="/SDV_MoldingInjection;component/Resource/Images/MachineView.png" />
 
         <!-- SYRINGE AMOUNT -->
@@ -237,9 +237,9 @@
               Grid.RowSpan="2">
             <Canvas>
                 <Grid Width="15"
-                      Height="180"
-                      Canvas.Left="217"
-                      Canvas.Top="192">
+                      Height="190"
+                      Canvas.Left="225"
+                      Canvas.Top="196">
                     <Rectangle Style="{StaticResource DoorIndicatorRectangleStyle}">
                         <Rectangle.Fill>
                             <MultiBinding Converter="{StaticResource DoorStatusToBrushConverterRevers}">
@@ -262,9 +262,9 @@
             </Canvas>
             <Canvas>
                 <Grid Width="15"
-                      Height="180"
-                      Canvas.Right="17"
-                      Canvas.Top="192">
+                      Height="190"
+                      Canvas.Right="3"
+                      Canvas.Top="196">
                     <Rectangle Style="{StaticResource DoorIndicatorRectangleStyle}">
                         <Rectangle.Fill>
                             <MultiBinding Converter="{StaticResource DoorStatusToBrushConverterRevers}">
@@ -286,10 +286,10 @@
                 </Grid>
             </Canvas>
             <Canvas>
-                <Grid Width="146"
+                <Grid Width="150"
                       Height="17"
-                      Canvas.Left="232"
-                      Canvas.Top="188">
+                      Canvas.Left="240"
+                      Canvas.Top="196">
                     <Rectangle Style="{StaticResource DoorIndicatorRectangleStyle}">
                         <Rectangle.Fill>
                             <MultiBinding Converter="{StaticResource DoorStatusToBrushConverterRevers}">
@@ -311,10 +311,10 @@
             </Canvas>
 
             <Canvas>
-                <Grid Width="147"
+                <Grid Width="155"
                       Height="16"
-                      Canvas.Left="378"
-                      Canvas.Top="188">
+                      Canvas.Right="17"
+                      Canvas.Top="196">
                     <Rectangle Style="{StaticResource DoorIndicatorRectangleStyle}">
                         <Rectangle.Fill>
                             <MultiBinding Converter="{StaticResource DoorStatusToBrushConverterRevers}">
@@ -336,17 +336,37 @@
             </Canvas>
 
             <Canvas>
-                <Grid Width="310"
+                <Grid Width="150"
                       Height="15"
-                      Canvas.Right="23"
-                      Canvas.Top="375">
+                      Canvas.Left="240"
+                      Canvas.Top="370">
                     <Rectangle Style="{StaticResource DoorIndicatorRectangleStyle}">
                         <Rectangle.Fill>
-                            <Binding Path="Devices.Inputs.PanelClodeCheck.Value"
+                            <Binding Path="Devices.Inputs.PanelCloseLeftCheck.Value"
                                      Converter="{StaticResource BooleanToOnOffBrushConverter}" />
                         </Rectangle.Fill>
                     </Rectangle>
-                    <TextBlock Text="MAIN PANEL DOOR CLOSE"
+                    <TextBlock Text="MAIN PANEL LEFT CLOSE"
+                               Foreground="Black"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextAlignment="Center">
+                    </TextBlock>
+                </Grid>
+            </Canvas>
+            <Canvas>
+                <Grid Width="150"
+                      Height="15"
+                      Canvas.Right="17"
+                      Canvas.Top="370">
+                    <Rectangle Style="{StaticResource DoorIndicatorRectangleStyle}">
+                        <Rectangle.Fill>
+                            <Binding Path="Devices.Inputs.PanelCloseRightCheck.Value"
+                                     Converter="{StaticResource BooleanToOnOffBrushConverter}" />
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <TextBlock Text="MAIN PANEL RIGHT CLOSE"
                                Foreground="Black"
                                FontWeight="Bold"
                                HorizontalAlignment="Center"

@@ -9,6 +9,8 @@
         WindowStyle="None"
         WindowState="Maximized"
         MaxWidth="1024"
+        MinWidth="1024"
+        MinHeight="768"
         MaxHeight="768"
         WindowStartupLocation="CenterScreen"
         ShowInTaskbar="True"

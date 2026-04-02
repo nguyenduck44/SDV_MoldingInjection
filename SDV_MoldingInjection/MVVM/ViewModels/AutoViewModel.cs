@@ -106,6 +106,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             Devices.Inputs.DoorReleaseRearLeft.RaiseValueUpdated();
             Devices.Inputs.DoorOpenRearRight.RaiseValueUpdated();
             Devices.Inputs.DoorReleaseRearRight.RaiseValueUpdated();
+            Devices.Inputs.PanelCloseLeftCheck.RaiseValueUpdated();
+            Devices.Inputs.PanelCloseRightCheck.RaiseValueUpdated();
             Devices.Inputs.ChamberOpen.RaiseValueUpdated();
             Devices.Inputs.Jig1Detect.RaiseValueUpdated();
             Devices.Inputs.Jig2Detect.RaiseValueUpdated();
@@ -125,7 +127,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             Devices.Inputs.H4_SyringeCheck.RaiseValueUpdated();
             Devices.Inputs.BelowsUp.RaiseValueUpdated();
             Devices.Inputs.DryPumpRun.RaiseValueUpdated();
-            Devices.Inputs.PanelClodeCheck.RaiseValueUpdated();
+
 
             UpdateSyringeStatus();
 

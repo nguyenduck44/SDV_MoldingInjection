@@ -1,10 +1,12 @@
-﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
+using EQX.Core.Motion;
 using EQX.Core.Sequence;
 using EQX.UI.Controls;
 using log4net;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Process;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 
@@ -14,22 +16,71 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
     {
         #region Privates
         private readonly INavigationService _navigationService;
+        private readonly NavigationStore _navigationStore;
+        private readonly NonOverlappingTimer _statusUpdateTimer;
         #endregion
 
         #region Constructor
         public OriginViewModel(Processes processes, MachineStatus machineStatus,
+            Devices devices,
+            NavigationStore navigationStore,
             INavigationService navigationService)
         {
             Processes = processes;
             MachineStatus = machineStatus;
+            Devices = devices;
+            _navigationStore = navigationStore;
+            XYMotions = new List<IMotion>
+            {
+                Devices.Motions.XAxis,
+                Devices.Motions.StageYAxis
+            };
+            Head1Motions = new List<IMotion> { Devices.Motions.Z1Axis, Devices.Motions.P1Axis, Devices.Motions.G1Axis };
+            Head2Motions = new List<IMotion> { Devices.Motions.Z2Axis, Devices.Motions.P2Axis, Devices.Motions.G2Axis };
+            Head3Motions = new List<IMotion> { Devices.Motions.Z3Axis, Devices.Motions.P3Axis, Devices.Motions.G3Axis };
+            Head4Motions = new List<IMotion> { Devices.Motions.Z4Axis, Devices.Motions.P4Axis, Devices.Motions.G4Axis };
             _navigationService = navigationService;
             Log = LogManager.GetLogger("OriginVM");
+
+            _statusUpdateTimer = new NonOverlappingTimer(100);
+            _statusUpdateTimer.Elapsed += StatusUpdateTimerElapsed;
+            _statusUpdateTimer.Start();
         }
         #endregion
+
+        private void StatusUpdateTimerElapsed(object? sender, System.Timers.ElapsedEventArgs e)
+        {
+            if (_navigationStore.CurrentViewModel != this) return;
+
+            // Door / panel / OP / emergency signals used by OriginView.xaml
+            Devices.Inputs.DoorOpenLeft.RaiseValueUpdated();
+            Devices.Inputs.DoorReleaseLeft.RaiseValueUpdated();
+            Devices.Inputs.DoorOpenRight.RaiseValueUpdated();
+            Devices.Inputs.DoorReleaseRight.RaiseValueUpdated();
+            Devices.Inputs.DoorOpenRearLeft.RaiseValueUpdated();
+            Devices.Inputs.DoorReleaseRearLeft.RaiseValueUpdated();
+            Devices.Inputs.DoorOpenRearRight.RaiseValueUpdated();
+            Devices.Inputs.DoorReleaseRearRight.RaiseValueUpdated();
+            Devices.Inputs.PanelCloseLeftCheck.RaiseValueUpdated();
+            Devices.Inputs.PanelCloseRightCheck.RaiseValueUpdated();
+
+            Devices.Inputs.OPButtonStart.RaiseValueUpdated();
+            Devices.Inputs.OPButtonStop.RaiseValueUpdated();
+            Devices.Inputs.OPButtonReset.RaiseValueUpdated();
+
+            Devices.Inputs.Emergency.RaiseValueUpdated();
+        }
 
         #region Properties
         public Processes Processes { get; }
         public MachineStatus MachineStatus { get; }
+        public Devices Devices { get; }
+        public IReadOnlyList<IMotion> XYMotions { get; }
+        public IReadOnlyList<IMotion> Head1Motions { get; }
+        public IReadOnlyList<IMotion> Head2Motions { get; }
+        public IReadOnlyList<IMotion> Head3Motions { get; }
+        public IReadOnlyList<IMotion> Head4Motions { get; }
+
         #endregion
 
         #region Command

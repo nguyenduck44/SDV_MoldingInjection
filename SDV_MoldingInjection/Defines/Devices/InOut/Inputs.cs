@@ -81,7 +81,7 @@ namespace SDV_MoldingInjection.Defines
         public IDInput SmokeDetectAlarm => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SMOKE_DETECT_DETECT_ALARM);
         public IDInput TempHighAlarm => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SMOKE_DETECT_TEMP_HIGH_ALARM);
         public IDInput TempHighWarning => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SMOKE_DETECT_TEMP_HIGH_WARNING);
-        public IDInput PanelClodeCheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PANEL_CLOSE_CHECK);
+        public IDInput PanelCloseLeftCheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PANEL_CLOSE_LEFT_CHECK);
 
         public IDInput ServoOn => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SERVO_ON);
         public IDInput MainBreakerTrip => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_BREAKER_TRIP);
@@ -130,7 +130,7 @@ namespace SDV_MoldingInjection.Defines
         public IDInput ChamberPurgeOn => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.CHAMBER_PURGE_ON);
         public IDInput ChamberOpen => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.CHAMBER_OPEN);
         public IDInput ChamberClose => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.CHAMBER_CLOSE);
-        public IDInput PanelCloseCheckLeft => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PANEL_CLOSE_CHECK_LEFT);
+        public IDInput PanelCloseRightCheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PANEL_CLOSE_RIGHT_CHECK);
         public IDInput LockMonitorSwitch => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.OP_KEY_SW_LOCK_MONITOR);
         public IDInput LockKeyCheckSwitch => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.OP_KEY_SW_LOCK_KEY_CHECK);
 
