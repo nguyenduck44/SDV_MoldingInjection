@@ -12,12 +12,14 @@ namespace SDV_MoldingInjection.Defines
         MainPowerDown = 20,
         [Description("IN15")]
         MainAirNotSupplied,
-        [Description("IN16~IN19 - IN69~IN72")]
+        [Description("IN16,IN18,IN69,IN71")]
         DoorOpen,
+        [Description("IN17,IN19,IN70,IN72")]
+        DoorNotSafetyLock,
         [Description("IN03")]
         EmergencyStopActivated,
         [Description("IN13")]
-        PowerMCOff,
+        PowerMC_Off,
         Motion_Alarm_Detected,
         Motion_Alarm_ResetFail,
         Motion_Driver_Off,

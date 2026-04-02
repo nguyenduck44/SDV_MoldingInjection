@@ -189,11 +189,13 @@ namespace SDV_MoldingInjection.Defines
         public bool DoorClose =>
             DoorOpenRearLeft.Value == false &&
             DoorOpenRearRight.Value == false &&
+            DoorOpenLeft.Value == false &&
+            DoorOpenRight.Value == false;
+
+        public bool DoorLock =>
             DoorReleaseRearLeft.Value == false &&
             DoorReleaseRearRight.Value == false &&
-            DoorOpenLeft.Value == false &&
             DoorReleaseLeft.Value == false &&
-            DoorOpenRight.Value == false &&
             DoorReleaseRight.Value == false;
     }
 }
