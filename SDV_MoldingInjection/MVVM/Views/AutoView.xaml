@@ -55,7 +55,7 @@
                 <GroupBox Header="Chamber Pressure Chart"
                           Style="{x:Null}">
                     <ContentControl Content="{Binding Plotter.ChamberPressurePlot, Mode=OneWay}"
-                                    Height="250"/>
+                                    Height="250" />
                 </GroupBox>
             </StackPanel>
 
@@ -336,10 +336,10 @@
             </Canvas>
 
             <Canvas>
-                <Grid Width="150"
+                <Grid Width="160"
                       Height="15"
-                      Canvas.Left="240"
-                      Canvas.Top="370">
+                      Canvas.Left="230"
+                      Canvas.Top="170">
                     <Rectangle Style="{StaticResource DoorIndicatorRectangleStyle}">
                         <Rectangle.Fill>
                             <Binding Path="Devices.Inputs.PanelCloseLeftCheck.Value"
@@ -356,10 +356,10 @@
                 </Grid>
             </Canvas>
             <Canvas>
-                <Grid Width="150"
+                <Grid Width="160"
                       Height="15"
-                      Canvas.Right="17"
-                      Canvas.Top="370">
+                      Canvas.Right="10"
+                      Canvas.Top="170">
                     <Rectangle Style="{StaticResource DoorIndicatorRectangleStyle}">
                         <Rectangle.Fill>
                             <Binding Path="Devices.Inputs.PanelCloseRightCheck.Value"
@@ -377,9 +377,9 @@
             </Canvas>
             <Canvas>
                 <Image  Source="/SDV_MoldingInjection;component/Resource/Images/PowerON.png"
-                        Canvas.Left="131"
-                        Canvas.Top="283"
-                        HorizontalAlignment="Center"
+                        Canvas.Left="138"
+                        Canvas.Top="300"
+                        HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Width="11"
                         Height="10"
@@ -392,11 +392,11 @@
             </Canvas>
             <Canvas>
                 <Image  Source="/SDV_MoldingInjection;component/Resource/Images/PowerON.png"
-                        Canvas.Left="144"
-                        Canvas.Top="282"
+                        Canvas.Left="154"
+                        Canvas.Top="300"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
-                        Width="11"
+                        Width="10"
                         Height="10"
                         RenderTransformOrigin="1.243,1.841">
                     <Image.Visibility>
@@ -407,8 +407,8 @@
             </Canvas>
             <Canvas>
                 <Image  Source="/SDV_MoldingInjection;component/Resource/Images/PowerON.png"
-                        Canvas.Left="159"
-                        Canvas.Top="282"
+                        Canvas.Left="169"
+                        Canvas.Top="300"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Width="11"
