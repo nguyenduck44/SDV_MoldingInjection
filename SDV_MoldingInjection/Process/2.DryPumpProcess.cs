@@ -45,8 +45,10 @@ namespace SDV_MoldingInjection.Process
         #endregion
 
         #region Constructors
-        public DryPumpProcess(Devices devices, RecipeSelector recipeSelector,
-            ProcessIO processIO, MachineStatus machineStatus,
+        public DryPumpProcess(Devices devices, 
+            RecipeSelector recipeSelector,
+            ProcessIO processIO, 
+            MachineStatus machineStatus,
             CarrierJigStatusList carrierJigStatusList,
             IConfiguration configuration,
             Plotter plotter)
@@ -400,7 +402,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.VacuumGauge_SpecIn_Wait_1torr:
-                    if (_devices.AnalogInputs.VacuumPressureInTorr > 0.1 &&
+                    if (_devices.AnalogInputs.VacuumPressureInTorr > 1.0 &&
                         _machineStatus.IsDryRunMode == false)
                     {
                         Wait(50);

@@ -56,8 +56,14 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
     public class InitDeinitViewModel : ViewModelBase
     {
+        private Timer? _logCleanupTimer;
+        private int _logCleanupInProgress;
+        private bool _logCleanupStarted;
+
         #region Properties
         private string LogFolder => _configuration["Folders:LogFolder"] ?? "";
+        private string ErrorFolder => _configuration["Folders:ErrorFolder"] ?? "";
+        private string PressureLogFolder => _configuration["Folders:PressureLogFolder"] ?? "";
 
         public string MessageText
         {
@@ -272,8 +278,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         Thread.Sleep(50);
                         break;
                     case EHandleStep.WorkDataHandle:
-                        CleanupOldLogs(LogFolder, _recipeSelector.CurrentRecipe.CommonRecipe.LogSaveDay);
-
+                        StartLogCleanupScheduler();
                         Thread.Sleep(50);
                         _step++;
                         break;
@@ -322,7 +327,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 {
                     case EHandleStep.Start:
                         MessageText = "Deinit Start";
-
+                        StopLogCleanupScheduler();
                         MessageText = "Stop Processes";
                         _processes.ProcessesStop();
 
@@ -460,6 +465,63 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 _carrierJigStatusList.CarrierJigStatusH4.ResinWeight = weight;
             };
+        }
+
+        private void StartLogCleanupScheduler()
+        {
+            if (_logCleanupStarted)
+                return;
+
+            _logCleanupStarted = true;
+
+            // Run the first cleanup after startup settles a bit, then periodically.
+            TimeSpan dueTime = TimeSpan.FromMinutes(1);
+            TimeSpan period = TimeSpan.FromHours(0);
+
+            _logCleanupTimer = new Timer(_ =>
+            {
+                TriggerLogCleanup();
+            }, state: null, dueTime, period);
+        }
+
+        private void StopLogCleanupScheduler()
+        {
+            _logCleanupStarted = false;
+            try
+            {
+                _logCleanupTimer?.Dispose();
+            }
+            catch
+            {
+                // ignore
+            }
+            _logCleanupTimer = null;
+        }
+
+        private void TriggerLogCleanup()
+        {
+            if (Interlocked.Exchange(ref _logCleanupInProgress, 1) == 1)
+                return;
+
+            _ = Task.Run(() =>
+            {
+                try
+                {
+                    int keepDays = _recipeSelector.CurrentRecipe.CommonRecipe.LogSaveDay;
+                    CleanupOldLogs(LogFolder, keepDays);
+                    CleanupOldLogs(ErrorFolder, keepDays);
+                    CleanupOldLogs(PressureLogFolder, keepDays);
+                    _productionService.CleanupOldProductionFiles(keepDays);
+                }
+                catch
+                {
+                    // ignore
+                }
+                finally
+                {
+                    Interlocked.Exchange(ref _logCleanupInProgress, 0);
+                }
+            });
         }
 
         private void CleanupOldLogs(string logRootPath, int keepDays = 15)

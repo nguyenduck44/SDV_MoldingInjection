@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 
 namespace SDV_MoldingInjection.Defines.Productions
@@ -203,6 +204,31 @@ namespace SDV_MoldingInjection.Defines.Productions
             if (yesterdayProduction != null)
             {
                 Save(yesterdayProduction);
+            }
+        }
+
+        public void CleanupOldProductionFiles(int keepDays)
+        {
+            if (keepDays <= 0)
+                return;
+            EnsureCountDataFolderExists();
+            DateTime cutoffDate = DateTime.Today.AddDays(-keepDays);
+            foreach (string file in Directory.EnumerateFiles(CountDataFolder, "*.json", SearchOption.TopDirectoryOnly))
+            {
+                try
+                {
+                    string name = Path.GetFileNameWithoutExtension(file);
+                    if (DateTime.TryParseExact(name, "yyyy_MM_dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date) == false)
+                        continue;
+                    if (date.Date <= cutoffDate)
+                    {
+                        File.Delete(file);
+                    }
+                }
+                catch
+                {
+                    // ignore single-file failures (locked, permission, etc.)
+                }
             }
         }
     }
