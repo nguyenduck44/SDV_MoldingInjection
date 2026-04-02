@@ -326,6 +326,15 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Doors closed.");
                     Step.OriginStep++;
                     break;
+                case ERootProcToOriginStep.DoorLockCheck:
+                    if (_devices.Inputs.DoorLock == false)
+                    {
+                        RaiseWarning((int)EWarning.DoorNotSafetyLock);
+                        break;
+                    }
+                    Log.Debug("Doors safety locked.");
+                    Step.OriginStep++;
+                    break;
                 case ERootProcToOriginStep.Motion_AlarmReset:
                     if (_devices.Motions.All.All(m => m.Status.IsAlarm == false))
                     {
@@ -453,6 +462,16 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Doors closed.");
                     Step.ToRunStep++;
                     break;
+                case ERootProcToRunStep.DoorLock_Check:
+                    if (_devices.Inputs.DoorLock == false)
+                    {
+                        RaiseWarning((int)EWarning.DoorNotSafetyLock);
+                        break;
+                    }
+
+                    Log.Debug("Doors safety locked.");
+                    Step.ToRunStep++;
+                    break;
                 case ERootProcToRunStep.ChildsToRunDone_Wait:
                     if (Childs!.Count(child => child.ProcessStatus != EProcessStatus.ToRunDone) != 0)
                     {
@@ -531,16 +550,16 @@ namespace SDV_MoldingInjection.Process
 
         private void CheckRealTimeAlarmStatus()
         {
-            if (_devices.Inputs.DoorClose == false &&
-                (ProcessMode == EProcessMode.Run || ProcessMode == EProcessMode.Origin))
+#if !SIMULATION
+            if (_devices.Inputs.ServoOn.Value == false)
             {
-                Log.Error("Door Open");
-                RaiseAlarm((int)EAlarm.DoorOpen);
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                Log.Error("POWER OFF");
+                RaiseAlarm((int)EAlarm.PowerMC_Off);
                 return;
             }
-
+#endif
             if (_devices.Inputs.Emergency.Value == true)
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
@@ -548,6 +567,22 @@ namespace SDV_MoldingInjection.Process
                 Log.Error("Emergency Stop Activated. MC OFF");
                 RaiseAlarm((int)EAlarm.EmergencyStopActivated);
                 return;
+            }
+            if (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run ||
+                ProcessMode == EProcessMode.ToOrigin || ProcessMode == EProcessMode.Origin)
+            {
+                if (_devices.Inputs.DoorClose == false)
+                {
+                    Log.Error("Door Open");
+                    RaiseAlarm(EAlarm.DoorOpen);
+                    return;
+                }
+                if ((ProcessMode == EProcessMode.Run || ProcessMode == EProcessMode.Origin) && _devices.Inputs.DoorLock == false)
+                {
+                    Log.Error("Door Not Safety Lock");
+                    RaiseAlarm(EAlarm.DoorNotSafetyLock);
+                    return;
+                }
             }
 
             if (_devices.Inputs.SmokeDetectAlarm.Value == true)
@@ -600,10 +635,7 @@ namespace SDV_MoldingInjection.Process
                 RaiseAlarm((int)EAlarm.Motion_Driver_Off);
             }
             if (_devices.Motions.All.Count(motion => motion.Status.HwNegLimitDetect == true || motion.Status.HwPosLimitDetect == true) > 0
-                && ProcessMode != EProcessMode.Origin && ProcessMode != EProcessMode.ToOrigin
-                && ProcessMode != EProcessMode.ToWarning && ProcessMode != EProcessMode.Warning
-                && ProcessMode != EProcessMode.ToAlarm && ProcessMode != EProcessMode.Alarm
-                && ProcessMode != EProcessMode.None && ProcessMode != EProcessMode.Stop)
+                && (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run))
             {
                 _devices.Motions.All.Where(m => m.Status.HwNegLimitDetect == true).ToList().ForEach(motion =>
                 {
@@ -833,6 +865,6 @@ namespace SDV_MoldingInjection.Process
 
         private Queue<IGrouping<uint, PositionPoint>> MoveMultiPointQueueSteps = new Queue<IGrouping<uint, PositionPoint>>();
         private List<PositionPoint> currentPoints = new List<PositionPoint>();
-        #endregion
+#endregion
     }
 }

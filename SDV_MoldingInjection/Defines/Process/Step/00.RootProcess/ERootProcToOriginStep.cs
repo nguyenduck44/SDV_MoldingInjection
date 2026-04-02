@@ -6,6 +6,7 @@ namespace SDV_MoldingInjection.Defines
         AutoModeSwitchCheck,
         DoorClose,
         DoorSensorCheck,
+        DoorLockCheck,
         Motion_AlarmReset,
         Motion_AlarmReset_Wait,
         ChildsToOriginDone_Wait,
