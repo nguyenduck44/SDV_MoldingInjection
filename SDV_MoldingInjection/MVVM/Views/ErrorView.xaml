@@ -12,9 +12,24 @@
     d:DesignHeight="450"
     d:DesignWidth="800">
     <Grid>
+        <Grid.Resources>
+            <!-- Style dùng chung -->
+            <Style x:Key="CenterText"
+                   TargetType="TextBlock">
+                <Setter Property="VerticalAlignment"
+                        Value="Center" />
+            </Style>
+
+            <Style x:Key="WrapText"
+                   TargetType="TextBlock"
+                   BasedOn="{StaticResource CenterText}">
+                <Setter Property="TextWrapping"
+                        Value="Wrap" />
+            </Style>
+        </Grid.Resources>
+
         <Grid.RowDefinitions>
-            <RowDefinition
-                Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
@@ -22,173 +37,104 @@
             <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <StackPanel
-            Orientation="Horizontal"
-            Margin="5 0 0 0"
-            Grid.Column="0">
-            <TextBlock
-                Text="Select Day"
-                VerticalAlignment="Center" />
 
-            <ComboBox
-                Width="150"
-                Margin="10 0 0 0"
-                ItemsSource="{Binding LogDays}"
-                SelectedItem="{Binding SelectedDaySearch}"
-                SelectionChanged="ComboBox_SelectionChanged" />
+        <!-- Select Day -->
+        <StackPanel Orientation="Horizontal"
+                    Margin="5,0,0,0">
+            <TextBlock Text="Select Day"
+                       VerticalAlignment="Center" />
+            <ComboBox Width="150"
+                      Margin="10,0,0,0"
+                      ItemsSource="{Binding LogDays}"
+                      SelectedItem="{Binding SelectedDaySearch}" />
         </StackPanel>
 
-
-        <DataGrid
-            x:Name="ErrorListHistoryDataGrid"
-            Margin="5"
-            Grid.Row="1"
-            FontSize="13"
-            AutoGenerateColumns="False"
-            CanUserResizeColumns="True"
-            CanUserSortColumns="True"
-            SelectionUnit="CellOrRowHeader"
-            SelectionMode="Extended"
-            ClipboardCopyMode="ExcludeHeader"
-            CanUserAddRows="False"
-            Sorting="ErrorListHistoryDataGrid_Sorting"
-            ItemsSource="{Binding ErrorLogEntries}">
+        <!-- Error List -->
+        <DataGrid Grid.Row="1"
+                  Margin="5"
+                  FontSize="13"
+                  ItemsSource="{Binding ErrorLogEntries}"
+                  AutoGenerateColumns="False"
+                  CanUserResizeColumns="True"
+                  CanUserSortColumns="True"
+                  SelectionUnit="CellOrRowHeader"
+                  SelectionMode="Extended"
+                  ClipboardCopyMode="ExcludeHeader"
+                  CanUserAddRows="False">
             <DataGrid.RowStyle>
-                <Style
-                    TargetType="DataGridRow">
+                <Style TargetType="DataGridRow">
                     <Style.Triggers>
-                        <DataTrigger
-                            Binding="{Binding IsHightlight}"
-                            Value="True">
-                            <Setter
-                                Property="Background"
-                                Value="Yellow" />
+                        <DataTrigger Binding="{Binding IsHightlight}"
+                                     Value="True">
+                            <Setter Property="Background"
+                                    Value="Yellow" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </DataGrid.RowStyle>
-            <DataGrid.Columns>
-                <DataGridTextColumn
-                    x:Name="TextCollumnTypeData"
-                    Header="Type"
-                    IsReadOnly="True"
-                    Binding="{Binding Type}"
-                    SortMemberPath="Timestamp"
-                    Width="50" />
-                <DataGridTextColumn
-                    x:Name="TextCollumnErrorData"
-                    Header="DateTime"
-                    IsReadOnly="True"
-                    SortDirection="Descending"
-                    Binding="{Binding Timestamp}"
-                    SortMemberPath="Timestamp"
-                    Width="70" />
-                <DataGridTextColumn
-                    Header="I/O"
-                    IsReadOnly="True"
-                    Binding="{Binding IOName}"
-                    Width="100" />
-                <DataGridTextColumn
-                    Header="ErrorCode"
-                    IsReadOnly="True"
-                    Binding="{Binding ErrorCode}"
-                    Width="70">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style
-                            TargetType="TextBlock">
-                            <Setter
-                                Property="TextAlignment"
-                                Value="Center" />
-                            <Setter
-                                Property="VerticalAlignment"
-                                Value="Center" />
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn
-                    Header="Message"
-                    IsReadOnly="True"
-                    Binding="{Binding Message}"
-                    Width="*">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style
-                            TargetType="TextBlock">
-                            <Setter
-                                Property="TextWrapping"
-                                Value="Wrap" />
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-            </DataGrid.Columns>
 
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Type"
+                                    Binding="{Binding Type}"
+                                    Width="80"
+                                    ElementStyle="{StaticResource CenterText}" />
+
+                <DataGridTextColumn Header="DateTime"
+                                    Binding="{Binding Timestamp}"
+                                    Width="100"
+                                    SortDirection="Descending"
+                                    ElementStyle="{StaticResource CenterText}" />
+
+                <DataGridTextColumn Header="I/O"
+                                    Binding="{Binding IOName}"
+                                    Width="100"
+                                    ElementStyle="{StaticResource WrapText}" />
+
+                <DataGridTextColumn Header="ErrorCode"
+                                    Binding="{Binding ErrorCode}"
+                                    Width="100"
+                                    ElementStyle="{StaticResource CenterText}" />
+
+                <DataGridTextColumn Header="Message"
+                                    Binding="{Binding Message}"
+                                    Width="*"
+                                    ElementStyle="{StaticResource WrapText}" />
+            </DataGrid.Columns>
         </DataGrid>
 
-        <DataGrid
-            Grid.Column="1"
-            Grid.Row="1"
-            Margin="5"
-            AutoGenerateColumns="False"
-            HeadersVisibility="Column"
-            CanUserAddRows="False"
-            CanUserDeleteRows="False"
-            IsReadOnly="True"
-            FontSize="13"
-            SelectedItem="{Binding SelectedErrorLogCount}"
-            ItemsSource="{Binding ErrorLogCounts}">
+        <!-- Summary -->
+        <DataGrid Grid.Column="1"
+                  Grid.Row="1"
+                  Margin="5"
+                  FontSize="13"
+                  AutoGenerateColumns="False"
+                  HeadersVisibility="Column"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  IsReadOnly="True"
+                  ItemsSource="{Binding ErrorLogCounts}"
+                  SelectedItem="{Binding SelectedErrorLogCount}">
+
             <DataGrid.Columns>
-                <DataGridTextColumn
-                    Header="Count"
-                    IsReadOnly="True"
-                    Binding="{Binding Count}"
-                    Width="60">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style
-                            TargetType="TextBlock">
-                            <Setter
-                                Property="TextAlignment"
-                                Value="Center" />
-                            <Setter
-                                Property="VerticalAlignment"
-                                Value="Center" />
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn
-                    Header="I/O"
-                    IsReadOnly="True"
-                    Binding="{Binding IOName}"
-                    Width="100" />
-                <DataGridTextColumn
-                    Header="ErrorCode"
-                    IsReadOnly="True"
-                    Binding="{Binding ErrorCode}"
-                    Width="80">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style
-                            TargetType="TextBlock">
-                            <Setter
-                                Property="TextAlignment"
-                                Value="Center" />
-                            <Setter
-                                Property="VerticalAlignment"
-                                Value="Center" />
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn
-                    Header="Message"
-                    IsReadOnly="True"
-                    Binding="{Binding Message}"
-                    Width="*">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style
-                            TargetType="TextBlock">
-                            <Setter
-                                Property="TextWrapping"
-                                Value="Wrap" />
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
+                <DataGridTextColumn Header="Count"
+                                    Binding="{Binding Count}"
+                                    Width="80"
+                                    ElementStyle="{StaticResource CenterText}" />
+
+                <DataGridTextColumn Header="I/O"
+                                    Binding="{Binding IOName}"
+                                    Width="100"
+                                    ElementStyle="{StaticResource WrapText}" />
+
+                <DataGridTextColumn Header="ErrorCode"
+                                    Binding="{Binding ErrorCode}"
+                                    Width="100"
+                                    ElementStyle="{StaticResource CenterText}" />
+
+                <DataGridTextColumn Header="Message"
+                                    Binding="{Binding Message}"
+                                    Width="*"
+                                    ElementStyle="{StaticResource WrapText}" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
