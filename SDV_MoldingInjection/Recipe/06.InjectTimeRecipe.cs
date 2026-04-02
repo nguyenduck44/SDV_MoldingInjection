@@ -7,6 +7,13 @@ namespace SDV_MoldingInjection.Recipe
 {
     public class InjectTimeRecipe : RecipeBase
     {
+        [SingleRecipeDescription(Description = "Delay Fist", Detail ="Delay after open Angle Valve", Unit = Unit.Second)]
+        public double DelayAfterOpenAngleValve
+        {
+            get => _delayAfterOpenAngleValve;
+            set => SetRecipe(ref _delayAfterOpenAngleValve, value, nameof(DelayAfterOpenAngleValve));
+        }
+
         [SingleRecipeDescription(Description = "Delay Time", Unit = Unit.Second)]
         public double DelayTime
         {
@@ -118,6 +125,7 @@ namespace SDV_MoldingInjection.Recipe
         private double _ventTimeAfterInject;
         private double _ventTime;
         private double _delayAfterInjectFinish;
+        private double _delayAfterOpenAngleValve;
         private InjectPath _h1H3InjectPaths_No1 = new InjectPath();
         private InjectPath _h1H3InjectPaths_No2 = new InjectPath();
         private InjectPath _h1H3InjectPaths_No3 = new InjectPath();

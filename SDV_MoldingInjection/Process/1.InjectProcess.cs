@@ -804,65 +804,6 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Input detect EInjectProcInput.SPDHead(1~4)_WorkDone");
                     Step.RunStep++;
                     break;
-                case EMoldProcResinInjectStep.InjectAddTail_Check:
-                    Log.Debug("Inject Add Tail Check");
-                    if (_currentRecipe.AdditionalMolding_Recipe.SkipAddTail)
-                    {
-                        Step.RunStep = (int)EMoldProcResinInjectStep.Update_BothJigStatus;
-                        break;
-                    }
-
-                    Log.Debug("Wait SPDHead Ready Inject Add Tail");
-                    Step.RunStep++;
-                    break;
-                case EMoldProcResinInjectStep.Wait_SPDHeadReady_InjectAddTail:
-                    if (IsSPDHeadInjectAddTailReady(ESPDHead.SPDHead1) == false ||
-                        IsSPDHeadInjectAddTailReady(ESPDHead.SPDHead2) == false ||
-                        IsSPDHeadInjectAddTailReady(ESPDHead.SPDHead3) == false ||
-                        IsSPDHeadInjectAddTailReady(ESPDHead.SPDHead4) == false)
-                    {
-                        Wait(20);
-                        break;
-                    }
-
-                    Step.RunStep++;
-                    break;
-                case EMoldProcResinInjectStep.SPDHead_InjectAddTail_Request:
-                    Log.Debug($"Set Output {EInjectProcOutput.SPDHead_InjectAddTail_Request}");
-                    procOutputs[EInjectProcOutput.SPDHead_InjectAddTail_Request].Value = true;
-                    Step.RunStep++;
-                    break;
-                case EMoldProcResinInjectStep.ZAxis_UpDistance_Move:
-                    Log.Debug("ZAxis move up distance for add tail");
-                    ZAxisAddTailPosMove();
-                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
-                        () => AllZAxisInAddTailPos(ref _failHead));
-                    Step.RunStep++;
-                    break;
-                case EMoldProcResinInjectStep.ZAxis_UpDistance_Wait:
-                    if (WaitTimeOutOccurred)
-                    {
-                        RaiseHeadWarning(EWarning.Z1Axis_Up_AddDetailPos_MoveTimeOut, _failHead);
-                        break;
-                    }
-
-                    Log.Debug("ZAxis move up distance for add tail done");
-                    Step.RunStep++;
-                    break;
-                case EMoldProcResinInjectStep.SDPHead_AddTail_DoneWait:
-                    if (IsSPDHeadInjectAddTailDone(ESPDHead.SPDHead1) == false ||
-                        IsSPDHeadInjectAddTailDone(ESPDHead.SPDHead2) == false ||
-                        IsSPDHeadInjectAddTailDone(ESPDHead.SPDHead3) == false ||
-                        IsSPDHeadInjectAddTailDone(ESPDHead.SPDHead4) == false)
-                    {
-                        Wait(20);
-                        break;
-                    }
-
-                    procOutputs[EInjectProcOutput.SPDHead_InjectAddTail_Request].Value = false;
-                    Log.Debug("SPDHead Inject AddTail done");
-                    Step.RunStep++;
-                    break;
                 case EMoldProcResinInjectStep.Update_BothJigStatus:
                     Log.Debug($"Update both jig status: {EJigStatus.MoldingFinish}");
                     UpdateBothJigStatus(EJigStatus.MoldingFinish);
@@ -939,6 +880,116 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.End:
+                    _needleCleanCount++;
+
+                    if (Parent?.Sequence != ESequence.AutoRun)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
+
+                    Log.Info("ResinInject end");
+                    _tactTimeList.Inject.SetTaktTime();
+                    Sequence = ESequence.DummyShot;
+                    break;
+
+            }
+        }
+
+        private void Sequence_InjectAddTail()
+        {
+            switch ((EMoldProcResinInjectAddTailStep)Step.RunStep)
+            {
+                case EMoldProcResinInjectAddTailStep.Start:
+                    Log.Info("Inject add tail start");
+                    if (Parent?.Sequence == ESequence.AutoRun)
+                    {
+                        _tactTimeList.Inject.TaktTimeCounter = Environment.TickCount;
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectAddTailStep.InjectAddTail_Check:
+                    Log.Debug("Wait SPDHead Ready Inject Add Tail");
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectAddTailStep.Wait_SPDHeadReady_InjectAddTail:
+                    if (IsSPDHeadInjectAddTailReady(ESPDHead.SPDHead1) == false ||
+                        IsSPDHeadInjectAddTailReady(ESPDHead.SPDHead2) == false ||
+                        IsSPDHeadInjectAddTailReady(ESPDHead.SPDHead3) == false ||
+                        IsSPDHeadInjectAddTailReady(ESPDHead.SPDHead4) == false)
+                    {
+                        Wait(20);
+                        break;
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectAddTailStep.SPDHead_InjectAddTail_Request:
+                    Log.Debug($"Set Output {EInjectProcOutput.SPDHead_InjectAddTail_Request}");
+                    procOutputs[EInjectProcOutput.SPDHead_InjectAddTail_Request].Value = true;
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectAddTailStep.ZAxis_UpDistance_Move:
+                    Log.Debug("ZAxis move up distance for add tail");
+                    ZAxisAddTailPosMove();
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
+                        () => AllZAxisInAddTailPos(ref _failHead));
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectAddTailStep.ZAxis_UpDistance_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseHeadWarning(EWarning.Z1Axis_Up_AddDetailPos_MoveTimeOut, _failHead);
+                        break;
+                    }
+
+                    Log.Debug("ZAxis move up distance for add tail done");
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectAddTailStep.SDPHead_AddTail_DoneWait:
+                    if (IsSPDHeadInjectAddTailDone(ESPDHead.SPDHead1) == false ||
+                        IsSPDHeadInjectAddTailDone(ESPDHead.SPDHead2) == false ||
+                        IsSPDHeadInjectAddTailDone(ESPDHead.SPDHead3) == false ||
+                        IsSPDHeadInjectAddTailDone(ESPDHead.SPDHead4) == false)
+                    {
+                        Wait(20);
+                        break;
+                    }
+
+                    procOutputs[EInjectProcOutput.SPDHead_InjectAddTail_Request].Value = false;
+                    Log.Debug("SPDHead Inject AddTail done");
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectAddTailStep.Update_BothJigStatus:
+                    Log.Debug($"Update both jig status: {EJigStatus.MoldingFinish}");
+                    UpdateBothJigStatus(EJigStatus.MoldingFinish);
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectAddTailStep.ZAxis_SafetyPos_Move:
+                    Log.Debug("All Z Axis moving to Safety position");
+                    ZAxisSafetyPosMove();
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
+                        () => AllZAxisInSafetyPos(ref _failHead));
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectAddTailStep.ZAxis_SafetyPos_MoveWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseHeadWarning(EWarning.Z1Axis_SafetyPos_MoveTimeOut, _failHead);
+                        break;
+                    }
+
+                    Log.Debug($"Z-Axes move to safety pos done");
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectAddTailStep.ClearFlag:
+                    Log.Debug("Clear flag");
+                    procOutputs[EInjectProcOutput.DryPump_VacuumRequest].Value = false;
+                    procOutputs[EInjectProcOutput.DryPump_PurgeRequest].Value = false;
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectAddTailStep.End:
                     _needleCleanCount++;
 
                     if (Parent?.Sequence != ESequence.AutoRun)
