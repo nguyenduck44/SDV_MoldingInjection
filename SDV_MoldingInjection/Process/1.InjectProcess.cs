@@ -762,6 +762,19 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"ZAxis move to inject pos done");
                     Step.RunStep++;
                     break;
+                case EMoldProcResinInjectStep.SDPHead_Work_Request:
+                    Log.Debug($"Set Output {EInjectProcOutput.SPDHeadWorkRequest}");
+
+                    UpdateBothJigStatus(EJigStatus.InMolding);
+
+                    procOutputs[EInjectProcOutput.SPDHeadWorkRequest].Value = true;
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectStep.DelayAfter_AngleValve_Open:
+                    Log.Debug($"Delay {_currentRecipe.InjectTimeRecipe.DelayAfterOpenAngleValve}s after angle valve open");
+                    Wait(_currentRecipe.InjectTimeRecipe.DelayAfterOpenAngleValve);
+                    Step.RunStep++;
+                    break;
                 case EMoldProcResinInjectStep.DryPump_Vacuum_Request:
                     Log.Debug($"Set Output {EInjectProcOutput.DryPump_VacuumRequest}");
                     procOutputs[EInjectProcOutput.DryPump_VacuumRequest].Value = true;
@@ -774,14 +787,6 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"Input detect {EInjectProcInput.DryPump_VacuumDone}");
-                    Step.RunStep++;
-                    break;
-                case EMoldProcResinInjectStep.SDPHead_Work_Request:
-                    Log.Debug($"Set Output {EInjectProcOutput.SPDHeadWorkRequest}");
-
-                    UpdateBothJigStatus(EJigStatus.InMolding);
-
-                    procOutputs[EInjectProcOutput.SPDHeadWorkRequest].Value = true;
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.SDPHead_Work_DoneWait:

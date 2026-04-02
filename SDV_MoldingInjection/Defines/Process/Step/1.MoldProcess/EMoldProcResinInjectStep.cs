@@ -10,10 +10,13 @@
         ZAxisBellowCyl_InjectPos_Move,
         ZAxisBellowCyl_InjectPos_MoveWait,
 
+        SDPHead_Work_Request,
+
+        DelayAfter_AngleValve_Open,
+
         DryPump_Vacuum_Request,
         DryPump_Vacuum_DoneWait,
-
-        SDPHead_Work_Request,
+        
         SDPHead_Work_DoneWait,
 
         Update_BothJigStatus,
