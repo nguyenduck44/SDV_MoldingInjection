@@ -3,6 +3,7 @@ using EQX.Core.Common;
 using EQX.UI.Controls;
 using log4net;
 using SDV_MoldingInjection.Defines;
+using SDV_MoldingInjection.Defines.Productions;
 using SDV_MoldingInjection.MVVM.Models;
 using SDV_MoldingInjection.Recipe;
 using System;
@@ -21,6 +22,9 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         public double PanelTemperature => Devices.PanelIndicator.Temperature;
         public double PanelHumidity => Devices.PanelIndicator.Humidity;
+
+        public int TodayInputCount => CurrentProductionData?.TotalInput ?? 0;
+        public int TodayOutputCount => CurrentProductionData?.TotalOutput ?? 0;
 
         private bool h1Working;
         private bool h2Working;
@@ -77,7 +81,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             SyringAmountStatusList syringeAmountStatusList,
             RecipeSelector recipeSelector,
             CarrierJigStatusList carrierJigStatusList,
-            Plotter plotter)
+            Plotter plotter,
+            ProductionService productionService)
         {
             Devices = devices;
             MachineStatus = machineStatus;
@@ -86,6 +91,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _recipeSelector = recipeSelector;
             CarrierJigStatusList = carrierJigStatusList;
             Plotter = plotter;
+            _productionService = productionService;
             Log = LogManager.GetLogger("AutoVM");
 
             statusUpdateTimer = new NonOverlappingTimer(100);
@@ -128,9 +134,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             Devices.Inputs.BelowsUp.RaiseValueUpdated();
             Devices.Inputs.DryPumpRun.RaiseValueUpdated();
 
-
             UpdateSyringeStatus();
 
+            OnPropertyChanged(nameof(TodayInputCount));
+            OnPropertyChanged(nameof(TodayOutputCount));
 
             H1Working = Devices.Motions.Z1Axis.Status.IsMotioning || Devices.Motions.P1Axis.Status.IsMotioning || Devices.Motions.G1Axis.Status.IsMotioning;
             H2Working = Devices.Motions.Z2Axis.Status.IsMotioning || Devices.Motions.P2Axis.Status.IsMotioning || Devices.Motions.G2Axis.Status.IsMotioning;
@@ -240,6 +247,9 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly NavigationStore _navigationStore;
         private readonly RecipeSelector _recipeSelector;
         private readonly NonOverlappingTimer statusUpdateTimer;
+        private readonly ProductionService _productionService;
+        private DateTime CurrentProductionDate => DateTime.Now.Hour < 8 ? DateTime.Now.Date.AddDays(-1) : DateTime.Now.Date;
+        private ProductionDayItem? CurrentProductionData => _productionService.GetProductionByDate(CurrentProductionDate);
         #endregion
     }
 }
