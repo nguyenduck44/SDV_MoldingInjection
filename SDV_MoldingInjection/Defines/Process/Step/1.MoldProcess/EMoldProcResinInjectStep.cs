@@ -4,11 +4,15 @@
     {
         Start,
 
+        InitQueue,
+        StepQueue_EmptyCheck,
+
         XYAxis_InjectPos_Move,
         XYAxis_InjectPos_MoveWait,
 
         ZAxisBellowCyl_InjectPos_Move,
         ZAxisBellowCyl_InjectPos_MoveWait,
+
 
         SDPHead_Work_Request,
 
@@ -27,6 +31,8 @@
 
         BellowCylDown,
         BellowCylDown_Wait,
+
+        AddTail_Check,
 
         ZAxis_SafetyPos_Move,
         ZAxis_SafetyPos_MoveWait,

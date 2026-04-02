@@ -95,6 +95,10 @@
                                   Margin="5"
                                   IsChecked="{Binding RecipeList.OptionRecipe.OneTorrAndPurge}"
                                   Tag="Check to start inject with 1 torr and purge" />
+                        <CheckBox Content="Inject First"
+                                  Margin="5"
+                                  IsChecked="{Binding RecipeList.OptionRecipe.InjectAfterOpenAngleValve}"
+                                  Tag="Check to start inject after open angle valve" />
                     </UniformGrid>
                 </StackPanel>
             </GroupBox>

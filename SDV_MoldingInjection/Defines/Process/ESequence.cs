@@ -20,6 +20,8 @@ namespace SDV_MoldingInjection.Defines
         Loading,
         [Description("Resin INJECT")]
         ResinInject,
+        [Description("Resin INJECT Add Tail")]
+        ResinInjectAddTail,
         [Description("Jig UNLOADING")]
         Unloading,
 

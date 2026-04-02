@@ -199,7 +199,7 @@ namespace SDV_MoldingInjection.Process
                     if (BellowCyl.IsDown())
                     {
                         Log.Debug($"{BellowCyl} is down already");
-                        Step.ToRunStep = (int)EMoldProcToRunStep.ZAxis_SafetyPos_Move;
+                        Step.ToRunStep = (int)EMoldProcToRunStep.NozzleClean_Cyl_UnGrip;
                         break;
                     }
 
@@ -217,6 +217,29 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"Move {BellowCyl} down done");
+                    Step.ToRunStep++;
+                    break;
+                case EMoldProcToRunStep.NozzleClean_Cyl_UnGrip:
+                    if (NozzleCleanCyl_All_UnGrip_Check())
+                    {
+                        Log.Debug("Nozzle clean cylinder ungrip already");
+                        Step.ToRunStep = (int)EMoldProcToRunStep.ZAxis_SafetyPos_Move;
+                        break;
+                    }
+
+                    Log.Debug("Nozzle clean cylinder ungrip");
+                    NozzleCleanCyl_All_UnGrip();
+                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => NozzleCleanCyl_All_UnGrip_Check());
+                    Step.ToRunStep++;
+                    break;
+                case EMoldProcToRunStep.NozzleClean_Cyl_UnGrip_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseWarning(EWarning.Nozzle_CleanCyl_UnGripFail);
+                        break;
+                    }
+
+                    Log.Debug("Nozzle clean cylinder ungrip done");
                     Step.ToRunStep++;
                     break;
                 case EMoldProcToRunStep.ZAxis_SafetyPos_Move:
@@ -280,6 +303,9 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESequence.ResinInject:
                     Sequence_ResinInject();
+                    break;
+                case ESequence.ResinInjectAddTail:
+                    Sequence_InjectAddTail();
                     break;
                 case ESequence.Unloading:
                     Sequence_LoadingUnloading(isLoading: false);
@@ -437,7 +463,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcOriginStep.Bellow_Down:
                     if (BellowCyl.IsDown())
                     {
-                        Step.OriginStep = (int)EMoldProcOriginStep.XYAxis_Origin;
+                        Step.OriginStep = (int)EMoldProcOriginStep.NozzleClean_Cyl_UnGrip;
                         break;
                     }
 
@@ -455,6 +481,28 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"Move {BellowCyl} down done");
+                    Step.OriginStep++;
+                    break;
+                case EMoldProcOriginStep.NozzleClean_Cyl_UnGrip:
+                    if (NozzleCleanCyl_All_UnGrip_Check())
+                    {
+                        Step.OriginStep = (int)EMoldProcOriginStep.XYAxis_Origin;
+                        break;
+                    }
+
+                    Log.Debug("Nozzle clean cylinder ungrip");
+                    NozzleCleanCyl_All_UnGrip();
+                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => NozzleCleanCyl_All_UnGrip_Check());
+                    Step.OriginStep++;
+                    break;
+                case EMoldProcOriginStep.NozzleClean_Cyl_UnGrip_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseWarning(EWarning.Nozzle_CleanCyl_UnGripFail);
+                        break;
+                    }
+
+                    Log.Debug("Nozzle clean cylinder ungrip done");
                     Step.OriginStep++;
                     break;
                 case EMoldProcOriginStep.XYAxis_Origin:
@@ -720,13 +768,35 @@ namespace SDV_MoldingInjection.Process
 
                     Step.RunStep++;
                     break;
+                case EMoldProcResinInjectStep.InitQueue:
+                    if (_optionRecipe.InjectAfterOpenAngleValve)
+                    {
+                        MoldResinInjectSteps = new Queue<EMoldProcResinInjectStep>(ProcessesWorkSequence.MoldResinInjectSequence_InjectAfterOpenAngleValve);
+
+                    }
+                    else
+                    {
+                        MoldResinInjectSteps = new Queue<EMoldProcResinInjectStep>(ProcessesWorkSequence.MoldResinInjectSequence);
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectStep.StepQueue_EmptyCheck:
+                    if (MoldResinInjectSteps.Count <= 0)
+                    {
+                        Step.RunStep = (int)EMoldProcResinInjectStep.Update_BothJigStatus;
+                        break;
+                    }
+
+                    Step.RunStep = (int)MoldResinInjectSteps.Dequeue();
+                    break;
                 case EMoldProcResinInjectStep.XYAxis_InjectPos_Move:
                     XAxis.MoveAbs(_currentRecipe.InjectRecipe.XAxisInjectPos);
                     YAxis.MoveAbs(_currentRecipe.InjectRecipe.YAxisInjectPos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
                         () => XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisInjectPos) &&
                               YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisInjectPos));
-                    Step.RunStep++;
+                    Step.RunStep = (int)EMoldProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EMoldProcResinInjectStep.XYAxis_InjectPos_MoveWait:
                     if (WaitTimeOutOccurred)
@@ -739,7 +809,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"{XAxis.Name}|{YAxis.Name} move to inject pos done");
-                    Step.RunStep++;
+                    Step.RunStep = (int)EMoldProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EMoldProcResinInjectStep.ZAxisBellowCyl_InjectPos_Move:
                     ZAxisInjectPosMove();
@@ -747,7 +817,7 @@ namespace SDV_MoldingInjection.Process
 
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
                         () => AllZAxisInInjectPos(ref _failHead) && BellowCyl.IsUp());
-                    Step.RunStep++;
+                    Step.RunStep = (int)EMoldProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EMoldProcResinInjectStep.ZAxisBellowCyl_InjectPos_MoveWait:
                     if (WaitTimeOutOccurred)
@@ -760,7 +830,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"{BellowCyl} cylinder move up done");
                     Log.Debug($"ZAxis move to inject pos done");
-                    Step.RunStep++;
+                    Step.RunStep = (int)EMoldProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EMoldProcResinInjectStep.SDPHead_Work_Request:
                     Log.Debug($"Set Output {EInjectProcOutput.SPDHeadWorkRequest}");
@@ -768,17 +838,17 @@ namespace SDV_MoldingInjection.Process
                     UpdateBothJigStatus(EJigStatus.InMolding);
 
                     procOutputs[EInjectProcOutput.SPDHeadWorkRequest].Value = true;
-                    Step.RunStep++;
+                    Step.RunStep = (int)EMoldProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EMoldProcResinInjectStep.DelayAfter_AngleValve_Open:
                     Log.Debug($"Delay {_currentRecipe.InjectTimeRecipe.DelayAfterOpenAngleValve}s after angle valve open");
                     Wait(_currentRecipe.InjectTimeRecipe.DelayAfterOpenAngleValve);
-                    Step.RunStep++;
+                    Step.RunStep = (int)EMoldProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EMoldProcResinInjectStep.DryPump_Vacuum_Request:
                     Log.Debug($"Set Output {EInjectProcOutput.DryPump_VacuumRequest}");
                     procOutputs[EInjectProcOutput.DryPump_VacuumRequest].Value = true;
-                    Step.RunStep++;
+                    Step.RunStep = (int)EMoldProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EMoldProcResinInjectStep.DryPump_Vacuum_DoneWait:
                     if (procInputs[EInjectProcInput.DryPump_VacuumDone].Value == false)
@@ -787,7 +857,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"Input detect {EInjectProcInput.DryPump_VacuumDone}");
-                    Step.RunStep++;
+                    Step.RunStep = (int)EMoldProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EMoldProcResinInjectStep.SDPHead_Work_DoneWait:
                     if (IsSPDHeadWorkDone(ESequence.ResinInject, ESPDHead.SPDHead1) == false ||
@@ -807,11 +877,14 @@ namespace SDV_MoldingInjection.Process
 
                     procOutputs[EInjectProcOutput.SPDHeadWorkRequest].Value = false;
                     Log.Debug($"Input detect EInjectProcInput.SPDHead(1~4)_WorkDone");
-                    Step.RunStep++;
+                    Step.RunStep = (int)EMoldProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EMoldProcResinInjectStep.Update_BothJigStatus:
-                    Log.Debug($"Update both jig status: {EJigStatus.MoldingFinish}");
-                    UpdateBothJigStatus(EJigStatus.MoldingFinish);
+                    if (_currentRecipe.AdditionalMolding_Recipe.UseAddTail == false)
+                    {
+                        Log.Debug($"Update both jig status: {EJigStatus.MoldingFinish}");
+                        UpdateBothJigStatus(EJigStatus.MoldingFinish);
+                    }
                     if (_currentRecipe.OptionRecipe.SkipVentTime == false)
                     {
                         Step.RunStep = (int)EMoldProcResinInjectStep.BellowCylDown;
@@ -861,6 +934,16 @@ namespace SDV_MoldingInjection.Process
                     Wait(1000); // Delay 1s after bellow cylinder down
                     Step.RunStep++;
                     break;
+                case EMoldProcResinInjectStep.AddTail_Check:
+                    if (_currentRecipe.AdditionalMolding_Recipe.UseAddTail)
+                    {
+                        Step.RunStep = (int)EMoldProcResinInjectStep.ClearFlag;
+                        break;
+                    }
+
+                    Log.Debug("Add tail NOT USE");
+                    Step.RunStep++;
+                    break;
                 case EMoldProcResinInjectStep.ZAxis_SafetyPos_Move:
                     Log.Debug("All Z Axis moving to Safety position");
                     ZAxisSafetyPosMove();
@@ -886,7 +969,11 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcResinInjectStep.End:
                     _needleCleanCount++;
-
+                    if (_currentRecipe.AdditionalMolding_Recipe.UseAddTail)
+                    {
+                        Sequence = ESequence.ResinInjectAddTail;
+                        break;
+                    }
                     if (Parent?.Sequence != ESequence.AutoRun)
                     {
                         Sequence = ESequence.Stop;
@@ -907,32 +994,6 @@ namespace SDV_MoldingInjection.Process
             {
                 case EMoldProcResinInjectAddTailStep.Start:
                     Log.Info("Inject add tail start");
-                    if (Parent?.Sequence == ESequence.AutoRun)
-                    {
-                        _tactTimeList.Inject.TaktTimeCounter = Environment.TickCount;
-                    }
-
-                    Step.RunStep++;
-                    break;
-                case EMoldProcResinInjectAddTailStep.InjectAddTail_Check:
-                    Log.Debug("Wait SPDHead Ready Inject Add Tail");
-                    Step.RunStep++;
-                    break;
-                case EMoldProcResinInjectAddTailStep.Wait_SPDHeadReady_InjectAddTail:
-                    if (IsSPDHeadInjectAddTailReady(ESPDHead.SPDHead1) == false ||
-                        IsSPDHeadInjectAddTailReady(ESPDHead.SPDHead2) == false ||
-                        IsSPDHeadInjectAddTailReady(ESPDHead.SPDHead3) == false ||
-                        IsSPDHeadInjectAddTailReady(ESPDHead.SPDHead4) == false)
-                    {
-                        Wait(20);
-                        break;
-                    }
-
-                    Step.RunStep++;
-                    break;
-                case EMoldProcResinInjectAddTailStep.SPDHead_InjectAddTail_Request:
-                    Log.Debug($"Set Output {EInjectProcOutput.SPDHead_InjectAddTail_Request}");
-                    procOutputs[EInjectProcOutput.SPDHead_InjectAddTail_Request].Value = true;
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectAddTailStep.ZAxis_UpDistance_Move:
@@ -945,14 +1006,19 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcResinInjectAddTailStep.ZAxis_UpDistance_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadWarning(EWarning.Z1Axis_Up_AddDetailPos_MoveTimeOut, _failHead);
+                        RaiseHeadWarning(EWarning.Z1Axis_Up_AddTailPos_MoveTimeOut, _failHead);
                         break;
                     }
 
                     Log.Debug("ZAxis move up distance for add tail done");
                     Step.RunStep++;
                     break;
-                case EMoldProcResinInjectAddTailStep.SDPHead_AddTail_DoneWait:
+                case EMoldProcResinInjectAddTailStep.InjectAddTail_Request:
+                    Log.Debug($"Set Output {EInjectProcOutput.InjectAddTail_Request}");
+                    procOutputs[EInjectProcOutput.InjectAddTail_Request].Value = true;
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectAddTailStep.Wait_SDPHead_AddTail_Done:
                     if (IsSPDHeadInjectAddTailDone(ESPDHead.SPDHead1) == false ||
                         IsSPDHeadInjectAddTailDone(ESPDHead.SPDHead2) == false ||
                         IsSPDHeadInjectAddTailDone(ESPDHead.SPDHead3) == false ||
@@ -962,7 +1028,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    procOutputs[EInjectProcOutput.SPDHead_InjectAddTail_Request].Value = false;
+                    procOutputs[EInjectProcOutput.InjectAddTail_Request].Value = false;
                     Log.Debug("SPDHead Inject AddTail done");
                     Step.RunStep++;
                     break;
@@ -988,15 +1054,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Z-Axes move to safety pos done");
                     Step.RunStep++;
                     break;
-                case EMoldProcResinInjectAddTailStep.ClearFlag:
-                    Log.Debug("Clear flag");
-                    procOutputs[EInjectProcOutput.DryPump_VacuumRequest].Value = false;
-                    procOutputs[EInjectProcOutput.DryPump_PurgeRequest].Value = false;
-                    Step.RunStep++;
-                    break;
                 case EMoldProcResinInjectAddTailStep.End:
-                    _needleCleanCount++;
-
                     if (Parent?.Sequence != ESequence.AutoRun)
                     {
                         Sequence = ESequence.Stop;
@@ -1940,16 +1998,14 @@ namespace SDV_MoldingInjection.Process
 
         private void ZAxisAddTailPosMove()
         {
-            double ZAxis_Vel = _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail / _currentRecipe.AdditionalMolding_Recipe.AddTailTime;
-
             if (!_currentRecipe.OptionRecipe.SkipHead12)
-                Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail, ZAxis_Vel);
+                Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
             if (!_currentRecipe.OptionRecipe.SkipHead12)
-                Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail, ZAxis_Vel);
+                Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
             if (!_currentRecipe.OptionRecipe.SkipHead34)
-                Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail, ZAxis_Vel);
+                Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
             if (!_currentRecipe.OptionRecipe.SkipHead34)
-                Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail, ZAxis_Vel);
+                Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
         }
 
         private bool AllZAxisInAddTailPos(ref ESPDHead failHead)
@@ -2290,6 +2346,28 @@ namespace SDV_MoldingInjection.Process
             return _currentRecipe.OptionRecipe.SkipHead34 || NozzleClean_H4.IsUngrip();
         }
 
+        private void NozzleCleanCyl_All_UnGrip()
+        {
+            NozzleClean_H1.Ungrip();
+            NozzleClean_H2.Ungrip();
+            NozzleClean_H3.Ungrip();
+            NozzleClean_H4.Ungrip();
+        }
+
+        private bool NozzleCleanCyl_All_UnGrip_Check()
+        {
+#if SIMULATION
+            SimulationInputSetter.SetSimInput(_devices.Inputs.Nozzle1Clean, false);
+            SimulationInputSetter.SetSimInput(_devices.Inputs.Nozzle2Clean, false);
+            SimulationInputSetter.SetSimInput(_devices.Inputs.Nozzle3Clean, false);
+            SimulationInputSetter.SetSimInput(_devices.Inputs.Nozzle4Clean, false);
+#endif
+            return (NozzleClean_H1.IsUngrip() &&
+                    NozzleClean_H2.IsUngrip() &&
+                    NozzleClean_H3.IsUngrip() &&
+                    NozzleClean_H4.IsUngrip());
+        }
+
         private bool IsSPDHeadWorkDone(ESequence sequence, ESPDHead head)
         {
             if (head == ESPDHead.All)
@@ -2346,25 +2424,13 @@ namespace SDV_MoldingInjection.Process
             };
         }
 
-        private bool IsSPDHeadInjectAddTailReady(ESPDHead head)
-        {
-            return head switch
-            {
-                ESPDHead.SPDHead1 => procInputs[EInjectProcInput.Wait_SPDHead1_InjectAddTail].Value || _currentRecipe.OptionRecipe.SkipHead12,
-                ESPDHead.SPDHead2 => procInputs[EInjectProcInput.Wait_SPDHead1_InjectAddTail].Value || _currentRecipe.OptionRecipe.SkipHead12,
-                ESPDHead.SPDHead3 => procInputs[EInjectProcInput.Wait_SPDHead1_InjectAddTail].Value || _currentRecipe.OptionRecipe.SkipHead34,
-                ESPDHead.SPDHead4 => procInputs[EInjectProcInput.Wait_SPDHead1_InjectAddTail].Value || _currentRecipe.OptionRecipe.SkipHead34,
-                _ => throw new Exception($"Invalid head: {head}")
-            };
-        }
-
         private void UpdateBothJigStatus(EJigStatus status)
         {
             if (_optionRecipe.SkipHead12 == false)
             {
                 JigStatuses[(int)EJig.JigLeft] = status;
             }
-            if(_optionRecipe.SkipHead34 == false)
+            if (_optionRecipe.SkipHead34 == false)
             {
                 JigStatuses[(int)EJig.JigRight] = status;
             }
@@ -2528,6 +2594,7 @@ namespace SDV_MoldingInjection.Process
         private ESPDHead currentHead;
         private ESPDHead _failHead;
         private EDotWeightingHead currentDotWeightingHead;
+        private Queue<EMoldProcResinInjectStep> MoldResinInjectSteps = new Queue<EMoldProcResinInjectStep>();
         #endregion
     }
 }

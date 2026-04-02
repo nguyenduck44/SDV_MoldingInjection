@@ -19,7 +19,6 @@
         Gate_Open,
         Gate_OpenWait,
 
-        ZAxis_Up_ForInjectAddTail_Requsest,
         Wait_ZAxisReady_ForInjectAddTail,
 
         PAxis_InjectPos_Move,

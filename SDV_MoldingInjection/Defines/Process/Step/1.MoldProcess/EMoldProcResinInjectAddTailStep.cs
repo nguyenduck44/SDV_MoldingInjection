@@ -4,21 +4,16 @@
     {
         Start,
 
-        InjectAddTail_Check,
-
-        Wait_SPDHeadReady_InjectAddTail,
-        SPDHead_InjectAddTail_Request,
         ZAxis_UpDistance_Move,
         ZAxis_UpDistance_Wait,
 
-        SDPHead_AddTail_DoneWait,
+        InjectAddTail_Request,
+        Wait_SDPHead_AddTail_Done,
 
         Update_BothJigStatus,
 
         ZAxis_SafetyPos_Move,
         ZAxis_SafetyPos_MoveWait,
-
-        ClearFlag,
 
         End,
     }

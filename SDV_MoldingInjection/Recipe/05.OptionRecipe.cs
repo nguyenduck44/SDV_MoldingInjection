@@ -16,6 +16,7 @@ namespace SDV_MoldingInjection.Recipe
         private bool _skipVentTime;
         private bool _delayAfterInjectFinish;
         private bool _enableInjectionPath;
+        private bool _injectAfterOpenAngleValve;
 
         #endregion
 
@@ -103,6 +104,12 @@ namespace SDV_MoldingInjection.Recipe
         {
             get => _enableInjectionPath;
             set => SetRecipe(ref _enableInjectionPath, value, nameof(EnableInjectionPath));
+        }
+
+        public bool InjectAfterOpenAngleValve
+        {
+            get => _injectAfterOpenAngleValve;
+            set => SetRecipe(ref _injectAfterOpenAngleValve, value, nameof(InjectAfterOpenAngleValve));
         }
     }
 }

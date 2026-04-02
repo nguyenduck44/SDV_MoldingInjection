@@ -87,10 +87,14 @@ namespace SDV_MoldingInjection.MVVM.Models
                 specUnder = _recipeSelector.CurrentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec;
             }
 
-            ChamberPressurePlot!.Plot.Add.HorizontalLine(spec);
-            ChamberPressurePlot!.Plot.Add.HorizontalLine(specUnder);
+            HorizontalLine lineSpec = ChamberPressurePlot!.Plot.Add.HorizontalLine(spec);
+            HorizontalLine lineUnder = ChamberPressurePlot!.Plot.Add.HorizontalLine(specUnder);
+            lineSpec.LineStyle.Color = VacuumPressureSpecLineColor;
+            lineSpec.LineStyle.Width = 1;
+            lineUnder.LineStyle.Color = VacuumPressureHoldUnderLineColor;
+            lineUnder.LineStyle.Width = 1;
 
-            _chamberPressureScatter.MarkerSize = 3;
+            ApplyChamberPressureScatterStyle();
 
             Refresh();
         }
@@ -186,11 +190,24 @@ namespace SDV_MoldingInjection.MVVM.Models
                 ChamberPressurePlot.Plot.Grid.MinorLineWidth = 1;
             }
 
+            ApplyChamberPressureScatterStyle();
+        }
+
+        /// <summary>
+        /// Màu cố định cho đường scatter (tránh palette đổi mỗi lần Add).
+        /// </summary>
+        private void ApplyChamberPressureScatterStyle()
+        {
+            _chamberPressureScatter.Color = ChamberPressureLineColor;
             _chamberPressureScatter.MarkerSize = 3;
         }
         #endregion
 
         #region Private fields
+        private static readonly Color ChamberPressureLineColor = new(30, 120, 200);
+        private static readonly Color VacuumPressureSpecLineColor = new(40, 160, 70);
+        private static readonly Color VacuumPressureHoldUnderLineColor = new(200, 60, 60);
+
         private const double MinPressureForLogScale = 1e-2;
         private readonly RecipeSelector _recipeSelector;
         private bool isLogScale = true;
