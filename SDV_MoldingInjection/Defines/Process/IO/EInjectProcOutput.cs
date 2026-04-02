@@ -15,7 +15,7 @@
         SPDHead3_RemoveResinRequest,
         SPDHead4_RemoveResinRequest,
 
-        SPDHead_InjectAddTail_Request,
+        InjectAddTail_Request,
 
         Request_H13DotWeighting,
         Request_H24DotWeighting,

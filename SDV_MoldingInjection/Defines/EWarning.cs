@@ -46,7 +46,7 @@ namespace SDV_MoldingInjection.Defines
         Z1Axis_MoveDotWeightingPos_Timeout,
         Z1Axis_MoveBubbleRemovePos_Timeout,
         Z1Axis_MoveAssembleDisassemblePos_Timeout,
-        Z1Axis_Up_AddDetailPos_MoveTimeOut,
+        Z1Axis_Up_AddTailPos_MoveTimeOut,
 
         Z2Axis_Origin_TimeOut = 700,
         Z2Axis_SafetyPos_MoveTimeOut,
@@ -56,7 +56,7 @@ namespace SDV_MoldingInjection.Defines
         Z2Axis_MoveDotWeightingPos_Timeout,
         Z2Axis_MoveBubbleRemovePos_Timeout,
         Z2Axis_MoveAssembleDisassemblePos_Timeout,
-        Z2Axis_Up_AddDetailPos_MoveTimeOut,
+        Z2Axis_Up_AddTailPos_MoveTimeOut,
 
         Z3Axis_Origin_TimeOut = 750,
         Z3Axis_SafetyPos_MoveTimeOut,
@@ -66,7 +66,7 @@ namespace SDV_MoldingInjection.Defines
         Z3Axis_MoveDotWeightingPos_Timeout,
         Z3Axis_MoveBubbleRemovePos_Timeout,
         Z3Axis_MoveAssembleDisassemblePos_Timeout,
-        Z3Axis_Up_AddDetailPos_MoveTimeOut,
+        Z3Axis_Up_AddTailPos_MoveTimeOut,
 
         Z4Axis_Origin_TimeOut = 800,
         Z4Axis_SafetyPos_MoveTimeOut,
@@ -76,7 +76,7 @@ namespace SDV_MoldingInjection.Defines
         Z4Axis_MoveDotWeightingPos_Timeout,
         Z4Axis_MoveBubbleRemovePos_Timeout,
         Z4Axis_MoveAssembleDisassemblePos_Timeout,
-        Z4Axis_Up_AddDetailPos_MoveTimeOut,
+        Z4Axis_Up_AddTailPos_MoveTimeOut,
 
         BellowCyl_DownFail = 900,
         BellowCyl_UpFail,

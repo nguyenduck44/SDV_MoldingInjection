@@ -6,7 +6,7 @@
 
         WorkRequest,
 
-        ZAxis_InjectAddTail_Ready,
+        InjectAddTail_Request,
 
         XYAxisInDotWeightingPos,
     }

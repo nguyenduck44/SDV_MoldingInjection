@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
              mc:Ignorable="d"
+             IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
              xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
              d:DataContext="{d:DesignInstance Type={x:Type vm:SPDHeadAllMaintenanceViewModel}}"
              d:DesignHeight="450"

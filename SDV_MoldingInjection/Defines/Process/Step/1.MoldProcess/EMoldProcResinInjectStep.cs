@@ -32,6 +32,8 @@
         BellowCylDown,
         BellowCylDown_Wait,
 
+        AddTail_Check,
+
         ZAxis_SafetyPos_Move,
         ZAxis_SafetyPos_MoveWait,
 

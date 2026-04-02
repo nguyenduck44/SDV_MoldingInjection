@@ -6,21 +6,18 @@ namespace SDV_MoldingInjection.Recipe
     public class AdditionalMoldingRecipe : RecipeBase
     {
         #region privates
-        private bool _skipAddTail;
+        private bool _useAddTail;
         private double _addTailWeight;
         private double _zUpDistanceAddTail;
         private double _addTailSpeed;
         private double _bubbleRemoveCount;
-        private double _bubbleRemoveRotateCount;
-        private double _addTailTime;
-
         #endregion
 
-        [SingleRecipeDescription(Description = "Skip Add Tail", Detail = "Check to Skip Add Tail")]
-        public bool SkipAddTail
+        [SingleRecipeDescription(Description = "USE Add Tail", Detail = "Check to Skip Add Tail")]
+        public bool UseAddTail
         {
-            get => _skipAddTail;
-            set => SetRecipe(ref _skipAddTail, value, nameof(SkipAddTail));
+            get => _useAddTail;
+            set => SetRecipe(ref _useAddTail, value, nameof(UseAddTail));
         }
 
         [SingleRecipeDescription(Description = "Z-UP Distance Add Tail", Unit = Unit.mm)]
@@ -51,20 +48,6 @@ namespace SDV_MoldingInjection.Recipe
         {
             get => _bubbleRemoveCount;
             set => SetRecipe(ref _bubbleRemoveCount, value, nameof(BubbleRemoveCount));
-        }
-
-        [SingleRecipeDescription(Description = "Bubble remove rotate count")]
-        [SingleRecipeMinMax(Min = 1, Max = 100)]
-        public double BubbleRemoveRotateCount
-        {
-            get => _bubbleRemoveRotateCount;
-            set => SetRecipe(ref _bubbleRemoveRotateCount, value, nameof(BubbleRemoveRotateCount));
-        }
-
-        public double AddTailTime
-        {
-            get => _addTailTime;
-            set => SetRecipe(ref _addTailTime, value, nameof(AddTailTime));
         }
     }
 }

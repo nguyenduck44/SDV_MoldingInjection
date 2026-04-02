@@ -304,6 +304,9 @@ namespace SDV_MoldingInjection.Process
                 case ESequence.ResinInject:
                     Sequence_ResinInject();
                     break;
+                case ESequence.ResinInjectAddTail:
+                    Sequence_InjectAddTail();
+                    break;
                 case ESequence.Unloading:
                     Sequence_LoadingUnloading(isLoading: false);
                     break;
@@ -877,8 +880,11 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EMoldProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EMoldProcResinInjectStep.Update_BothJigStatus:
-                    Log.Debug($"Update both jig status: {EJigStatus.MoldingFinish}");
-                    UpdateBothJigStatus(EJigStatus.MoldingFinish);
+                    if (_currentRecipe.AdditionalMolding_Recipe.UseAddTail == false)
+                    {
+                        Log.Debug($"Update both jig status: {EJigStatus.MoldingFinish}");
+                        UpdateBothJigStatus(EJigStatus.MoldingFinish);
+                    }
                     if (_currentRecipe.OptionRecipe.SkipVentTime == false)
                     {
                         Step.RunStep = (int)EMoldProcResinInjectStep.BellowCylDown;
@@ -928,6 +934,16 @@ namespace SDV_MoldingInjection.Process
                     Wait(1000); // Delay 1s after bellow cylinder down
                     Step.RunStep++;
                     break;
+                case EMoldProcResinInjectStep.AddTail_Check:
+                    if (_currentRecipe.AdditionalMolding_Recipe.UseAddTail)
+                    {
+                        Step.RunStep = (int)EMoldProcResinInjectStep.ClearFlag;
+                        break;
+                    }
+
+                    Log.Debug("Add tail NOT USE");
+                    Step.RunStep++;
+                    break;
                 case EMoldProcResinInjectStep.ZAxis_SafetyPos_Move:
                     Log.Debug("All Z Axis moving to Safety position");
                     ZAxisSafetyPosMove();
@@ -953,7 +969,11 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcResinInjectStep.End:
                     _needleCleanCount++;
-
+                    if (_currentRecipe.AdditionalMolding_Recipe.UseAddTail)
+                    {
+                        Sequence = ESequence.ResinInjectAddTail;
+                        break;
+                    }
                     if (Parent?.Sequence != ESequence.AutoRun)
                     {
                         Sequence = ESequence.Stop;
@@ -974,32 +994,6 @@ namespace SDV_MoldingInjection.Process
             {
                 case EMoldProcResinInjectAddTailStep.Start:
                     Log.Info("Inject add tail start");
-                    if (Parent?.Sequence == ESequence.AutoRun)
-                    {
-                        _tactTimeList.Inject.TaktTimeCounter = Environment.TickCount;
-                    }
-
-                    Step.RunStep++;
-                    break;
-                case EMoldProcResinInjectAddTailStep.InjectAddTail_Check:
-                    Log.Debug("Wait SPDHead Ready Inject Add Tail");
-                    Step.RunStep++;
-                    break;
-                case EMoldProcResinInjectAddTailStep.Wait_SPDHeadReady_InjectAddTail:
-                    if (IsSPDHeadInjectAddTailReady(ESPDHead.SPDHead1) == false ||
-                        IsSPDHeadInjectAddTailReady(ESPDHead.SPDHead2) == false ||
-                        IsSPDHeadInjectAddTailReady(ESPDHead.SPDHead3) == false ||
-                        IsSPDHeadInjectAddTailReady(ESPDHead.SPDHead4) == false)
-                    {
-                        Wait(20);
-                        break;
-                    }
-
-                    Step.RunStep++;
-                    break;
-                case EMoldProcResinInjectAddTailStep.SPDHead_InjectAddTail_Request:
-                    Log.Debug($"Set Output {EInjectProcOutput.SPDHead_InjectAddTail_Request}");
-                    procOutputs[EInjectProcOutput.SPDHead_InjectAddTail_Request].Value = true;
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectAddTailStep.ZAxis_UpDistance_Move:
@@ -1012,14 +1006,19 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcResinInjectAddTailStep.ZAxis_UpDistance_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadWarning(EWarning.Z1Axis_Up_AddDetailPos_MoveTimeOut, _failHead);
+                        RaiseHeadWarning(EWarning.Z1Axis_Up_AddTailPos_MoveTimeOut, _failHead);
                         break;
                     }
 
                     Log.Debug("ZAxis move up distance for add tail done");
                     Step.RunStep++;
                     break;
-                case EMoldProcResinInjectAddTailStep.SDPHead_AddTail_DoneWait:
+                case EMoldProcResinInjectAddTailStep.InjectAddTail_Request:
+                    Log.Debug($"Set Output {EInjectProcOutput.InjectAddTail_Request}");
+                    procOutputs[EInjectProcOutput.InjectAddTail_Request].Value = true;
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectAddTailStep.Wait_SDPHead_AddTail_Done:
                     if (IsSPDHeadInjectAddTailDone(ESPDHead.SPDHead1) == false ||
                         IsSPDHeadInjectAddTailDone(ESPDHead.SPDHead2) == false ||
                         IsSPDHeadInjectAddTailDone(ESPDHead.SPDHead3) == false ||
@@ -1029,7 +1028,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    procOutputs[EInjectProcOutput.SPDHead_InjectAddTail_Request].Value = false;
+                    procOutputs[EInjectProcOutput.InjectAddTail_Request].Value = false;
                     Log.Debug("SPDHead Inject AddTail done");
                     Step.RunStep++;
                     break;
@@ -1055,15 +1054,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Z-Axes move to safety pos done");
                     Step.RunStep++;
                     break;
-                case EMoldProcResinInjectAddTailStep.ClearFlag:
-                    Log.Debug("Clear flag");
-                    procOutputs[EInjectProcOutput.DryPump_VacuumRequest].Value = false;
-                    procOutputs[EInjectProcOutput.DryPump_PurgeRequest].Value = false;
-                    Step.RunStep++;
-                    break;
                 case EMoldProcResinInjectAddTailStep.End:
-                    _needleCleanCount++;
-
                     if (Parent?.Sequence != ESequence.AutoRun)
                     {
                         Sequence = ESequence.Stop;
@@ -2007,16 +1998,14 @@ namespace SDV_MoldingInjection.Process
 
         private void ZAxisAddTailPosMove()
         {
-            double ZAxis_Vel = _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail / _currentRecipe.AdditionalMolding_Recipe.AddTailTime;
-
             if (!_currentRecipe.OptionRecipe.SkipHead12)
-                Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail, ZAxis_Vel);
+                Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
             if (!_currentRecipe.OptionRecipe.SkipHead12)
-                Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail, ZAxis_Vel);
+                Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
             if (!_currentRecipe.OptionRecipe.SkipHead34)
-                Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail, ZAxis_Vel);
+                Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
             if (!_currentRecipe.OptionRecipe.SkipHead34)
-                Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail, ZAxis_Vel);
+                Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisInjectPos + _currentRecipe.AdditionalMolding_Recipe.ZUpDistanceAddTail);
         }
 
         private bool AllZAxisInAddTailPos(ref ESPDHead failHead)
@@ -2431,18 +2420,6 @@ namespace SDV_MoldingInjection.Process
                 ESPDHead.SPDHead2 => procInputs[EInjectProcInput.SPDHead2_InjectAddTailDone].Value || _currentRecipe.OptionRecipe.SkipHead12,
                 ESPDHead.SPDHead3 => procInputs[EInjectProcInput.SPDHead3_InjectAddTailDone].Value || _currentRecipe.OptionRecipe.SkipHead34,
                 ESPDHead.SPDHead4 => procInputs[EInjectProcInput.SPDHead4_InjectAddTailDone].Value || _currentRecipe.OptionRecipe.SkipHead34,
-                _ => throw new Exception($"Invalid head: {head}")
-            };
-        }
-
-        private bool IsSPDHeadInjectAddTailReady(ESPDHead head)
-        {
-            return head switch
-            {
-                ESPDHead.SPDHead1 => procInputs[EInjectProcInput.Wait_SPDHead1_InjectAddTail].Value || _currentRecipe.OptionRecipe.SkipHead12,
-                ESPDHead.SPDHead2 => procInputs[EInjectProcInput.Wait_SPDHead1_InjectAddTail].Value || _currentRecipe.OptionRecipe.SkipHead12,
-                ESPDHead.SPDHead3 => procInputs[EInjectProcInput.Wait_SPDHead1_InjectAddTail].Value || _currentRecipe.OptionRecipe.SkipHead34,
-                ESPDHead.SPDHead4 => procInputs[EInjectProcInput.Wait_SPDHead1_InjectAddTail].Value || _currentRecipe.OptionRecipe.SkipHead34,
                 _ => throw new Exception($"Invalid head: {head}")
             };
         }

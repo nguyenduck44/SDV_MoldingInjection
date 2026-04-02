@@ -116,14 +116,6 @@ namespace SDV_MoldingInjection.Defines
                 .MapTo(SPDHead3_ProcOutput[ESPDHeadProcOutput.InjectAddTailFinish]);
             InjectProcInput[EInjectProcInput.SPDHead4_InjectAddTailDone]
                 .MapTo(SPDHead4_ProcOutput[ESPDHeadProcOutput.InjectAddTailFinish]);
-            InjectProcInput[EInjectProcInput.Wait_SPDHead1_InjectAddTail]
-                .MapTo(SPDHead1_ProcOutput[ESPDHeadProcOutput.ZAxisUpForInjectAddTailRequest]);
-            InjectProcInput[EInjectProcInput.Wait_SPDHead2_InjectAddTail]
-                .MapTo(SPDHead2_ProcOutput[ESPDHeadProcOutput.ZAxisUpForInjectAddTailRequest]);
-            InjectProcInput[EInjectProcInput.Wait_SPDHead3_InjectAddTail]
-                .MapTo(SPDHead3_ProcOutput[ESPDHeadProcOutput.ZAxisUpForInjectAddTailRequest]);
-            InjectProcInput[EInjectProcInput.Wait_SPDHead4_InjectAddTail]
-                .MapTo(SPDHead4_ProcOutput[ESPDHeadProcOutput.ZAxisUpForInjectAddTailRequest]);
             InjectProcInput[EInjectProcInput.SPDHead1_DotWeightingDone]
                 .MapTo(SPDHead1_ProcOutput[ESPDHeadProcOutput.SPDHeadDotWeightingDone]);
             InjectProcInput[EInjectProcInput.SPDHead2_DotWeightingDone]
@@ -165,14 +157,14 @@ namespace SDV_MoldingInjection.Defines
                .MapTo(InjectProcOutput[EInjectProcOutput.Request_H13DotWeighting]);
             SPDHead4_ProcInput[ESPDHeadProcInput.XYAxisInDotWeightingPos]
                .MapTo(InjectProcOutput[EInjectProcOutput.Request_H24DotWeighting]);
-            SPDHead1_ProcInput[ESPDHeadProcInput.ZAxis_InjectAddTail_Ready]
-               .MapTo(InjectProcOutput[EInjectProcOutput.SPDHead_InjectAddTail_Request]);
-            SPDHead2_ProcInput[ESPDHeadProcInput.ZAxis_InjectAddTail_Ready]
-               .MapTo(InjectProcOutput[EInjectProcOutput.SPDHead_InjectAddTail_Request]);
-            SPDHead3_ProcInput[ESPDHeadProcInput.ZAxis_InjectAddTail_Ready]
-               .MapTo(InjectProcOutput[EInjectProcOutput.SPDHead_InjectAddTail_Request]);
-            SPDHead4_ProcInput[ESPDHeadProcInput.ZAxis_InjectAddTail_Ready]
-               .MapTo(InjectProcOutput[EInjectProcOutput.SPDHead_InjectAddTail_Request]);
+            SPDHead1_ProcInput[ESPDHeadProcInput.InjectAddTail_Request]
+               .MapTo(InjectProcOutput[EInjectProcOutput.InjectAddTail_Request]);
+            SPDHead2_ProcInput[ESPDHeadProcInput.InjectAddTail_Request]
+               .MapTo(InjectProcOutput[EInjectProcOutput.InjectAddTail_Request]);
+            SPDHead3_ProcInput[ESPDHeadProcInput.InjectAddTail_Request]
+               .MapTo(InjectProcOutput[EInjectProcOutput.InjectAddTail_Request]);
+            SPDHead4_ProcInput[ESPDHeadProcInput.InjectAddTail_Request]
+               .MapTo(InjectProcOutput[EInjectProcOutput.InjectAddTail_Request]);
         }
     }
 }
