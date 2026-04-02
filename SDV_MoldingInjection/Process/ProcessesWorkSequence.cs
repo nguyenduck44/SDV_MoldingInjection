@@ -4,6 +4,7 @@ namespace SDV_MoldingInjection.Process
 {
     public class ProcessesWorkSequence
     {
+        #region DryPump
         public static readonly List<EDryPumpProcResinInjectStep> DryPumpResinInjectSequence = new List<EDryPumpProcResinInjectStep>
         {
             EDryPumpProcResinInjectStep.DryPump_Vacuum_RequestWait,
@@ -93,5 +94,35 @@ namespace SDV_MoldingInjection.Process
             EDryPumpProcResinInjectStep.SetFlag_PurgeFinish,
             EDryPumpProcResinInjectStep.WaitToClear_ProcOutput,
         };
+        #endregion
+
+        #region Inject
+        public static readonly List<EMoldProcResinInjectStep> MoldResinInjectSequence = new List<EMoldProcResinInjectStep>
+        {
+            EMoldProcResinInjectStep.XYAxis_InjectPos_Move,
+            EMoldProcResinInjectStep.XYAxis_InjectPos_MoveWait,
+            EMoldProcResinInjectStep.ZAxisBellowCyl_InjectPos_Move,
+            EMoldProcResinInjectStep.ZAxisBellowCyl_InjectPos_MoveWait,
+            EMoldProcResinInjectStep.DryPump_Vacuum_Request,
+            EMoldProcResinInjectStep.DryPump_Vacuum_DoneWait,
+            EMoldProcResinInjectStep.SDPHead_Work_Request,
+            EMoldProcResinInjectStep.SDPHead_Work_DoneWait,
+        };
+
+        public static readonly List<EMoldProcResinInjectStep> MoldResinInjectSequence_InjectAfterOpenAngleValve = new List<EMoldProcResinInjectStep>
+        {
+            EMoldProcResinInjectStep.XYAxis_InjectPos_Move,
+            EMoldProcResinInjectStep.XYAxis_InjectPos_MoveWait,
+            EMoldProcResinInjectStep.ZAxisBellowCyl_InjectPos_Move,
+            EMoldProcResinInjectStep.ZAxisBellowCyl_InjectPos_MoveWait,
+            EMoldProcResinInjectStep.SDPHead_Work_Request,
+            EMoldProcResinInjectStep.DelayAfter_AngleValve_Open,
+            EMoldProcResinInjectStep.DryPump_Vacuum_Request,
+            EMoldProcResinInjectStep.DryPump_Vacuum_DoneWait,
+            EMoldProcResinInjectStep.SDPHead_Work_DoneWait,
+        };
+
+
+        #endregion
     }
 }
