@@ -18,6 +18,9 @@ namespace SDV_MoldingInjection.Defines
         Bellow_Down,
         Bellow_DownWait,
 
+        NozzleClean_Cyl_UnGrip,
+        NozzleClean_Cyl_UnGrip_Wait,
+
         XYAxis_Origin,
         XYAxis_OriginWait,
 

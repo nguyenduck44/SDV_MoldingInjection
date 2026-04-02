@@ -199,7 +199,7 @@ namespace SDV_MoldingInjection.Process
                     if (BellowCyl.IsDown())
                     {
                         Log.Debug($"{BellowCyl} is down already");
-                        Step.ToRunStep = (int)EMoldProcToRunStep.ZAxis_SafetyPos_Move;
+                        Step.ToRunStep = (int)EMoldProcToRunStep.NozzleClean_Cyl_UnGrip;
                         break;
                     }
 
@@ -217,6 +217,29 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"Move {BellowCyl} down done");
+                    Step.ToRunStep++;
+                    break;
+                case EMoldProcToRunStep.NozzleClean_Cyl_UnGrip:
+                    if (NozzleCleanCyl_All_UnGrip_Check())
+                    {
+                        Log.Debug("Nozzle clean cylinder ungrip already");
+                        Step.ToRunStep = (int)EMoldProcToRunStep.ZAxis_SafetyPos_Move;
+                        break;
+                    }
+
+                    Log.Debug("Nozzle clean cylinder ungrip");
+                    NozzleCleanCyl_All_UnGrip();
+                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => NozzleCleanCyl_All_UnGrip_Check());
+                    Step.ToRunStep++;
+                    break;
+                case EMoldProcToRunStep.NozzleClean_Cyl_UnGrip_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseWarning(EWarning.Nozzle_CleanCyl_UnGripFail);
+                        break;
+                    }
+
+                    Log.Debug("Nozzle clean cylinder ungrip done");
                     Step.ToRunStep++;
                     break;
                 case EMoldProcToRunStep.ZAxis_SafetyPos_Move:
@@ -437,7 +460,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcOriginStep.Bellow_Down:
                     if (BellowCyl.IsDown())
                     {
-                        Step.OriginStep = (int)EMoldProcOriginStep.XYAxis_Origin;
+                        Step.OriginStep = (int)EMoldProcOriginStep.NozzleClean_Cyl_UnGrip;
                         break;
                     }
 
@@ -455,6 +478,28 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"Move {BellowCyl} down done");
+                    Step.OriginStep++;
+                    break;
+                case EMoldProcOriginStep.NozzleClean_Cyl_UnGrip:
+                    if (NozzleCleanCyl_All_UnGrip_Check())
+                    {
+                        Step.OriginStep = (int)EMoldProcOriginStep.XYAxis_Origin;
+                        break;
+                    }
+
+                    Log.Debug("Nozzle clean cylinder ungrip");
+                    NozzleCleanCyl_All_UnGrip();
+                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => NozzleCleanCyl_All_UnGrip_Check());
+                    Step.OriginStep++;
+                    break;
+                case EMoldProcOriginStep.NozzleClean_Cyl_UnGrip_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseWarning(EWarning.Nozzle_CleanCyl_UnGripFail);
+                        break;
+                    }
+
+                    Log.Debug("Nozzle clean cylinder ungrip done");
                     Step.OriginStep++;
                     break;
                 case EMoldProcOriginStep.XYAxis_Origin:
@@ -724,7 +769,7 @@ namespace SDV_MoldingInjection.Process
                     if (_optionRecipe.InjectAfterOpenAngleValve)
                     {
                         MoldResinInjectSteps = new Queue<EMoldProcResinInjectStep>(ProcessesWorkSequence.MoldResinInjectSequence_InjectAfterOpenAngleValve);
-                        
+
                     }
                     else
                     {
@@ -2312,6 +2357,28 @@ namespace SDV_MoldingInjection.Process
             return _currentRecipe.OptionRecipe.SkipHead34 || NozzleClean_H4.IsUngrip();
         }
 
+        private void NozzleCleanCyl_All_UnGrip()
+        {
+            NozzleClean_H1.Ungrip();
+            NozzleClean_H2.Ungrip();
+            NozzleClean_H3.Ungrip();
+            NozzleClean_H4.Ungrip();
+        }
+
+        private bool NozzleCleanCyl_All_UnGrip_Check()
+        {
+#if SIMULATION
+            SimulationInputSetter.SetSimInput(_devices.Inputs.Nozzle1Clean, false);
+            SimulationInputSetter.SetSimInput(_devices.Inputs.Nozzle2Clean, false);
+            SimulationInputSetter.SetSimInput(_devices.Inputs.Nozzle3Clean, false);
+            SimulationInputSetter.SetSimInput(_devices.Inputs.Nozzle4Clean, false);
+#endif
+            return (NozzleClean_H1.IsUngrip() &&
+                    NozzleClean_H2.IsUngrip() &&
+                    NozzleClean_H3.IsUngrip() &&
+                    NozzleClean_H4.IsUngrip());
+        }
+
         private bool IsSPDHeadWorkDone(ESequence sequence, ESPDHead head)
         {
             if (head == ESPDHead.All)
@@ -2386,7 +2453,7 @@ namespace SDV_MoldingInjection.Process
             {
                 JigStatuses[(int)EJig.JigLeft] = status;
             }
-            if(_optionRecipe.SkipHead34 == false)
+            if (_optionRecipe.SkipHead34 == false)
             {
                 JigStatuses[(int)EJig.JigRight] = status;
             }
