@@ -79,6 +79,9 @@
             <DataTemplate DataType="{x:Type vm:AutoViewModel}">
                 <views:AutoView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:MachineStatusAutoViewModel}">
+                <views:MachineStatusAutoView />
+            </DataTemplate>
             <DataTemplate DataType="{x:Type define:CarrierJigStatus}">
                 <controls:CarrierJigStatusView />
             </DataTemplate>

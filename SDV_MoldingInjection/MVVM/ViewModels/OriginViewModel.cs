@@ -21,10 +21,12 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         #endregion
 
         #region Constructor
-        public OriginViewModel(Processes processes, MachineStatus machineStatus,
+        public OriginViewModel(Processes processes, 
+            MachineStatus machineStatus,
             Devices devices,
             NavigationStore navigationStore,
-            INavigationService navigationService)
+            INavigationService navigationService,
+            MachineStatusAutoViewModel machineStatusAutoViewModel)
         {
             Processes = processes;
             MachineStatus = machineStatus;
@@ -40,40 +42,18 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             Head3Motions = new List<IMotion> { Devices.Motions.Z3Axis, Devices.Motions.P3Axis, Devices.Motions.G3Axis };
             Head4Motions = new List<IMotion> { Devices.Motions.Z4Axis, Devices.Motions.P4Axis, Devices.Motions.G4Axis };
             _navigationService = navigationService;
+            MachineStatusAuto = machineStatusAutoViewModel;
             Log = LogManager.GetLogger("OriginVM");
 
             _statusUpdateTimer = new NonOverlappingTimer(100);
-            _statusUpdateTimer.Elapsed += StatusUpdateTimerElapsed;
             _statusUpdateTimer.Start();
         }
         #endregion
 
-        private void StatusUpdateTimerElapsed(object? sender, System.Timers.ElapsedEventArgs e)
-        {
-            if (_navigationStore.CurrentViewModel != this) return;
-
-            // Door / panel / OP / emergency signals used by OriginView.xaml
-            Devices.Inputs.DoorOpenLeft.RaiseValueUpdated();
-            Devices.Inputs.DoorReleaseLeft.RaiseValueUpdated();
-            Devices.Inputs.DoorOpenRight.RaiseValueUpdated();
-            Devices.Inputs.DoorReleaseRight.RaiseValueUpdated();
-            Devices.Inputs.DoorOpenRearLeft.RaiseValueUpdated();
-            Devices.Inputs.DoorReleaseRearLeft.RaiseValueUpdated();
-            Devices.Inputs.DoorOpenRearRight.RaiseValueUpdated();
-            Devices.Inputs.DoorReleaseRearRight.RaiseValueUpdated();
-            Devices.Inputs.PanelCloseLeftCheck.RaiseValueUpdated();
-            Devices.Inputs.PanelCloseRightCheck.RaiseValueUpdated();
-
-            Devices.Inputs.OPButtonStart.RaiseValueUpdated();
-            Devices.Inputs.OPButtonStop.RaiseValueUpdated();
-            Devices.Inputs.OPButtonReset.RaiseValueUpdated();
-
-            Devices.Inputs.Emergency.RaiseValueUpdated();
-        }
-
         #region Properties
         public Processes Processes { get; }
         public MachineStatus MachineStatus { get; }
+        public MachineStatusAutoViewModel MachineStatusAuto { get; }
         public Devices Devices { get; }
         public IReadOnlyList<IMotion> XYMotions { get; }
         public IReadOnlyList<IMotion> Head1Motions { get; }

@@ -31,6 +31,7 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddViewModel<InitDeinitViewModel>();
                 services.AddViewModel<OriginViewModel>();
                 services.AddViewModel<AutoViewModel>();
+                services.AddViewModel<MachineStatusAutoViewModel>();
                 services.AddViewModel<ManualViewModel>();
 
                 services.AddViewModel<TeachViewModel>();

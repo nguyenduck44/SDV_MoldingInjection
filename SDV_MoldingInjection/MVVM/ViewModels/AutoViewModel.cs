@@ -19,58 +19,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public SyringAmountStatusList SyringeAmountStatusList { get; }
         public CarrierJigStatusList CarrierJigStatusList { get; }
         public Plotter Plotter { get; }
-
-        public double PanelTemperature => Devices.PanelIndicator.Temperature;
-        public double PanelHumidity => Devices.PanelIndicator.Humidity;
+        public MachineStatusAutoViewModel MachineStatusAuto { get; }
 
         public int TodayInputCount => CurrentProductionData?.TotalInput ?? 0;
         public int TodayOutputCount => CurrentProductionData?.TotalOutput ?? 0;
-
-        private bool h1Working;
-        private bool h2Working;
-        private bool h3Working;
-        private bool h4Working;
-
-        public bool H1Working
-        {
-            get { return h1Working; }
-            set
-            {
-                h1Working = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool H2Working
-        {
-            get { return h2Working; }
-            set
-            {
-                h2Working = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool H3Working
-        {
-            get { return h3Working; }
-            set
-            {
-                h3Working = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool H4Working
-        {
-            get { return h4Working; }
-            set
-            {
-                h4Working = value;
-                OnPropertyChanged();
-            }
-        }
-
         #endregion
 
         #region Contructors
@@ -82,7 +34,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             RecipeSelector recipeSelector,
             CarrierJigStatusList carrierJigStatusList,
             Plotter plotter,
-            ProductionService productionService)
+            ProductionService productionService,
+            MachineStatusAutoViewModel machineStatusAuto)
         {
             Devices = devices;
             MachineStatus = machineStatus;
@@ -92,6 +45,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             CarrierJigStatusList = carrierJigStatusList;
             Plotter = plotter;
             _productionService = productionService;
+            MachineStatusAuto = machineStatusAuto;
             Log = LogManager.GetLogger("AutoVM");
 
             statusUpdateTimer = new NonOverlappingTimer(100);
@@ -104,45 +58,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private void StatusUpdateTimerHandler(object? sender, System.Timers.ElapsedEventArgs e)
         {
             if (_navigationStore.CurrentViewModel != this) return;
-            Devices.Inputs.DoorOpenLeft.RaiseValueUpdated();
-            Devices.Inputs.DoorReleaseLeft.RaiseValueUpdated();
-            Devices.Inputs.DoorOpenRight.RaiseValueUpdated();
-            Devices.Inputs.DoorReleaseRight.RaiseValueUpdated();
-            Devices.Inputs.DoorOpenRearLeft.RaiseValueUpdated();
-            Devices.Inputs.DoorReleaseRearLeft.RaiseValueUpdated();
-            Devices.Inputs.DoorOpenRearRight.RaiseValueUpdated();
-            Devices.Inputs.DoorReleaseRearRight.RaiseValueUpdated();
-            Devices.Inputs.PanelCloseLeftCheck.RaiseValueUpdated();
-            Devices.Inputs.PanelCloseRightCheck.RaiseValueUpdated();
-            Devices.Inputs.ChamberOpen.RaiseValueUpdated();
-            Devices.Inputs.Jig1Detect.RaiseValueUpdated();
-            Devices.Inputs.Jig2Detect.RaiseValueUpdated();
-            Devices.Inputs.Jig3Detect.RaiseValueUpdated();
-            Devices.Inputs.Jig4Detect.RaiseValueUpdated();
-            Devices.Inputs.Emergency.RaiseValueUpdated();
-            Devices.Inputs.OPButtonStart.RaiseValueUpdated();
-            Devices.Inputs.OPButtonStop.RaiseValueUpdated();
-            Devices.Inputs.OPButtonReset.RaiseValueUpdated();
-            Devices.Inputs.H1_CylDown.RaiseValueUpdated();
-            Devices.Inputs.H2_CylDown.RaiseValueUpdated();
-            Devices.Inputs.H3_CylDown.RaiseValueUpdated();
-            Devices.Inputs.H4_CylDown.RaiseValueUpdated();
-            Devices.Inputs.H1_SyringeCheck.RaiseValueUpdated();
-            Devices.Inputs.H2_SyringeCheck.RaiseValueUpdated();
-            Devices.Inputs.H3_SyringeCheck.RaiseValueUpdated();
-            Devices.Inputs.H4_SyringeCheck.RaiseValueUpdated();
-            Devices.Inputs.BelowsUp.RaiseValueUpdated();
-            Devices.Inputs.DryPumpRun.RaiseValueUpdated();
-
             UpdateSyringeStatus();
 
             OnPropertyChanged(nameof(TodayInputCount));
             OnPropertyChanged(nameof(TodayOutputCount));
-
-            H1Working = Devices.Motions.Z1Axis.Status.IsMotioning || Devices.Motions.P1Axis.Status.IsMotioning || Devices.Motions.G1Axis.Status.IsMotioning;
-            H2Working = Devices.Motions.Z2Axis.Status.IsMotioning || Devices.Motions.P2Axis.Status.IsMotioning || Devices.Motions.G2Axis.Status.IsMotioning;
-            H3Working = Devices.Motions.Z3Axis.Status.IsMotioning || Devices.Motions.P3Axis.Status.IsMotioning || Devices.Motions.G3Axis.Status.IsMotioning;
-            H4Working = Devices.Motions.Z4Axis.Status.IsMotioning || Devices.Motions.P4Axis.Status.IsMotioning || Devices.Motions.G4Axis.Status.IsMotioning;
         }
 
         private void UpdateSyringeStatus()

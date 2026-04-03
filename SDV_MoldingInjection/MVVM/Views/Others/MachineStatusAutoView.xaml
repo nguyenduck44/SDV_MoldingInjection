@@ -1,0 +1,462 @@
+<UserControl x:Class="SDV_MoldingInjection.MVVM.Views.MachineStatusAutoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
+             mc:Ignorable="d"
+             d:DesignHeight="403"
+             d:DesignWidth="557">
+    <UserControl.Resources>
+        <Style x:Key="DoorIndicatorRectangleStyle"
+               TargetType="Rectangle">
+            <Setter Property="HorizontalAlignment"
+                    Value="Stretch" />
+            <Setter Property="VerticalAlignment"
+                    Value="Stretch" />
+            <Setter Property="RadiusX"
+                    Value="2" />
+            <Setter Property="RadiusY"
+                    Value="2" />
+            <Setter Property="Stroke"
+                    Value="Black" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="Margin"
+                    Value="0" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <!-- Machine Image -->
+        <Image Margin="0,10,0,0"
+               Source="/SDV_MoldingInjection;component/Resource/Images/MachineView.png" />
+        <!--Indicator-->
+        <Grid Grid.Column="1"
+              Grid.Row="1">
+            <Canvas>
+                <Border Canvas.Top="220"
+                        Canvas.Left="245"
+                        BorderBrush="{StaticResource SecondaryBackgroundColor}"
+                        BorderThickness="1.5"
+                        CornerRadius="3"
+                        Background="White"
+                        Padding="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top">
+                    <Border.RenderTransform>
+                        <ScaleTransform ScaleX="0.7"
+                                        ScaleY="0.7" />
+                    </Border.RenderTransform>
+                    <StackPanel Width="190">
+                        <Border Background="{StaticResource SecondaryBackgroundColor}"
+                                Margin="0 0 0 2">
+                            <Label Content="PANEL"
+                                   Foreground="Wheat"
+                                   HorizontalAlignment="Center"
+                                   FontWeight="Bold" />
+                        </Border>
+                        <UniformGrid Rows="2"
+                                     Columns="2"
+                                     Margin="2 0 2 4">
+                            <Label Content="🌡 Temperature"
+                                   FontWeight="SemiBold"
+                                   FontSize="12"
+                                   VerticalContentAlignment="Center" />
+                            <TextBox Style="{StaticResource TextBoxWithDescriptionStyle}"
+                                     IsReadOnly="True"
+                                     FontWeight="Bold"
+                                     FontSize="14"
+                                     Text="{Binding PanelTemperature, Mode=OneWay, StringFormat='{}{0:0.###} °C'}" />
+                            <Label Content="💧 Humidity"
+                                   FontWeight="SemiBold"
+                                   FontSize="12"
+                                   VerticalContentAlignment="Center" />
+                            <TextBox Style="{StaticResource TextBoxWithDescriptionStyle}"
+                                     IsReadOnly="True"
+                                     FontWeight="Bold"
+                                     FontSize="14"
+                                     Text="{Binding PanelHumidity, Mode=OneWay, StringFormat='{}{0:0.###} %'}" />
+                        </UniformGrid>
+                    </StackPanel>
+                </Border>
+            </Canvas>
+        </Grid>
+
+        <!-- DoorLock View -->
+        <Grid Grid.Row="0"
+              Grid.Column="1"
+              Grid.RowSpan="2">
+            <Canvas>
+                <Grid Width="15"
+                      Height="190"
+                      Canvas.Left="225"
+                      Canvas.Top="12">
+                    <Rectangle Style="{StaticResource DoorIndicatorRectangleStyle}">
+                        <Rectangle.Fill>
+                            <MultiBinding Converter="{StaticResource DoorStatusToBrushConverterRevers}">
+                                <Binding Path="Devices.Inputs.DoorOpenLeft.Value" />
+                                <Binding Path="Devices.Inputs.DoorReleaseLeft.Value" />
+                            </MultiBinding>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <TextBlock Text="DOOR LEFT CLOSE"
+                               Foreground="Black"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextAlignment="Center">
+                        <TextBlock.LayoutTransform>
+                            <RotateTransform Angle="-90" />
+                        </TextBlock.LayoutTransform>
+                    </TextBlock>
+                </Grid>
+            </Canvas>
+            <Canvas>
+                <Grid Width="15"
+                      Height="190"
+                      Canvas.Right="3"
+                      Canvas.Top="12">
+                    <Rectangle Style="{StaticResource DoorIndicatorRectangleStyle}">
+                        <Rectangle.Fill>
+                            <MultiBinding Converter="{StaticResource DoorStatusToBrushConverterRevers}">
+                                <Binding Path="Devices.Inputs.DoorOpenRight.Value" />
+                                <Binding Path="Devices.Inputs.DoorReleaseRight.Value" />
+                            </MultiBinding>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <TextBlock Text="DOOR RIGHT CLOSE"
+                               Foreground="Black"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextAlignment="Center">
+                        <TextBlock.LayoutTransform>
+                            <RotateTransform Angle="-90" />
+                        </TextBlock.LayoutTransform>
+                    </TextBlock>
+                </Grid>
+            </Canvas>
+            <Canvas>
+                <Grid Width="150"
+                      Height="17"
+                      Canvas.Left="240"
+                      Canvas.Top="12">
+                    <Rectangle Style="{StaticResource DoorIndicatorRectangleStyle}">
+                        <Rectangle.Fill>
+                            <MultiBinding Converter="{StaticResource DoorStatusToBrushConverterRevers}">
+                                <Binding Path="Devices.Inputs.DoorOpenRearLeft.Value" />
+                                <Binding Path="Devices.Inputs.DoorReleaseRearLeft.Value" />
+                            </MultiBinding>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <TextBlock Text="DOOR REAR LEFT CLOSE"
+                               Width="146"
+                               Foreground="Black"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Top"
+                               TextAlignment="Center"
+                               FontSize="11">
+                    </TextBlock>
+                </Grid>
+            </Canvas>
+            <Canvas>
+                <Grid Width="150"
+                      Height="16"
+                      Canvas.Right="17"
+                      Canvas.Top="12">
+                    <Rectangle Style="{StaticResource DoorIndicatorRectangleStyle}">
+                        <Rectangle.Fill>
+                            <MultiBinding Converter="{StaticResource DoorStatusToBrushConverterRevers}">
+                                <Binding Path="Devices.Inputs.DoorOpenRearRight.Value" />
+                                <Binding Path="Devices.Inputs.DoorReleaseRearRight.Value" />
+                            </MultiBinding>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <TextBlock Text="DOOR REAR RIGHT CLOSE"
+                               Width="147"
+                               Foreground="Black"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Top"
+                               TextAlignment="Center"
+                               FontSize="11">
+                    </TextBlock>
+                </Grid>
+            </Canvas>
+            <Canvas>
+                <Grid Width="165"
+                      Height="15"
+                      Canvas.Left="225"
+                      Canvas.Top="-8">
+                    <Rectangle Style="{StaticResource DoorIndicatorRectangleStyle}">
+                        <Rectangle.Fill>
+                            <Binding Path="Devices.Inputs.PanelCloseLeftCheck.Value"
+                                     Converter="{StaticResource BooleanToOnOffBrushConverter}" />
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <TextBlock Text="MAIN PANEL LEFT CLOSE"
+                               Foreground="Black"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextAlignment="Center">
+                    </TextBlock>
+                </Grid>
+            </Canvas>
+            <Canvas>
+                <Grid Width="165"
+                      Height="15"
+                      Canvas.Right="2"
+                      Canvas.Top="-8">
+                    <Rectangle Style="{StaticResource DoorIndicatorRectangleStyle}">
+                        <Rectangle.Fill>
+                            <Binding Path="Devices.Inputs.PanelCloseRightCheck.Value"
+                                     Converter="{StaticResource BooleanToOnOffBrushConverter}" />
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <TextBlock Text="MAIN PANEL RIGHT CLOSE"
+                               Foreground="Black"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextAlignment="Center">
+                    </TextBlock>
+                </Grid>
+            </Canvas>
+            <Canvas>
+                <Border  Canvas.Left="134"
+                         Canvas.Top="106"
+                         CornerRadius="10"
+                         BorderThickness="1"
+                         BorderBrush="Green"
+                         Background="Green"
+                         Width="15"
+                         Height="15">
+                    <Border.Visibility>
+                        <Binding Path="Devices.Inputs.OPButtonStart.Value"
+                                 Converter="{StaticResource BooleanToVisibilityConverter}" />
+                    </Border.Visibility>
+                </Border>
+            </Canvas>
+            <Canvas>
+                <Border Canvas.Left="150"
+                        Canvas.Top="106"
+                        CornerRadius="10"
+                        BorderThickness="1"
+                        BorderBrush="Black"
+                        Background="Black"
+                        Width="15"
+                        Height="15">
+                    <Border.Visibility>
+                        <Binding Path="Devices.Inputs.OPButtonStop.Value"
+                                 Converter="{StaticResource BooleanToVisibilityConverter}" />
+                    </Border.Visibility>
+                </Border>
+            </Canvas>
+            <Canvas>
+                <Border Canvas.Left="165"
+                        Canvas.Top="106"
+                        CornerRadius="10"
+                        BorderThickness="1"
+                        BorderBrush="Blue"
+                        Background="Blue"
+                        Width="15"
+                        Height="15">
+                    <Border.Visibility>
+                        <Binding Path="Devices.Inputs.OPButtonReset.Value"
+                                 Converter="{StaticResource BooleanToVisibilityConverter}" />
+                    </Border.Visibility>
+                </Border>
+            </Canvas>
+            <Canvas>
+                <Image Source="/SDV_MoldingInjection;component/Resource/Images/EMS BUTTON.png"
+                       Canvas.Left="175"
+                       Canvas.Top="85"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Width="40"
+                       Height="40"
+                       RenderTransformOrigin="1.243,1.841">
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Setter Property="Visibility"
+                                    Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Devices.Inputs.Emergency.Value}"
+                                             Value="True">
+                                    <Setter Property="Visibility"
+                                            Value="Visible" />
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard Name="BlinkAnimation">
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 From="1.0"
+                                                                 To="0.0"
+                                                                 Duration="0:0:0.5"
+                                                                 AutoReverse="True"
+                                                                 RepeatBehavior="Forever" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <StopStoryboard BeginStoryboardName="BlinkAnimation" />
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+            </Canvas>
+            <Canvas />
+        </Grid>
+        <!--Working View-->
+        <Grid Grid.Row="0"
+              Grid.Column="1"
+              Grid.RowSpan="2">
+            <Canvas>
+                <Image  Source="/SDV_MoldingInjection;component/Resource/Images/CHAMBER OPEN.png"
+                        Canvas.Left="250"
+                        Canvas.Top="125"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        MouseUp="ConfirmLoadingFinish_MouseLeftButtonUp"
+                        Width="274"
+                        Height="66">
+                    <Image.Visibility>
+                        <Binding Path="Devices.Inputs.ChamberOpen.Value"
+                                 Converter="{StaticResource BooleanToVisibilityConverter}" />
+                    </Image.Visibility>
+                </Image>
+            </Canvas>
+        </Grid>
+        <Grid Grid.Row="0"
+              Grid.Column="1"
+              Grid.RowSpan="2">
+            <Canvas>
+                <Image  Source="/SDV_MoldingInjection;component/Resource/Images/BONDINGJIG.png"
+                        Canvas.Left="310"
+                        Canvas.Top="135"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Width="44"
+                        Height="28"
+                        RenderTransformOrigin="1.222,0.506">
+                    <Image.Visibility>
+                        <MultiBinding Converter="{StaticResource BooleanOrToVisibilityConverter}">
+                            <Binding Path="Devices.Inputs.Jig1Detect.Value" />
+                            <Binding Path="Devices.Inputs.Jig2Detect.Value" />
+                        </MultiBinding>
+                    </Image.Visibility>
+                </Image>
+            </Canvas>
+            <Canvas>
+                <Image  Source="/SDV_MoldingInjection;component/Resource/Images/BONDINGJIG.png"
+                        Canvas.Left="420"
+                        Canvas.Top="135"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Width="44"
+                        Height="28"
+                        RenderTransformOrigin="1.222,0.506">
+                    <Image.Visibility>
+                        <MultiBinding Converter="{StaticResource BooleanOrToVisibilityConverter}">
+                            <Binding Path="Devices.Inputs.Jig3Detect.Value" />
+                            <Binding Path="Devices.Inputs.Jig4Detect.Value" />
+                        </MultiBinding>
+                    </Image.Visibility>
+                </Image>
+            </Canvas>
+            <Canvas>
+                <Image  Source="/SDV_MoldingInjection;component/Resource/Images/HEAD_LEFT.png"
+                        Canvas.Left="286"
+                        Canvas.Top="30"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
+                        Width="42"
+                        Height="94">
+                    <Image.Visibility>
+                        <MultiBinding Converter="{StaticResource BooleanOrToVisibilityConverter}">
+                            <Binding Path="H1Working" />
+                        </MultiBinding>
+                    </Image.Visibility>
+                </Image>
+            </Canvas>
+            <Canvas>
+                <Image  Source="/SDV_MoldingInjection;component/Resource/Images/HEAD_RIGHT.png"
+                        Canvas.Left="342"
+                        Canvas.Top="30"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Width="43"
+                        Height="94">
+                    <Image.Visibility>
+                        <MultiBinding Converter="{StaticResource BooleanOrToVisibilityConverter}">
+                            <Binding Path="H2Working" />
+                        </MultiBinding>
+                    </Image.Visibility>
+                </Image>
+            </Canvas>
+            <Canvas>
+                <Image  Source="/SDV_MoldingInjection;component/Resource/Images/HEAD_LEFT.png"
+                        Canvas.Left="393"
+                        Canvas.Top="30"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Width="42"
+                        Height="94">
+                    <Image.Visibility>
+                        <MultiBinding Converter="{StaticResource BooleanOrToVisibilityConverter}">
+                            <Binding Path="H3Working" />
+                        </MultiBinding>
+                    </Image.Visibility>
+                </Image>
+            </Canvas>
+            <Canvas />
+            <Canvas>
+                <Image  Source="/SDV_MoldingInjection;component/Resource/Images/HEAD_RIGHT.png"
+                        Canvas.Left="448"
+                        Canvas.Top="30"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Width="43"
+                        Height="94">
+                    <Image.Visibility>
+                        <MultiBinding Converter="{StaticResource BooleanOrToVisibilityConverter}">
+                            <Binding Path="H4Working" />
+                        </MultiBinding>
+                    </Image.Visibility>
+                </Image>
+            </Canvas>
+            <Canvas>
+                <Image  Source="/SDV_MoldingInjection;component/Resource/Images/BELOW.png"
+                        Canvas.Left="240"
+                        Canvas.Top="170"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Width="27"
+                        Height="29">
+                    <Image.Visibility>
+                        <Binding Path="Devices.Inputs.BelowsUp.Value"
+                                 Converter="{StaticResource BooleanToVisibilityConverter}" />
+                    </Image.Visibility>
+                </Image>
+            </Canvas>
+            <Canvas>
+                <Image  Source="/SDV_MoldingInjection;component/Resource/Images/Pump.png"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
+                        Width="108"
+                        Height="89"
+                        Canvas.Top="270"
+                        Canvas.Left="28">
+                    <Image.Visibility>
+                        <Binding Path="Devices.Inputs.DryPumpRun.Value"
+                                 Converter="{StaticResource BooleanToVisibilityConverter}" />
+                    </Image.Visibility>
+                </Image>
+            </Canvas>
+        </Grid>
+    </Grid>
+</UserControl>
