@@ -186,8 +186,11 @@
             <!-- PRODUCTION -->
             <GroupBox Header="PRODUCTION"
                       Style="{x:Null}"
+                      Width="200"
+                      Height="100"
+                      VerticalAlignment="Top"
+                      HorizontalAlignment="Left"
                       Grid.Column="1">
-
                 <Grid Margin="8 6">
                     <Grid.Resources>
                         <Style TargetType="TextBlock">
@@ -209,7 +212,7 @@
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="110" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
                     <Border Grid.Row="0"
