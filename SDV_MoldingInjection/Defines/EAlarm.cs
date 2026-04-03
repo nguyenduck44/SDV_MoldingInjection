@@ -2,68 +2,71 @@ using System.ComponentModel;
 
 namespace SDV_MoldingInjection.Defines
 {
+    /// <summary>
+    /// Đặt Tên theo quy tắc: CATEGORY_POSITION_DEVICE_DESCRIPTION1_DESCRIPTION2_ERRORMODE.(samsung yêu cầu)
+    /// CATEGORY_POSITION_DEVICE_DESCRIPTION1_DESCRIPTION2_ERRORMODE.
+    /// Category (2 ký tự): VC VA MO IN VI CY SE CO DO TE EM UT OP ET EF.
+    /// ErrorMode (bảng): ERROR (lỗi hoàn thành/kiểm tra), MARK_NG, UP_NG, OPEN, SWITCH_ON, SERVO_OFF, TEMP_OVER, TIMEOUT.
+    /// Position: MAIN SUB LOADER UNLOADER PRESS INSPECTION BUFFER CONVEYOR.
+    /// </summary>
     public enum EAlarm
     {
-        //--------- 10 -> 499 : Global Alarm ---------
-        None = 10,
+        ET_MAIN_STG_ALARM_MARK_NG = 10,
 
-        // System Level Alarms
         [Description("IN14")]
-        MainPowerDown = 20,
+        UT_MAIN_CP_PWR_MAIN_SERVO_OFF = 20,
         [Description("IN15")]
-        MainAirNotSupplied,
+        VC_MAIN_STG_AIR_LOW_OPEN,
         [Description("IN16,IN18,IN69,IN71")]
-        DoorOpen,
+        DO_MAIN_DOOR_INTERLOCK_OPEN,
         [Description("IN17,IN19,IN70,IN72")]
-        DoorNotSafetyLock,
+        DO_MAIN_DOOR_LOCK_SWITCH_ON,
         [Description("IN03")]
-        EmergencyStopActivated,
+        EM_MAIN_CP_ESTOP_SERVO_OFF,
         [Description("IN13")]
-        PowerMC_Off,
-        Motion_Alarm_Detected,
-        Motion_Alarm_ResetFail,
-        Motion_Driver_Off,
-        Motion_Limit_Detected,
+        UT_MAIN_MCR_COIL_SERVO_OFF,
+        MO_MAIN_STG_SRV_ALARM_ERROR,
+        MO_MAIN_STG_SRV_RESET_ERROR,
+        MO_MAIN_STG_SRV_PWR_SERVO_OFF,
+        MO_MAIN_STG_AXIS_LIM_OPEN,
         [Description("IN09")]
-        Panel_Smoke_Detected,
+        UT_MAIN_CP_SMOKE_OPEN,
         [Description("IN10")]
-        Alarm_OverTemperature_Detected,
+        TE_MAIN_CP_SENSOR_TEMP_OVER,
 
-        //--------- 500 -> 999 : Mold Process Alarm ---------
+        //--------- 500 -> 999 : Mold ---------
 
 
-        //--------- 1000 -> 1499 : Dry Pump Process Alarm ---------
+        //--------- 1000 -> 1499 : Dry ---------
 
-        //--------- 1500 -> 1999 : SPD Head #1 Process Alarm ---------
-        H1GAxis_MoveOpenPos_Timeout = 1500,
-        H1GAxis_MoveClosePos_Timeout,
-        H1PAxis_MoveChargePos_Timeout,
-        H1PAxis_MoveInjectPos_Timeout,
-        H1PAxis_MoveAssemblePos_Timeout,
-        H1PAxis_MoveBasePos_Timeout,
 
-        //--------- 2000 -> 2499 : SPD Head #2 Process Alarm ---------
-        H2GAxis_MoveOpenPos_Timeout = 2000,
-        H2GAxis_MoveClosePos_Timeout,
-        H2PAxis_MoveChargePos_Timeout,
-        H2PAxis_MoveInjectPos_Timeout,
-        H2PAxis_MoveAssemblePos_Timeout,
-        H2PAxis_MoveBasePos_Timeout,
+        //--------- 1500 -> 1999 : Head 1 ---------
+        MO_SUB_H01_IDX_G_OPEN_TIMEOUT = 1500,
+        MO_SUB_H01_IDX_G_CLOSE_TIMEOUT,
+        MO_SUB_H01_IDX_P_CHARGE_TIMEOUT,
+        MO_SUB_H01_IDX_P_INJECT_TIMEOUT,
+        MO_SUB_H01_IDX_P_ASSY_TIMEOUT,
+        MO_SUB_H01_IDX_P_BASE_TIMEOUT,
 
-        //--------- 2500 -> 2999 : SPD Head #3 Process Alarm ---------
-        H3GAxis_MoveOpenPos_Timeout = 2500,
-        H3GAxis_MoveClosePos_Timeout,
-        H3PAxis_MoveChargePos_Timeout,
-        H3PAxis_MoveInjectPos_Timeout,
-        H3PAxis_MoveAssemblePos_Timeout,
-        H3PAxis_MoveBasePos_Timeout,
+        MO_SUB_H02_IDX_G_OPEN_TIMEOUT = 2000,
+        MO_SUB_H02_IDX_G_CLOSE_TIMEOUT,
+        MO_SUB_H02_IDX_P_CHARGE_TIMEOUT,
+        MO_SUB_H02_IDX_P_INJECT_TIMEOUT,
+        MO_SUB_H02_IDX_P_ASSY_TIMEOUT,
+        MO_SUB_H02_IDX_P_BASE_TIMEOUT,
 
-        //--------- 3000 -> 3499 : SPD Head #3 Process Alarm ---------
-        H4GAxis_MoveOpenPos_Timeout = 3000,
-        H4GAxis_MoveClosePos_Timeout,
-        H4PAxis_MoveChargePos_Timeout,
-        H4PAxis_MoveInjectPos_Timeout,
-        H4PAxis_MoveAssemblePos_Timeout,
-        H4PAxis_MoveBasePos_Timeout,
+        MO_SUB_H03_IDX_G_OPEN_TIMEOUT = 2500,
+        MO_SUB_H03_IDX_G_CLOSE_TIMEOUT,
+        MO_SUB_H03_IDX_P_CHARGE_TIMEOUT,
+        MO_SUB_H03_IDX_P_INJECT_TIMEOUT,
+        MO_SUB_H03_IDX_P_ASSY_TIMEOUT,
+        MO_SUB_H03_IDX_P_BASE_TIMEOUT,
+
+        MO_SUB_H04_IDX_G_OPEN_TIMEOUT = 3000,
+        MO_SUB_H04_IDX_G_CLOSE_TIMEOUT,
+        MO_SUB_H04_IDX_P_CHARGE_TIMEOUT,
+        MO_SUB_H04_IDX_P_INJECT_TIMEOUT,
+        MO_SUB_H04_IDX_P_ASSY_TIMEOUT,
+        MO_SUB_H04_IDX_P_BASE_TIMEOUT,
     }
 }

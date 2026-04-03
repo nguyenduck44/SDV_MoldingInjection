@@ -170,7 +170,7 @@ namespace SDV_MoldingInjection.Process
                 case EDryPumpProcToRunStep.AngleValve_CloseWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseWarning(EWarning.AngleValve_CloseFail);
+                        RaiseWarning(EWarning.CY_MAIN_BUF_LINE_VALVE_CLOSE_ERROR);
                         break;
                     }
 
@@ -336,7 +336,7 @@ namespace SDV_MoldingInjection.Process
                 case EDryPumpProcResinInjectStep.DryPump_RunWait:
                     if (WaitTimeOutOccurred && _machineStatus.IsDryRunMode == false)
                     {
-                        RaiseWarning(EWarning.DryPump_Run_Timeout);
+                        RaiseWarning(EWarning.MO_MAIN_STG_DRYPUMP_RUN_TIMEOUT);
                         break;
                     }
 
@@ -394,7 +394,7 @@ namespace SDV_MoldingInjection.Process
                 case EDryPumpProcResinInjectStep.AngleValve_OpenWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseWarning(EWarning.AngleValve_OpenFail);
+                        RaiseWarning(EWarning.CY_MAIN_BUF_LINE_VALVE_OPEN_ERROR);
                         break;
                     }
 
@@ -421,7 +421,7 @@ namespace SDV_MoldingInjection.Process
                 case EDryPumpProcResinInjectStep.AngleValve_CloseWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseWarning(EWarning.AngleValve_CloseFail);
+                        RaiseWarning(EWarning.CY_MAIN_BUF_LINE_VALVE_CLOSE_ERROR);
                         break;
                     }
 
@@ -637,7 +637,7 @@ namespace SDV_MoldingInjection.Process
 
         private void RaiseHeadWarning(EWarning warning, ESPDHead _failHead)
         {
-            RaiseWarning(warning + ((int)(EWarning.Z2Axis_Origin_TimeOut - EWarning.Z1Axis_Origin_TimeOut)) * (_failHead - ESPDHead.SPDHead1));
+            RaiseWarning(warning + ((int)(EWarning.MO_SUB_H02_IDX_Z_HOME_TIMEOUT - EWarning.MO_SUB_H01_IDX_Z_HOME_TIMEOUT)) * (_failHead - ESPDHead.SPDHead1));
         }
 
 

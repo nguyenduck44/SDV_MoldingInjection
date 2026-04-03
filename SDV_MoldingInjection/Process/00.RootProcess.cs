@@ -299,13 +299,13 @@ namespace SDV_MoldingInjection.Process
 #if !SIMULATION
                     if (_devices.Inputs.AutoSW.Value == false)
                     {
-                        RaiseWarning(EWarning.OPSwitchKey_Not_In_AutoMode);
+                        RaiseWarning(EWarning.OP_MAIN_CP_KEY_AUTO_ERROR);
                         break;
                     }
 
                     if (_machineStatus.IsAutoMode == false)
                     {
-                        RaiseWarning(EWarning.Machine_Not_In_AutoMode);
+                        RaiseWarning(EWarning.OP_MAIN_STG_MODE_AUTO_ERROR);
                         break;
                     }
 #endif
@@ -319,7 +319,7 @@ namespace SDV_MoldingInjection.Process
                 case ERootProcToOriginStep.DoorSensorCheck:
                     if (_devices.Inputs.DoorClose == false)
                     {
-                        RaiseWarning((int)EWarning.DoorOpen);
+                        RaiseWarning((int)EWarning.DO_MAIN_DOOR_INTERLOCK_OPEN);
                         break;
                     }
 
@@ -329,7 +329,7 @@ namespace SDV_MoldingInjection.Process
                 case ERootProcToOriginStep.DoorLockCheck:
                     if (_devices.Inputs.DoorLock == false)
                     {
-                        RaiseWarning((int)EWarning.DoorNotSafetyLock);
+                        RaiseWarning((int)EWarning.DO_MAIN_DOOR_LOCK_SWITCH_ON);
                         break;
                     }
                     Log.Debug("Doors safety locked.");
@@ -351,7 +351,7 @@ namespace SDV_MoldingInjection.Process
                 case ERootProcToOriginStep.Motion_AlarmReset_Wait:
                     if (_devices.Motions.All.Any(m => m.Status.IsAlarm))
                     {
-                        RaiseAlarm(EAlarm.Motion_Alarm_ResetFail);
+                        RaiseAlarm(EAlarm.MO_MAIN_STG_SRV_RESET_ERROR);
                         break;
                     }
 
@@ -435,13 +435,13 @@ namespace SDV_MoldingInjection.Process
 #if !SIMULATION
                     if (_devices.Inputs.AutoSW.Value == false)
                     {
-                        RaiseWarning(EWarning.OPSwitchKey_Not_In_AutoMode);
+                        RaiseWarning(EWarning.OP_MAIN_CP_KEY_AUTO_ERROR);
                         break;
                     }
 
                     if (_machineStatus.IsAutoMode == false)
                     {
-                        RaiseWarning(EWarning.Machine_Not_In_AutoMode);
+                        RaiseWarning(EWarning.OP_MAIN_STG_MODE_AUTO_ERROR);
                         break;
                     }
 #endif
@@ -455,7 +455,7 @@ namespace SDV_MoldingInjection.Process
                 case ERootProcToRunStep.DoorSensorCheck:
                     if (_devices.Inputs.DoorClose == false)
                     {
-                        RaiseWarning((int)EWarning.DoorOpen);
+                        RaiseWarning((int)EWarning.DO_MAIN_DOOR_INTERLOCK_OPEN);
                         break;
                     }
 
@@ -465,7 +465,7 @@ namespace SDV_MoldingInjection.Process
                 case ERootProcToRunStep.DoorLock_Check:
                     if (_devices.Inputs.DoorLock == false)
                     {
-                        RaiseWarning((int)EWarning.DoorNotSafetyLock);
+                        RaiseWarning((int)EWarning.DO_MAIN_DOOR_LOCK_SWITCH_ON);
                         break;
                     }
 
@@ -556,7 +556,7 @@ namespace SDV_MoldingInjection.Process
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
                 Log.Error("POWER OFF");
-                RaiseAlarm((int)EAlarm.PowerMC_Off);
+                RaiseAlarm((int)EAlarm.UT_MAIN_MCR_COIL_SERVO_OFF);
                 return;
             }
 #endif
@@ -565,7 +565,7 @@ namespace SDV_MoldingInjection.Process
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
                 Log.Error("Emergency Stop Activated. MC OFF");
-                RaiseAlarm((int)EAlarm.EmergencyStopActivated);
+                RaiseAlarm((int)EAlarm.EM_MAIN_CP_ESTOP_SERVO_OFF);
                 return;
             }
             if (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run ||
@@ -574,13 +574,13 @@ namespace SDV_MoldingInjection.Process
                 if (_devices.Inputs.DoorClose == false)
                 {
                     Log.Error("Door Open");
-                    RaiseAlarm(EAlarm.DoorOpen);
+                    RaiseAlarm(EAlarm.DO_MAIN_DOOR_INTERLOCK_OPEN);
                     return;
                 }
                 if ((ProcessMode == EProcessMode.Run || ProcessMode == EProcessMode.Origin) && _devices.Inputs.DoorLock == false)
                 {
                     Log.Error("Door Not Safety Lock");
-                    RaiseAlarm(EAlarm.DoorNotSafetyLock);
+                    RaiseAlarm(EAlarm.DO_MAIN_DOOR_LOCK_SWITCH_ON);
                     return;
                 }
             }
@@ -590,7 +590,7 @@ namespace SDV_MoldingInjection.Process
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
                 Log.Error("Panel Smoke Detected");
-                RaiseAlarm((int)EAlarm.Panel_Smoke_Detected);
+                RaiseAlarm((int)EAlarm.UT_MAIN_CP_SMOKE_OPEN);
                 return;
             }
 
@@ -601,7 +601,7 @@ namespace SDV_MoldingInjection.Process
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
                 Log.Error("OverTemperature Detected (>=35)");
-                RaiseWarning((int)EWarning.Warning_OverTemperature_Detected);
+                RaiseWarning((int)EWarning.TE_MAIN_CP_SENSOR_TEMP_OVER);
                 return;
             }
 
@@ -610,7 +610,7 @@ namespace SDV_MoldingInjection.Process
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
                 Log.Error("OverTemperature Detected (>=40)");
-                RaiseAlarm((int)EAlarm.Alarm_OverTemperature_Detected);
+                RaiseAlarm((int)EAlarm.TE_MAIN_CP_SENSOR_TEMP_OVER);
                 return;
             }
 #if !SIMULATION
@@ -619,7 +619,7 @@ namespace SDV_MoldingInjection.Process
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
                 Log.Error("Main Air Not Supplied");
-                RaiseAlarm((int)EAlarm.MainAirNotSupplied);
+                RaiseAlarm((int)EAlarm.VC_MAIN_STG_AIR_LOW_OPEN);
                 return;
             }
 #endif
@@ -632,7 +632,7 @@ namespace SDV_MoldingInjection.Process
                 {
                     Log.Error($"{motion.Name} Motion Off");
                 });
-                RaiseAlarm((int)EAlarm.Motion_Driver_Off);
+                RaiseAlarm((int)EAlarm.MO_MAIN_STG_SRV_PWR_SERVO_OFF);
             }
             if (_devices.Motions.All.Count(motion => motion.Status.HwNegLimitDetect == true || motion.Status.HwPosLimitDetect == true) > 0
                 && (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run))
@@ -646,7 +646,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Error($"{motion.Name} Limit (+) Detect");
                 });
 
-                RaiseAlarm((int)EAlarm.Motion_Limit_Detected);
+                RaiseAlarm((int)EAlarm.MO_MAIN_STG_AXIS_LIM_OPEN);
             }
             if (_devices.Motions.All.Count(motion => motion.Status.IsAlarm == true) > 0)
             {
@@ -656,7 +656,7 @@ namespace SDV_MoldingInjection.Process
                 {
                     Log.Error($"{motion.Name} Motion Alarm");
                 });
-                RaiseAlarm((int)EAlarm.Motion_Alarm_Detected);
+                RaiseAlarm((int)EAlarm.MO_MAIN_STG_SRV_ALARM_ERROR);
             }
         }
 
