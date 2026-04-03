@@ -824,6 +824,12 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcCommonStep.Start:
                     Log.Debug($"{sequence} start");
                     _bubbleRemoveCount = 1;
+                    if (_machineStatus.IsDryRunMode)
+                    {
+                        Step.RunStep = (int)ESPDHeadProcCommonStep.WorkDone_Send;
+                        break;
+                    }
+
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.ResetInjectTime:

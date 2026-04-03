@@ -297,8 +297,7 @@
                             DisabledImage="/EQX.UI;component/Resources/Images/Components/Common/exit_normal_dark.png"
                             Image="/EQX.UI;component/Resources/Images/Components/Common/exit_selected.png"
                             Command="{Binding ExitCommand}"
-                            FontSize="16"
-                            IsEnabled="{Binding MachineStatus.IsStandByProcessMode}" />
+                            FontSize="16"/>
         </StackPanel>
     </Grid>
 </UserControl>
