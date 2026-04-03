@@ -774,7 +774,8 @@ namespace SDV_MoldingInjection.Process
 #if !SIMULATION
             if (In_SyringeCheck.Value == false &&
                 CurrentHeadSkip == false &&
-                _machineStatus.DisableSyringeCheck == false)
+                _machineStatus.DisableSyringeCheck == false &&
+                (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run))
             {
                 RaiseHeadWarning(EWarning.SE_SUB_H01_SYR_NOT_DETECT);
             }
