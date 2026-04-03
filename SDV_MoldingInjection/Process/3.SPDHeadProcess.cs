@@ -153,7 +153,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Syringe Amount Check");
                     if (SyringeAmountIsTimeOver && In_SyringeCheck.Value == true && CurrentHeadSkip == false)
                     {
-                        RaiseHeadWarning(EWarning.VA_SUB_H01_SYR_FILL_TIMEOUT);
+                        RaiseHeadWarning(EWarning.VA_SPD_H01_SYRING_AMOUNT_TIMEOUT);
                     }
 
                     Step.ToRunStep++;
@@ -185,7 +185,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcToRunStep.GAxis_ClosePosition_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadAlarm(EAlarm.MO_SUB_H01_IDX_G_CLOSE_TIMEOUT);
+                        RaiseHeadAlarm(EAlarm.MO_SPD_H01_G1_AXIS_CLOSE_POS_TIMEOUT);
                         break;
                     }
 
@@ -207,7 +207,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcToRunStep.PistonCyl_UpWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadWarning(EWarning.CY_SUB_H01_SYR_PISTON_UP_UP_NG);
+                        RaiseHeadWarning(EWarning.CY_SPD_H01_PISTON_UP_FAIL);
                         break;
                     }
 
@@ -255,7 +255,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcOriginStep.GAxis_OriginWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadWarning(EWarning.MO_SUB_H01_IDX_G_HOME_TIMEOUT);
+                        RaiseHeadWarning(EWarning.MO_SPD_H01_G1_AXIS_HOME_TIMEOUT);
                         break;
                     }
 
@@ -274,7 +274,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcOriginStep.GAxis_ClosePosition_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadAlarm(EAlarm.MO_SUB_H01_IDX_G_CLOSE_TIMEOUT);
+                        RaiseHeadAlarm(EAlarm.MO_SPD_H01_G1_AXIS_CLOSE_POS_TIMEOUT);
                         break;
                     }
 
@@ -301,7 +301,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcOriginStep.PistonCyl_UpWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadWarning(EWarning.CY_SUB_H01_SYR_PISTON_UP_UP_NG);
+                        RaiseHeadWarning(EWarning.CY_SPD_H01_PISTON_UP_FAIL);
                         break;
                     }
 
@@ -320,7 +320,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcOriginStep.PAxis_OriginWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadWarning(EWarning.MO_SUB_H01_IDX_P_HOME_TIMEOUT);
+                        RaiseHeadWarning(EWarning.MO_SPD_H01_P1_AXIS_HOME_TIMEOUT);
                         break;
                     }
 
@@ -337,7 +337,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcOriginStep.GAxis_OpenPosition_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadAlarm(EAlarm.MO_SUB_H01_IDX_G_OPEN_TIMEOUT);
+                        RaiseHeadAlarm(EAlarm.MO_SPD_H01_G1_AXIS_OPEN_POS_TIMEOUT);
                         break;
                     }
 
@@ -368,7 +368,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcOriginStep.PAxis_BasePosition_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadAlarm(EAlarm.MO_SUB_H01_IDX_P_BASE_TIMEOUT);
+                        RaiseHeadAlarm(EAlarm.MO_SPD_H01_P1_AXIS_BASE_POS_TIMEOUT);
                         break;
                     }
 
@@ -863,7 +863,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcCommonStep.Gate_CloseWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadAlarm(EAlarm.MO_SUB_H01_IDX_G_CLOSE_TIMEOUT);
+                        RaiseHeadAlarm(EAlarm.MO_SPD_H01_G1_AXIS_CLOSE_POS_TIMEOUT);
                         break;
                     }
 
@@ -913,7 +913,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcCommonStep.PAxis_ChargePos_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadAlarm(EAlarm.MO_SUB_H01_IDX_P_CHARGE_TIMEOUT);
+                        RaiseHeadAlarm(EAlarm.MO_SPD_H01_P1_AXIS_CHARGE_POS_TIMEOUT);
                         break;
                     }
 
@@ -945,7 +945,7 @@ namespace SDV_MoldingInjection.Process
 
                                     if (injectPos > _pAxisBase_Pos)
                                     {
-                                        RaiseHeadWarning(EWarning.MO_SUB_H01_IDX_P_OVER_BASE_ERROR);
+                                        RaiseHeadWarning(EWarning.MO_SPD_H01_INJECT_POS_OVER_BASE);
                                         break;
                                     }
 
@@ -986,7 +986,7 @@ namespace SDV_MoldingInjection.Process
 
                     if (_pAxisInject_Pos > _pAxisBase_Pos)
                     {
-                        RaiseHeadWarning(EWarning.MO_SUB_H01_IDX_P_OVER_BASE_ERROR);
+                        RaiseHeadWarning(EWarning.MO_SPD_H01_INJECT_POS_OVER_BASE);
                         break;
                     }
 
@@ -1012,7 +1012,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcCommonStep.GAxis_BubbleRemove_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadWarning(EWarning.MO_SUB_H01_IDX_G_BUBBLE_TIMEOUT);
+                        RaiseHeadWarning(EWarning.MO_SPD_H01_G1_AXIS_BUBBLE_REMOVE_TIMEOUT);
                     }
 
                     Step.RunStep++;
@@ -1027,7 +1027,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcCommonStep.Gate_OpenWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadAlarm(EAlarm.MO_SUB_H01_IDX_G_OPEN_TIMEOUT);
+                        RaiseHeadAlarm(EAlarm.MO_SPD_H01_G1_AXIS_OPEN_POS_TIMEOUT);
                         break;
                     }
 
@@ -1104,7 +1104,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcCommonStep.PAxis_InjectPos_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadAlarm(EAlarm.MO_SUB_H01_IDX_P_INJECT_TIMEOUT);
+                        RaiseHeadAlarm(EAlarm.MO_SPD_H01_P1_AXIS_INJECT_POS_TIMEOUT);
                         break;
                     }
 
@@ -1214,7 +1214,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcAddTailStep.Gate_CloseWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadAlarm(EAlarm.MO_SUB_H01_IDX_G_CLOSE_TIMEOUT);
+                        RaiseHeadAlarm(EAlarm.MO_SPD_H01_G1_AXIS_CLOSE_POS_TIMEOUT);
                         break;
                     }
 
@@ -1236,7 +1236,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcAddTailStep.PAxis_ChargePos_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadAlarm(EAlarm.MO_SUB_H01_IDX_P_CHARGE_TIMEOUT);
+                        RaiseHeadAlarm(EAlarm.MO_SPD_H01_P1_AXIS_CHARGE_POS_TIMEOUT);
                         break;
                     }
 
@@ -1259,7 +1259,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcAddTailStep.Gate_OpenWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadAlarm(EAlarm.MO_SUB_H01_IDX_G_OPEN_TIMEOUT);
+                        RaiseHeadAlarm(EAlarm.MO_SPD_H01_G1_AXIS_OPEN_POS_TIMEOUT);
                         break;
                     }
 
@@ -1287,7 +1287,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcAddTailStep.PAxis_InjectPos_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadAlarm(EAlarm.MO_SUB_H01_IDX_P_INJECT_TIMEOUT);
+                        RaiseHeadAlarm(EAlarm.MO_SPD_H01_P1_AXIS_INJECT_POS_TIMEOUT);
                         break;
                     }
 
@@ -1361,7 +1361,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcDotWeightingStep.Gate_CloseWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadAlarm(EAlarm.MO_SUB_H01_IDX_G_CLOSE_TIMEOUT);
+                        RaiseHeadAlarm(EAlarm.MO_SPD_H01_G1_AXIS_CLOSE_POS_TIMEOUT);
                         break;
                     }
                     Log.Debug($"{GAxis.Name} moving to ClosePos done");
@@ -1376,7 +1376,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcDotWeightingStep.PAxis_ChargePos_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadAlarm(EAlarm.MO_SUB_H01_IDX_P_CHARGE_TIMEOUT);
+                        RaiseHeadAlarm(EAlarm.MO_SPD_H01_P1_AXIS_CHARGE_POS_TIMEOUT);
                         break;
                     }
 
@@ -1392,7 +1392,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcDotWeightingStep.Gate_OpenWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadAlarm(EAlarm.MO_SUB_H01_IDX_G_OPEN_TIMEOUT);
+                        RaiseHeadAlarm(EAlarm.MO_SPD_H01_G1_AXIS_OPEN_POS_TIMEOUT);
                         break;
                     }
                     Log.Debug($"{GAxis.Name} moving to OpenPos done");
@@ -1425,14 +1425,14 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcDotWeightingStep.Balance_Zero_Check:
                     if (Balance.WeightData == null)
                     {
-                        RaiseHeadWarning(EWarning.VA_SUB_H01_SYR_BAL_ZERO_ERROR);
+                        RaiseHeadWarning(EWarning.VA_H01_BALANCE_ZERO_FAIL);
                         break;
                     }
 
                     double weight = Balance.WeightData.Weight * 1000;
                     if (weight < -3 || weight > 3)
                     {
-                        RaiseHeadWarning(EWarning.VA_SUB_H01_SYR_BAL_ZERO_ERROR);
+                        RaiseHeadWarning(EWarning.VA_H01_BALANCE_ZERO_FAIL);
                         break;
                     }
 
@@ -1448,7 +1448,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcDotWeightingStep.PAxis_InjectPos_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadAlarm(EAlarm.MO_SUB_H01_IDX_P_INJECT_TIMEOUT);
+                        RaiseHeadAlarm(EAlarm.MO_SPD_H01_P1_AXIS_INJECT_POS_TIMEOUT);
                         break;
                     }
 
@@ -1475,13 +1475,13 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcDotWeightingStep.Calibrate_Weight:
                     if (WaitTimeOutOccurred || Balance.WeightData == null)
                     {
-                        RaiseHeadWarning(EWarning.VA_SUB_H01_SYR_BAL_REQ_ERROR);
+                        RaiseHeadWarning(EWarning.VA_H01_BALANCE_REQ_WEIGHT_FAIL);
                         break;
                     }
 
                     if (Balance.WeightData.IsStable == false)
                     {
-                        RaiseHeadWarning(EWarning.VA_SUB_H01_SYR_BAL_STAB_ERROR);
+                        RaiseHeadWarning(EWarning.VA_H01_BALANCE_NOT_STABLE);
                         break;
                     }
 
@@ -1489,7 +1489,7 @@ namespace SDV_MoldingInjection.Process
 
                     if (_calibWeight_mg <= 0)
                     {
-                        RaiseHeadWarning(EWarning.VA_SUB_H01_SYR_BAL_WEIGH_ERROR);
+                        RaiseHeadWarning(EWarning.VA_H01_BALANCE_WEIGH_FAIL);
                         break;
                     }
 
@@ -1568,7 +1568,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcAssembleDisAssembleStep.Gate_CloseWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadAlarm(EAlarm.MO_SUB_H01_IDX_G_CLOSE_TIMEOUT);
+                        RaiseHeadAlarm(EAlarm.MO_SPD_H01_G1_AXIS_CLOSE_POS_TIMEOUT);
                         break;
                     }
 
@@ -1600,7 +1600,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcAssembleDisAssembleStep.PAxis_AssemblePos_Move_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadAlarm(EAlarm.MO_SUB_H01_IDX_P_ASSY_TIMEOUT);
+                        RaiseHeadAlarm(EAlarm.MO_SPD_H01_P1_AXIS_ASSEMBLE_POS_TIMEOUT);
                         break;
                     }
 
@@ -1616,7 +1616,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcAssembleDisAssembleStep.PistonCyl_DownWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadWarning(EWarning.CY_SUB_H01_SYR_PISTON_DOWN_ERROR);
+                        RaiseHeadWarning(EWarning.CY_SPD_H01_PISTON_DOWN_FAIL);
                         break;
                     }
 
@@ -1630,8 +1630,8 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcAssembleDisAssembleStep.DisOrAssembleSensorStatusCheck:
                     if (WaitTimeOutOccurred)
                     {
-                        if (isAssemble) RaiseHeadWarning(EWarning.MO_SUB_H01_SYR_ASSY_CHECK_TIMEOUT);
-                        else RaiseHeadWarning(EWarning.MO_SUB_H01_SYR_DISASSY_CHECK_TIMEOUT);
+                        if (isAssemble) RaiseHeadWarning(EWarning.MO_SPD_H01_ASSEMBLE_CHECK_TIMEOUT);
+                        else RaiseHeadWarning(EWarning.MO_SPD_H01_DISASSEMBLE_CHECK_TIMEOUT);
                         break;
                     }
 
@@ -1663,7 +1663,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcAssembleDisAssembleStep.PistonCyl_UpWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadWarning(EWarning.CY_SUB_H01_SYR_PISTON_UP_UP_NG);
+                        RaiseHeadWarning(EWarning.CY_SPD_H01_PISTON_UP_FAIL);
                         break;
                     }
 
@@ -1681,7 +1681,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcAssembleDisAssembleStep.GAxis_OpenPosition_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadAlarm(EAlarm.MO_SUB_H01_IDX_G_OPEN_TIMEOUT);
+                        RaiseHeadAlarm(EAlarm.MO_SPD_H01_G1_AXIS_OPEN_POS_TIMEOUT);
                         break;
                     }
 
@@ -1698,7 +1698,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcAssembleDisAssembleStep.PAxis_BasePosition_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadAlarm(EAlarm.MO_SUB_H01_IDX_P_BASE_TIMEOUT);
+                        RaiseHeadAlarm(EAlarm.MO_SPD_H01_P1_AXIS_BASE_POS_TIMEOUT);
                         break;
                     }
 

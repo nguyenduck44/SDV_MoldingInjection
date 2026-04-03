@@ -188,7 +188,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcToRunStep.ChamberClose_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseWarning(EWarning.CY_MAIN_STG_DOOR_MC_CLOSE_SEQ_ERROR);
+                        RaiseWarning(EWarning.CY_MOLD_CHAMBER_CLOSE_FAIL);
                         break;
                     }
 
@@ -212,7 +212,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcToRunStep.Bellow_DownWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseWarning(EWarning.CY_MAIN_STG_MC_BELLOW_DOWN_ERROR);
+                        RaiseWarning(EWarning.CY_BELLOW_DOWN_FAIL);
                         break;
                     }
 
@@ -235,7 +235,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcToRunStep.NozzleClean_Cyl_UnGrip_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseWarning(EWarning.CY_MAIN_STG_NOZZLE_UNGRIP_ERROR);
+                        RaiseWarning(EWarning.CY_NOZZLE_CLEAN_UNGRIP_FAIL);
                         break;
                     }
 
@@ -258,7 +258,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcToRunStep.ZAxis_SafetyPos_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadWarning(EWarning.MO_SUB_H01_IDX_Z_SAFE_TIMEOUT, _failHead);
+                        RaiseHeadWarning(EWarning.MO_Z1_AXIS_SAFE_POS_TIMEOUT, _failHead);
                         break;
                     }
 
@@ -433,7 +433,7 @@ namespace SDV_MoldingInjection.Process
 #endif
                     if (ChamberOpenClose.IsOpen())
                     {
-                        RaiseWarning(EWarning.CY_MAIN_STG_DOOR_MC_OPEN_OPEN);
+                        RaiseWarning(EWarning.CY_MOLD_CHAMBER_OPEN_WARNING);
                         return false;
                     }
 
@@ -450,10 +450,10 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcOriginStep.ZAxis_OriginWait:
                     if (WaitTimeOutOccurred)
                     {
-                        if (!Z1Axis.Status.IsHomeDone) RaiseWarning(EWarning.MO_SUB_H01_IDX_Z_HOME_TIMEOUT);
-                        if (!Z2Axis.Status.IsHomeDone) RaiseWarning(EWarning.MO_SUB_H02_IDX_Z_HOME_TIMEOUT);
-                        if (!Z3Axis.Status.IsHomeDone) RaiseWarning(EWarning.MO_SUB_H03_IDX_Z_HOME_TIMEOUT);
-                        if (!Z4Axis.Status.IsHomeDone) RaiseWarning(EWarning.MO_SUB_H04_IDX_Z_HOME_TIMEOUT);
+                        if (!Z1Axis.Status.IsHomeDone) RaiseWarning(EWarning.MO_Z1_AXIS_HOME_TIMEOUT);
+                        if (!Z2Axis.Status.IsHomeDone) RaiseWarning(EWarning.MO_Z2_AXIS_HOME_TIMEOUT);
+                        if (!Z3Axis.Status.IsHomeDone) RaiseWarning(EWarning.MO_Z3_AXIS_HOME_TIMEOUT);
+                        if (!Z4Axis.Status.IsHomeDone) RaiseWarning(EWarning.MO_Z4_AXIS_HOME_TIMEOUT);
                         break;
                     }
 
@@ -476,7 +476,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcOriginStep.Bellow_DownWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseWarning(EWarning.CY_MAIN_STG_MC_BELLOW_DOWN_ERROR);
+                        RaiseWarning(EWarning.CY_BELLOW_DOWN_FAIL);
                         break;
                     }
 
@@ -498,7 +498,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcOriginStep.NozzleClean_Cyl_UnGrip_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseWarning(EWarning.CY_MAIN_STG_NOZZLE_UNGRIP_ERROR);
+                        RaiseWarning(EWarning.CY_NOZZLE_CLEAN_UNGRIP_FAIL);
                         break;
                     }
 
@@ -517,8 +517,8 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcOriginStep.XYAxis_OriginWait:
                     if (WaitTimeOutOccurred)
                     {
-                        if (!XAxis.Status.IsHomeDone) RaiseWarning(EWarning.MO_MAIN_STG_X_HOME_TIMEOUT);
-                        if (!YAxis.Status.IsHomeDone) RaiseWarning(EWarning.MO_MAIN_STG_Y_HOME_TIMEOUT);
+                        if (!XAxis.Status.IsHomeDone) RaiseWarning(EWarning.MO_X_AXIS_HOME_TIMEOUT);
+                        if (!YAxis.Status.IsHomeDone) RaiseWarning(EWarning.MO_Y_AXIS_HOME_TIMEOUT);
                         break;
                     }
 
@@ -539,9 +539,9 @@ namespace SDV_MoldingInjection.Process
                     if (WaitTimeOutOccurred)
                     {
                         if (!XAxis.IsOnPosition(Recipe.XAxisDummyPos))
-                            RaiseWarning(EWarning.MO_MAIN_STG_X_DUMMY_TIMEOUT);
+                            RaiseWarning(EWarning.MO_X_AXIS_DUMMY_POS_TIMEOUT);
                         if (!YAxis.IsOnPosition(Recipe.YAxisDummyPos))
-                            RaiseWarning(EWarning.MO_MAIN_STG_Y_DUMMY_TIMEOUT);
+                            RaiseWarning(EWarning.MO_Y_AXIS_DUMMY_POS_TIMEOUT);
                         break;
                     }
 
@@ -565,19 +565,19 @@ namespace SDV_MoldingInjection.Process
                     {
                         if (!Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisDummyPos))
                         {
-                            RaiseWarning(EWarning.MO_SUB_H01_IDX_Z_DUMMY_TIMEOUT);
+                            RaiseWarning(EWarning.MO_SPD_H01_Z1_AXIS_DUMMY_POS_TIMEOUT);
                         }
                         if (!Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisDummyPos))
                         {
-                            RaiseWarning(EWarning.MO_SUB_H02_IDX_Z_DUMMY_TIMEOUT);
+                            RaiseWarning(EWarning.MO_SPD_H02_Z2_AXIS_DUMMY_POS_TIMEOUT);
                         }
                         if (!Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisDummyPos))
                         {
-                            RaiseWarning(EWarning.MO_SUB_H03_IDX_Z_DUMMY_TIMEOUT);
+                            RaiseWarning(EWarning.MO_SPD_H03_Z3_AXIS_DUMMY_POS_TIMEOUT);
                         }
                         if (!Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisDummyPos))
                         {
-                            RaiseWarning(EWarning.MO_SUB_H04_IDX_Z_DUMMY_TIMEOUT);
+                            RaiseWarning(EWarning.MO_SPD_H04_Z4_AXIS_DUMMY_POS_TIMEOUT);
                         }
 
                         break;
@@ -613,7 +613,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcOriginStep.ZAxis_SafetyPos_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadWarning(EWarning.MO_SUB_H01_IDX_Z_SAFE_TIMEOUT, _failHead);
+                        RaiseHeadWarning(EWarning.MO_Z1_AXIS_SAFE_POS_TIMEOUT, _failHead);
                         break;
                     }
 
@@ -657,7 +657,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcReadyStep.BellowCyl_Down_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseWarning(EWarning.CY_MAIN_STG_MC_BELLOW_DOWN_ERROR);
+                        RaiseWarning(EWarning.CY_BELLOW_DOWN_FAIL);
                         break;
                     }
 
@@ -676,9 +676,9 @@ namespace SDV_MoldingInjection.Process
                     if (WaitTimeOutOccurred)
                     {
                         if (!XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisReadyPos))
-                            RaiseWarning(EWarning.MO_MAIN_STG_X_READY_TIMEOUT);
+                            RaiseWarning(EWarning.MO_X_AXIS_READY_POS_TIMEOUT);
                         else
-                            RaiseWarning(EWarning.MO_MAIN_STG_Y_READY_TIMEOUT);
+                            RaiseWarning(EWarning.MO_Y_AXIS_READY_POS_TIMEOUT);
                         break;
                     }
 
@@ -706,12 +706,12 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcAutoRunStep.JigDetect_Check:
                     if (LeftJigTiltState)
                     {
-                        RaiseWarning(EWarning.SE_MAIN_STG_MC_LEFT_TILT_OPEN);
+                        RaiseWarning(EWarning.SE_CHAMBER_LEFT_JIG_TILT_DETECT);
                         break;
                     }
                     if (RightJigTiltState)
                     {
-                        RaiseWarning(EWarning.SE_MAIN_STG_MC_RIGHT_TILT_OPEN);
+                        RaiseWarning(EWarning.SE_CHAMBER_RIGHT_JIG_TILT_DETECT);
                         break;
                     }
                     if ((!LeftJigDetect && _optionRecipe.SkipHead12 == false) ||
@@ -728,12 +728,12 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcAutoRunStep.JigStatus_Check:
                     if (JigStatuses[(int)EJig.JigLeft] == EJigStatus.InMolding)
                     {
-                        RaiseWarning(EWarning.EF_MAIN_STG_MC_LEFT_INJECT_ERROR);
+                        RaiseWarning(EWarning.EF_CHAMBER_LEFT_JIG_INJECT_NOT_FINISHED);
                         break;
                     }
                     if (JigStatuses[(int)EJig.JigRight] == EJigStatus.InMolding)
                     {
-                        RaiseWarning(EWarning.EF_MAIN_STG_MC_RIGHT_INJECT_ERROR);
+                        RaiseWarning(EWarning.EF_CHAMBER_RIGHT_JIG_INJECT_NOT_FINISHED);
                         break;
                     }
                     if (JigStatuses.All(jig => jig == EJigStatus.MoldingFinish))
@@ -802,9 +802,9 @@ namespace SDV_MoldingInjection.Process
                     if (WaitTimeOutOccurred)
                     {
                         if (!XAxis.IsOnPosition(_currentRecipe.InjectRecipe.XAxisInjectPos))
-                            RaiseWarning(EWarning.MO_MAIN_STG_X_INJECT_TIMEOUT);
+                            RaiseWarning(EWarning.MO_X_AXIS_INJECT_POS_TIMEOUT);
                         else
-                            RaiseWarning(EWarning.MO_MAIN_STG_Y_INJECT_TIMEOUT);
+                            RaiseWarning(EWarning.MO_Y_AXIS_INJECT_POS_TIMEOUT);
                         break;
                     }
 
@@ -823,8 +823,8 @@ namespace SDV_MoldingInjection.Process
                     if (WaitTimeOutOccurred)
                     {
                         if (!BellowCyl.IsUp())
-                            RaiseWarning(EWarning.CY_MAIN_STG_MC_BELLOW_UP_UP_NG);
-                        RaiseHeadWarning(EWarning.MO_SUB_H01_IDX_Z_INJECT_TIMEOUT, _failHead);
+                            RaiseWarning(EWarning.CY_BELLOW_UP_FAIL);
+                        RaiseHeadWarning(EWarning.MO_SPD_H01_Z1_AXIS_INJECT_POS_TIMEOUT, _failHead);
                         break;
                     }
 
@@ -926,7 +926,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcResinInjectStep.BellowCylDown_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseWarning(EWarning.CY_MAIN_STG_MC_BELLOW_DOWN_ERROR);
+                        RaiseWarning(EWarning.CY_BELLOW_DOWN_FAIL);
                         break;
                     }
 
@@ -954,7 +954,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcResinInjectStep.ZAxis_SafetyPos_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadWarning(EWarning.MO_SUB_H01_IDX_Z_SAFE_TIMEOUT, _failHead);
+                        RaiseHeadWarning(EWarning.MO_Z1_AXIS_SAFE_POS_TIMEOUT, _failHead);
                         break;
                     }
 
@@ -1006,7 +1006,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcResinInjectAddTailStep.ZAxis_UpDistance_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadWarning(EWarning.MO_SUB_H01_IDX_Z_ADDTAIL_UP_NG, _failHead);
+                        RaiseHeadWarning(EWarning.MO_SPD_H01_Z1_AXIS_ADDTAIL_UP_TIMEOUT, _failHead);
                         break;
                     }
 
@@ -1047,7 +1047,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcResinInjectAddTailStep.ZAxis_SafetyPos_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadWarning(EWarning.MO_SUB_H01_IDX_Z_SAFE_TIMEOUT, _failHead);
+                        RaiseHeadWarning(EWarning.MO_Z1_AXIS_SAFE_POS_TIMEOUT, _failHead);
                         break;
                     }
 
@@ -1102,7 +1102,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.YAxis_ReadyPos_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseWarning(EWarning.MO_MAIN_STG_Y_READY_TIMEOUT);
+                        RaiseWarning(EWarning.MO_Y_AXIS_READY_POS_TIMEOUT);
                         break;
                     }
 
@@ -1119,7 +1119,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.Chamber_CoverOpenWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseWarning(EWarning.CY_MAIN_STG_DOOR_MC_OPEN_SEQ_ERROR);
+                        RaiseWarning(EWarning.CY_MOLD_CHAMBER_OPEN_FAIL);
                         break;
                     }
 
@@ -1196,12 +1196,12 @@ namespace SDV_MoldingInjection.Process
                         {
                             if (LeftJigTiltState)
                             {
-                                RaiseWarning(EWarning.SE_MAIN_STG_DRY_L_TILT_OPEN);
+                                RaiseWarning(EWarning.SE_LEFFT_JIG_TILT_STATE);
                                 break;
                             }
                             if (LeftJigDetect == false)
                             {
-                                RaiseWarning(EWarning.SE_MAIN_STG_DRY_L_BODY_OPEN);
+                                RaiseWarning(EWarning.SE_LEFT_JIG_NOT_DETECT);
                                 break;
                             }
 
@@ -1212,12 +1212,12 @@ namespace SDV_MoldingInjection.Process
                         {
                             if (RightJigTiltState)
                             {
-                                RaiseWarning(EWarning.SE_MAIN_STG_DRY_R_TILT_OPEN);
+                                RaiseWarning(EWarning.SE_RIGHT_JIG_TILT_STATE);
                                 break;
                             }
                             if (RightJigDetect == false)
                             {
-                                RaiseWarning(EWarning.SE_MAIN_STG_DRY_R_BODY_OPEN);
+                                RaiseWarning(EWarning.SE_RIGHT_JIG_NOT_DETECT);
                                 break;
                             }
 
@@ -1274,7 +1274,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.Chamber_CoverCloseWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseWarning(EWarning.CY_MAIN_STG_DOOR_MC_CLOSE_SEQ_ERROR);
+                        RaiseWarning(EWarning.CY_MOLD_CHAMBER_CLOSE_FAIL);
                         break;
                     }
 
@@ -1352,9 +1352,9 @@ namespace SDV_MoldingInjection.Process
                     if (WaitTimeOutOccurred)
                     {
                         if (!XAxis.IsOnPosition(Recipe.XAxisDummyPos))
-                            RaiseWarning(EWarning.MO_MAIN_STG_X_DUMMY_TIMEOUT);
+                            RaiseWarning(EWarning.MO_X_AXIS_DUMMY_POS_TIMEOUT);
                         if (!YAxis.IsOnPosition(Recipe.YAxisDummyPos))
-                            RaiseWarning(EWarning.MO_MAIN_STG_Y_DUMMY_TIMEOUT);
+                            RaiseWarning(EWarning.MO_Y_AXIS_DUMMY_POS_TIMEOUT);
                         break;
                     }
                     Log.Debug($"Reached dummy shot position for {sequence}");
@@ -1388,38 +1388,38 @@ namespace SDV_MoldingInjection.Process
                             {
                                 if (_currentRecipe.OptionRecipe.SkipHead12 == false && !Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisDummyPos))
                                 {
-                                    RaiseWarning(EWarning.MO_SUB_H01_IDX_Z_DUMMY_TIMEOUT);
+                                    RaiseWarning(EWarning.MO_SPD_H01_Z1_AXIS_DUMMY_POS_TIMEOUT);
                                 }
                                 if (_currentRecipe.OptionRecipe.SkipHead12 == false && !Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisDummyPos))
                                 {
-                                    RaiseWarning(EWarning.MO_SUB_H02_IDX_Z_DUMMY_TIMEOUT);
+                                    RaiseWarning(EWarning.MO_SPD_H02_Z2_AXIS_DUMMY_POS_TIMEOUT);
                                 }
                                 if (_currentRecipe.OptionRecipe.SkipHead34 == false && !Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisDummyPos))
                                 {
-                                    RaiseWarning(EWarning.MO_SUB_H03_IDX_Z_DUMMY_TIMEOUT);
+                                    RaiseWarning(EWarning.MO_SPD_H03_Z3_AXIS_DUMMY_POS_TIMEOUT);
                                 }
                                 if (_currentRecipe.OptionRecipe.SkipHead34 == false && !Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisDummyPos))
                                 {
-                                    RaiseWarning(EWarning.MO_SUB_H04_IDX_Z_DUMMY_TIMEOUT);
+                                    RaiseWarning(EWarning.MO_SPD_H04_Z4_AXIS_DUMMY_POS_TIMEOUT);
                                 }
                             }
                             else
                             {
                                 if (_machineStatus.IsSkipHead1 == false && !Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisDummyPos))
                                 {
-                                    RaiseWarning(EWarning.MO_SUB_H01_IDX_Z_DUMMY_TIMEOUT);
+                                    RaiseWarning(EWarning.MO_SPD_H01_Z1_AXIS_DUMMY_POS_TIMEOUT);
                                 }
                                 if (_machineStatus.IsSkipHead2 == false == false && !Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisDummyPos))
                                 {
-                                    RaiseWarning(EWarning.MO_SUB_H02_IDX_Z_DUMMY_TIMEOUT);
+                                    RaiseWarning(EWarning.MO_SPD_H02_Z2_AXIS_DUMMY_POS_TIMEOUT);
                                 }
                                 if (_machineStatus.IsSkipHead3 == false == false && !Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisDummyPos))
                                 {
-                                    RaiseWarning(EWarning.MO_SUB_H03_IDX_Z_DUMMY_TIMEOUT);
+                                    RaiseWarning(EWarning.MO_SPD_H03_Z3_AXIS_DUMMY_POS_TIMEOUT);
                                 }
                                 if (_machineStatus.IsSkipHead4 == false == false && !Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisDummyPos))
                                 {
-                                    RaiseWarning(EWarning.MO_SUB_H04_IDX_Z_DUMMY_TIMEOUT);
+                                    RaiseWarning(EWarning.MO_SPD_H04_Z4_AXIS_DUMMY_POS_TIMEOUT);
                                 }
                             }
                         }
@@ -1429,18 +1429,18 @@ namespace SDV_MoldingInjection.Process
                             sequence == ESequence.BubbleRemove_H3 ||
                             sequence == ESequence.BubbleRemove_H4)
                         {
-                            RaiseHeadWarning(EWarning.MO_SUB_H01_IDX_Z_BUBBLE_TIMEOUT, head);
+                            RaiseHeadWarning(EWarning.MO_SPD_H01_Z1_AXIS_BUBBLE_POS_TIMEOUT, head);
                         }
                         else if (sequence == ESequence.HeadAssemble_H1 || sequence == ESequence.HeadAssemble_H2 ||
                                  sequence == ESequence.HeadAssemble_H3 || sequence == ESequence.HeadAssemble_H4 ||
                                  sequence == ESequence.HeadDisassemble_H1 || sequence == ESequence.HeadDisassemble_H2 ||
                                  sequence == ESequence.HeadDisassemble_H3 || sequence == ESequence.HeadDisassemble_H4)
                         {
-                            RaiseHeadWarning(EWarning.MO_SUB_H01_IDX_Z_ASSY_TIMEOUT, head);
+                            RaiseHeadWarning(EWarning.MO_SPD_H01_Z1_AXIS_ASSEMBLE_POS_TIMEOUT, head);
                         }
                         else
                         {
-                            RaiseHeadWarning(EWarning.MO_SUB_H01_IDX_Z_DUMMY_TIMEOUT, head);
+                            RaiseHeadWarning(EWarning.MO_SPD_H01_Z1_AXIS_DUMMY_POS_TIMEOUT, head);
                         }
 
 
@@ -1497,7 +1497,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcDummyShotStep.ZAxis_SafetyPos_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadWarning(EWarning.MO_SUB_H01_IDX_Z_SAFE_TIMEOUT, _failHead);
+                        RaiseHeadWarning(EWarning.MO_Z1_AXIS_SAFE_POS_TIMEOUT, _failHead);
                         break;
                     }
 
@@ -1575,9 +1575,9 @@ namespace SDV_MoldingInjection.Process
                     if (WaitTimeOutOccurred)
                     {
                         if (!XAxis.IsOnPosition(Recipe.XAxisNeedleCleanPos))
-                            RaiseWarning(EWarning.MO_MAIN_STG_X_NEEDLECLN_TIMEOUT);
+                            RaiseWarning(EWarning.MO_X_AXIS_NEEDLE_CLEAN_TIMEOUT);
                         if (!YAxis.IsOnPosition(Recipe.YAxisNeddleClean))
-                            RaiseWarning(EWarning.MO_MAIN_STG_Y_NEEDLECLN_TIMEOUT);
+                            RaiseWarning(EWarning.MO_Y_AXIS_NEEDLE_CLEAN_TIMEOUT);
                         break;
                     }
 
@@ -1593,7 +1593,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcNeedleCleaningStep.NzlCleanCyl_UnGripWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseWarning(EWarning.CY_MAIN_STG_NOZZLE_UNGRIP_ERROR);
+                        RaiseWarning(EWarning.CY_NOZZLE_CLEAN_UNGRIP_FAIL);
                         break;
                     }
 
@@ -1617,7 +1617,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcNeedleCleaningStep.Z_Axis_NeedleCleanPos_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadWarning(EWarning.MO_SUB_H01_IDX_Z_NEEDLECLN_TIMEOUT, _failHead);
+                        RaiseHeadWarning(EWarning.MO_SPD_H01_Z1_AXIS_NEEDLE_CLEAN_POS_TIMEOUT, _failHead);
                         break;
                     }
 
@@ -1633,7 +1633,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcNeedleCleaningStep.NzlCleanCyl_GripWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseWarning(EWarning.CY_MAIN_STG_NOZZLE_GRIP_ERROR);
+                        RaiseWarning(EWarning.CY_NOZZLE_CLEAN_GRIP_FAIL);
                         break;
                     }
                     Log.Debug("Nozzle clean cylinder Grip done");
@@ -1648,7 +1648,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcNeedleCleaningStep.Z_Axis_Up_AfterCleanWait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadWarning(EWarning.MO_SUB_H01_IDX_Z_SAFE_TIMEOUT, _failHead);
+                        RaiseHeadWarning(EWarning.MO_Z1_AXIS_SAFE_POS_TIMEOUT, _failHead);
                         break;
                     }
                     Log.Debug("Z axis up after clean done");
@@ -1663,7 +1663,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcNeedleCleaningStep.NzlCleanCyl_UnGrip_AfterClean_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseWarning(EWarning.CY_MAIN_STG_NOZZLE_UNGRIP_ERROR);
+                        RaiseWarning(EWarning.CY_NOZZLE_CLEAN_UNGRIP_FAIL);
                         break;
                     }
                     Log.Debug("Nozzle clean cylinder Ungrip done");
@@ -1747,16 +1747,16 @@ namespace SDV_MoldingInjection.Process
                     {
                         if (YAxis.IsOnPosition(_currentRecipe.InjectRecipe.YAxisReadyPos) == false)
                         {
-                            RaiseWarning(EWarning.MO_MAIN_STG_Y_READY_TIMEOUT);
+                            RaiseWarning(EWarning.MO_Y_AXIS_READY_POS_TIMEOUT);
                         }
                         else
                         {
                             if (currentDotWeightingHead == EDotWeightingHead.HEAD13)
                             {
-                                RaiseWarning(EWarning.MO_MAIN_STG_X_DW_H13_TIMEOUT);
+                                RaiseWarning(EWarning.MO_X_AXIS_H13_DOT_WEIGHT_POS_TIMEOUT);
                                 break;
                             }
-                            RaiseWarning(EWarning.MO_MAIN_STG_X_DW_H24_TIMEOUT);
+                            RaiseWarning(EWarning.MO_X_AXIS_H24_DOT_WEIGHT_POS_TIMEOUT);
                         }
                         break;
                     }
@@ -1779,12 +1779,12 @@ namespace SDV_MoldingInjection.Process
                             {
                                 if (Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisWeightingPos) == false && _machineStatus.IsSkipHead1)
                                 {
-                                    RaiseWarning(EWarning.MO_SUB_H01_IDX_Z_DW_TIMEOUT);
+                                    RaiseWarning(EWarning.MO_SPD_H01_Z1_AXIS_DOT_WEIGHT_POS_TIMEOUT);
                                     break;
                                 }
                                 if (Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisWeightingPos) == false && _machineStatus.IsSkipHead3)
                                 {
-                                    RaiseWarning(EWarning.MO_SUB_H03_IDX_Z_DW_TIMEOUT);
+                                    RaiseWarning(EWarning.MO_SPD_H03_Z3_AXIS_DOT_WEIGHT_POS_TIMEOUT);
                                     break;
                                 }
                             }
@@ -1793,19 +1793,19 @@ namespace SDV_MoldingInjection.Process
                             {
                                 if (Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisWeightingPos) == false && _machineStatus.IsSkipHead2)
                                 {
-                                    RaiseWarning(EWarning.MO_SUB_H02_IDX_Z_DW_TIMEOUT);
+                                    RaiseWarning(EWarning.MO_SPD_H02_Z2_AXIS_DOT_WEIGHT_POS_TIMEOUT);
                                     break;
                                 }
                                 if (Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisWeightingPos) == false && _machineStatus.IsSkipHead4)
                                 {
-                                    RaiseWarning(EWarning.MO_SUB_H04_IDX_Z_DW_TIMEOUT);
+                                    RaiseWarning(EWarning.MO_SPD_H04_Z4_AXIS_DOT_WEIGHT_POS_TIMEOUT);
                                     break;
                                 }
                             }
                         }
                         else
                         {
-                            RaiseHeadWarning(EWarning.MO_SUB_H01_IDX_Z_DW_TIMEOUT, head);
+                            RaiseHeadWarning(EWarning.MO_SPD_H01_Z1_AXIS_DOT_WEIGHT_POS_TIMEOUT, head);
                             break;
                         }
                     }
@@ -1865,7 +1865,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcDotWeightingStep.ZAxis_SafetyPos__Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        RaiseHeadWarning(EWarning.MO_SUB_H01_IDX_Z_SAFE_TIMEOUT, _failHead);
+                        RaiseHeadWarning(EWarning.MO_Z1_AXIS_SAFE_POS_TIMEOUT, _failHead);
                         break;
                     }
 
@@ -2438,7 +2438,7 @@ namespace SDV_MoldingInjection.Process
 
         private void RaiseHeadWarning(EWarning warning, ESPDHead _failHead)
         {
-            RaiseWarning(warning + ((int)(EWarning.MO_SUB_H02_IDX_Z_HOME_TIMEOUT - EWarning.MO_SUB_H01_IDX_Z_HOME_TIMEOUT)) * (_failHead - ESPDHead.SPDHead1));
+            RaiseWarning(warning + ((int)(EWarning.MO_Z2_AXIS_HOME_TIMEOUT - EWarning.MO_Z1_AXIS_HOME_TIMEOUT)) * (_failHead - ESPDHead.SPDHead1));
         }
         #endregion
 
