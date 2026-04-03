@@ -88,27 +88,29 @@ namespace SDV_MoldingInjection.Process
             {
                 if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec)
                 {
+                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.ValveOpen);
                     AngleValve.Open();
                 }
 
                 if (_devices.AnalogInputs.VacuumPressureInTorr <= _currentRecipe.DryPumpRecipe.VacuumPressureSpec)
                 {
+                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.ValveClose);
                     AngleValve.Close();
                 }
             }
 
-            if (EnablePressureHold2nd && _machineStatus.IsDryRunMode == false)
-            {
-                if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpecSecond)
-                {
-                    AngleValve.Open();
-                }
+            //if (EnablePressureHold2nd && _machineStatus.IsDryRunMode == false)
+            //{
+            //    if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpecSecond)
+            //    {
+            //        AngleValve.Open();
+            //    }
 
-                if (_devices.AnalogInputs.VacuumPressureInTorr <= _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpecSecond - 0.2)
-                {
-                    AngleValve.Close();
-                }
-            }
+            //    if (_devices.AnalogInputs.VacuumPressureInTorr <= _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpecSecond - 0.2)
+            //    {
+            //        AngleValve.Close();
+            //    }
+            //}
 
             if (EnableWritePressureLog && _currentRecipe.OptionRecipe.SavePressureLog == true)
             {
@@ -484,25 +486,25 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.WaitEndHoldPressure1st_StartHoldPressure2nd:
-                    if(_currentRecipe.DryPumpRecipe.TimeStartHoldUnderSpecSecond <= 0 || _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpecSecond <= 0)
-                    {
-                        Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
-                        break;
-                    }
+                    //if(_currentRecipe.DryPumpRecipe.TimeStartHoldUnderSpecSecond <= 0 || _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpecSecond <= 0)
+                    //{
+                    //    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
+                    //    break;
+                    //}
 
-                    if (((_carrierJigStatusList.CarrierJigStatusH1.InjectTime < _currentRecipe.DryPumpRecipe.TimeStartHoldUnderSpecSecond) && !_currentRecipe.OptionRecipe.SkipHead12) ||
-                        ((_carrierJigStatusList.CarrierJigStatusH2.InjectTime < _currentRecipe.DryPumpRecipe.TimeStartHoldUnderSpecSecond) && !_currentRecipe.OptionRecipe.SkipHead12) ||
-                        ((_carrierJigStatusList.CarrierJigStatusH3.InjectTime < _currentRecipe.DryPumpRecipe.TimeStartHoldUnderSpecSecond) && !_currentRecipe.OptionRecipe.SkipHead34) ||
-                        ((_carrierJigStatusList.CarrierJigStatusH4.InjectTime < _currentRecipe.DryPumpRecipe.TimeStartHoldUnderSpecSecond) && !_currentRecipe.OptionRecipe.SkipHead34))
-                    {
-                        Wait(10);
-                        break;
-                    }
+                    //if (((_carrierJigStatusList.CarrierJigStatusH1.InjectTime < _currentRecipe.DryPumpRecipe.TimeStartHoldUnderSpecSecond) && !_currentRecipe.OptionRecipe.SkipHead12) ||
+                    //    ((_carrierJigStatusList.CarrierJigStatusH2.InjectTime < _currentRecipe.DryPumpRecipe.TimeStartHoldUnderSpecSecond) && !_currentRecipe.OptionRecipe.SkipHead12) ||
+                    //    ((_carrierJigStatusList.CarrierJigStatusH3.InjectTime < _currentRecipe.DryPumpRecipe.TimeStartHoldUnderSpecSecond) && !_currentRecipe.OptionRecipe.SkipHead34) ||
+                    //    ((_carrierJigStatusList.CarrierJigStatusH4.InjectTime < _currentRecipe.DryPumpRecipe.TimeStartHoldUnderSpecSecond) && !_currentRecipe.OptionRecipe.SkipHead34))
+                    //{
+                    //    Wait(10);
+                    //    break;
+                    //}
 
-                    Log.Debug($"Disable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
-                    EnablePressureHold = false;
-                    Log.Debug($"Enable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpecSecond}");
-                    EnablePressureHold2nd = true;
+                    //Log.Debug($"Disable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
+                    //EnablePressureHold = false;
+                    //Log.Debug($"Enable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpecSecond}");
+                    //EnablePressureHold2nd = true;
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_WaitVentTime:

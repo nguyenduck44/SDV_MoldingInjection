@@ -5,36 +5,33 @@ namespace SDV_MoldingInjection.Recipe
 {
     public class DryPumpRecipe : RecipeBase
     {
-        [SingleRecipeDescription(Description = "Chamber vacuum pressure spec", Unit = Unit.Torr)]
+        [SingleRecipeDescription(Description = "Chamber Vacuum Pressure Spec", Unit = Unit.Torr)]
         public double VacuumPressureSpec
         {
             get => _vacuumPressureSpec;
             set => SetRecipe(ref _vacuumPressureSpec, value, nameof(VacuumPressureSpec));
         }
 
-        [SingleRecipeDescription(Description = "Pressure Spec 1st", 
-            Detail = "Hold pressure under spec first", Unit = Unit.Torr)]
+        [SingleRecipeDescription(Description = "Pressure Hold Under Spec", 
+            Detail = "Hold pressure under spec while inject", Unit = Unit.Torr)]
         public double VacuumPressureHoldUnderSpec
         {
             get => _vacuumPressureHoldUnderSpec;
             set => SetRecipe(ref _vacuumPressureHoldUnderSpec, value, nameof(VacuumPressureHoldUnderSpec));
         }
 
-        [SingleRecipeDescription(Description = "Time start hold spec 2nd",
-            Detail = "Time start hold pressure under spec 2nd", Unit = Unit.Second)]
-        public double TimeStartHoldUnderSpecSecond
-        {
-            get => _timeStartHoldUnderSpecSecond;
-            set => SetRecipe(ref _timeStartHoldUnderSpecSecond, value, nameof(TimeStartHoldUnderSpecSecond));
-        }
+        //TODO: Use hold pressure second instead of hold pressure under spec second
+        //public double TimeStartHoldUnderSpecSecond
+        //{
+        //    get => _timeStartHoldUnderSpecSecond;
+        //    set => SetRecipe(ref _timeStartHoldUnderSpecSecond, value, nameof(TimeStartHoldUnderSpecSecond));
+        //}
 
-        [SingleRecipeDescription(Description = "Pressure Spec 2nd",
-            Detail = "Hold pressure under spec 2nd", Unit = Unit.Torr)]
-        public double VacuumPressureHoldUnderSpecSecond
-        {
-            get => _vacuumPressureHoldUnderSpecSecond;
-            set => SetRecipe(ref _vacuumPressureHoldUnderSpecSecond, value, nameof(VacuumPressureHoldUnderSpecSecond));
-        }
+        //public double VacuumPressureHoldUnderSpecSecond
+        //{
+        //    get => _vacuumPressureHoldUnderSpecSecond;
+        //    set => SetRecipe(ref _vacuumPressureHoldUnderSpecSecond, value, nameof(VacuumPressureHoldUnderSpecSecond));
+        //}
 
         [SingleRecipeDescription(Description = "Pressure log timelaps", Unit = Unit.Second)]
         public double PressureLogTimelaps
