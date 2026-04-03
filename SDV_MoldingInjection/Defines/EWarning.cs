@@ -6,7 +6,7 @@ namespace SDV_MoldingInjection.Defines
     /// Đặt Tên theo quy tắc: CATEGORY_POSITION_DEVICE_DESCRIPTION1_DESCRIPTION2_ERRORMODE.(samsung yêu cầu)
     /// CATEGORY_POSITION_DEVICE_DESCRIPTION1_DESCRIPTION2_ERRORMODE.
     /// Category (2 ký tự): VC VA MO IN VI CY SE CO DO TE EM UT OP ET EF.
-    /// ErrorMode (bảng): ERROR (lỗi hoàn thành/kiểm tra), MARK_NG, UP_NG, OPEN, SWITCH_ON, SERVO_OFF, TEMP_OVER, TIMEOUT.
+    /// ErrorMode (bảng): ERROR, MARK_NG, UP_NG, OPEN, NOT_DETECT, SWITCH_ON, SERVO_OFF, TEMP_OVER, TIMEOUT.
     /// Position: MAIN SUB LOADER UNLOADER PRESS INSPECTION BUFFER CONVEYOR.
     /// </summary>
     public enum EWarning
@@ -127,7 +127,7 @@ namespace SDV_MoldingInjection.Defines
         MO_SUB_H01_IDX_G_BUBBLE_TIMEOUT,
         MO_SUB_H01_IDX_P_OVER_BASE_ERROR,
         [Description("HEAD1_IN05")]
-        SE_SUB_H01_SYR_BODY_OPEN,
+        SE_SUB_H01_SYR_NOT_DETECT,
         VA_SUB_H01_SYR_FILL_TIMEOUT,
         [Description("HEAD1_IN06")]
         SE_SUB_H01_SYR_AIR_OPEN,
@@ -152,7 +152,7 @@ namespace SDV_MoldingInjection.Defines
         MO_SUB_H02_IDX_G_BUBBLE_TIMEOUT,
         MO_SUB_H02_IDX_P_OVER_BASE_ERROR,
         [Description("HEAD2_IN05")]
-        SE_SUB_H02_SYR_BODY_OPEN,
+        SE_SUB_H02_SYR_NOT_DETECT,
         VA_SUB_H02_SYR_FILL_TIMEOUT,
         [Description("HEAD2_IN06")]
         SE_SUB_H02_SYR_AIR_OPEN,
@@ -177,7 +177,7 @@ namespace SDV_MoldingInjection.Defines
         MO_SUB_H03_IDX_G_BUBBLE_TIMEOUT,
         MO_SUB_H03_IDX_P_OVER_BASE_ERROR,
         [Description("HEAD3_IN05")]
-        SE_SUB_H03_SYR_BODY_OPEN,
+        SE_SUB_H03_SYR_NOT_DETECT,
         VA_SUB_H03_SYR_FILL_TIMEOUT,
         [Description("HEAD3_IN06")]
         SE_SUB_H03_SYR_AIR_OPEN,
@@ -202,7 +202,7 @@ namespace SDV_MoldingInjection.Defines
         MO_SUB_H04_IDX_G_BUBBLE_TIMEOUT,
         MO_SUB_H04_IDX_P_OVER_BASE_ERROR,
         [Description("HEAD4_IN05")]
-        SE_SUB_H04_SYR_BODY_OPEN,
+        SE_SUB_H04_SYR_NOT_DETECT,
         VA_SUB_H04_SYR_FILL_TIMEOUT,
         [Description("HEAD4_IN06")]
         SE_SUB_H04_SYR_AIR_OPEN,

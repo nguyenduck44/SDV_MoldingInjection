@@ -776,7 +776,7 @@ namespace SDV_MoldingInjection.Process
                 CurrentHeadSkip == false &&
                 _machineStatus.DisableSyringeCheck == false)
             {
-                RaiseHeadWarning(EWarning.SE_SUB_H01_SYR_BODY_OPEN);
+                RaiseHeadWarning(EWarning.SE_SUB_H01_SYR_NOT_DETECT);
             }
 #endif
             return base.PreProcess();
