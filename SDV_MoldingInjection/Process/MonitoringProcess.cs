@@ -75,7 +75,7 @@ namespace SDV_MoldingInjection.Process
                     if (WaitTimeOutOccurred)
                     {
                         Log.Error($"Move To {_machineStatus.MultiPointPosition.Name} Fail");
-                        RaiseWarning(EWarning.MoveTargetPosition_Fail);
+                        RaiseWarning(EWarning.MO_MAIN_STG_XY_TARGET_ERROR);
                         break;
                     }
 

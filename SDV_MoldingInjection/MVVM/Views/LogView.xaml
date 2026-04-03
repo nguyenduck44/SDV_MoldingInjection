@@ -170,7 +170,6 @@
                         Width="200" />
                     <DataGridTextColumn
                         Header="Description"
-                        IsReadOnly="True"
                         Binding="{Binding Description}"
                         Width="*">
                         <DataGridTextColumn.ElementStyle>

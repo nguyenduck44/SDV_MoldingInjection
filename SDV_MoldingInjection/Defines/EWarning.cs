@@ -2,211 +2,209 @@ using System.ComponentModel;
 
 namespace SDV_MoldingInjection.Defines
 {
+    /// <summary>
+    /// Đặt Tên theo quy tắc: CATEGORY_POSITION_DEVICE_DESCRIPTION1_DESCRIPTION2_ERRORMODE.(samsung yêu cầu)
+    /// CATEGORY_POSITION_DEVICE_DESCRIPTION1_DESCRIPTION2_ERRORMODE.
+    /// Category (2 ký tự): VC VA MO IN VI CY SE CO DO TE EM UT OP ET EF.
+    /// ErrorMode (bảng): ERROR (lỗi hoàn thành/kiểm tra), MARK_NG, UP_NG, OPEN, SWITCH_ON, SERVO_OFF, TEMP_OVER, TIMEOUT.
+    /// Position: MAIN SUB LOADER UNLOADER PRESS INSPECTION BUFFER CONVEYOR.
+    /// </summary>
     public enum EWarning
     {
-        //--------- 20 -> 499 : Global Warning ---------
-        Root = 20,
-        [Description("IN16~IN19 - IN69~IN72")]
-        DoorOpen,
-        [Description("OUT16")]
-        DoorNotSafetyLock,
-        MoveTargetPosition_Fail,
+        //--------- 20 -> 499 : Global ---------
+        ET_MAIN_STG_SYS_MARK_NG = 20,
+        [Description("IN16,IN18,IN69,IN71")]
+        DO_MAIN_DOOR_INTERLOCK_OPEN,
+        [Description("IN17,IN19,IN70,IN72")]
+        DO_MAIN_DOOR_LOCK_SWITCH_ON,
+        MO_MAIN_STG_XY_TARGET_ERROR,
         [Description("IN11")]
-        Warning_OverTemperature_Detected,
+        TE_MAIN_CP_SENSOR_TEMP_OVER,
         [Description("IN04")]
-        OPSwitchKey_Not_In_AutoMode,
+        OP_MAIN_CP_KEY_AUTO_ERROR,
         [Description("IN04")]
-        Machine_Not_In_AutoMode,
+        OP_MAIN_STG_MODE_AUTO_ERROR,
 
-        //--------- 500 -> 999 : Mold Process Warning ---------
-        Mold_Chamber_OpenWarning = 500,
-        Mold_Chamber_OpenFail,
-        Mold_Chamber_CloseWarning,
-        Mold_Chamber_CloseFail,
+        //--------- 500 -> 999 : Mold ---------
+        CY_MAIN_STG_DOOR_MC_OPEN_OPEN = 500,
+        CY_MAIN_STG_DOOR_MC_OPEN_SEQ_ERROR,
+        CY_MAIN_STG_DOOR_MC_CLOSE_OPEN,
+        CY_MAIN_STG_DOOR_MC_CLOSE_SEQ_ERROR,
 
-        XAxis_Origin_TimeOut = 550,
-        XAxis_ReadyPos_MoveTimeOut,
-        XAxis_InjectPos_MoveTimeOut,
-        XAxis_DummyPos_MoveTimeOut,
-        XAxis_H13DotWeightingPos_MoveTimeOut,
-        XAxis_H24DotWeightingPos_MoveTimeOut,
-        XAxis_MoveNeedleCleanPos_Timeout,
+        MO_MAIN_STG_X_HOME_TIMEOUT = 550,
+        MO_MAIN_STG_X_READY_TIMEOUT,
+        MO_MAIN_STG_X_INJECT_TIMEOUT,
+        MO_MAIN_STG_X_DUMMY_TIMEOUT,
+        MO_MAIN_STG_X_DW_H13_TIMEOUT,
+        MO_MAIN_STG_X_DW_H24_TIMEOUT,
+        MO_MAIN_STG_X_NEEDLECLN_TIMEOUT,
 
-        YAxis_Origin_TimeOut = 600,
-        YAxis_ReadyPos_MoveTimeOut,
-        YAxis_InjectPos_MoveTimeOut,
-        YAxis_DummyPos_MoveTimeOut,
-        YAxis_MoveNeedleCleanPos_Timeout,
+        MO_MAIN_STG_Y_HOME_TIMEOUT = 600,
+        MO_MAIN_STG_Y_READY_TIMEOUT,
+        MO_MAIN_STG_Y_INJECT_TIMEOUT,
+        MO_MAIN_STG_Y_DUMMY_TIMEOUT,
+        MO_MAIN_STG_Y_NEEDLECLN_TIMEOUT,
 
-        Z1Axis_Origin_TimeOut = 650,
-        Z1Axis_SafetyPos_MoveTimeOut,
-        Z1Axis_InjectPos_MoveTimeOut,
-        Z1Axis_DummyPos_MoveTimeOut,
-        Z1Axis_MoveNeedleCleanPos_Timeout,
-        Z1Axis_MoveDotWeightingPos_Timeout,
-        Z1Axis_MoveBubbleRemovePos_Timeout,
-        Z1Axis_MoveAssembleDisassemblePos_Timeout,
-        Z1Axis_Up_AddTailPos_MoveTimeOut,
+        MO_SUB_H01_IDX_Z_HOME_TIMEOUT = 650,
+        MO_SUB_H01_IDX_Z_SAFE_TIMEOUT,
+        MO_SUB_H01_IDX_Z_INJECT_TIMEOUT,
+        MO_SUB_H01_IDX_Z_DUMMY_TIMEOUT,
+        MO_SUB_H01_IDX_Z_NEEDLECLN_TIMEOUT,
+        MO_SUB_H01_IDX_Z_DW_TIMEOUT,
+        MO_SUB_H01_IDX_Z_BUBBLE_TIMEOUT,
+        MO_SUB_H01_IDX_Z_ASSY_TIMEOUT,
+        MO_SUB_H01_IDX_Z_ADDTAIL_UP_NG,
 
-        Z2Axis_Origin_TimeOut = 700,
-        Z2Axis_SafetyPos_MoveTimeOut,
-        Z2Axis_InjectPos_MoveTimeOut,
-        Z2Axis_DummyPos_MoveTimeOut,
-        Z2Axis_MoveNeedleCleanPos_Timeout,
-        Z2Axis_MoveDotWeightingPos_Timeout,
-        Z2Axis_MoveBubbleRemovePos_Timeout,
-        Z2Axis_MoveAssembleDisassemblePos_Timeout,
-        Z2Axis_Up_AddTailPos_MoveTimeOut,
+        MO_SUB_H02_IDX_Z_HOME_TIMEOUT = 700,
+        MO_SUB_H02_IDX_Z_SAFE_TIMEOUT,
+        MO_SUB_H02_IDX_Z_INJECT_TIMEOUT,
+        MO_SUB_H02_IDX_Z_DUMMY_TIMEOUT,
+        MO_SUB_H02_IDX_Z_NEEDLECLN_TIMEOUT,
+        MO_SUB_H02_IDX_Z_DW_TIMEOUT,
+        MO_SUB_H02_IDX_Z_BUBBLE_TIMEOUT,
+        MO_SUB_H02_IDX_Z_ASSY_TIMEOUT,
+        MO_SUB_H02_IDX_Z_ADDTAIL_UP_NG,
 
-        Z3Axis_Origin_TimeOut = 750,
-        Z3Axis_SafetyPos_MoveTimeOut,
-        Z3Axis_InjectPos_MoveTimeOut,
-        Z3Axis_DummyPos_MoveTimeOut,
-        Z3Axis_MoveNeedleCleanPos_Timeout,
-        Z3Axis_MoveDotWeightingPos_Timeout,
-        Z3Axis_MoveBubbleRemovePos_Timeout,
-        Z3Axis_MoveAssembleDisassemblePos_Timeout,
-        Z3Axis_Up_AddTailPos_MoveTimeOut,
+        MO_SUB_H03_IDX_Z_HOME_TIMEOUT = 750,
+        MO_SUB_H03_IDX_Z_SAFE_TIMEOUT,
+        MO_SUB_H03_IDX_Z_INJECT_TIMEOUT,
+        MO_SUB_H03_IDX_Z_DUMMY_TIMEOUT,
+        MO_SUB_H03_IDX_Z_NEEDLECLN_TIMEOUT,
+        MO_SUB_H03_IDX_Z_DW_TIMEOUT,
+        MO_SUB_H03_IDX_Z_BUBBLE_TIMEOUT,
+        MO_SUB_H03_IDX_Z_ASSY_TIMEOUT,
+        MO_SUB_H03_IDX_Z_ADDTAIL_UP_NG,
 
-        Z4Axis_Origin_TimeOut = 800,
-        Z4Axis_SafetyPos_MoveTimeOut,
-        Z4Axis_InjectPos_MoveTimeOut,
-        Z4Axis_DummyPos_MoveTimeOut,
-        Z4Axis_MoveNeedleCleanPos_Timeout,
-        Z4Axis_MoveDotWeightingPos_Timeout,
-        Z4Axis_MoveBubbleRemovePos_Timeout,
-        Z4Axis_MoveAssembleDisassemblePos_Timeout,
-        Z4Axis_Up_AddTailPos_MoveTimeOut,
+        MO_SUB_H04_IDX_Z_HOME_TIMEOUT = 800,
+        MO_SUB_H04_IDX_Z_SAFE_TIMEOUT,
+        MO_SUB_H04_IDX_Z_INJECT_TIMEOUT,
+        MO_SUB_H04_IDX_Z_DUMMY_TIMEOUT,
+        MO_SUB_H04_IDX_Z_NEEDLECLN_TIMEOUT,
+        MO_SUB_H04_IDX_Z_DW_TIMEOUT,
+        MO_SUB_H04_IDX_Z_BUBBLE_TIMEOUT,
+        MO_SUB_H04_IDX_Z_ASSY_TIMEOUT,
+        MO_SUB_H04_IDX_Z_ADDTAIL_UP_NG,
 
-        BellowCyl_DownFail = 900,
-        BellowCyl_UpFail,
-        Chamber_VacuumDetectWarning,
-        Chamber_LeftJig_TiltDetect,
-        Chamber_RightJig_TiltDetect,
-        Chamber_LeftJig_InjectNotFinished,
-        Chamber_RightJig_InjectNotFinished,
+        CY_MAIN_STG_MC_BELLOW_DOWN_ERROR = 900,
+        CY_MAIN_STG_MC_BELLOW_UP_UP_NG,
+        VC_MAIN_STG_MC_VAC_LINE_OPEN,
+        SE_MAIN_STG_MC_LEFT_TILT_OPEN,
+        SE_MAIN_STG_MC_RIGHT_TILT_OPEN,
+        EF_MAIN_STG_MC_LEFT_INJECT_ERROR,
+        EF_MAIN_STG_MC_RIGHT_INJECT_ERROR,
 
-        Nozzle_CleanCyl_GripFail,
-        Nozzle_CleanCyl_UnGripFail,
+        CY_MAIN_STG_NOZZLE_GRIP_ERROR,
+        CY_MAIN_STG_NOZZLE_UNGRIP_ERROR,
 
-        //--------- 1000 -> 1499 : Dry Pump Process Warning ---------
-        AngleValve_CloseFail = 1000,
-        AngleValve_OpenFail,
-        DryPump_Run_Timeout,
-        Machine_Need_Calibration,
-        Jig_Detected_Unload_Fail,
-        Left_Jig_Tilt_State,
-        Left_Jig_Not_Detect,
-        Right_Jig_Tilt_State,
-        Right_Jig_Not_Detect,
+        //--------- 1000 -> 1499 : Dry ---------
+        CY_MAIN_BUF_LINE_VALVE_CLOSE_ERROR = 1000,
+        CY_MAIN_BUF_LINE_VALVE_OPEN_ERROR,
+        MO_MAIN_STG_DRYPUMP_RUN_TIMEOUT,
+        VA_MAIN_STG_CALIB_REQUIRED_ERROR,
+        SE_MAIN_STG_DRY_UNLD_ERROR,
+        SE_MAIN_STG_DRY_L_TILT_OPEN,
+        SE_MAIN_STG_DRY_L_BODY_OPEN,
+        SE_MAIN_STG_DRY_R_TILT_OPEN,
+        SE_MAIN_STG_DRY_R_BODY_OPEN,
 
-        //--------- 1500 -> 1999 : SPD Head #1 Process Warning ---------
-        P1Axis_Origin_Timeout = 1500,
-        G1Axis_Origin_Timeout,
+        //--------- 1500 -> 1999 : Head 1 ---------
+        MO_SUB_H01_IDX_P_HOME_TIMEOUT = 1500,
+        MO_SUB_H01_IDX_G_HOME_TIMEOUT,
         [Description("HEAD1_IN00")]
-        H1_PistonCyl_UpFail,
+        CY_SUB_H01_SYR_PISTON_UP_UP_NG,
         [Description("HEAD1_IN01")]
-        H1_PistonCyl_DownFail,
+        CY_SUB_H01_SYR_PISTON_DOWN_ERROR,
         [Description("HEAD1_IN04")]
-        H1_Assemble_Check_Timeout,
+        MO_SUB_H01_SYR_ASSY_CHECK_TIMEOUT,
         [Description("HEAD1_IN04")]
-        H1_Disassemble_Check_Timeout,
-        H1_Balance_NotStable,
-        H1_Balance_RequestWeight_Fail,
-        H1_Balance_Zero_Fail,
-        /// <summary>
-        /// Balance data fail or syringe empty
-        /// </summary>
-        H1_Balance_ZeroWeighting_Fail,
-        H1_PAxis_BubbleRemove_Timeout,
-        H1_GAxis_BubbleRemove_Timeout,
-        H1_InjectPosOverBasePos,
+        MO_SUB_H01_SYR_DISASSY_CHECK_TIMEOUT,
+        VA_SUB_H01_SYR_BAL_STAB_ERROR,
+        VA_SUB_H01_SYR_BAL_REQ_ERROR,
+        VA_SUB_H01_SYR_BAL_ZERO_ERROR,
+        /// <summary>Balance data fail or syringe empty</summary>
+        VA_SUB_H01_SYR_BAL_WEIGH_ERROR,
+        MO_SUB_H01_IDX_P_BUBBLE_TIMEOUT,
+        MO_SUB_H01_IDX_G_BUBBLE_TIMEOUT,
+        MO_SUB_H01_IDX_P_OVER_BASE_ERROR,
         [Description("HEAD1_IN05")]
-        H1_Syringe_Not_Detected,
-        H1_Syringe_Amount_IsTimeOver,
+        SE_SUB_H01_SYR_BODY_OPEN,
+        VA_SUB_H01_SYR_FILL_TIMEOUT,
         [Description("HEAD1_IN06")]
-        H1_Syringe_Air_Not_Detected,
+        SE_SUB_H01_SYR_AIR_OPEN,
 
-        //--------- 2000 -> 2499 : SPD Head #2 Process Warning ---------
-        P2Axis_Origin_Timeout = 2000,
-        G2Axis_Origin_Timeout,
+        //--------- 2000 -> 2499 : Head 2 ---------
+        MO_SUB_H02_IDX_P_HOME_TIMEOUT = 2000,
+        MO_SUB_H02_IDX_G_HOME_TIMEOUT,
         [Description("HEAD2_IN00")]
-        H2_PistonCyl_UpFail,
+        CY_SUB_H02_SYR_PISTON_UP_UP_NG,
         [Description("HEAD2_IN01")]
-        H2_PistonCyl_DownFail,
+        CY_SUB_H02_SYR_PISTON_DOWN_ERROR,
         [Description("HEAD2_IN04")]
-        H2_Assemble_Check_Timeout,
+        MO_SUB_H02_SYR_ASSY_CHECK_TIMEOUT,
         [Description("HEAD2_IN04")]
-        H2_Disassemble_Check_Timeout,
-        H2_Balance_NotStable,
-        H2_Balance_RequestWeight_Fail,
-        H2_Balance_Zero_Fail,
-        /// <summary>
-        /// Balance data fail or syringe empty
-        /// </summary>
-        H2_Balance_ZeroWeighting_Fail,
-        H2_PAxis_BubbleRemove_Timeout,
-        H2_GAxis_BubbleRemove_Timeout,
-        H2_InjectPosOverBasePos,
+        MO_SUB_H02_SYR_DISASSY_CHECK_TIMEOUT,
+        VA_SUB_H02_SYR_BAL_STAB_ERROR,
+        VA_SUB_H02_SYR_BAL_REQ_ERROR,
+        VA_SUB_H02_SYR_BAL_ZERO_ERROR,
+        /// <summary>Balance data fail or syringe empty</summary>
+        VA_SUB_H02_SYR_BAL_WEIGH_ERROR,
+        MO_SUB_H02_IDX_P_BUBBLE_TIMEOUT,
+        MO_SUB_H02_IDX_G_BUBBLE_TIMEOUT,
+        MO_SUB_H02_IDX_P_OVER_BASE_ERROR,
         [Description("HEAD2_IN05")]
-        H2_Syringe_Not_Detected,
-        H2_Syringe_Amount_IsTimeOver,
+        SE_SUB_H02_SYR_BODY_OPEN,
+        VA_SUB_H02_SYR_FILL_TIMEOUT,
         [Description("HEAD2_IN06")]
-        H2_Syringe_Air_Not_Detected,
+        SE_SUB_H02_SYR_AIR_OPEN,
 
-
-        //--------- 2500 -> 3000 : SPD Head #3 Process Warning ---------
-        P3Axis_Origin_Timeout = 2500,
-        G3Axis_Origin_Timeout,
+        //--------- 2500 -> 2999 : Head 3 ---------
+        MO_SUB_H03_IDX_P_HOME_TIMEOUT = 2500,
+        MO_SUB_H03_IDX_G_HOME_TIMEOUT,
         [Description("HEAD3_IN00")]
-        H3_PistonCyl_UpFail,
+        CY_SUB_H03_SYR_PISTON_UP_UP_NG,
         [Description("HEAD3_IN01")]
-        H3_PistonCyl_DownFail,
+        CY_SUB_H03_SYR_PISTON_DOWN_ERROR,
         [Description("HEAD3_IN04")]
-        H3_Assemble_Check_Timeout,
+        MO_SUB_H03_SYR_ASSY_CHECK_TIMEOUT,
         [Description("HEAD3_IN04")]
-        H3_Disassemble_Check_Timeout,
-        H3_Balance_NotStable,
-        H3_Balance_RequestWeight_Fail,
-        H3_Balance_Zero_Fail,
-        /// <summary>
-        /// Balance data fail or syringe empty
-        /// </summary>
-        H3_Balance_ZeroWeighting_Fail,
-        H3_PAxis_BubbleRemove_Timeout,
-        H3_GAxis_BubbleRemove_Timeout,
-        H3_InjectPosOverBasePos,
+        MO_SUB_H03_SYR_DISASSY_CHECK_TIMEOUT,
+        VA_SUB_H03_SYR_BAL_STAB_ERROR,
+        VA_SUB_H03_SYR_BAL_REQ_ERROR,
+        VA_SUB_H03_SYR_BAL_ZERO_ERROR,
+        /// <summary>Balance data fail or syringe empty</summary>
+        VA_SUB_H03_SYR_BAL_WEIGH_ERROR,
+        MO_SUB_H03_IDX_P_BUBBLE_TIMEOUT,
+        MO_SUB_H03_IDX_G_BUBBLE_TIMEOUT,
+        MO_SUB_H03_IDX_P_OVER_BASE_ERROR,
         [Description("HEAD3_IN05")]
-        H3_Syringe_Not_Detected,
-        H3_Syringe_Amount_IsTimeOver,
+        SE_SUB_H03_SYR_BODY_OPEN,
+        VA_SUB_H03_SYR_FILL_TIMEOUT,
         [Description("HEAD3_IN06")]
-        H3_Syringe_Air_Not_Detected,
+        SE_SUB_H03_SYR_AIR_OPEN,
 
-        //--------- 3000 -> 3499 : SPD Head #3 Process Warning ---------
-        P4Axis_Origin_Timeout = 3000,
-        G4Axis_Origin_Timeout,
+        //--------- 3000 -> 3499 : Head 4 ---------
+        MO_SUB_H04_IDX_P_HOME_TIMEOUT = 3000,
+        MO_SUB_H04_IDX_G_HOME_TIMEOUT,
         [Description("HEAD4_IN00")]
-        H4_PistonCyl_UpFail,
+        CY_SUB_H04_SYR_PISTON_UP_UP_NG,
         [Description("HEAD4_IN01")]
-        H4_PistonCyl_DownFail,
+        CY_SUB_H04_SYR_PISTON_DOWN_ERROR,
         [Description("HEAD4_IN04")]
-        H4_Assemble_Check_Timeout,
+        MO_SUB_H04_SYR_ASSY_CHECK_TIMEOUT,
         [Description("HEAD4_IN04")]
-        H4_Disassemble_Check_Timeout,
-        H4_Balance_NotStable,
-        H4_Balance_RequestWeight_Fail,
-        H4_Balance_Zero_Fail,
-        /// <summary>
-        /// Balance data fail or syringe empty
-        /// </summary>
-        H4_Balance_ZeroWeighting_Fail,
-        H4_PAxis_BubbleRemove_Timeout,
-        H4_GAxis_BubbleRemove_Timeout,
-        H4_InjectPosOverBasePos,
+        MO_SUB_H04_SYR_DISASSY_CHECK_TIMEOUT,
+        VA_SUB_H04_SYR_BAL_STAB_ERROR,
+        VA_SUB_H04_SYR_BAL_REQ_ERROR,
+        VA_SUB_H04_SYR_BAL_ZERO_ERROR,
+        /// <summary>Balance data fail or syringe empty</summary>
+        VA_SUB_H04_SYR_BAL_WEIGH_ERROR,
+        MO_SUB_H04_IDX_P_BUBBLE_TIMEOUT,
+        MO_SUB_H04_IDX_G_BUBBLE_TIMEOUT,
+        MO_SUB_H04_IDX_P_OVER_BASE_ERROR,
         [Description("HEAD4_IN05")]
-        H4_Syringe_Not_Detected,
-        H4_Syringe_Amount_IsTimeOver,
+        SE_SUB_H04_SYR_BODY_OPEN,
+        VA_SUB_H04_SYR_FILL_TIMEOUT,
         [Description("HEAD4_IN06")]
-        H4_Syringe_Air_Not_Detected,
+        SE_SUB_H04_SYR_AIR_OPEN,
     }
 }

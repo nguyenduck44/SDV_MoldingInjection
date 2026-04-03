@@ -55,7 +55,7 @@
                 <GroupBox Header="Chamber Pressure Chart"
                           Style="{x:Null}">
                     <ContentControl Content="{Binding Plotter.ChamberPressurePlot, Mode=OneWay}"
-                                    Height="250"/>
+                                    Height="250" />
                 </GroupBox>
             </StackPanel>
 
@@ -104,9 +104,9 @@
         <!-- SYRINGE AMOUNT -->
         <Grid Grid.Column="1"
               IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
-              Width="215"
+              Width="245"
               HorizontalAlignment="Left">
-            <StackPanel Margin="5 1">
+            <StackPanel>
                 <GroupBox Header="Syringe Amount (g)"
                           FontSize="14"
                           Style="{x:Null}">
@@ -147,7 +147,7 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Width="60"
+                                        <Border Width="70"
                                                 CornerRadius="4"
                                                 Padding="1">
                                             <Border.Style>
@@ -178,6 +178,77 @@
                 </GroupBox>
             </StackPanel>
         </Grid>
+        <Canvas Grid.Column="1">
+            <GroupBox Header="PRODUCTION"
+                      Canvas.Left="240"
+                          Style="{x:Null}">
+                <Grid Margin="8 6">
+                    <Grid.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontSize"
+                                        Value="14" />
+                            <Setter Property="FontWeight"
+                                        Value="SemiBold" />
+                        </Style>
+                        <Style TargetType="TextBox">
+                            <Setter Property="FontSize"
+                                        Value="14" />
+                            <Setter Property="FontWeight"
+                                        Value="SemiBold" />
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="110" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Row="0"
+                                Grid.Column="0"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                Padding="6 2">
+                        <TextBlock VerticalAlignment="Center"
+                                       Text="Input" />
+                    </Border>
+                    <Border Grid.Row="0"
+                                Grid.Column="1"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                Padding="2">
+                        <TextBox IsReadOnly="True"
+                                     BorderThickness="0"
+                                     Background="Transparent"
+                                     HorizontalContentAlignment="Right"
+                                     Text="{Binding TodayInputCount,Mode=OneWay}" />
+                    </Border>
+
+                    <Border Grid.Row="1"
+                                Grid.Column="0"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                Padding="6 2">
+                        <TextBlock VerticalAlignment="Center"
+                                       Text="Output" />
+                    </Border>
+                    <Border Grid.Row="1"
+                                Grid.Column="1"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                Padding="2">
+                        <TextBox IsReadOnly="True"
+                                     BorderThickness="0"
+                                     Background="Transparent"
+                                     HorizontalContentAlignment="Right"
+                                     Text="{Binding TodayOutputCount,Mode=OneWay}" />
+                    </Border>
+                </Grid>
+            </GroupBox>
+
+        </Canvas>
 
         <!--Indicator-->
         <Grid Grid.Column="1"
@@ -336,10 +407,10 @@
             </Canvas>
 
             <Canvas>
-                <Grid Width="150"
+                <Grid Width="160"
                       Height="15"
-                      Canvas.Left="240"
-                      Canvas.Top="370">
+                      Canvas.Left="230"
+                      Canvas.Top="170">
                     <Rectangle Style="{StaticResource DoorIndicatorRectangleStyle}">
                         <Rectangle.Fill>
                             <Binding Path="Devices.Inputs.PanelCloseLeftCheck.Value"
@@ -356,10 +427,10 @@
                 </Grid>
             </Canvas>
             <Canvas>
-                <Grid Width="150"
+                <Grid Width="160"
                       Height="15"
-                      Canvas.Right="17"
-                      Canvas.Top="370">
+                      Canvas.Right="10"
+                      Canvas.Top="170">
                     <Rectangle Style="{StaticResource DoorIndicatorRectangleStyle}">
                         <Rectangle.Fill>
                             <Binding Path="Devices.Inputs.PanelCloseRightCheck.Value"
@@ -377,9 +448,9 @@
             </Canvas>
             <Canvas>
                 <Image  Source="/SDV_MoldingInjection;component/Resource/Images/PowerON.png"
-                        Canvas.Left="131"
-                        Canvas.Top="283"
-                        HorizontalAlignment="Center"
+                        Canvas.Left="138"
+                        Canvas.Top="300"
+                        HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Width="11"
                         Height="10"
@@ -392,11 +463,11 @@
             </Canvas>
             <Canvas>
                 <Image  Source="/SDV_MoldingInjection;component/Resource/Images/PowerON.png"
-                        Canvas.Left="144"
-                        Canvas.Top="282"
+                        Canvas.Left="154"
+                        Canvas.Top="300"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
-                        Width="11"
+                        Width="10"
                         Height="10"
                         RenderTransformOrigin="1.243,1.841">
                     <Image.Visibility>
@@ -407,8 +478,8 @@
             </Canvas>
             <Canvas>
                 <Image  Source="/SDV_MoldingInjection;component/Resource/Images/PowerON.png"
-                        Canvas.Left="159"
-                        Canvas.Top="282"
+                        Canvas.Left="169"
+                        Canvas.Top="300"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Width="11"

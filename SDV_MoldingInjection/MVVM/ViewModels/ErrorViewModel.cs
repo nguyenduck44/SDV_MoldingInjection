@@ -242,11 +242,12 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         {
             var logCounts = new ObservableCollection<ErrorLogCount>();
             var result = errorLogEntries
-                .GroupBy(e => new { e.ErrorCode, e.Message })
+                .GroupBy(e => new { e.ErrorCode, e.Message , e.IOName })
                 .Select(g => new ErrorLogCount
                 {
                     ErrorCode = g.Key.ErrorCode,
                     Message = g.Key.Message,
+                    IOName = g.Key.IOName,
                     Count = g.Count()
                 })
                 .OrderByDescending(x => x.Count);

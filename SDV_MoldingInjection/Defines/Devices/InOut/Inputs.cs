@@ -139,6 +139,8 @@ namespace SDV_MoldingInjection.Defines
         public IDInput PumpVentCDACheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_VENT_CDA_CHECK);
         public IDInput PumpFanRun1 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_FAN_RUN1);
         public IDInput PumpFanRun2 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_FAN_RUN2);
+        public IDInput PumpFanRun3 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_FAN_RUN3);
+        public IDInput PumpFanRun4 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_FAN_RUN4);
         public IDInput DummyOverflowDetect1 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DUMMY_OVERFLOW_DETECT_1);
         public IDInput DummyOverflowDetect2 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DUMMY_OVERFLOW_DETECT_2);
         public IDInput DummyOverflowDetect3 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DUMMY_OVERFLOW_DETECT_3);
@@ -187,11 +189,13 @@ namespace SDV_MoldingInjection.Defines
         public bool DoorClose =>
             DoorOpenRearLeft.Value == false &&
             DoorOpenRearRight.Value == false &&
+            DoorOpenLeft.Value == false &&
+            DoorOpenRight.Value == false;
+
+        public bool DoorLock =>
             DoorReleaseRearLeft.Value == false &&
             DoorReleaseRearRight.Value == false &&
-            DoorOpenLeft.Value == false &&
             DoorReleaseLeft.Value == false &&
-            DoorOpenRight.Value == false &&
             DoorReleaseRight.Value == false;
     }
 }
