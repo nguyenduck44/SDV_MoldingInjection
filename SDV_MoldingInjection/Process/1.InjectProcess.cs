@@ -1145,6 +1145,7 @@ namespace SDV_MoldingInjection.Process
                         }
                         if (isLoading == false)
                         {
+                            outputCount = 0;
                             Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Jig_Check;
                             break;
                         }
@@ -1192,7 +1193,7 @@ namespace SDV_MoldingInjection.Process
                         SimulationInputSetter.SetSimInput(In_Jig3Detect, true);
                         SimulationInputSetter.SetSimInput(In_Jig4Detect, true);
 #endif
-                        if (_optionRecipe.SkipHead12 == false && _machineStatus.DisableDetectJig == false && _machineStatus.IsDryRunMode == false)
+                        if (_optionRecipe.SkipHead12 == false)
                         {
                             if (LeftJigTiltState)
                             {
@@ -1205,10 +1206,11 @@ namespace SDV_MoldingInjection.Process
                                 break;
                             }
 
+                            Log.Debug("Left Jig Loading Done");
                             inputCount++;
                         }
 
-                        if (_optionRecipe.SkipHead34 == false && _machineStatus.DisableDetectJig == false && _machineStatus.IsDryRunMode == false)
+                        if (_optionRecipe.SkipHead34 == false)
                         {
                             if (RightJigTiltState)
                             {
@@ -1221,32 +1223,43 @@ namespace SDV_MoldingInjection.Process
                                 break;
                             }
 
+                            Log.Debug("Right Jig Loading Done");
                             inputCount++;
                         }
 
+                        Log.Debug($"Write data input count: {inputCount}");
                         _productionService.WriteData(EProductionWriteType.Input, inputCount);
                     }
 
-                    if (isLoading == false)
+                    if (isLoading == false && _machineStatus.IsDryRunMode == false)
                     {
-                        outputCount = 0;
-                        if (_optionRecipe.SkipHead12 == false && LeftJigDetect == false)
+                        if (_optionRecipe.SkipHead12 == false &&
+                            In_Jig1Detect.Value == false &&
+                            In_Jig2Detect.Value == false &&
+                            JigStatuses[0] != EJigStatus.None)
                         {
+                            Log.Debug("Left Jig Unload Done");
                             JigStatuses[0] = EJigStatus.None;
                             outputCount++;
                         }
-                        if (_optionRecipe.SkipHead34 == false && RightJigDetect == false)
+                        if (_optionRecipe.SkipHead34 == false &&
+                            In_Jig3Detect.Value == false &&
+                            In_Jig4Detect.Value == false &&
+                            JigStatuses[1] != EJigStatus.None)
                         {
+                            Log.Debug("Right Jig Unload Done");
                             JigStatuses[1] = EJigStatus.None;
                             outputCount++;
                         }
 
-                        if (JigStatuses[0] != EJigStatus.None || JigStatuses[1] != EJigStatus.None)
+                        if ((_optionRecipe.SkipHead12 == false && JigStatuses[0] != EJigStatus.None) ||
+                            (_optionRecipe.SkipHead34 == false && JigStatuses[1] != EJigStatus.None))
                         {
                             Wait(20);
                             break;
                         }
 
+                        Log.Debug($"Write data output count: {outputCount}");
                         _productionService.WriteData(EProductionWriteType.Output, outputCount);
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
                         break;

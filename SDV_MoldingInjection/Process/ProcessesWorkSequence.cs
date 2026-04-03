@@ -94,6 +94,14 @@ namespace SDV_MoldingInjection.Process
             EDryPumpProcResinInjectStep.SetFlag_PurgeFinish,
             EDryPumpProcResinInjectStep.WaitToClear_ProcOutput,
         };
+
+        public static readonly List<EDryPumpProcResinInjectStep> DryPumpResinInjectSequence_DryRun = new List<EDryPumpProcResinInjectStep>
+        {
+            EDryPumpProcResinInjectStep.DryPump_VacuumDone_Send,
+            EDryPumpProcResinInjectStep.Wait_PurgeEnd,
+            EDryPumpProcResinInjectStep.SetFlag_PurgeFinish,
+            EDryPumpProcResinInjectStep.WaitToClear_ProcOutput,
+        };
         #endregion
 
         #region Inject
