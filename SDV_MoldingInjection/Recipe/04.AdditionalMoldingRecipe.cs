@@ -27,7 +27,7 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _zUpDistanceAddTail, value, nameof(ZUpDistanceAddTail));
         }
 
-        [SingleRecipeDescription(Description = "Add Tail Weight", Unit = Unit.Percentage)]
+        [SingleRecipeDescription(Description = "Add Tail Weight", Unit = Unit.mg)]
         public double AddTailWeight
         {
             get => _addTailWeight;
