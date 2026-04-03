@@ -777,7 +777,7 @@ namespace SDV_MoldingInjection.Process
                 _machineStatus.DisableSyringeCheck == false &&
                 (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run))
             {
-                RaiseHeadWarning(EWarning.SE_SUB_H01_SYR_BODY_OPEN);
+                RaiseHeadWarning(EWarning.SE_SUB_H01_SYR_NOT_DETECT);
             }
 #endif
             return base.PreProcess();
@@ -1222,8 +1222,8 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAddTailStep.Charge_PosVel_Calculte:
-                    double height = (_pAxisBase_Pos - _currentSPDHeadRecipe.PAxisInjectChargePos) * (_currentRecipe.AdditionalMolding_Recipe.AddTailWeight / 100);
-                    _pAxisCharge_Pos = _pAxisBase_Pos - height;
+                    double heightAddTail = _currentRecipe.AdditionalMolding_Recipe.AddTailWeight * ((_pAxisBase_Pos - _currentSPDHeadRecipe.PAxisInjectChargePos) / _currentSPDHeadRecipe.ResinWeight);
+                    _pAxisCharge_Pos = _pAxisBase_Pos - heightAddTail;
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAddTailStep.PAxis_ChargePos_Move:
