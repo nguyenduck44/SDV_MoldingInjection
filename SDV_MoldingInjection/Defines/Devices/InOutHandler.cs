@@ -20,6 +20,9 @@ namespace SDV_MoldingInjection.Defines
         private readonly object _lockObject = new object();
         private string messageBuffer = string.Empty;
 
+        private Task? _readTask;
+        private CancellationTokenSource? _cancellationTokenSource;
+
         private Processes _processes => _serviceProvider.GetRequiredService<Processes>();
         private IProcess<ESequence> RootProcess => _processes.RootProcess;
         private InjectProcess InjectProcess => _processes.All.OfType<InjectProcess>().First();
@@ -57,7 +60,8 @@ namespace SDV_MoldingInjection.Defines
                         return false;
                     }
 
-                    _serialCommunicator.DataReceived += DataReceivedHandler;
+                    _cancellationTokenSource = new CancellationTokenSource();
+                    _readTask = Task.Run(() => ReadDataContinuously(_cancellationTokenSource.Token));
                     return true;
                 }
                 catch
@@ -67,6 +71,32 @@ namespace SDV_MoldingInjection.Defines
                 }
             }
         }
+
+        private void ReadDataContinuously(CancellationToken cancellationToken)
+        {
+            while (!cancellationToken.IsCancellationRequested && IsConnected)
+            {
+                try
+                {
+                    if (_serialCommunicator.IsConnected)
+                    {
+                        string data = _serialCommunicator.Read();
+                        if (!string.IsNullOrEmpty(data))
+                        {
+                            HandleMessageReceived(data);
+                        }
+                    }
+                    Thread.Sleep(10);
+                }
+                catch
+                {
+                    if (!cancellationToken.IsCancellationRequested)
+                    {
+                    }
+                }
+            }
+        }
+
 
         public bool Disconnect()
         {
