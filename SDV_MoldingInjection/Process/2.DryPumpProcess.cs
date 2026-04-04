@@ -86,16 +86,13 @@ namespace SDV_MoldingInjection.Process
 
             if (EnablePressureHold && _machineStatus.IsDryRunMode == false)
             {
-                // Todo : Check if cylinder output is actived, then ignore
                 if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec)
                 {
-                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.ValveOpen);
                     AngleValve.Open();
                 }
 
                 if (_devices.AnalogInputs.VacuumPressureInTorr <= _currentRecipe.DryPumpRecipe.VacuumPressureSpec)
                 {
-                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.ValveClose);
                     AngleValve.Close();
                 }
             }
@@ -383,13 +380,13 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Info($"Input detect {EDryPumpProcInput.Vacuum_WorkRequest}");
-                    EnableWritePressureLog = true;
                     _plotter.ClearData();
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.AngleValve_Open:
                     Log.Debug($"Opening {AngleValve.Name}");
                     PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.ValveOpen);
+                    EnableWritePressureLog = true;
                     AngleValve.Open();
                     Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, AngleValve.IsOpen);
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
@@ -657,7 +654,8 @@ namespace SDV_MoldingInjection.Process
 
         private void PressureLog(double pressure, EPumpAction? action = null)
         {
-            if ((DateTime.Now - pressureLogWatchTime).TotalMilliseconds < _recipeSelector.CurrentRecipe.DryPumpRecipe.PressureLogTimelaps * 1000)
+            if ((DateTime.Now - pressureLogWatchTime).TotalMilliseconds < _recipeSelector.CurrentRecipe.DryPumpRecipe.PressureLogTimelaps * 1000 &&
+                action == null)
             {
                 return;
             }
