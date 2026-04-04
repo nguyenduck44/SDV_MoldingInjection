@@ -1,11 +1,16 @@
 using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
+using EQX.Core.Communication;
+using EQX.Core.Communication.CIM;
+using EQX.Core.Communication.CIM.Custom;
 using EQX.UI.Controls;
+using EQX.UI.MVVM;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;
 using System.ComponentModel;
 using System.Windows.Input;
+using TOPENG_Device;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
@@ -39,6 +44,27 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         {
             _navigationService.NavigateTo<MaterialPortsViewModel>();
         });
+
+        public ICommand TMPLossChangeCommand
+        {
+            get
+            {
+                return new RelayCommand(async () =>
+                {
+                    EquipEventDetail.Create(EquipEvent.TPMLossReady).SetPLCBitOn();
+
+                    TPMLossWindow tpmLossWindow = new TPMLossWindow();
+                    tpmLossWindow.ShowDialog();
+
+                    if (tpmLossWindow.SelectedTPMMode == null) return;
+
+                    await Task.Run(() =>
+                    {
+                        EquipEventHelpers.TPMLostReport((ETPMLossDesciption)tpmLossWindow.SelectedTPMMode);
+                    });
+                });
+            }
+        }
 
         public ICommand RunModeChangeCommand => new RelayCommand(() =>
         {

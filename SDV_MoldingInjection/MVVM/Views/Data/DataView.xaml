@@ -45,7 +45,8 @@
 
                 <Button Content="{Binding RunModeButtonContent}"
                         Command="{Binding RunModeChangeCommand}" />
-
+                <Button Content="TPM"
+                        Command="{Binding TMPLossChangeCommand}" />
                 <Button Content="Material Ports"
                         Command="{Binding MaterialPortsViewNavigateCommand}" />
                 <Button Content="Security Control"
