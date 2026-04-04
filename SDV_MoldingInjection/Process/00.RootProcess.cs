@@ -114,8 +114,7 @@ namespace SDV_MoldingInjection.Process
                     {
                         if ((Environment.TickCount - _machineStatus.MachineIdleTick) >
                             _recipeList.IdlePurgeRecipe.IdlePurgeAfterStopTime * 60000 &&
-                            _recipeSelector.CurrentRecipe.IdlePurgeRecipe.IdlePurgeAfterStopTime != 0 &&
-                            _recipeSelector.CurrentRecipe.IdlePurgeRecipe.IdlePurgeCycleTime != 0)
+                            _recipeSelector.CurrentRecipe.IdlePurgeRecipe.IdlePurgeAfterStopTime != 0)
                         {
                             command = EOperationCommand.SemiAuto;
                             _machineStatus.SemiAutoSequence = ESemiSequence.IdlePurge;
@@ -176,7 +175,6 @@ namespace SDV_MoldingInjection.Process
 
                 if (_recipeSelector.CurrentRecipe.IdlePurgeRecipe.EnableIdlePurge &&
                     _recipeSelector.CurrentRecipe.IdlePurgeRecipe.IdlePurgeAfterStopTime != 0 &&
-                    _recipeSelector.CurrentRecipe.IdlePurgeRecipe.IdlePurgeCycleTime != 0 &&
                    (Environment.TickCount - _machineStatus.MachineIdleTick) > _recipeSelector.CurrentRecipe.IdlePurgeRecipe.IdlePurgeAfterStopTime * 60000)
                 {
                     command = EOperationCommand.SemiAuto;

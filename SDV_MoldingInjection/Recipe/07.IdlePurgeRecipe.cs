@@ -46,16 +46,5 @@ namespace SDV_MoldingInjection.Recipe
                 SetRecipe(ref idlePurgeAfterStopTime, value);
             }
         }
-
-        [SingleRecipeDescription(Description = "Idle Purge Cycle Time", Unit = Unit.Minute)]
-        public double IdlePurgeCycleTime
-        {
-            get { return idlePurgeCycleTime; }
-            set
-            {
-                if (idlePurgeCycleTime == value) return;
-                SetRecipe(ref idlePurgeCycleTime, value);
-            }
-        }
     }
 }
