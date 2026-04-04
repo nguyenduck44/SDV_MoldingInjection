@@ -5,6 +5,7 @@ using EQX.Device.Balance;
 using EQX.InOut;
 using EQX.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
+using ScottPlot.Plottables;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.MVVM.Models;
 using SDV_MoldingInjection.Recipe;
@@ -1053,6 +1054,10 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcCommonStep.PAxis_InjectPos_Move:
                     if (sequence == ESequence.ResinInject)
                     {
+                        if (Parent?.Sequence == ESequence.AutoRun)
+                        {
+                            IsCanStop = false;
+                        }
                         if (_currentRecipe.OptionRecipe.EnableInjectionPath)
                         {
                             if (injectPathIndexer > InjectPaths.Count - 1)
@@ -1149,6 +1154,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     EnableTimerInject = false;
+                    IsCanStop = true;
                     Log.Debug($"{PAxis.Name} moving to InjectPos done");
 
                     // Consume syringe amount

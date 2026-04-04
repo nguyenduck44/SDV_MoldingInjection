@@ -18,7 +18,7 @@ namespace SDV_MoldingInjection.Services.Security
         public SecurityControlStore(IConfiguration configuration)
         {
             _configuration = configuration;
-            _settingsPath = _configuration["Files:SecurityConfigFile"] ?? @"D:\DotDispenser\Config\SecurityControl.json";
+            _settingsPath = _configuration["Files:SecurityConfigFile"] ?? @"D:\MoldInjection\Config\SecurityControl.json";
 
             Settings = Load();
         }

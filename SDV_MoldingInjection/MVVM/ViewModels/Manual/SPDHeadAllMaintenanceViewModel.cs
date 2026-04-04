@@ -1,11 +1,13 @@
 using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
 using EQX.Core.Recipe;
+using EQX.Core.Sequence;
 using EQX.Device.Balance;
 using EQX.UI.Controls;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Recipe;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
@@ -179,7 +181,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && MachineStatus.CurrentProcessMode != EProcessMode.ToRun && MachineStatus.CurrentProcessMode != EProcessMode.Run)
             {
                 MachineStatus.IsSkipHead1 = true;
                 MachineStatus.IsSkipHead2 = true;
