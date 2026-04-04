@@ -1431,14 +1431,14 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcDotWeightingStep.Balance_Zero_Check:
                     if (Balance.WeightData == null)
                     {
-                        RaiseHeadWarning(EWarning.VA_H01_BALANCE_ZERO_FAIL);
+                        RaiseHeadWarning(EWarning.VA_SPD_H01_BALANCE_ZERO_FAIL);
                         break;
                     }
 
                     double weight = Balance.WeightData.Weight * 1000;
                     if (weight < -3 || weight > 3)
                     {
-                        RaiseHeadWarning(EWarning.VA_H01_BALANCE_ZERO_FAIL);
+                        RaiseHeadWarning(EWarning.VA_SPD_H01_BALANCE_ZERO_FAIL);
                         break;
                     }
 
@@ -1481,13 +1481,13 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcDotWeightingStep.Calibrate_Weight:
                     if (WaitTimeOutOccurred || Balance.WeightData == null)
                     {
-                        RaiseHeadWarning(EWarning.VA_H01_BALANCE_REQ_WEIGHT_FAIL);
+                        RaiseHeadWarning(EWarning.VA_SPD_H01_BALANCE_REQ_WEIGHT_FAIL);
                         break;
                     }
 
                     if (Balance.WeightData.IsStable == false)
                     {
-                        RaiseHeadWarning(EWarning.VA_H01_BALANCE_NOT_STABLE);
+                        RaiseHeadWarning(EWarning.VA_SPD_H01_BALANCE_NOT_STABLE);
                         break;
                     }
 
@@ -1495,7 +1495,7 @@ namespace SDV_MoldingInjection.Process
 
                     if (_calibWeight_mg <= 0)
                     {
-                        RaiseHeadWarning(EWarning.VA_H01_BALANCE_WEIGH_FAIL);
+                        RaiseHeadWarning(EWarning.VA_SPD_H01_BALANCE_WEIGH_FAIL);
                         break;
                     }
 

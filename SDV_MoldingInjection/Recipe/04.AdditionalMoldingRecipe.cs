@@ -13,7 +13,7 @@ namespace SDV_MoldingInjection.Recipe
         private double _bubbleRemoveCount;
         #endregion
 
-        [SingleRecipeDescription(Description = "USE Add Tail", Detail = "Check to Skip Add Tail")]
+        [SingleRecipeDescription(Description = "USE Add Tail", Detail = "Check to Use Add Tail")]
         public bool UseAddTail
         {
             get => _useAddTail;
