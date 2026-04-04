@@ -163,7 +163,7 @@ namespace SDV_MoldingInjection.Process
 #if !SIMULATION
                     if (In_SyringeAir.Value == false && In_SyringeCheck.Value && CurrentHeadSkip == false)
                     {
-                        RaiseHeadWarning(EWarning.SE_SUB_H01_SYR_AIR_OPEN);
+                        RaiseHeadWarning(EWarning.SE_SPD_H01_SYRING_AIR_NOT_DETECT);
                     }
 #endif
 
@@ -777,7 +777,7 @@ namespace SDV_MoldingInjection.Process
                 _machineStatus.DisableSyringeCheck == false &&
                 (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run))
             {
-                RaiseHeadWarning(EWarning.SE_SUB_H01_SYR_NOT_DETECT);
+                RaiseHeadWarning(EWarning.SE_SPD_H01_SYRING_NOT_DETECT);
             }
 #endif
             return base.PreProcess();

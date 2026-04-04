@@ -143,7 +143,7 @@ namespace SDV_MoldingInjection.Process
                     if (_machineStatus.MachineCalibration.All(x => x) == false &&
                         _machineStatus.IsDryRunMode == false)
                     {
-                        RaiseWarning(EWarning.VA_MAIN_STG_CALIB_REQUIRED_ERROR);
+                        RaiseWarning(EWarning.VA_MACHINE_NEED_CALIBRATION);
                         break;
                     }
 #endif

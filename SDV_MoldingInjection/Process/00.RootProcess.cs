@@ -299,13 +299,13 @@ namespace SDV_MoldingInjection.Process
 #if !SIMULATION
                     if (_devices.Inputs.AutoSW.Value == false)
                     {
-                        RaiseWarning(EWarning.OP_MAIN_CP_KEY_AUTO_ERROR);
+                        RaiseWarning(EWarning.OP_MAIN_KEY_NOT_IN_AUTO_MODE);
                         break;
                     }
 
                     if (_machineStatus.IsAutoMode == false)
                     {
-                        RaiseWarning(EWarning.OP_MAIN_STG_MODE_AUTO_ERROR);
+                        RaiseWarning(EWarning.OP_MAIN_MACHINE_NOT_IN_AUTO_MODE);
                         break;
                     }
 #endif
@@ -435,13 +435,13 @@ namespace SDV_MoldingInjection.Process
 #if !SIMULATION
                     if (_devices.Inputs.AutoSW.Value == false)
                     {
-                        RaiseWarning(EWarning.OP_MAIN_CP_KEY_AUTO_ERROR);
+                        RaiseWarning(EWarning.OP_MAIN_KEY_NOT_IN_AUTO_MODE);
                         break;
                     }
 
                     if (_machineStatus.IsAutoMode == false)
                     {
-                        RaiseWarning(EWarning.OP_MAIN_STG_MODE_AUTO_ERROR);
+                        RaiseWarning(EWarning.OP_MAIN_MACHINE_NOT_IN_AUTO_MODE);
                         break;
                     }
 #endif
@@ -556,7 +556,7 @@ namespace SDV_MoldingInjection.Process
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
                 Log.Error("POWER OFF");
-                RaiseAlarm((int)EAlarm.UT_MAIN_MCR_COIL_SERVO_OFF);
+                RaiseAlarm((int)EAlarm.UT_MAIN_MC_OFF);
                 return;
             }
 #endif
@@ -619,7 +619,7 @@ namespace SDV_MoldingInjection.Process
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
                 Log.Error("Main Air Not Supplied");
-                RaiseAlarm((int)EAlarm.VC_MAIN_STG_AIR_LOW_OPEN);
+                RaiseAlarm((int)EAlarm.VC_MAIN_AIR_NOT_SUPPLIED);
                 return;
             }
 #endif
