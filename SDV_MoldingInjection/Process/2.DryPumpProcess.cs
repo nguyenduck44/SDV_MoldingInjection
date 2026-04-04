@@ -86,6 +86,7 @@ namespace SDV_MoldingInjection.Process
 
             if (EnablePressureHold && _machineStatus.IsDryRunMode == false)
             {
+                // Todo : Check if cylinder output is actived, then ignore
                 if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec)
                 {
                     PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.ValveOpen);
@@ -114,11 +115,7 @@ namespace SDV_MoldingInjection.Process
 
             if (EnableWritePressureLog && _currentRecipe.OptionRecipe.SavePressureLog == true)
             {
-                if ((DateTime.Now - pressureLogWatchTime).TotalMilliseconds > _recipeSelector.CurrentRecipe.DryPumpRecipe.PressureLogTimelaps * 1000)
-                {
-                    PressureLog(_devices.AnalogInputs.VacuumPressureInTorr);
-                    pressureLogWatchTime = DateTime.Now;
-                }
+                PressureLog(_devices.AnalogInputs.VacuumPressureInTorr);
             }
 
             return base.PreProcess();
@@ -660,6 +657,12 @@ namespace SDV_MoldingInjection.Process
 
         private void PressureLog(double pressure, EPumpAction? action = null)
         {
+            if ((DateTime.Now - pressureLogWatchTime).TotalMilliseconds < _recipeSelector.CurrentRecipe.DryPumpRecipe.PressureLogTimelaps * 1000)
+            {
+                return;
+            }
+            pressureLogWatchTime = DateTime.Now;
+
             var now = DateTime.Now;
             string message = $"{now:yyyy/MM/dd HH:mm:ss},{pressure:F3}";
             if (action != null)
