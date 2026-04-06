@@ -1063,6 +1063,7 @@ namespace SDV_MoldingInjection.Process
                             if (injectPathIndexer > InjectPaths.Count - 1)
                             {
                                 EnableTimerInject = false;
+                                IsCanStop = true;
                                 Step.RunStep = (int)ESPDHeadProcCommonStep.WorkDone_Send;
                                 break;
                             }
