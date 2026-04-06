@@ -86,12 +86,14 @@ namespace SDV_MoldingInjection.Process
 
             if (EnablePressureHold && _machineStatus.IsDryRunMode == false)
             {
-                if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec)
+                if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec
+                    && AngleValve.IsOpenOutput() == false)
                 {
                     AngleValve.Open();
                 }
 
-                if (_devices.AnalogInputs.VacuumPressureInTorr <= _currentRecipe.DryPumpRecipe.VacuumPressureSpec)
+                if (_devices.AnalogInputs.VacuumPressureInTorr <= _currentRecipe.DryPumpRecipe.VacuumPressureSpec
+                    && AngleValve.IsCloseOutput() == false)
                 {
                     AngleValve.Close();
                 }

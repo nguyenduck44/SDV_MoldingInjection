@@ -7,7 +7,7 @@ namespace SDV_MoldingInjection.Recipe
 {
     public class InjectTimeRecipe : RecipeBase
     {
-        [SingleRecipeDescription(Description = "Delay First", Detail ="Delay after open Angle Valve", Unit = Unit.Second)]
+        [SingleRecipeDescription(Description = "Inject First Time", Detail ="Inject time before Open Angle Valve", Unit = Unit.Second)]
         public double DelayAfterOpenAngleValve
         {
             get => _delayAfterOpenAngleValve;
