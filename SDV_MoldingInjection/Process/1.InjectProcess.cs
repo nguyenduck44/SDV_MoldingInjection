@@ -747,6 +747,23 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcAutoRunStep.Calibration_Check:
                     Log.Info($"Sequence set to {ESequence.ResinInject}");
+                    if (_optionRecipe.SkipHead12 == false &&
+                            In_Jig1Detect.Value == false &&
+                            In_Jig2Detect.Value == false &&
+                            JigStatuses[0] != EJigStatus.None)
+                    {
+                        outputCount++;
+                    }
+                    if (_optionRecipe.SkipHead34 == false &&
+                        In_Jig3Detect.Value == false &&
+                        In_Jig4Detect.Value == false &&
+                        JigStatuses[1] != EJigStatus.None)
+                    {
+                        outputCount++;
+                    }
+
+                    Log.Debug($"Write data output count: {outputCount}");
+                    _productionService.WriteData(EProductionWriteType.Output, outputCount);
                     Sequence = ESequence.ResinInject;
                     break;
                 case EMoldProcAutoRunStep.End:

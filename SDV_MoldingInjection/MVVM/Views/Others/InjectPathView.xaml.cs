@@ -1,4 +1,4 @@
-﻿using EQX.UI.Controls;
+using EQX.UI.Controls;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -18,10 +18,15 @@ namespace SDV_MoldingInjection.MVVM.Views
         {
             if (sender is TextBox textBox == false) return;
 
-            DataEditor dataEditor = new DataEditor(Convert.ToDouble(textBox.Text), null);
-            dataEditor.ShowDialog();
+            if (double.TryParse(textBox.Text, out double currentValue) == false) return;
 
-            textBox.Text = dataEditor.NewValue.ToString();
+            DataEditor dataEditor = new DataEditor(currentValue, null);
+            bool? dialogResult = dataEditor.ShowDialog();
+
+            if (dialogResult == true)
+            {
+                textBox.Text = dataEditor.NewValue.ToString();
+            }
         }
     }
 }

@@ -48,6 +48,20 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         #endregion
 
         #region Commands
+        public ICommand SelectAllCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    MachineStatus.IsSkipHead1 = false;
+                    MachineStatus.IsSkipHead2= false;
+                    MachineStatus.IsSkipHead3 = false;
+                    MachineStatus.IsSkipHead4 = false;
+                });
+            }
+        }
+
         public ICommand SelectHeadCommand
         {
             get
