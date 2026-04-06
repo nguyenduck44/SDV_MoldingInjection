@@ -30,6 +30,7 @@ namespace SDV_MoldingInjection.Defines
         CY_MOLD_CHAMBER_OPEN_FAIL,
         CY_MOLD_CHAMBER_CLOSE_WARNING,
         CY_MOLD_CHAMBER_CLOSE_FAIL,
+        ET_MOLD_HEAD_USE_ERROR,
 
         MO_X_AXIS_HOME_TIMEOUT = 550,
         MO_X_AXIS_READY_POS_TIMEOUT,

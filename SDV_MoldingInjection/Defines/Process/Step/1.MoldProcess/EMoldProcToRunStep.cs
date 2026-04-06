@@ -4,6 +4,7 @@
     {
         Start,
 
+        Head_Use_Check,
         Machine_Calibration_Check,
 
         Wait_DryPump_Request_Run,

@@ -127,7 +127,18 @@ namespace SDV_MoldingInjection.Process
                     procOutputs.ClearOutputs();
                     Step.ToRunStep++;
                     break;
+                case EMoldProcToRunStep.Head_Use_Check:
+                    Log.Debug("Check head use");
+                    if (_currentRecipe.OptionRecipe.SkipHead12 && _currentRecipe.OptionRecipe.SkipHead34)
+                    {
+                        RaiseWarning(EWarning.ET_MOLD_HEAD_USE_ERROR);
+                        break;
+                    }
+
+                    Step.ToRunStep++;
+                    break;
                 case EMoldProcToRunStep.Machine_Calibration_Check:
+                    Log.Debug("Check machine calibration");
                     if (Parent!.Sequence != ESequence.AutoRun)
                     {
                         Step.ToRunStep++;
