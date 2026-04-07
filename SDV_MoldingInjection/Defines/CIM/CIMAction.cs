@@ -309,10 +309,19 @@ namespace SDV_MoldingInjection.Defines.CIM
                     });
                 }
             }
+
+            CIMCommandDetail.Create(CIMCommand.AliveBit).IsCIMBitOn();
         }
         #endregion
 
         #region Privates
+        private bool lastCIMAliveBitStatus = false;
+        private bool LastCIMAliveBitStatus
+        {
+            get => lastCIMAliveBitStatus;
+            set => lastCIMAliveBitStatus = value;
+        }
+
         private static CIMAliveTask _cimAliveTask;
         private static Task _cimTrasmitTask;
         private static Task _cimStatusUpdateTask;

@@ -184,6 +184,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 ESemiSequence.NeedleCleaning,
                 ESemiSequence.BubbleRemove,
                 ESemiSequence.DotWeighting,
+                ESemiSequence.HeadAssemble,
+                ESemiSequence.HeadDisassemble,
                 ESemiSequence.DrainShot,
             };
         }

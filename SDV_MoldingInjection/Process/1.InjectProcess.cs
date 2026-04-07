@@ -369,6 +369,9 @@ namespace SDV_MoldingInjection.Process
                 case ESequence.DotWeighting_H4:
                     Sequence_DotWeighting(ESPDHead.SPDHead4);
                     break;
+                case ESequence.HeadAssemble:
+                    Sequence_AtDummyPos(ESequence.HeadAssemble, ESPDHead.All);
+                    break;
                 case ESequence.HeadAssemble_H1:
                     Sequence_AtDummyPos(ESequence.HeadAssemble_H1, ESPDHead.SPDHead1);
                     break;
@@ -380,6 +383,9 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESequence.HeadAssemble_H4:
                     Sequence_AtDummyPos(ESequence.HeadAssemble_H4, ESPDHead.SPDHead4);
+                    break;
+                case ESequence.HeadDisassemble:
+                    Sequence_AtDummyPos(ESequence.HeadDisassemble, ESPDHead.All);
                     break;
                 case ESequence.HeadDisassemble_H1:
                     Sequence_AtDummyPos(ESequence.HeadDisassemble_H1, ESPDHead.SPDHead1);
@@ -1344,22 +1350,6 @@ namespace SDV_MoldingInjection.Process
             switch ((EMoldProcDummyShotStep)Step.RunStep)
             {
                 case EMoldProcDummyShotStep.Start:
-                    if ((((head == ESPDHead.SPDHead1 || head == ESPDHead.SPDHead2) && _currentRecipe.OptionRecipe.SkipHead12) ||
-                       ((head == ESPDHead.SPDHead3 || head == ESPDHead.SPDHead4) && _currentRecipe.OptionRecipe.SkipHead34)) &&
-                       sequence != ESequence.HeadAssemble_H1 &&
-                       sequence != ESequence.HeadAssemble_H2 &&
-                       sequence != ESequence.HeadAssemble_H3 &&
-                       sequence != ESequence.HeadAssemble_H4 &&
-                       sequence != ESequence.HeadDisassemble_H1 &&
-                       sequence != ESequence.HeadDisassemble_H2 &&
-                       sequence != ESequence.HeadDisassemble_H3 &&
-                       sequence != ESequence.HeadDisassemble_H4)
-
-                    {
-                        Log.Debug("SKIP move dummy shot for head " + head);
-                        Step.RunStep = (int)EMoldProcDummyShotStep.End;
-                        break;
-                    }
                     if (sequence == ESequence.DummyShot && Parent?.Sequence == ESequence.AutoRun)
                     {
                         _tactTimeList.DummyShot.TaktTimeCounter = Environment.TickCount;
@@ -1367,16 +1357,13 @@ namespace SDV_MoldingInjection.Process
                     if (sequence == ESequence.IdlePurge)
                     {
                         Log.Debug("Idle Purge start");
-                        IdlePurgeCount++;
-                        IdlePurgeLastShotTick = Environment.TickCount;
                     }
 
-                    IdlePurgeCount = 0;
-                    Log.Info($"Dummy position for {head} start");
+                    Log.Info($"Move dummy position start");
                     Step.RunStep++;
                     break;
                 case EMoldProcDummyShotStep.XYAxis_DummyPos_Move:
-                    Log.Debug($"Moving XY to dummy shot position for {head}: X={Recipe.XAxisDummyPos}, Y={Recipe.YAxisDummyPos}");
+                    Log.Debug($"Moving XY to dummy shot position: X={Recipe.XAxisDummyPos}, Y={Recipe.YAxisDummyPos}");
                     XAxis.MoveAbs(Recipe.XAxisDummyPos);
                     YAxis.MoveAbs(Recipe.YAxisDummyPos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () =>
@@ -1393,14 +1380,12 @@ namespace SDV_MoldingInjection.Process
                             RaiseWarning(EWarning.MO_Y_AXIS_DUMMY_POS_TIMEOUT);
                         break;
                     }
+
                     Log.Debug($"Reached dummy shot position for {sequence}");
                     Step.RunStep++;
                     break;
                 case EMoldProcDummyShotStep.ZAxis_DummyPos_Move:
-                    if (sequence == ESequence.HeadAssemble_H1 || sequence == ESequence.HeadAssemble_H2 ||
-                        sequence == ESequence.HeadAssemble_H3 || sequence == ESequence.HeadAssemble_H4 ||
-                        sequence == ESequence.HeadDisassemble_H1 || sequence == ESequence.HeadDisassemble_H2 ||
-                        sequence == ESequence.HeadDisassemble_H3 || sequence == ESequence.HeadDisassemble_H4)
+                    if (IsSequenceAssembleOrDisassemble(sequence))
                     {
                         Log.Debug("ZAxis move assemble/disassemble position");
                         ZAxisAssembleDisassemblePosMove(head);
@@ -1467,10 +1452,7 @@ namespace SDV_MoldingInjection.Process
                         {
                             RaiseHeadWarning(EWarning.MO_SPD_H01_Z1_AXIS_BUBBLE_POS_TIMEOUT, head);
                         }
-                        else if (sequence == ESequence.HeadAssemble_H1 || sequence == ESequence.HeadAssemble_H2 ||
-                                 sequence == ESequence.HeadAssemble_H3 || sequence == ESequence.HeadAssemble_H4 ||
-                                 sequence == ESequence.HeadDisassemble_H1 || sequence == ESequence.HeadDisassemble_H2 ||
-                                 sequence == ESequence.HeadDisassemble_H3 || sequence == ESequence.HeadDisassemble_H4)
+                        else if (IsSequenceAssembleOrDisassemble(sequence))  
                         {
                             RaiseHeadWarning(EWarning.MO_SPD_H01_Z1_AXIS_ASSEMBLE_POS_TIMEOUT, head);
                         }
@@ -1478,23 +1460,19 @@ namespace SDV_MoldingInjection.Process
                         {
                             RaiseHeadWarning(EWarning.MO_SPD_H01_Z1_AXIS_DUMMY_POS_TIMEOUT, head);
                         }
-
-
                         break;
                     }
+
+                    Log.Debug($"Z-Axis move target position for {sequence} done");
                     Step.RunStep++;
                     break;
-                case EMoldProcDummyShotStep.SPDHead_InjectResin_Request:
-                    Log.Debug($"Sending inject resin request for {head}");
+                case EMoldProcDummyShotStep.SPDHead_Working_Request:
+                    Log.Debug($"Sending working request for {head}");
                     procOutputs[EInjectProcOutput.SPDHeadWorkRequest].Value = true;
                     Step.RunStep++;
                     break;
-
-                case EMoldProcDummyShotStep.SPDHead_InjectResin_Done_And_VentComplete_Wait:
-                    if (sequence == ESequence.HeadAssemble_H1 || sequence == ESequence.HeadAssemble_H2 ||
-                        sequence == ESequence.HeadAssemble_H3 || sequence == ESequence.HeadAssemble_H4 ||
-                        sequence == ESequence.HeadDisassemble_H1 || sequence == ESequence.HeadDisassemble_H2 ||
-                        sequence == ESequence.HeadDisassemble_H3 || sequence == ESequence.HeadDisassemble_H4)
+                case EMoldProcDummyShotStep.SPDHead_Work_Done_And_VentComplete_Wait:
+                    if (IsSequenceAssembleOrDisassemble(sequence))
                     {
                         if (IsSPDHeadWorkDoneForAssemble(head) == false)
                         {
@@ -1511,15 +1489,12 @@ namespace SDV_MoldingInjection.Process
                         }
                     }
 
-                    Log.Debug($"Inject Resin done.");
+                    Log.Debug($"Detected SPDHead work done.");
                     procOutputs[EInjectProcOutput.SPDHeadWorkRequest].Value = false;
                     Step.RunStep++;
                     break;
                 case EMoldProcDummyShotStep.ZAxis_SafetyPos_Move:
-                    if (sequence == ESequence.HeadAssemble_H1 || sequence == ESequence.HeadAssemble_H2 ||
-                        sequence == ESequence.HeadAssemble_H3 || sequence == ESequence.HeadAssemble_H4 ||
-                        sequence == ESequence.HeadDisassemble_H1 || sequence == ESequence.HeadDisassemble_H2 ||
-                        sequence == ESequence.HeadDisassemble_H3 || sequence == ESequence.HeadDisassemble_H4)
+                    if (IsSequenceAssembleOrDisassemble(sequence))
                     {
                         Step.RunStep = (int)EMoldProcDummyShotStep.End;
                         break;
@@ -1541,7 +1516,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcDummyShotStep.End:
-                    Log.Info($"{Sequence} for {head} end");
+                    Log.Info($"{sequence} for {head} end");
                     _machineStatus.MachineIdleTick = Environment.TickCount;
                     if (Parent?.Sequence != ESequence.AutoRun && sequence != ESequence.IdlePurge)
                     {
@@ -1939,14 +1914,14 @@ namespace SDV_MoldingInjection.Process
             _ => throw new ArgumentOutOfRangeException(nameof(head)),
         };
 
-        private double GetZAxisDummyPos(ESPDHead head) => head switch
+        private bool IsSequenceAssembleOrDisassemble(ESequence sequence)
         {
-            ESPDHead.SPDHead1 => _currentRecipe.SPDHead1_Recipe.ZAxisDummyPos,
-            ESPDHead.SPDHead2 => _currentRecipe.SPDHead2_Recipe.ZAxisDummyPos,
-            ESPDHead.SPDHead3 => _currentRecipe.SPDHead3_Recipe.ZAxisDummyPos,
-            ESPDHead.SPDHead4 => _currentRecipe.SPDHead4_Recipe.ZAxisDummyPos,
-            _ => throw new ArgumentOutOfRangeException(nameof(head)),
-        };
+            return sequence == ESequence.HeadAssemble || sequence == ESequence.HeadDisassemble ||
+                   sequence == ESequence.HeadAssemble_H1 || sequence == ESequence.HeadAssemble_H2 ||
+                   sequence == ESequence.HeadAssemble_H3 || sequence == ESequence.HeadAssemble_H4 ||
+                   sequence == ESequence.HeadDisassemble_H1 || sequence == ESequence.HeadDisassemble_H2 ||
+                   sequence == ESequence.HeadDisassemble_H3 || sequence == ESequence.HeadDisassemble_H4;
+        }
 
         private void ZAxisSearchOrigin()
         {
@@ -2232,36 +2207,56 @@ namespace SDV_MoldingInjection.Process
 
         private void ZAxisAssembleDisassemblePosMove(ESPDHead head)
         {
-            if (_currentRecipe.OptionRecipe.SkipHead12 == false && head == ESPDHead.SPDHead1)
+            if (head == ESPDHead.All)
+            {
+                if (_machineStatus.IsSkipHead1 == false)
+                    Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisAssembleDisassemblePos);
+                if (_machineStatus.IsSkipHead2 == false)
+                    Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisAssembleDisassemblePos);
+                if (_machineStatus.IsSkipHead3 == false)
+                    Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisAssembleDisassemblePos);
+                if (_machineStatus.IsSkipHead4 == false)
+                    Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisAssembleDisassemblePos);
+            }
+            if (head == ESPDHead.SPDHead1)
                 Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisAssembleDisassemblePos);
-            if (_currentRecipe.OptionRecipe.SkipHead12 == false && head == ESPDHead.SPDHead2)
+            if (head == ESPDHead.SPDHead2)
                 Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisAssembleDisassemblePos);
-            if (_currentRecipe.OptionRecipe.SkipHead34 == false && head == ESPDHead.SPDHead3)
+            if (head == ESPDHead.SPDHead3)
                 Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisAssembleDisassemblePos);
-            if (_currentRecipe.OptionRecipe.SkipHead34 == false && head == ESPDHead.SPDHead4)
+            if (head == ESPDHead.SPDHead4)
                 Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisAssembleDisassemblePos);
         }
 
         private bool ZAxisInAssembleDisassemblePos(ESPDHead head)
         {
+            if (head == ESPDHead.All)
+            {
+                return
+                    (_machineStatus.IsSkipHead1 || Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisAssembleDisassemblePos)) &&
+                    (_machineStatus.IsSkipHead2 || Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisAssembleDisassemblePos)) &&
+                    (_machineStatus.IsSkipHead3 || Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisAssembleDisassemblePos)) &&
+                    (_machineStatus.IsSkipHead4 || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisAssembleDisassemblePos));
+            }
+
             if (head == ESPDHead.SPDHead1)
             {
-                return _currentRecipe.OptionRecipe.SkipHead12 || Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisAssembleDisassemblePos);
+                return Z1Axis.IsOnPosition(_currentRecipe.SPDHead1_Recipe.ZAxisAssembleDisassemblePos);
             }
 
             if (head == ESPDHead.SPDHead2)
             {
-                return _currentRecipe.OptionRecipe.SkipHead12 || Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisAssembleDisassemblePos);
+                return Z2Axis.IsOnPosition(_currentRecipe.SPDHead2_Recipe.ZAxisAssembleDisassemblePos);
             }
 
             if (head == ESPDHead.SPDHead3)
             {
-                return _currentRecipe.OptionRecipe.SkipHead34 || Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisAssembleDisassemblePos);
+                return Z3Axis.IsOnPosition(_currentRecipe.SPDHead3_Recipe.ZAxisAssembleDisassemblePos);
             }
 
             if (head == ESPDHead.SPDHead4)
             {
-                return _currentRecipe.OptionRecipe.SkipHead34 || Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisAssembleDisassemblePos);
+                return Z4Axis.IsOnPosition(_currentRecipe.SPDHead4_Recipe.ZAxisAssembleDisassemblePos);
             }
 
             return true;

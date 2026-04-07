@@ -28,7 +28,7 @@
                 <ColumnDefinition Width="5*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="160" />
+                <RowDefinition Height="140" />
                 <RowDefinition Height="50" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -48,8 +48,7 @@
                 </UniformGrid>
                 <UniformGrid Grid.Row="1"
                              Columns="4">
-                    <Button Margin="0,0,0,4"
-                            Command="{Binding SelectHeadCommand}"
+                    <Button Command="{Binding SelectHeadCommand}"
                             CommandParameter="1"
                             Content="{Binding MachineStatus.IsSkipHead1, Converter={StaticResource HeadSkipStatusTextConverter}}"
                             Background="{Binding MachineStatus.IsSkipHead1, Converter={StaticResource HeadSkipStatusBrushConverter}}"
@@ -57,8 +56,7 @@
                             FontSize="16"
                             FontWeight="Bold">
                     </Button>
-                    <Button Margin="0,0,0,4"
-                            Command="{Binding SelectHeadCommand}"
+                    <Button Command="{Binding SelectHeadCommand}"
                             CommandParameter="2"
                             Content="{Binding MachineStatus.IsSkipHead2, Converter={StaticResource HeadSkipStatusTextConverter}}"
                             Background="{Binding MachineStatus.IsSkipHead2, Converter={StaticResource HeadSkipStatusBrushConverter}}"
@@ -66,8 +64,7 @@
                             FontSize="16"
                             FontWeight="Bold">
                     </Button>
-                    <Button Margin="0,0,0,4"
-                            Command="{Binding SelectHeadCommand}"
+                    <Button Command="{Binding SelectHeadCommand}"
                             CommandParameter="3"
                             Content="{Binding MachineStatus.IsSkipHead3, Converter={StaticResource HeadSkipStatusTextConverter}}"
                             Background="{Binding MachineStatus.IsSkipHead3, Converter={StaticResource HeadSkipStatusBrushConverter}}"
@@ -75,8 +72,7 @@
                             FontSize="16"
                             FontWeight="Bold">
                     </Button>
-                    <Button Margin="0,0,0,4"
-                            Command="{Binding SelectHeadCommand}"
+                    <Button Command="{Binding SelectHeadCommand}"
                             CommandParameter="4"
                             Content="{Binding MachineStatus.IsSkipHead4, Converter={StaticResource HeadSkipStatusTextConverter}}"
                             Background="{Binding MachineStatus.IsSkipHead4, Converter={StaticResource HeadSkipStatusBrushConverter}}"
@@ -90,6 +86,7 @@
                             HorizontalAlignment="Left"
                             Margin="2"
                             Width="150"
+                            FontSize="14"
                             Content="Select All"
                             Command="{Binding SelectAllCommand}"
                             Image="/EQX.UI;component/Resources/Images/Components/Common/select_selected.png" />
@@ -99,7 +96,7 @@
                       Header="Function">
                 <UniformGrid Columns="2">
                     <Button Content="Skip Calibration"
-                            Margin="2 5"
+                            Margin="2"
                             Command="{Binding SkipCalCommand}" />
                     <CheckBox IsChecked="{Binding MachineStatus.IsDotWeightingTest}"
                               Margin="0 5"
@@ -111,7 +108,6 @@
             <GroupBox Grid.Row="3"
                       Style="{StaticResource TextBlockHeaderGroupBox}"
                       FontSize="14"
-                      Margin="0 5"
                       FontWeight="Bold"
                       Header="Semi Sequences">
                 <ItemsControl ItemsSource="{Binding Sequences}"
@@ -136,8 +132,9 @@
 
             <GroupBox Header="Balance Monitor"
                       Grid.Row="0"
+                      Grid.RowSpan="2"
                       Grid.Column="1"
-                      Margin="10 4"
+                      Margin="5"
                       Style="{StaticResource TextBlockHeaderGroupBox}">
                 <UniformGrid Columns="2">
                     <Border Margin="5"

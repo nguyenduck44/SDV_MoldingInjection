@@ -10,8 +10,8 @@
         ZAxis_DummyPos_Move,
         ZAxis_DummyPos_Wait,
 
-        SPDHead_InjectResin_Request,
-        SPDHead_InjectResin_Done_And_VentComplete_Wait,
+        SPDHead_Working_Request,
+        SPDHead_Work_Done_And_VentComplete_Wait,
 
         ZAxis_SafetyPos_Move,
         ZAxis_SafetyPos_Wait,
