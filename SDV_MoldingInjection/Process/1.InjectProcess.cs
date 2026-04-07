@@ -1452,7 +1452,7 @@ namespace SDV_MoldingInjection.Process
                         {
                             RaiseHeadWarning(EWarning.MO_SPD_H01_Z1_AXIS_BUBBLE_POS_TIMEOUT, head);
                         }
-                        else if (IsSequenceAssembleOrDisassemble(sequence))  
+                        else if (IsSequenceAssembleOrDisassemble(sequence))
                         {
                             RaiseHeadWarning(EWarning.MO_SPD_H01_Z1_AXIS_ASSEMBLE_POS_TIMEOUT, head);
                         }
@@ -2433,6 +2433,13 @@ namespace SDV_MoldingInjection.Process
 
         private bool IsSPDHeadWorkDoneForAssemble(ESPDHead head)
         {
+            if (head == ESPDHead.All)
+            {
+                return  (procInputs[EInjectProcInput.SPDHead1_WorkDone].Value || _machineStatus.IsSkipHead1) &&
+                        (procInputs[EInjectProcInput.SPDHead2_WorkDone].Value || _machineStatus.IsSkipHead2) &&
+                        (procInputs[EInjectProcInput.SPDHead3_WorkDone].Value || _machineStatus.IsSkipHead3) &&
+                        (procInputs[EInjectProcInput.SPDHead4_WorkDone].Value || _machineStatus.IsSkipHead4);
+            }
             return head switch
             {
                 ESPDHead.SPDHead1 => procInputs[EInjectProcInput.SPDHead1_WorkDone].Value,
