@@ -824,7 +824,7 @@ namespace SDV_MoldingInjection.Process
                 CurrentHeadSkip == false &&
                 _machineStatus.DisableSyringeCheck == false &&
                 (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run) &&
-                IsSequenceAssembleOrDisassemble(Sequence))
+                IsSequenceAssembleOrDisassemble(Parent!.Sequence) == false)
             {
                 RaiseHeadWarning(EWarning.SE_SPD_H01_SYRING_NOT_DETECT);
             }
@@ -1679,7 +1679,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAssembleDisAssembleStep.WaitDisOrAssembleSensorStatus:
-                    Wait(60000, () => isAssemble == In_AssembleCheck.Value);
+                    Wait(300000, () => isAssemble == In_AssembleCheck.Value); //5 minutes wait time for assemble/disassemble check
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAssembleDisAssembleStep.DisOrAssembleSensorStatusCheck:

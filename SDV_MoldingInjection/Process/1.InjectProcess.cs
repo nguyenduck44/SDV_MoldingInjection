@@ -1106,6 +1106,7 @@ namespace SDV_MoldingInjection.Process
                     if (isLoading)
                     {
                         Log.Info("Loading start");
+                        _machineStatus.ConfirmLoadingFinish = false;
                         _tactTimeList.Loading.TaktTimeCounter = Environment.TickCount;
                     }
                     else
@@ -1168,7 +1169,6 @@ namespace SDV_MoldingInjection.Process
                         if (isLoading && _machineStatus.ConfirmLoadingFinish)
                         {
                             Log.Debug("Loading manual done");
-                            _machineStatus.ConfirmLoadingFinish = false;
                             Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Jig_Check;
                             break;
                         }
