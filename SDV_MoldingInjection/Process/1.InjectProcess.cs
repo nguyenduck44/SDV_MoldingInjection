@@ -898,7 +898,9 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    if (_currentRecipe.OptionRecipe.SkipVentTime == false && procInputs[EInjectProcInput.VentComplete].Value == false)
+                    if (_currentRecipe.OptionRecipe.SkipVentTime == false && 
+                        procInputs[EInjectProcInput.VentComplete].Value == false && 
+                        _machineStatus.IsDryRunMode == false)
                     {
                         Wait(20);
                         break;
@@ -1159,8 +1161,14 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.Transfer_Load_SendRequest:
                     if (_machineStatus.IsDryRunMode)
                     {
+                        if (isLoading)
+                        {
+                            Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Chamber_CoverClose;
+                            break;
+                        }
+
                         Wait(3000);
-                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Chamber_CoverClose;
+                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
                         break;
                     }
 
@@ -1301,7 +1309,11 @@ namespace SDV_MoldingInjection.Process
                     {
                         //TODO : MCR read for loading
                         Log.Debug($"MCR_Read");
-
+                    }
+                    else
+                    {
+                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
+                        break;
                     }
 
                     Step.RunStep++;

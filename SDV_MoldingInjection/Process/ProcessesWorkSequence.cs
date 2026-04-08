@@ -97,6 +97,7 @@ namespace SDV_MoldingInjection.Process
 
         public static readonly List<EDryPumpProcResinInjectStep> DryPumpResinInjectSequence_DryRun = new List<EDryPumpProcResinInjectStep>
         {
+            EDryPumpProcResinInjectStep.DryPump_Vacuum_RequestWait,
             EDryPumpProcResinInjectStep.DryPump_VacuumDone_Send,
             EDryPumpProcResinInjectStep.Wait_PurgeEnd,
             EDryPumpProcResinInjectStep.SetFlag_PurgeFinish,
