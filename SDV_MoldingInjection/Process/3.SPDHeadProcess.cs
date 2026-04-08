@@ -875,7 +875,7 @@ namespace SDV_MoldingInjection.Process
                     _bubbleRemoveCount = 1;
                     if (_machineStatus.IsDryRunMode)
                     {
-                        Step.RunStep = (int)ESPDHeadProcCommonStep.WorkDone_Send;
+                        Step.RunStep = (int)ESPDHeadProcCommonStep.WorkRequest_Wait;
                         break;
                     }
 
@@ -1097,6 +1097,12 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"Input detect {ESPDHeadProcInput.WorkRequest}");
+                    if (_machineStatus.IsDryRunMode)
+                    {
+                        Step.RunStep = (int)ESPDHeadProcCommonStep.WorkDone_Send;
+                        break;
+                    }
+
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.PAxis_InjectPos_Move:
