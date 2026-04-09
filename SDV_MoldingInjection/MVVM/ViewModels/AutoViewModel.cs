@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
 using EQX.UI.Controls;
+using EQX.UI.MVVM;
 using log4net;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Productions;
@@ -48,6 +49,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             MachineStatusAuto = machineStatusAuto;
             Log = LogManager.GetLogger("AutoVM");
 
+            PCInformationsystemViewModel = new PCInformationsystemViewModel();
             statusUpdateTimer = new NonOverlappingTimer(100);
             statusUpdateTimer.Elapsed += StatusUpdateTimerHandler;
             statusUpdateTimer.Start();
@@ -59,7 +61,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         {
             if (_navigationStore.CurrentViewModel != this) return;
             UpdateSyringeStatus();
-
             OnPropertyChanged(nameof(TodayInputCount));
             OnPropertyChanged(nameof(TodayOutputCount));
         }
@@ -165,6 +166,9 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         #region Privates
         private readonly NavigationStore _navigationStore;
         private readonly RecipeSelector _recipeSelector;
+
+        public PCInformationsystemViewModel PCInformationsystemViewModel { get; }
+
         private readonly NonOverlappingTimer statusUpdateTimer;
         private readonly ProductionService _productionService;
         private DateTime CurrentProductionDate => DateTime.Now.Hour < 8 ? DateTime.Now.Date.AddDays(-1) : DateTime.Now.Date;

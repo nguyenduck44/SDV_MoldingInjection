@@ -219,6 +219,9 @@
             <DataTemplate DataType="{x:Type models:InjectPath}">
                 <views:InjectPathView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type uiMVVM:PCInformationsystemViewModel}">
+                <uiMVVM:PCInformationsystemView />
+            </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

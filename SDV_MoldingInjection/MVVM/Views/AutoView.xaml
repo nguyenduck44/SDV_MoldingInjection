@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
              xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
              xmlns:ui="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
+             xmlns:uiMVVM="clr-namespace:EQX.UI.MVVM;assembly=EQX.UI"
              xmlns:controls="clr-namespace:SDV_MoldingInjection.Controls"
              mc:Ignorable="d"
              x:Name="root"
@@ -100,6 +101,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition />
+                <ColumnDefinition Width="165"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -186,7 +188,7 @@
             <!-- PRODUCTION -->
             <GroupBox Header="PRODUCTION"
                       Style="{x:Null}"
-                      Width="200"
+                      Width="148"
                       Height="100"
                       VerticalAlignment="Top"
                       HorizontalAlignment="Left"
@@ -257,9 +259,15 @@
                 </Grid>
             </GroupBox>
 
+            <!-- PC INFORMATION -->
+            <StackPanel Grid.Column="2"
+                        Margin="0"
+                        VerticalAlignment="Top">
+                <uiMVVM:PCInformationsystemView DataContext="{Binding PCInformationsystemViewModel}" />
+            </StackPanel>
             <!-- MACHINE -->
             <DockPanel Grid.Row="2"
-                       Grid.ColumnSpan="2"
+                       Grid.ColumnSpan="3"
                        Margin="0 8 0 0">
                 <local:MachineStatusAutoView DataContext="{Binding MachineStatusAuto}" />
             </DockPanel>
