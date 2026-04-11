@@ -154,7 +154,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Syringe Amount Check");
                     if (SyringeAmountIsTimeOver && In_SyringeCheck.Value == true && CurrentHeadSkip == false)
                     {
-                        RaiseHeadWarning(EWarning.VA_SPD_H01_SYRING_AMOUNT_TIMEOUT);
+                        RaiseHeadWarning(EWarning.VA_SPD_H01_SYRING_AMOUNT_TIMEOVER);
                     }
 
                     Step.ToRunStep++;

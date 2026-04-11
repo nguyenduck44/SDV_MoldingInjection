@@ -531,9 +531,14 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_PurgeAndWait:
-                    if (((Environment.TickCount - _ventStartTick) / 1000.0) < InjectTimeRecipe.VentTime)
+                    //if (((Environment.TickCount - _ventStartTick) / 1000.0) < InjectTimeRecipe.VentTime)
+                    //{
+                    //    Wait(10);
+                    //    break;
+                    //}
+                    if (In_ChamberPurgeOn.Value)
                     {
-                        Wait(10);
+                        Wait(50);
                         break;
                     }
 
@@ -564,11 +569,6 @@ namespace SDV_MoldingInjection.Process
                         Wait(50);
                         break;
                     }
-                    //if (_devices.AnalogInputs.VacuumPressureInTorr < 749)
-                    //{
-                    //    Wait(50);
-                    //    break;
-                    //}
 
                     Log.Debug("Purge end");
                     Out_ChamberPurgeOn.Value = false;
