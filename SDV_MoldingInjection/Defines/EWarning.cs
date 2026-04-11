@@ -130,7 +130,7 @@ namespace SDV_MoldingInjection.Defines
         MO_SPD_H01_INJECT_POS_OVER_BASE,
         [Description("HEAD1_IN05")]
         SE_SPD_H01_SYRING_NOT_DETECT,
-        VA_SPD_H01_SYRING_AMOUNT_TIMEOUT,
+        VA_SPD_H01_SYRING_AMOUNT_TIMEOVER,
         [Description("HEAD1_IN06")]
         SE_SPD_H01_SYRING_AIR_NOT_DETECT,
 
@@ -154,7 +154,7 @@ namespace SDV_MoldingInjection.Defines
         MO_SPD_H02_INJECT_POS_OVER_BASE,
         [Description("HEAD2_IN05")]
         SE_SPD_H02_SYRING_NOT_DETECT,
-        VA_SPD_H02_SYRING_AMOUNT_TIMEOUT,
+        VA_SPD_H02_SYRING_AMOUNT_TIMEOVER,
         [Description("HEAD2_IN06")]
         SE_SPD_H02_SYRING_AIR_NOT_DETECT,
 
@@ -178,7 +178,7 @@ namespace SDV_MoldingInjection.Defines
         MO_SPD_H03_INJECT_POS_OVER_BASE,
         [Description("HEAD3_IN05")]
         SE_SPD_H03_SYRING_NOT_DETECT,
-        VA_SPD_H03_SYRING_AMOUNT_TIMEOUT,
+        VA_SPD_H03_SYRING_AMOUNT_TIMEOVER,
         [Description("HEAD3_IN06")]
         SE_SPD_H03_SYRING_AIR_NOT_DETECT,
 
@@ -202,7 +202,7 @@ namespace SDV_MoldingInjection.Defines
         MO_SPD_H04_INJECT_POS_OVER_BASE,
         [Description("HEAD4_IN05")]
         SE_SPD_H04_SYRING_NOT_DETECT,
-        VA_SPD_H04_SYRING_AMOUNT_TIMEOUT,
+        VA_SPD_H04_SYRING_AMOUNT_TIMEOVER,
         [Description("HEAD4_IN06")]
         SE_SPD_H04_SYRING_AIR_NOT_DETECT,
     }

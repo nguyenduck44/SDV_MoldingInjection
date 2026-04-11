@@ -15,6 +15,7 @@ namespace SDV_MoldingInjection.Process
     {
         #region Inputs
         private IDInput In_DryPumpRun => _devices.Inputs.DryPumpRun;
+        private IDInput In_ChamberPurgeOn => _devices.Inputs.ChamberPurgeOn;
         #endregion
 
         #region Outputs
@@ -558,11 +559,16 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.Wait_PurgeEnd:
-                    if (_devices.AnalogInputs.VacuumPressureInTorr < 749)
+                    if (In_ChamberPurgeOn.Value)
                     {
                         Wait(50);
                         break;
                     }
+                    //if (_devices.AnalogInputs.VacuumPressureInTorr < 749)
+                    //{
+                    //    Wait(50);
+                    //    break;
+                    //}
 
                     Log.Debug("Purge end");
                     Out_ChamberPurgeOn.Value = false;
