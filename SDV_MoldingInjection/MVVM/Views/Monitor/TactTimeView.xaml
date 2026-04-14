@@ -13,144 +13,250 @@
     d:DesignHeight="450"
     d:DesignWidth="800">
     <UserControl.Resources>
-        <Style
-            TargetType="TextBox"
-            x:Key="AverageTextBoxStyle">
-            <Setter
-                Property="IsReadOnly"
-                Value="True" />
-            <Setter
-                Property="HorizontalContentAlignment"
-                Value="Center" />
-            <Setter
-                Property="VerticalContentAlignment"
-                Value="Center" />
-            <Setter
-                Property="FontSize"
-                Value="20" />
-            <Setter
-                Property="Background"
-                Value="AliceBlue" />
-            <Setter
-                Property="Height"
-                Value="40" />
-            <Setter
-                Property="Margin"
-                Value="5 10 5 0" />
-            <Setter
-                Property="VerticalAlignment"
-                Value="Top" />
+        <Style TargetType="TextBox"
+               x:Key="AverageTextBoxStyle">
+            <Setter Property="IsReadOnly"
+                    Value="True" />
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Center" />
+            <Setter Property="VerticalContentAlignment"
+                    Value="Center" />
+            <Setter Property="FontSize"
+                    Value="20" />
+            <Setter Property="Background"
+                    Value="AliceBlue" />
+            <Setter Property="Margin"
+                    Value="5 2 5 2" />
         </Style>
-        <Style
-            TargetType="Button"
-            BasedOn="{StaticResource {x:Type Button}}">
-            <Setter
-                Property="Margin"
-                Value="5" />
-            <Setter
-                Property="FontSize"
-                Value="16" />
-            <Setter
-                Property="Content"
-                Value="Reset" />
+        <Style TargetType="Button"
+               BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Margin"
+                    Value="5 2 5 2" />
+            <Setter Property="FontSize"
+                    Value="16" />
+            <Setter Property="Content"
+                    Value="Reset" />
         </Style>
     </UserControl.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition
-                Height="Auto" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <TextBlock
-            Text="TactTime"
-            FontSize="20"
-            FontWeight="SemiBold"
-            Foreground="#273c75"
-            HorizontalAlignment="Center"
-            Margin="0,0,0,10" />
-        <Grid
-            Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition
-                    Height="8*" />
-                <RowDefinition
-                    Height="1*" />
-                <RowDefinition
-                    Height="1*" />
-            </Grid.RowDefinitions>
-            <uiControls:TactTimeTable
-                DataContext="{Binding TactTimeList.Loading}"
-                Grid.Column="0" />
-            <uiControls:TactTimeTable
-                DataContext="{Binding TactTimeList.Inject}"
-                Grid.Column="1" />
-            <uiControls:TactTimeTable
-                DataContext="{Binding TactTimeList.DummyShot}"
-                Grid.Column="2" />
-            <uiControls:TactTimeTable
-                DataContext="{Binding TactTimeList.NeedleClean}"
-                Grid.Column="3" />
-            <uiControls:TactTimeTable
-                DataContext="{Binding TactTimeList.Unloading}"
-                Grid.Column="4" />
-            
-            <TextBox
-                Text="{Binding TactTimeList.Loading.Average,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
-                Grid.Row="1"
-                Grid.Column="0"
-                Style="{StaticResource AverageTextBoxStyle}" />
-            <TextBox
-                Text="{Binding TactTimeList.Inject.Average,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
-                Grid.Row="1"
-                Grid.Column="1"
-                Style="{StaticResource AverageTextBoxStyle}" />
-            <TextBox
-                Text="{Binding TactTimeList.DummyShot.Average,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
-                Grid.Row="1"
-                Grid.Column="2"
-                Style="{StaticResource AverageTextBoxStyle}" />
-            <TextBox
-                Text="{Binding TactTimeList.NeedleClean.Average,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
-                Grid.Row="1"
-                Grid.Column="3"
-                Style="{StaticResource AverageTextBoxStyle}" />
-            <TextBox
-                Text="{Binding TactTimeList.Unloading.Average,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
-                Grid.Row="1"
-                Grid.Column="4"
-                Style="{StaticResource AverageTextBoxStyle}" />
-            
-            <Button
-                Grid.Row="2"
-                Command="{Binding ResetTactTimeCommand}"
-                CommandParameter="Load" />
-            <Button
-                Grid.Row="2"
-                Grid.Column="1"
-                Command="{Binding ResetTactTimeCommand}"
-                CommandParameter="Inject" />
-            <Button
-                Grid.Row="2"
-                Grid.Column="2"
-                Command="{Binding ResetTactTimeCommand}"
-                CommandParameter="DummyShot" />
-            <Button
-                Grid.Row="2"
-                Grid.Column="3"
-                Command="{Binding ResetTactTimeCommand}"
-                CommandParameter="NeedleClean" />
-            <Button
-                Grid.Row="2"
-                Grid.Column="4"
-                Command="{Binding ResetTactTimeCommand}"
-                CommandParameter="Unload" />
-        </Grid>
-    </Grid>
+    <TabControl>
+        <TabItem Header="TactTime"
+                 Style="{StaticResource TabItemCornerStyle}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="15*" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <uiControls:TactTimeListView TactTimes="{Binding DataContext.TactTimeList.TactTimeListViewModel.TactTimes,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                             Columns="3" />
+                <ContentControl Content="{Binding TactTimeList.TactTimeListViewModel}"
+                                Grid.Column="1" />
+                <UniformGrid Grid.Row="1"
+                             Columns="3">
+                    <Label Content="AVERAGE"
+                           Grid.Row="2"
+                           BorderBrush="Black"
+                           BorderThickness="1"
+                           FontWeight="Bold"
+                           FontSize="16"
+                           Background="AliceBlue"
+                           HorizontalContentAlignment="Center"
+                           VerticalContentAlignment="Center"
+                           Margin="2" />
+                    <TextBox Text="{Binding TactTimeList.TactTimeListViewModel.AverageTactTime,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
+                             Grid.Row="2"
+                             Grid.Column="2"
+                             Margin="2"
+                             Style="{StaticResource AverageTextBoxStyle}" />
+                    <Button Command="{Binding ResetTactTimeListCommand}"
+                            Margin="2" />
+                </UniformGrid>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Line Tact"
+                 Style="{StaticResource TabItemCornerStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBlock Text="Line Tact"
+                           FontSize="20"
+                           FontWeight="SemiBold"
+                           Foreground="#273c75"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,10" />
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="15*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <uiControls:CycleTimeTable DataContext="{Binding TactTimeList.Chamber}"
+                                               Grid.Column="0" />
+                    <uiControls:CycleTimeTable DataContext="{Binding TactTimeList.DryPump}"
+                                               Grid.Column="1" />
+                    <uiControls:CycleTimeTable DataContext="{Binding TactTimeList.SPDHead1}"
+                                               Grid.Column="2" />
+                    <uiControls:CycleTimeTable DataContext="{Binding TactTimeList.SPDHead2}"
+                                               Grid.Column="3" />
+                    <uiControls:CycleTimeTable DataContext="{Binding TactTimeList.SPDHead3}"
+                                               Grid.Column="4" />
+                    <uiControls:CycleTimeTable DataContext="{Binding TactTimeList.SPDHead4}"
+                                               Grid.Column="5" />
+
+                    <TextBox Text="{Binding TactTimeList.Chamber.AverageCycleTime,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
+                             Grid.Row="1"
+                             Grid.Column="0"
+                             Style="{StaticResource AverageTextBoxStyle}" />
+                    <TextBox Text="{Binding TactTimeList.DryPump.AverageCycleTime,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
+                             Grid.Row="1"
+                             Grid.Column="1"
+                             Style="{StaticResource AverageTextBoxStyle}" />
+                    <TextBox Text="{Binding TactTimeList.SPDHead1.AverageCycleTime,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
+                             Grid.Row="1"
+                             Grid.Column="2"
+                             Style="{StaticResource AverageTextBoxStyle}" />
+                    <TextBox Text="{Binding TactTimeList.SPDHead2.AverageCycleTime,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
+                             Grid.Row="1"
+                             Grid.Column="3"
+                             Style="{StaticResource AverageTextBoxStyle}" />
+                    <TextBox Text="{Binding TactTimeList.SPDHead3.AverageCycleTime,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
+                             Grid.Row="1"
+                             Grid.Column="4"
+                             Style="{StaticResource AverageTextBoxStyle}" />
+                    <TextBox Text="{Binding TactTimeList.SPDHead4.AverageCycleTime,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
+                             Grid.Row="1"
+                             Grid.Column="5"
+                             Style="{StaticResource AverageTextBoxStyle}" />
+
+                    <Button Grid.Row="2"
+                            Command="{Binding ResetCycleTimeCommand}"
+                            CommandParameter="Chamber" />
+                    <Button Grid.Row="2"
+                            Grid.Column="1"
+                            Command="{Binding ResetCycleTimeCommand}"
+                            CommandParameter="DryPump" />
+                    <Button Grid.Row="2"
+                            Grid.Column="2"
+                            Command="{Binding ResetCycleTimeCommand}"
+                            CommandParameter="SPDHead1" />
+                    <Button Grid.Row="2"
+                            Grid.Column="3"
+                            Command="{Binding ResetCycleTimeCommand}"
+                            CommandParameter="SPDHead2" />
+                    <Button Grid.Row="2"
+                            Grid.Column="4"
+                            Command="{Binding ResetCycleTimeCommand}"
+                            CommandParameter="SPDHead3" />
+                    <Button Grid.Row="2"
+                            Grid.Column="5"
+                            Command="{Binding ResetCycleTimeCommand}"
+                            CommandParameter="SPDHead4" />
+                </Grid>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Unit Tact"
+                 Style="{StaticResource TabItemCornerStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBlock Text="Unit Tact"
+                           FontSize="20"
+                           FontWeight="SemiBold"
+                           Foreground="#273c75"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,10" />
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="15*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <uiControls:TactTimeTable DataContext="{Binding TactTimeList.Chamber}"
+                                              Grid.Column="0" />
+                    <uiControls:TactTimeTable DataContext="{Binding TactTimeList.DryPump}"
+                                              Grid.Column="1" />
+                    <uiControls:TactTimeTable DataContext="{Binding TactTimeList.SPDHead1}"
+                                              Grid.Column="2" />
+                    <uiControls:TactTimeTable DataContext="{Binding TactTimeList.SPDHead2}"
+                                              Grid.Column="3" />
+                    <uiControls:TactTimeTable DataContext="{Binding TactTimeList.SPDHead3}"
+                                              Grid.Column="4" />
+                    <uiControls:TactTimeTable DataContext="{Binding TactTimeList.SPDHead4}"
+                                              Grid.Column="5" />
+
+                    <TextBox Text="{Binding TactTimeList.Chamber.AverageTactTime,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
+                             Grid.Row="1"
+                             Grid.Column="0"
+                             Style="{StaticResource AverageTextBoxStyle}" />
+                    <TextBox Text="{Binding TactTimeList.DryPump.AverageTactTime,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
+                             Grid.Row="1"
+                             Grid.Column="1"
+                             Style="{StaticResource AverageTextBoxStyle}" />
+                    <TextBox Text="{Binding TactTimeList.SPDHead1.AverageTactTime,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
+                             Grid.Row="1"
+                             Grid.Column="2"
+                             Style="{StaticResource AverageTextBoxStyle}" />
+                    <TextBox Text="{Binding TactTimeList.SPDHead2.AverageTactTime,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
+                             Grid.Row="1"
+                             Grid.Column="3"
+                             Style="{StaticResource AverageTextBoxStyle}" />
+                    <TextBox Text="{Binding TactTimeList.SPDHead3.AverageTactTime,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
+                             Grid.Row="1"
+                             Grid.Column="4"
+                             Style="{StaticResource AverageTextBoxStyle}" />
+                    <TextBox Text="{Binding TactTimeList.SPDHead4.AverageTactTime,Mode=OneWay,StringFormat='{}{0:0.###} s'}"
+                             Grid.Row="1"
+                             Grid.Column="5"
+                             Style="{StaticResource AverageTextBoxStyle}" />
+
+                    <Button Grid.Row="2"
+                            Command="{Binding ResetTactTimeCommand}"
+                            CommandParameter="Chamber" />
+                    <Button Grid.Row="2"
+                            Grid.Column="1"
+                            Command="{Binding ResetTactTimeCommand}"
+                            CommandParameter="DryPump" />
+                    <Button Grid.Row="2"
+                            Grid.Column="2"
+                            Command="{Binding ResetTactTimeCommand}"
+                            CommandParameter="SPDHead1" />
+                    <Button Grid.Row="2"
+                            Grid.Column="3"
+                            Command="{Binding ResetTactTimeCommand}"
+                            CommandParameter="SPDHead2" />
+                    <Button Grid.Row="2"
+                            Grid.Column="4"
+                            Command="{Binding ResetTactTimeCommand}"
+                            CommandParameter="SPDHead3" />
+                    <Button Grid.Row="2"
+                            Grid.Column="5"
+                            Command="{Binding ResetTactTimeCommand}"
+                            CommandParameter="SPDHead4" />
+                </Grid>
+            </Grid>
+        </TabItem>
+    </TabControl>
 </UserControl>

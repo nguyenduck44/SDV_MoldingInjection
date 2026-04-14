@@ -790,11 +790,6 @@ namespace SDV_MoldingInjection.Process
             {
                 case EMoldProcResinInjectStep.Start:
                     Log.Info("ResinInject start");
-                    if (Parent?.Sequence == ESequence.AutoRun)
-                    {
-                        _tactTimeList.Inject.TaktTimeCounter = Environment.TickCount;
-                    }
-
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.InitQueue:
@@ -1012,7 +1007,6 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Info("ResinInject end");
-                    _tactTimeList.Inject.SetTaktTime();
                     Sequence = ESequence.DummyShot;
                     break;
 
@@ -1093,7 +1087,6 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Info("ResinInject end");
-                    _tactTimeList.Inject.SetTaktTime();
                     Sequence = ESequence.DummyShot;
                     break;
 
@@ -1109,12 +1102,10 @@ namespace SDV_MoldingInjection.Process
                     {
                         Log.Info("Loading start");
                         _machineStatus.ConfirmLoadingFinish = false;
-                        _tactTimeList.Loading.TaktTimeCounter = Environment.TickCount;
                     }
                     else
                     {
                         Log.Info("Unloading start");
-                        _tactTimeList.Unloading.TaktTimeCounter = Environment.TickCount;
                     }
                     Step.RunStep++;
                     break;
@@ -1153,6 +1144,11 @@ namespace SDV_MoldingInjection.Process
                     {
                         RaiseWarning(EWarning.CY_MOLD_CHAMBER_OPEN_FAIL);
                         break;
+                    }
+
+                    if(isLoading == false)
+                    {
+                        _tactTimeList.TactCounterEnd();
                     }
 
                     Log.Debug($"{ChamberOpenClose} Open finish");
@@ -1319,6 +1315,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Chamber_CoverClose:
+                    _tactTimeList.TactCounterStart();
                     Log.Debug($"Close {ChamberOpenClose} cylinder");
                     ChamberOpenClose.Close();
                     Wait(_currentRecipe.CylinderDelayTimeRecipe.ChamberOpenCloseCylinderMoveDelay,
@@ -1344,13 +1341,11 @@ namespace SDV_MoldingInjection.Process
                     if (isLoading)
                     {
                         Log.Info("Loading end");
-                        _tactTimeList.Loading.SetTaktTime();
                         Sequence = ESequence.ResinInject;
                         break;
                     }
 
                     Log.Info("Unloading end");
-                    _tactTimeList.Unloading.SetTaktTime();
                     Sequence = ESequence.Loading;
 
                     break;
@@ -1362,10 +1357,6 @@ namespace SDV_MoldingInjection.Process
             switch ((EMoldProcDummyShotStep)Step.RunStep)
             {
                 case EMoldProcDummyShotStep.Start:
-                    if (sequence == ESequence.DummyShot && Parent?.Sequence == ESequence.AutoRun)
-                    {
-                        _tactTimeList.DummyShot.TaktTimeCounter = Environment.TickCount;
-                    }
                     if (sequence == ESequence.IdlePurge)
                     {
                         Log.Debug("Idle Purge start");
@@ -1539,7 +1530,6 @@ namespace SDV_MoldingInjection.Process
                     if (sequence == ESequence.DummyShot && Parent!.Sequence == ESequence.AutoRun)
                     {
                         Log.Info("Set next sequence to needdle clean");
-                        _tactTimeList.DummyShot.SetTaktTime();
                         Sequence = ESequence.NeedleCleaning;
                     }
                     else
@@ -1565,12 +1555,6 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Info("NeedleClean start");
-
-                    if (Parent?.Sequence == ESequence.AutoRun)
-                    {
-                        _tactTimeList.NeedleClean.TaktTimeCounter = Environment.TickCount;
-                    }
-
                     Step.RunStep++;
                     break;
                 case EMoldProcNeedleCleaningStep.YAxis_CleanPos_Calculator:
@@ -1703,7 +1687,6 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Info("Set next sequence to unloading");
-                    _tactTimeList.NeedleClean.SetTaktTime();
                     Sequence = ESequence.Unloading;
                     break;
             }

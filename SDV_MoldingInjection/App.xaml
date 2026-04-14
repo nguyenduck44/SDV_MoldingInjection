@@ -178,6 +178,9 @@
             <DataTemplate DataType="{x:Type vm:MonitorMotionViewModel}">
                 <views:MonitorMotionView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type viewsLib:TactTimeListViewModel}">
+                <viewsLib:TactTimeChartView />
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:TactTimeViewModel}">
                 <views:TactTimeView />
             </DataTemplate>

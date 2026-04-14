@@ -18,11 +18,18 @@ namespace SDV_MoldingInjection.Defines
             }
         }
 
+        public ObservableCollection<double> CycleTimes { get; }
         public ObservableCollection<double> TactTimes { get; }
 
         public TactTime(string name)
         {
             Name = name;
+            CycleTimes = new ObservableCollection<double>();
+            for (int i = 0; i < 15; i++)
+            {
+                CycleTimes.Add(0.0);
+            }
+
             TactTimes = new ObservableCollection<double>();
             for (int i = 0; i < 15; i++)
             {
@@ -30,9 +37,25 @@ namespace SDV_MoldingInjection.Defines
             }
         }
 
-        public int TaktTimeCounter { get; set; }
+        public int CycleTimeCounter { get; set; }
+        public int TactTimeCounter { get; set; }
 
-        public double Average
+        public double AverageCycleTime
+        {
+            get
+            {
+                double sum = 0.0;
+                foreach (var item in CycleTimes)
+                {
+                    if (item > 0.0) sum += item;
+                }
+
+                if (CycleTimes.Any(t => t > 0.0) == false) return 0.0;
+                return sum / CycleTimes.Count(t => t > 0.0);
+            }
+        }
+
+        public double AverageTactTime
         {
             get
             {
@@ -42,35 +65,60 @@ namespace SDV_MoldingInjection.Defines
                     if (item > 0.0) sum += item;
                 }
 
-                if (TactTimes.Count(t => t > 0.0) <= 0) return 0.0;
+                if (TactTimes.Any(t => t > 0.0) == false) return 0.0;
                 return sum / TactTimes.Count(t => t > 0.0);
             }
         }
 
-        public void SetTaktTime()
+        public void SetCycleTime()
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                double CycleCurrent = (Environment.TickCount - TaktTimeCounter) / 1000.0;
+                double CycleCurrent = (Environment.TickCount - CycleTimeCounter) / 1000.0;
+                CycleTimes.Add(CycleCurrent);
+                if (CycleTimes.Count > 15)
+                {
+                    CycleTimes.RemoveAt(0);
+                }
+                CycleTimeCounter = Environment.TickCount;
+
+                OnPropertyChanged(nameof(AverageCycleTime));
+            });
+        }
+
+        public void SetTactTime()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                double CycleCurrent = (Environment.TickCount - TactTimeCounter) / 1000.0;
                 TactTimes.Add(CycleCurrent);
                 if (TactTimes.Count > 15)
                 {
                     TactTimes.RemoveAt(0);
                 }
-                TaktTimeCounter = Environment.TickCount;
-
-                OnPropertyChanged(nameof(Average));
             });
+
+            OnPropertyChanged(nameof(AverageTactTime));
         }
 
-        public void Reset()
+        public void ResetCycleTime()
+        {
+            for (int i = 0; i < CycleTimes.Count; i++)
+            {
+                CycleTimes[i] = 0.0;
+            }
+
+            OnPropertyChanged(nameof(AverageCycleTime));
+        }
+
+        public void ResetTactTime()
         {
             for (int i = 0; i < TactTimes.Count; i++)
             {
                 TactTimes[i] = 0.0;
             }
 
-            OnPropertyChanged(nameof(Average));
+            OnPropertyChanged(nameof(AverageTactTime));
         }
     }
 }

@@ -52,6 +52,7 @@ namespace SDV_MoldingInjection.Process
             MachineStatus machineStatus,
             CarrierJigStatusList carrierJigStatusList,
             IConfiguration configuration,
+            TactTimeList tactTimeList,
             Plotter plotter)
         {
             _devices = devices;
@@ -59,8 +60,8 @@ namespace SDV_MoldingInjection.Process
             _machineStatus = machineStatus;
             _carrierJigStatusList = carrierJigStatusList;
             _configuration = configuration;
+            _tactTimeList = tactTimeList;
             _plotter = plotter;
-
             procInputs = processIO.DryPumpProcInput;
             procOutputs = processIO.DryPumpProcOutput;
         }
@@ -705,6 +706,7 @@ namespace SDV_MoldingInjection.Process
         private readonly RecipeSelector _recipeSelector;
         private readonly CarrierJigStatusList _carrierJigStatusList;
         private readonly IConfiguration _configuration;
+        private readonly TactTimeList _tactTimeList;
         private readonly Plotter _plotter;
 
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;

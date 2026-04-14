@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
+using EQX.UI.Controls;
 using SDV_MoldingInjection.Defines;
 using System.Windows.Input;
 
@@ -17,32 +18,87 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public TactTimeList TactTimeList { get; }
         public MachineStatus MachineStatus { get; }
 
+        public ICommand ResetCycleTimeCommand
+        {
+            get
+            {
+                return new RelayCommand<string>((name) =>
+                {
+                    if (MessageBoxEx.ShowDialog("Do you want to Reset TactTime ?", "Confirm") == false) return;
+
+                    if (name == "Chamber")
+                    {
+                        TactTimeList.Chamber.ResetCycleTime();
+                    }
+                    if (name == "DryPump")
+                    {
+                        TactTimeList.DryPump.ResetCycleTime();
+                    }
+                    if (name == "SPDHead1")
+                    {
+                        TactTimeList.SPDHead1.ResetCycleTime();
+                    }
+                    if (name == "SPDHead2")
+                    {
+                        TactTimeList.SPDHead2.ResetCycleTime();
+                    }
+                    if (name == "SPDHead3")
+                    {
+                        TactTimeList.SPDHead3.ResetCycleTime();
+                    }
+                    if (name == "SPDHead4")
+                    {
+                        TactTimeList.SPDHead4.ResetCycleTime();
+                    }
+                });
+            }
+        }
+
         public ICommand ResetTactTimeCommand
         {
             get
             {
                 return new RelayCommand<string>((name) =>
                 {
-                    if (name == "Load")
+                    if (MessageBoxEx.ShowDialog("Do you want to Reset TactTime ?", "Confirm") == false) return;
+
+                    if (name == "Chamber")
                     {
-                        TactTimeList.Loading.Reset();
+                        TactTimeList.Chamber.ResetTactTime();
                     }
-                    if (name == "Inject")
+                    if (name == "DryPump")
                     {
-                        TactTimeList.Inject.Reset();
+                        TactTimeList.DryPump.ResetTactTime();
                     }
-                    if (name == "DummyShot")
+                    if (name == "SPDHead1")
                     {
-                        TactTimeList.DummyShot.Reset();
+                        TactTimeList.SPDHead1.ResetTactTime();
                     }
-                    if (name == "NeedleClean")
+                    if (name == "SPDHead2")
                     {
-                        TactTimeList.NeedleClean.Reset();
+                        TactTimeList.SPDHead2.ResetTactTime();
                     }
-                    if (name == "Unload")
+                    if (name == "SPDHead3")
                     {
-                        TactTimeList.Unloading.Reset();
+                        TactTimeList.SPDHead3.ResetTactTime();
                     }
+                    if (name == "SPDHead4")
+                    {
+                        TactTimeList.SPDHead4.ResetTactTime();
+                    }
+                });
+            }
+        }
+
+        public ICommand ResetTactTimeListCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    if (MessageBoxEx.ShowDialog("Do you want to Reset TactTime ?", "Confirm") == false) return;
+
+                    TactTimeList.TactTimeListViewModel.Reset();
                 });
             }
         }
