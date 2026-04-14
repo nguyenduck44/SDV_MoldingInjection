@@ -94,6 +94,12 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         #region Commands
         public ICommand ApplySecuritySettingCommand => new RelayCommand(() =>
         {
+            if (MessageBoxEx.ShowDialog("Do you want to change Security Settings?") == false)
+            {
+                SelectedPasswordMode = _securityControlStore.Settings.PasswordMode.ToString();
+                return;
+            }
+
             if (_userStore.Permission < EPermission.Admin)
             {
                 MessageBoxEx.ShowDialog("Only Admin or higher can update security settings.");
