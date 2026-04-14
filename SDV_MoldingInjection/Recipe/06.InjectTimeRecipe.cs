@@ -1,20 +1,19 @@
 using EQX.Core.Recipe;
 using EQX.Core.Units;
 using SDV_MoldingInjection.MVVM.Models;
-using System.Collections.ObjectModel;
 
 namespace SDV_MoldingInjection.Recipe
 {
     public class InjectTimeRecipe : RecipeBase
     {
-        [SingleRecipeDescription(Description = "Inject First Time", Detail ="Inject time before Open Angle Valve", Unit = Unit.Second)]
+        [SingleRecipeDescription(Description = "Inject First Time", Detail = "Inject time before Open Angle Valve", Unit = Unit.Second)]
         public double DelayAfterOpenAngleValve
         {
             get => _delayAfterOpenAngleValve;
             set => SetRecipe(ref _delayAfterOpenAngleValve, value, nameof(DelayAfterOpenAngleValve));
         }
 
-        [SingleRecipeDescription(Description = "Delay Time", Detail ="Delay time after inject", Unit = Unit.Second)]
+        [SingleRecipeDescription(Description = "Delay Time", Detail = "Delay time after inject", Unit = Unit.Second)]
         public double DelayTime
         {
             get => _delayTime;

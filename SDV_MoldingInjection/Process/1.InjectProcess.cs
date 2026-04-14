@@ -192,7 +192,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"{ChamberOpenClose} moving close");
                     ChamberOpenClose.Close();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout,
+                    Wait(_currentRecipe.CylinderDelayTimeRecipe.ChamberOpenCloseCylinderMoveDelay,
                         () => ChamberOpenClose.IsClose());
                     Step.ToRunStep++;
                     break;
@@ -216,7 +216,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"{BellowCyl} moving down");
                     BellowCyl.Down();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout,
+                    Wait(_currentRecipe.CylinderDelayTimeRecipe.BellowCylinderMoveDelay,
                         () => BellowCyl.IsDown());
                     Step.ToRunStep++;
                     break;
@@ -240,7 +240,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug("Nozzle clean cylinder ungrip");
                     NozzleCleanCyl_All_UnGrip();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => NozzleCleanCyl_All_UnGrip_Check());
+                    Wait(_currentRecipe.CylinderDelayTimeRecipe.NozzleCleanCylinderMoveDelay_1, () => NozzleCleanCyl_All_UnGrip_Check());
                     Step.ToRunStep++;
                     break;
                 case EMoldProcToRunStep.NozzleClean_Cyl_UnGrip_Wait:
@@ -486,7 +486,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"{BellowCyl} moving down");
                     BellowCyl.Down();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout,
+                    Wait(_currentRecipe.CylinderDelayTimeRecipe.BellowCylinderMoveDelay,
                         () => BellowCyl.IsDown());
                     Step.OriginStep++;
                     break;
@@ -509,7 +509,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug("Nozzle clean cylinder ungrip");
                     NozzleCleanCyl_All_UnGrip();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => NozzleCleanCyl_All_UnGrip_Check());
+                    Wait(_currentRecipe.CylinderDelayTimeRecipe.NozzleCleanCylinderMoveDelay_1, () => NozzleCleanCyl_All_UnGrip_Check());
                     Step.OriginStep++;
                     break;
                 case EMoldProcOriginStep.NozzleClean_Cyl_UnGrip_Wait:
@@ -667,7 +667,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"{BellowCyl} moving down");
                     BellowCyl.Down();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout,
+                    Wait(_currentRecipe.CylinderDelayTimeRecipe.BellowCylinderMoveDelay,
                         () => BellowCyl.IsDown());
                     Step.RunStep++;
                     break;
@@ -951,7 +951,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcResinInjectStep.BellowCylDown:
                     Log.Debug("Bellow cylinder downing");
                     BellowCyl.Down();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => BellowCyl.IsDown());
+                    Wait(_currentRecipe.CylinderDelayTimeRecipe.BellowCylinderMoveDelay, () => BellowCyl.IsDown());
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.BellowCylDown_Wait:
@@ -1145,7 +1145,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.Chamber_CoverOpen:
                     Log.Debug($"Open {ChamberOpenClose} cylinder");
                     ChamberOpenClose.Open();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, ChamberOpenClose.IsOpen);
+                    Wait(_currentRecipe.CylinderDelayTimeRecipe.ChamberOpenCloseCylinderMoveDelay, ChamberOpenClose.IsOpen);
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Chamber_CoverOpenWait:
@@ -1321,7 +1321,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.Chamber_CoverClose:
                     Log.Debug($"Close {ChamberOpenClose} cylinder");
                     ChamberOpenClose.Close();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout,
+                    Wait(_currentRecipe.CylinderDelayTimeRecipe.ChamberOpenCloseCylinderMoveDelay,
                         () => ChamberOpenClose.IsClose());
                     Step.RunStep++;
                     break;
@@ -1610,7 +1610,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcNeedleCleaningStep.NzlCleanCyl_UnGrip:
                     Log.Debug("Nozzle clean cylinder Ungrip");
                     NozzleCleanCyl_UnGrip(head);
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => NozzleCleanCyl_UnGrip_Check(head));
+                    Wait(_currentRecipe.CylinderDelayTimeRecipe.NozzleCleanCylinderMoveDelay_1, () => NozzleCleanCyl_UnGrip_Check(head));
                     Step.RunStep++;
                     break;
                 case EMoldProcNeedleCleaningStep.NzlCleanCyl_UnGripWait:
@@ -1650,7 +1650,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcNeedleCleaningStep.NzlCleanCyl_Grip:
                     Log.Debug("Nozzle clean cylinder Grip");
                     NozzleCleanCyl_Grip(head);
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => NozzleCleanCyl_Grip_Check(head));
+                    Wait(_currentRecipe.CylinderDelayTimeRecipe.NozzleCleanCylinderMoveDelay_1, () => NozzleCleanCyl_Grip_Check(head));
                     Step.RunStep++;
                     break;
                 case EMoldProcNeedleCleaningStep.NzlCleanCyl_GripWait:
@@ -1680,7 +1680,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcNeedleCleaningStep.NzlCleanCyl_UnGrip_AfterClean:
                     Log.Debug("Nozzle clean cylinder Ungrip");
                     NozzleCleanCyl_UnGrip(head);
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => NozzleCleanCyl_UnGrip_Check(head));
+                    Wait(_currentRecipe.CylinderDelayTimeRecipe.NozzleCleanCylinderMoveDelay_1, () => NozzleCleanCyl_UnGrip_Check(head));
                     Step.RunStep++;
                     break;
                 case EMoldProcNeedleCleaningStep.NzlCleanCyl_UnGrip_AfterClean_Wait:

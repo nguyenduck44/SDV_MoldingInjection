@@ -78,6 +78,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                                     .Where(r => r is not AdditionalMoldingRecipe && 
                                     r is not OptionRecipe && 
                                     r is not IdlePurgeRecipe && 
+                                    r is not CylinderDelayTimeRecipe && 
                                     r is not InjectTimeRecipe)
                                     .ToList();
 

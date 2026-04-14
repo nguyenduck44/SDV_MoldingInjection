@@ -162,7 +162,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"Closing {AngleValve.Name}");
                     AngleValve.Close();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout,
+                    Wait(_currentRecipe.CylinderDelayTimeRecipe.AngleValveCylinderMoveDelay,
                         () => AngleValve.IsClose());
                     Step.ToRunStep++;
                     break;
@@ -391,7 +391,7 @@ namespace SDV_MoldingInjection.Process
                     PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.ValveOpen);
                     EnableWritePressureLog = true;
                     AngleValve.Open();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, AngleValve.IsOpen);
+                    Wait(_currentRecipe.CylinderDelayTimeRecipe.AngleValveCylinderMoveDelay, AngleValve.IsOpen);
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.AngleValve_OpenWait:
@@ -418,7 +418,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Closing {AngleValve.Name}");
                     PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.ValveClose);
                     AngleValve.Close();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, AngleValve.IsClose);
+                    Wait(_currentRecipe.CylinderDelayTimeRecipe.AngleValveCylinderMoveDelay, AngleValve.IsClose);
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.AngleValve_CloseWait:

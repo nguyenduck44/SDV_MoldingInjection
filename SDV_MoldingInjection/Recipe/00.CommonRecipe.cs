@@ -6,22 +6,19 @@ namespace SDV_MoldingInjection.Recipe
 {
     public class CommonRecipe : RecipeBase
     {
-        private double cylinderMoveTimeout;
+        #region Privates
+        private double _syringeAmountTimeChange;
+        private double _syringeAmountWeight;
         private double motionOriginTimeout;
         private double motionMoveTimeout;
         private double vacDelay;
         private int logSaveDay = 30;
+        private ILanguageDefinition selectLanguage;
         public event Action<ILanguageDefinition> SelectedLanguageEvent;
         public event Action SelectedLanguageLoadAllRecipe;
+        #endregion
 
-        [SingleRecipeDescription(Description = "Cylinder Move Timeout", Unit = Unit.Second)]
-        [CIMParameterAddress((int)ECIMParamter.CylinderMoveTimeout)]
-        public double CylinderMoveTimeout
-        {
-            get => cylinderMoveTimeout;
-            set => SetRecipe(ref cylinderMoveTimeout, value, nameof(CylinderMoveTimeout));
-        }
-
+        #region Properties
         [SingleRecipeDescription(Description = "Motion Origin Timeout", Unit = Unit.Second)]
         public double MotionOriginTimeout
         {
@@ -85,11 +82,6 @@ namespace SDV_MoldingInjection.Recipe
                 SelectedLanguageLoadAllRecipe?.Invoke();
             }
         }
-
-        #region Privates
-        private double _syringeAmountTimeChange;
-        private double _syringeAmountWeight;
-        private ILanguageDefinition selectLanguage;
         #endregion
     }
 }

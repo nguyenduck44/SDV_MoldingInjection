@@ -202,7 +202,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"{PistonCyl} moving up");
                     PistonCyl.Backward();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => PistonCyl.IsBackward);
+                    Wait(pistonCylinderMoveDelay, () => PistonCyl.IsBackward);
                     Step.ToRunStep++;
                     break;
                 case ESPDHeadProcToRunStep.PistonCyl_UpWait:
@@ -296,7 +296,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcOriginStep.PistonCyl_Up:
                     Log.Debug($"{PistonCyl} moving up");
                     PistonCyl.Backward();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => PistonCyl.IsBackward);
+                    Wait(pistonCylinderMoveDelay, () => PistonCyl.IsBackward);
                     Step.OriginStep++;
                     break;
                 case ESPDHeadProcOriginStep.PistonCyl_UpWait:
@@ -1671,7 +1671,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcAssembleDisAssembleStep.PistonCyl_Down:
                     Log.Debug($"{PistonCyl} moving down");
                     PistonCyl.Down();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, PistonCyl.IsDown);
+                    Wait(pistonCylinderMoveDelay, PistonCyl.IsDown);
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAssembleDisAssembleStep.PistonCyl_DownWait:
@@ -1718,7 +1718,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcAssembleDisAssembleStep.PistonCyl_Up:
                     Log.Debug($"{PistonCyl} moving up");
                     PistonCyl.Backward();
-                    Wait(_currentRecipe.CommonRecipe.CylinderMoveTimeout, () => PistonCyl.IsBackward);
+                    Wait(pistonCylinderMoveDelay, () => PistonCyl.IsBackward);
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAssembleDisAssembleStep.PistonCyl_UpWait:
@@ -1850,6 +1850,15 @@ namespace SDV_MoldingInjection.Process
             "SPDHead2" => ESPDHead.SPDHead2,
             "SPDHead3" => ESPDHead.SPDHead3,
             "SPDHead4" => ESPDHead.SPDHead4,
+            _ => throw new Exception($"Invalid process name: {Name}")
+        };
+
+        private double pistonCylinderMoveDelay => Name switch
+        {
+            "SPDHead1" => _currentRecipe.CylinderDelayTimeRecipe.PistonCylinderMoveDelay_1,
+            "SPDHead2" => _currentRecipe.CylinderDelayTimeRecipe.PistonCylinderMoveDelay_2,
+            "SPDHead3" => _currentRecipe.CylinderDelayTimeRecipe.PistonCylinderMoveDelay_3,
+            "SPDHead4" => _currentRecipe.CylinderDelayTimeRecipe.PistonCylinderMoveDelay_4,
             _ => throw new Exception($"Invalid process name: {Name}")
         };
 

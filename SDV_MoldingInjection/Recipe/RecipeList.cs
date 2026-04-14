@@ -18,6 +18,7 @@ namespace SDV_MoldingInjection.Recipe
             OptionRecipe = new();
             InjectTimeRecipe = new();
             IdlePurgeRecipe = new();
+            CylinderDelayTimeRecipe = new();
         }
 
         public CommonRecipe CommonRecipe { get; }
@@ -31,6 +32,7 @@ namespace SDV_MoldingInjection.Recipe
         public OptionRecipe OptionRecipe { get; }
         public InjectTimeRecipe InjectTimeRecipe { get; }
         public IdlePurgeRecipe IdlePurgeRecipe { get; }
+        public CylinderDelayTimeRecipe CylinderDelayTimeRecipe { get; }
 
         public void CloneFrom(RecipeList source)
         {
@@ -47,6 +49,7 @@ namespace SDV_MoldingInjection.Recipe
             OptionRecipe.Clone(source.OptionRecipe);
             InjectTimeRecipe.Clone(source.InjectTimeRecipe);
             IdlePurgeRecipe.Clone(source.IdlePurgeRecipe);
+            CylinderDelayTimeRecipe.Clone(source.CylinderDelayTimeRecipe);
         }
     }
 }

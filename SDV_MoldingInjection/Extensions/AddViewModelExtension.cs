@@ -43,6 +43,7 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddViewModel<IdlePurgeViewModel>();
                 services.AddViewModel<OptionViewModel>();
                 services.AddViewModel<InjectTimeViewModel>();
+                services.AddViewModel<CylinderDelayTimeViewModel>();
                 services.AddViewModel<MaterialPortsViewModel>();
                 services.AddViewModel<SecurityControlViewModel>();
 

@@ -88,6 +88,7 @@ namespace SDV_MoldingInjection.Recipe
             CurrentRecipe.OptionRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
             CurrentRecipe.InjectTimeRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
             CurrentRecipe.IdlePurgeRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
+            CurrentRecipe.CylinderDelayTimeRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
         }
 
         private async void SingleRecipe_RecipeChanged(object oldValue, object newValue, string? propertyName = null)

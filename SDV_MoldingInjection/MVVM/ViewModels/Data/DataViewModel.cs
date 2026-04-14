@@ -85,6 +85,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _navigationService.NavigateTo<InjectTimeViewModel>();
         });
 
+        public ICommand CylinderDelayTimeNavigateCommand => new RelayCommand(() =>
+        {
+            _navigationService.NavigateTo<CylinderDelayTimeViewModel>();
+        });
+
         public ICommand MotionConfigNavigateCommand
         {
             get

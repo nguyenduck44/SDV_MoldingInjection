@@ -55,10 +55,12 @@
         </GroupBox>
 
         <GroupBox Header="Time Setting"
-                  Margin="5">
+                  Margin="5"> 
             <StackPanel Margin="0,10,0,0">
                 <Button Content="Inject Time"
                         Command="{Binding InjectTimeNavigateCommand}" />
+                <Button Content="Cylinder Delay Time"
+                        Command="{Binding CylinderDelayTimeNavigateCommand}" />
             </StackPanel>
         </GroupBox>
 
