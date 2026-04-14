@@ -1,0 +1,249 @@
+﻿<UserControl x:Class="SDV_MoldingInjection.MVVM.Views.EquipStateStatusView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
+             mc:Ignorable="d"
+             d:DesignHeight="140"
+             d:DesignWidth="260">
+    <UserControl.Resources>
+        <Style x:Key="LeftHeaderCellStyle"
+               TargetType="Border">
+            <Setter Property="BorderBrush"
+                    Value="#9E9E9E" />
+            <Setter Property="BorderThickness"
+                    Value="1" />
+            <Setter Property="Background"
+                    Value="#F2F2F2" />
+            <Setter Property="Padding"
+                    Value="4" />
+        </Style>
+
+        <Style x:Key="StateCellStyle"
+               TargetType="Border">
+            <Setter Property="BorderBrush"
+                    Value="#9E9E9E" />
+            <Setter Property="BorderThickness"
+                    Value="1" />
+            <Setter Property="Padding"
+                    Value="4" />
+            <Setter Property="Background"
+                    Value="White" />
+        </Style>
+
+        <Style x:Key="CellTextStyle"
+               TargetType="TextBlock">
+            <Setter Property="FontSize"
+                    Value="10" />
+            <Setter Property="FontWeight"
+                    Value="Bold" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Center" />
+            <Setter Property="VerticalAlignment"
+                    Value="Center" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.2*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Row="0"
+                Grid.Column="0"
+                Style="{StaticResource LeftHeaderCellStyle}">
+            <TextBlock Text="AVILABILITY"
+                       Style="{StaticResource CellTextStyle}" />
+        </Border>
+        <Border Grid.Row="0"
+                Grid.Column="1"
+                Style="{StaticResource StateCellStyle}">
+            <TextBlock Text="UP">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock"
+                           BasedOn="{StaticResource CellTextStyle}">
+                        <Setter Property="Foreground"
+                                Value="#9E9E9E" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsAvailable}"
+                                         Value="True">
+                                <Setter Property="Foreground"
+                                        Value="#1976D2" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Border>
+        <Border Grid.Row="0"
+                Grid.Column="2"
+                Style="{StaticResource StateCellStyle}">
+            <TextBlock Text="Down">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock"
+                           BasedOn="{StaticResource CellTextStyle}">
+                        <Setter Property="Foreground"
+                                Value="#9E9E9E" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsAvailable}"
+                                         Value="False">
+                                <Setter Property="Foreground"
+                                        Value="#C62828" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Border>
+
+        <Border Grid.Row="1"
+                Grid.Column="0"
+                Style="{StaticResource LeftHeaderCellStyle}">
+            <TextBlock Text="INTERLOCK"
+                       Style="{StaticResource CellTextStyle}" />
+        </Border>
+        <Border Grid.Row="1"
+                Grid.Column="1"
+                Style="{StaticResource StateCellStyle}">
+            <TextBlock Text="OFF">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock"
+                           BasedOn="{StaticResource CellTextStyle}">
+                        <Setter Property="Foreground"
+                                Value="#9E9E9E" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsInterlock}"
+                                         Value="False">
+                                <Setter Property="Foreground"
+                                        Value="#1976D2" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Border>
+        <Border Grid.Row="1"
+                Grid.Column="2"
+                Style="{StaticResource StateCellStyle}">
+            <TextBlock Text="ON">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock"
+                           BasedOn="{StaticResource CellTextStyle}">
+                        <Setter Property="Foreground"
+                                Value="#9E9E9E" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsInterlock}"
+                                         Value="True">
+                                <Setter Property="Foreground"
+                                        Value="#C62828" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Border>
+
+        <Border Grid.Row="2"
+                Grid.Column="0"
+                Style="{StaticResource LeftHeaderCellStyle}">
+            <TextBlock Text="MOVE"
+                       Style="{StaticResource CellTextStyle}" />
+        </Border>
+        <Border Grid.Row="2"
+                Grid.Column="1"
+                Style="{StaticResource StateCellStyle}">
+            <TextBlock Text="RUNNING">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock"
+                           BasedOn="{StaticResource CellTextStyle}">
+                        <Setter Property="Foreground"
+                                Value="#9E9E9E" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsRunning}"
+                                         Value="True">
+                                <Setter Property="Foreground"
+                                        Value="#1976D2" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Border>
+        <Border Grid.Row="2"
+                Grid.Column="2"
+                Style="{StaticResource StateCellStyle}">
+            <TextBlock Text="PAUSE">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock"
+                           BasedOn="{StaticResource CellTextStyle}">
+                        <Setter Property="Foreground"
+                                Value="#9E9E9E" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsRunning}"
+                                         Value="False">
+                                <Setter Property="Foreground"
+                                        Value="#C62828" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Border>
+
+        <Border Grid.Row="3"
+                Grid.Column="0"
+                Style="{StaticResource LeftHeaderCellStyle}">
+            <TextBlock Text="RUN"
+                       Style="{StaticResource CellTextStyle}" />
+        </Border>
+        <Border Grid.Row="3"
+                Grid.Column="1"
+                Style="{StaticResource StateCellStyle}">
+            <TextBlock Text="RUN">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock"
+                           BasedOn="{StaticResource CellTextStyle}">
+                        <Setter Property="Foreground"
+                                Value="#9E9E9E" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsCellInEquip}"
+                                         Value="True">
+                                <Setter Property="Foreground"
+                                        Value="#1976D2" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Border>
+        <Border Grid.Row="3"
+                Grid.Column="2"
+                Style="{StaticResource StateCellStyle}">
+            <TextBlock Text="IDLE">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock"
+                           BasedOn="{StaticResource CellTextStyle}">
+                        <Setter Property="Foreground"
+                                Value="#9E9E9E" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsCellInEquip}"
+                                         Value="False">
+                                <Setter Property="Foreground"
+                                        Value="#C62828" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Border>
+    </Grid>
+</UserControl>

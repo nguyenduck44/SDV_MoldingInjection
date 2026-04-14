@@ -42,10 +42,12 @@
 
         <Grid>
             <StackPanel>
+                <local:EquipStateStatusView Grid.Row="0"
+                                            Margin="2"
+                                            DataContext="{Binding MachineStatus.EquipState}" />
                 <GroupBox Header="Carrier Jig Status"
                           Style="{x:Null}">
-                    <UniformGrid Margin="0 6 0 0"
-                                 Rows="1">
+                    <UniformGrid Rows="1">
                         <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH1}" />
                         <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH2}" />
                         <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH3}" />
@@ -60,40 +62,7 @@
                 </GroupBox>
             </StackPanel>
 
-            <Grid Grid.Row="1"
-                  Grid.Column="0"
-                  Margin="5"
-                  VerticalAlignment="Bottom">
-                <UniformGrid Rows="1"
-                             Columns="3"
-                             HorizontalAlignment="Center">
-                    <ui:ImageButton Image="/EQX.UI;component/Resources/Images/Components/Common/lock_selected.png"
-                                    DisabledImage="/EQX.UI;component/Resources/Images/Components/Common/lock_selected.png"
-                                    Command="{Binding DoorOpenCommand}"
-                                    IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
-                                    Width="85"
-                                    Height="42"
-                                    Margin="2">
-                        <ui:ImageButton.Style>
-                            <Style TargetType="{x:Type ui:ImageButton}"
-                                   BasedOn="{StaticResource {x:Type ui:ImageButton}}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Devices.Outputs.EQPStop.Value}"
-                                                 Value="True">
-                                        <Setter Property="Content"
-                                                Value="Door Lock" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Devices.Outputs.EQPStop.Value}"
-                                                 Value="False">
-                                        <Setter Property="Content"
-                                                Value="Door Unlock" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ui:ImageButton.Style>
-                    </ui:ImageButton>
-                </UniformGrid>
-            </Grid>
+            
         </Grid>
 
 
@@ -101,7 +70,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition />
-                <ColumnDefinition Width="165"/>
+                <ColumnDefinition Width="165" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -271,6 +240,36 @@
                        Margin="0 8 0 0">
                 <local:MachineStatusAutoView DataContext="{Binding MachineStatusAuto}" />
             </DockPanel>
+            <!-- DOOR OPEN -->
+            <Canvas Grid.Row="2">
+                <ui:ImageButton Image="/EQX.UI;component/Resources/Images/Components/Common/lock_selected.png"
+                                DisabledImage="/EQX.UI;component/Resources/Images/Components/Common/lock_selected.png"
+                                Command="{Binding DoorOpenCommand}"
+                                IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
+                                Canvas.Top="140"
+                                Canvas.Left="120"
+                                Width="100"
+                                Height="50"
+                                Margin="2">
+                    <ui:ImageButton.Style>
+                        <Style TargetType="{x:Type ui:ImageButton}"
+                               BasedOn="{StaticResource {x:Type ui:ImageButton}}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Devices.Outputs.EQPStop.Value}"
+                                             Value="True">
+                                    <Setter Property="Content"
+                                            Value="Door Lock" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Devices.Outputs.EQPStop.Value}"
+                                             Value="False">
+                                    <Setter Property="Content"
+                                            Value="Door Unlock" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ui:ImageButton.Style>
+                </ui:ImageButton>
+            </Canvas>
         </Grid>
     </Grid>
 </UserControl>
