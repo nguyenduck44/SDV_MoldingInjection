@@ -1,6 +1,8 @@
 using EQX.Core.Common;
 using EQX.Core.Recipe;
 using EQX.Core.Sequence;
+using SDV_MoldingInjection.Defines.ErrorLog;
+using System.Collections.ObjectModel;
 
 namespace SDV_MoldingInjection.Defines
 {
@@ -111,6 +113,7 @@ namespace SDV_MoldingInjection.Defines
 
         public bool IsAutoMode => MachineMode == EMachineMode.Auto;
         public bool IsTeachMode => MachineMode == EMachineMode.Teach;
+        public ObservableCollection<ErrorLogEntry> CurrentAlarms { get; set; } = new ObservableCollection<ErrorLogEntry>();
         public bool IsDoorPasswordVerified
         {
             get => _isDoorPasswordVerified;

@@ -16,7 +16,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public AlarmViewModel(IViewModelFactory viewModelFactory)
         {
             _viewModelFactory = viewModelFactory;
-            NavigateErrorViewCommand.Execute(null);
+            NavigateCurrentAlarmViewCommand.Execute(null);
         }
         public ViewModelBase CurrentVM { get; set; }
 
@@ -30,6 +30,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     OnPropertyChanged(nameof(CurrentVM));
                     OnPropertyChanged(nameof(IsErrorView));
                     OnPropertyChanged(nameof(IsLogView));
+                    OnPropertyChanged(nameof(IsCurrentAlarmView));
                 });
             }
         }
@@ -44,11 +45,28 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     OnPropertyChanged(nameof(CurrentVM));
                     OnPropertyChanged(nameof(IsErrorView));
                     OnPropertyChanged(nameof(IsLogView));
+                    OnPropertyChanged(nameof(IsCurrentAlarmView));
+                });
+            }
+        }
+
+        public ICommand NavigateCurrentAlarmViewCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    CurrentVM = _viewModelFactory.Create<CurrentAlarmViewModel>();
+                    OnPropertyChanged(nameof(CurrentVM));
+                    OnPropertyChanged(nameof(IsErrorView));
+                    OnPropertyChanged(nameof(IsLogView));
+                    OnPropertyChanged(nameof(IsCurrentAlarmView));
                 });
             }
         }
 
         public bool IsErrorView => CurrentVM is ErrorViewModel;
         public bool IsLogView => CurrentVM is LogViewModel;
+        public bool IsCurrentAlarmView => CurrentVM is CurrentAlarmViewModel;
     }
 }

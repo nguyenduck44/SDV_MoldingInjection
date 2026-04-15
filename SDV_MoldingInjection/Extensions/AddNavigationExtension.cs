@@ -92,7 +92,7 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddSingleton<NavigationButton>((s) => {
                     return new NavigationButton()
                     {
-                        Label = "Log",
+                        Label = "Alarm",
                         GroupName = "Right",
                         ViewModelType = typeof(AlarmViewModel),
                         RequiredRole = EPermission.Operator,

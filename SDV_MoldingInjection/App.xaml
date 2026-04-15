@@ -188,6 +188,9 @@
             <DataTemplate DataType="{x:Type vm:DevViewModel}">
                 <views:DevView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:CurrentAlarmViewModel}">
+                <views:CurrentAlarmView />
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:LogViewModel}">
                 <views:LogView />
             </DataTemplate>

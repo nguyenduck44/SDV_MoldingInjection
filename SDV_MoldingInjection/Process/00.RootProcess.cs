@@ -11,11 +11,13 @@ using EQX.UI.Language;
 using EQX.UI.MVVM;
 using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Defines;
+using SDV_MoldingInjection.Defines.ErrorLog;
 using SDV_MoldingInjection.MVVM.ViewModels;
 using SDV_MoldingInjection.MVVM.Views;
 using SDV_MoldingInjection.Recipe;
 using System.Windows;
 using TOPENG_Device;
+using EQX.Core.Helpers;
 
 namespace SDV_MoldingInjection.Process
 {
@@ -85,10 +87,7 @@ namespace SDV_MoldingInjection.Process
         public override bool PreProcess()
         {
             // 1. CHECK ALARM STATUS (Utils, Motion, Safety...)
-            if (ProcessMode != EProcessMode.ToAlarm && ProcessMode != EProcessMode.Alarm)
-            {
-                CheckRealTimeAlarmStatus();
-            }
+            CheckRealTimeAlarmStatus();
 
             //2.CHECK USER OPERATION COMMAND(Origin / Ready / Start / Stop / Semiauto...)
             //if (_machineStatus.OPCommand == EOperationCommand.None) return base.PreProcess();
@@ -562,24 +561,21 @@ namespace SDV_MoldingInjection.Process
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
-                Log.Error("Emergency Stop Activated. MC OFF");
+                //Log.Error("Emergency Stop Activated. MC OFF");
                 RaiseAlarm((int)EAlarm.EM_MAIN_CP_EMS_SERVO_OFF);
-                return;
             }
             if (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run ||
                 ProcessMode == EProcessMode.ToOrigin || ProcessMode == EProcessMode.Origin)
             {
                 if (_devices.Inputs.DoorClose == false)
                 {
-                    Log.Error("Door Open");
+                    //Log.Error("Door Open");
                     RaiseAlarm(EAlarm.DO_MAIN_DOOR_OPEN);
-                    return;
                 }
                 if ((ProcessMode == EProcessMode.Run || ProcessMode == EProcessMode.Origin) && _devices.Inputs.DoorLock == false)
                 {
-                    Log.Error("Door Not Safety Lock");
+                    //Log.Error("Door Not Safety Lock");
                     RaiseAlarm(EAlarm.DO_MAIN_DOOR_INTERLOCK_ON);
-                    return;
                 }
             }
 
@@ -587,9 +583,8 @@ namespace SDV_MoldingInjection.Process
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
-                Log.Error("Panel Smoke Detected");
+                //Log.Error("Panel Smoke Detected");
                 RaiseAlarm((int)EAlarm.UT_MAIN_SMOKE_DETECT);
-                return;
             }
 
             if (_devices.Inputs.TempHighWarning.Value == true &&
@@ -598,27 +593,24 @@ namespace SDV_MoldingInjection.Process
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
-                Log.Error("OverTemperature Detected (>=35)");
+                //Log.Error("OverTemperature Detected (>=35)");
                 RaiseWarning((int)EWarning.TE_MAIN_SENSOR_TEMP_OVER);
-                return;
             }
 
             if (_devices.Inputs.TempHighAlarm.Value == true)
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
-                Log.Error("OverTemperature Detected (>=40)");
+                //Log.Error("OverTemperature Detected (>=40)");
                 RaiseAlarm((int)EAlarm.TE_MAIN_SENSOR_TEMP_OVER);
-                return;
             }
 #if !SIMULATION
             if (_devices.Inputs.MainCDACheck.Value == false)
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
-                Log.Error("Main Air Not Supplied");
+                //Log.Error("Main Air Not Supplied");
                 RaiseAlarm((int)EAlarm.VC_MAIN_AIR_NOT_SUPPLIED);
-                return;
             }
 #endif
             if (_devices.Motions.All.Count(motion => motion.Status.IsMotionOn != true) > 0 &&
@@ -628,7 +620,7 @@ namespace SDV_MoldingInjection.Process
 
                 _devices.Motions.All.Where(m => m.Status.IsMotionOn == false).ToList().ForEach(motion =>
                 {
-                    Log.Error($"{motion.Name} Motion Off");
+                    //Log.Error($"{motion.Name} Motion Off");
                 });
                 RaiseAlarm((int)EAlarm.MO_MAIN_SERVO_PWR_OFF);
             }
@@ -637,11 +629,11 @@ namespace SDV_MoldingInjection.Process
             {
                 _devices.Motions.All.Where(m => m.Status.HwNegLimitDetect == true).ToList().ForEach(motion =>
                 {
-                    Log.Error($"{motion.Name} Limit (-) Detect");
+                    //Log.Error($"{motion.Name} Limit (-) Detect");
                 });
                 _devices.Motions.All.Where(m => m.Status.HwPosLimitDetect == true).ToList().ForEach(motion =>
                 {
-                    Log.Error($"{motion.Name} Limit (+) Detect");
+                    //Log.Error($"{motion.Name} Limit (+) Detect");
                 });
 
                 RaiseAlarm((int)EAlarm.MO_MAIN_AXIS_LIMIT_DETECT);
@@ -652,7 +644,7 @@ namespace SDV_MoldingInjection.Process
 
                 _devices.Motions.All.Where(m => m.Status.IsAlarm == true).ToList().ForEach(motion =>
                 {
-                    Log.Error($"{motion.Name} Motion Alarm");
+                    //Log.Error($"{motion.Name} Motion Alarm");
                 });
                 RaiseAlarm((int)EAlarm.MO_MAIN_SERVO_ALARM_DETECT);
             }
@@ -810,6 +802,7 @@ namespace SDV_MoldingInjection.Process
         {
             lock (_lockAlarm)
             {
+                UpdateCurrentAlarm(alarmId, true);
                 if (this.IsInAlarmMode()) return;
 
                 // TODO: CIM
@@ -835,6 +828,7 @@ namespace SDV_MoldingInjection.Process
         {
             lock (_lockAlarm)
             {
+                UpdateCurrentAlarm(warningId, false);
                 if (this.IsInWarningMode() || this.IsInAlarmMode()) return;
 
                 // TODO: CIM
@@ -855,6 +849,22 @@ namespace SDV_MoldingInjection.Process
                 ProcessMode = EProcessMode.ToWarning;
             }
         }
+        private void UpdateCurrentAlarm(int id, bool isAlarm)
+        {
+            ErrorLogEntry errorLogEntry = new ErrorLogEntry();
+            errorLogEntry.ErrorCode = id;
+            errorLogEntry.Message = isAlarm ? ((EAlarm)id).ToString() : ((EWarning)id).ToString();
+            errorLogEntry.IOName = isAlarm ? ((EAlarm)id).GetDescription() : ((EWarning)id).GetDescription();
+            errorLogEntry.Type = isAlarm ? "ALARM" : "WARNING";
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                if (_machineStatus.CurrentAlarms.Any(e => e.ErrorCode == errorLogEntry.ErrorCode) == false)
+                {
+                    _machineStatus.CurrentAlarms.Add(errorLogEntry);
+                }
+            });
+        }
 
         private bool IsAutoRunWaitingNoPanel()
         {
@@ -863,6 +873,6 @@ namespace SDV_MoldingInjection.Process
 
         private Queue<IGrouping<uint, PositionPoint>> MoveMultiPointQueueSteps = new Queue<IGrouping<uint, PositionPoint>>();
         private List<PositionPoint> currentPoints = new List<PositionPoint>();
-#endregion
+        #endregion
     }
 }
