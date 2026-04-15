@@ -140,7 +140,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 var match = regex.Match(line);
 
-                if (Int32.TryParse(match.Groups["errorcode"].Value.Trim(), out int errCode) == false)
+                if (int.TryParse(match.Groups["errorcode"].Value.Trim(), out int errCode) == false)
                 {
                     continue;
                 }

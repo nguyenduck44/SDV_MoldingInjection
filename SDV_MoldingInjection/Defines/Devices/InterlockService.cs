@@ -52,6 +52,7 @@ namespace SDV_MoldingInjection.Defines
             if (disable) _devices.Outputs.VacChamberOpen.OutputEnableInterlocks = new Dictionary<string, Func<bool>>();
             _devices.Outputs.VacChamberOpen.OutputEnableInterlocks = new Dictionary<string, Func<bool>>
             {
+                { "Door is not CLOSE", () => DoorCloseOrTeachJogAuthorized()},
                 { "YAxis not in Ready Pos", () => _devices.Motions.StageYAxis.Status.ActualPosition <= _currentRecipe.InjectRecipe.YAxisReadyPos + 5},
             };
         }

@@ -30,51 +30,106 @@
             <ColumnDefinition />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <DataGrid Margin="5"
-                  FontSize="13"
-                  ItemsSource="{Binding MachineStatus.CurrentAlarms}"
-                  AutoGenerateColumns="False"
-                  CanUserResizeColumns="True"
-                  CanUserSortColumns="True"
-                  SelectionUnit="CellOrRowHeader"
-                  SelectionMode="Extended"
-                  ClipboardCopyMode="ExcludeHeader"
-                  CanUserAddRows="False">
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsHightlight}"
-                                     Value="True">
-                            <Setter Property="Background"
-                                    Value="Yellow" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.RowStyle>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <GroupBox Header="Light Alarm"
+                  Margin="5">
+            <DataGrid Margin="5"
+                      FontSize="13"
+                      ItemsSource="{Binding MachineStatus.CurrentAlarms}"
+                      AutoGenerateColumns="False"
+                      CanUserResizeColumns="True"
+                      CanUserSortColumns="True"
+                      SelectionUnit="CellOrRowHeader"
+                      SelectionMode="Extended"
+                      ClipboardCopyMode="ExcludeHeader"
+                      CanUserAddRows="False">
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsHightlight}"
+                                         Value="True">
+                                <Setter Property="Background"
+                                        Value="Yellow" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
 
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Type"
-                                    Binding="{Binding Type}"
-                                    Width="80"
-                                    ElementStyle="{StaticResource CenterText}" />
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Type"
+                                        Binding="{Binding Type}"
+                                        Width="80"
+                                        ElementStyle="{StaticResource CenterText}" />
 
-                <DataGridTextColumn Header="I/O"
-                                    Binding="{Binding IOName}"
-                                    Width="100"
-                                    ElementStyle="{StaticResource WrapText}" />
+                    <DataGridTextColumn Header="I/O"
+                                        Binding="{Binding IOName}"
+                                        Width="100"
+                                        ElementStyle="{StaticResource WrapText}" />
 
-                <DataGridTextColumn Header="ErrorCode"
-                                    Binding="{Binding ErrorCode}"
-                                    Width="100"
-                                    ElementStyle="{StaticResource CenterText}" />
+                    <DataGridTextColumn Header="ErrorCode"
+                                        Binding="{Binding ErrorCode}"
+                                        Width="100"
+                                        ElementStyle="{StaticResource CenterText}" />
 
-                <DataGridTextColumn Header="Message"
-                                    Binding="{Binding Message}"
-                                    Width="*"
-                                    ElementStyle="{StaticResource WrapText}" />
-            </DataGrid.Columns>
-        </DataGrid>
+                    <DataGridTextColumn Header="Message"
+                                        Binding="{Binding Message}"
+                                        Width="*"
+                                        ElementStyle="{StaticResource WrapText}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+        <GroupBox Header="Heavy Alarm"
+                  Margin="5"
+                  Grid.Row="1">
+            <DataGrid Margin="5"
+                      FontSize="13"
+                      AutoGenerateColumns="False"
+                      CanUserResizeColumns="True"
+                      CanUserSortColumns="True"
+                      SelectionUnit="CellOrRowHeader"
+                      SelectionMode="Extended"
+                      ClipboardCopyMode="ExcludeHeader"
+                      CanUserAddRows="False">
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsHightlight}"
+                                         Value="True">
+                                <Setter Property="Background"
+                                        Value="Yellow" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Type"
+                                        Binding="{Binding Type}"
+                                        Width="80"
+                                        ElementStyle="{StaticResource CenterText}" />
+
+                    <DataGridTextColumn Header="I/O"
+                                        Binding="{Binding IOName}"
+                                        Width="100"
+                                        ElementStyle="{StaticResource WrapText}" />
+
+                    <DataGridTextColumn Header="ErrorCode"
+                                        Binding="{Binding ErrorCode}"
+                                        Width="100"
+                                        ElementStyle="{StaticResource CenterText}" />
+
+                    <DataGridTextColumn Header="Message"
+                                        Binding="{Binding Message}"
+                                        Width="*"
+                                        ElementStyle="{StaticResource WrapText}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
         <StackPanel Grid.Column="1"
+                    Grid.RowSpan="2"
                     Margin="5">
             <Button Content="Alarm Reset"
                     FontSize="16"

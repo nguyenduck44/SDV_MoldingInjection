@@ -1,16 +1,11 @@
-﻿﻿using EQX.Core.LogHistory;
+﻿using EQX.Core.LogHistory;
 using SDV_MoldingInjection.MVVM.ViewModels;
 using SDV_MoldingInjection.Process;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 
 public class LogLevelItem
 {
@@ -228,7 +223,7 @@ namespace SDV_MoldingInjection.MVVM.Views
                     FilterSourceComboBox.SelectedItem = sourceItems.FirstOrDefault(s => s.IsSelected);
                     break;
             }
-            
+
             // Gắn lại sự kiện
             FilterSourceComboBox.SelectionChanged += FilterSourceComboBox_SelectionChanged;
         }

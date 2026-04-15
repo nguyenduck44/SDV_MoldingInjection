@@ -2,7 +2,6 @@ using EQX.Core.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SDV_MoldingInjection.MVVM.ViewModels;
-using System.Windows.Markup;
 
 namespace SDV_MoldingInjection.Extensions
 {
@@ -12,7 +11,8 @@ namespace SDV_MoldingInjection.Extensions
         {
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
-                services.AddSingleton<NavigationButton>((s) => {
+                services.AddSingleton<NavigationButton>((s) =>
+                {
                     return new NavigationButton()
                     {
                         Label = "Auto",
@@ -23,7 +23,8 @@ namespace SDV_MoldingInjection.Extensions
                         DisabledImageKey = "image_auto_normal_dark"
                     };
                 });
-                services.AddSingleton<NavigationButton>((s) => {
+                services.AddSingleton<NavigationButton>((s) =>
+                {
                     return new NavigationButton()
                     {
                         Label = "Manual",
@@ -34,7 +35,8 @@ namespace SDV_MoldingInjection.Extensions
                         DisabledImageKey = "image_manual_normal_dark"
                     };
                 });
-                services.AddSingleton<NavigationButton>((s) => {
+                services.AddSingleton<NavigationButton>((s) =>
+                {
                     return new NavigationButton()
                     {
                         Label = "Teach",
@@ -45,7 +47,8 @@ namespace SDV_MoldingInjection.Extensions
                         DisabledImageKey = "image_setting_normal_light"
                     };
                 });
-                services.AddSingleton<NavigationButton>((s) => {
+                services.AddSingleton<NavigationButton>((s) =>
+                {
                     return new NavigationButton()
                     {
                         Label = "Data",
@@ -56,7 +59,8 @@ namespace SDV_MoldingInjection.Extensions
                         DisabledImageKey = "image_data_normal"
                     };
                 });
-                services.AddSingleton<NavigationButton>((s) => {
+                services.AddSingleton<NavigationButton>((s) =>
+                {
                     return new NavigationButton()
                     {
                         Label = "Monitor",
@@ -67,7 +71,8 @@ namespace SDV_MoldingInjection.Extensions
                         DisabledImageKey = "image_equipstatus_normal_light"
                     };
                 });
-                services.AddSingleton<NavigationButton>((s) => {
+                services.AddSingleton<NavigationButton>((s) =>
+                {
                     return new NavigationButton()
                     {
                         Label = "Dev",
@@ -79,7 +84,8 @@ namespace SDV_MoldingInjection.Extensions
                     };
                 });
 
-                services.AddSingleton<NavigationButton>((s) => {
+                services.AddSingleton<NavigationButton>((s) =>
+                {
                     return new NavigationButton()
                     {
                         Label = s.GetRequiredService<IUserStore>().Permission.ToString(),
@@ -91,7 +97,8 @@ namespace SDV_MoldingInjection.Extensions
                         UseCurrentPermissionAsLabel = true
                     };
                 });
-                services.AddSingleton<NavigationButton>((s) => {
+                services.AddSingleton<NavigationButton>((s) =>
+                {
                     return new NavigationButton()
                     {
                         Label = "Alarm",
