@@ -1,7 +1,8 @@
-﻿using EQX.Core.Common;
+using EQX.Core.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SDV_MoldingInjection.MVVM.ViewModels;
+using System.Windows.Markup;
 
 namespace SDV_MoldingInjection.Extensions
 {
@@ -81,12 +82,13 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddSingleton<NavigationButton>((s) => {
                     return new NavigationButton()
                     {
-                        Label = "User",
+                        Label = s.GetRequiredService<IUserStore>().Permission.ToString(),
                         GroupName = "Right",
                         ViewModelType = typeof(LoginViewModel),
                         RequiredRole = EPermission.Operator,
                         ImageKey = "image_user_change_selected",
-                        DisabledImageKey = "image_user_change_normal_dark"
+                        DisabledImageKey = "image_user_change_normal_dark",
+                        UseCurrentPermissionAsLabel = true
                     };
                 });
                 services.AddSingleton<NavigationButton>((s) => {
