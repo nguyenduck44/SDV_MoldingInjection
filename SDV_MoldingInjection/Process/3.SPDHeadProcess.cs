@@ -1806,11 +1806,11 @@ namespace SDV_MoldingInjection.Process
         #region Private Methods
         private void RaiseHeadWarning(EWarning warning)
         {
-            RaiseWarning(warning + 500 * ((int)head - 1));
+            RaiseWarning(warning + ((int)(EWarning.MO_SPD_H02_P2_AXIS_HOME_TIMEOUT - EWarning.MO_SPD_H01_P1_AXIS_HOME_TIMEOUT)) * ((int)head - 1));
         }
-        private void RaiseHeadAlarm(EAlarm warning)
+        private void RaiseHeadAlarm(EAlarm alarm)
         {
-            RaiseAlarm(warning + 500 * ((int)head - 1));
+            RaiseWarning(alarm + ((int)(EAlarm.MO_SPD_H02_G2_AXIS_OPEN_POS_TIMEOUT - EAlarm.MO_SPD_H01_G1_AXIS_OPEN_POS_TIMEOUT)) * ((int)head - 1));
         }
         #endregion
 

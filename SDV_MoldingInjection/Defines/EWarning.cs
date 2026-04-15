@@ -11,8 +11,8 @@ namespace SDV_MoldingInjection.Defines
     /// </summary>
     public enum EWarning
     {
-        //--------- 20 -> 499 : Global ---------
-        ET_ROOT = 20,
+        //--------- 1000 -> 1199 : Global ---------
+        ET_ROOT = 1000,
         [Description("IN16,IN18,IN69,IN71")]
         DO_MAIN_DOOR_OPEN,
         [Description("IN17,IN19,IN70,IN72")]
@@ -25,14 +25,14 @@ namespace SDV_MoldingInjection.Defines
         [Description("IN04")]
         OP_MAIN_MACHINE_NOT_IN_AUTO_MODE,
 
-        //--------- 500 -> 999 : Mold ---------
-        CY_MOLD_CHAMBER_OPEN_WARNING = 500,
+        //--------- 1200 -> 1999 : Mold ---------
+        CY_MOLD_CHAMBER_OPEN_WARNING = 1200,
         CY_MOLD_CHAMBER_OPEN_FAIL,
         CY_MOLD_CHAMBER_CLOSE_WARNING,
         CY_MOLD_CHAMBER_CLOSE_FAIL,
         ET_MOLD_HEAD_USE_ERROR,
 
-        MO_X_AXIS_HOME_TIMEOUT = 550,
+        MO_X_AXIS_HOME_TIMEOUT = 1300,
         MO_X_AXIS_READY_POS_TIMEOUT,
         MO_X_AXIS_INJECT_POS_TIMEOUT,
         MO_X_AXIS_DUMMY_POS_TIMEOUT,
@@ -40,7 +40,7 @@ namespace SDV_MoldingInjection.Defines
         MO_X_AXIS_H24_DOT_WEIGHT_POS_TIMEOUT,
         MO_X_AXIS_NEEDLE_CLEAN_TIMEOUT,
 
-        MO_Y_AXIS_HOME_TIMEOUT = 600,
+        MO_Y_AXIS_HOME_TIMEOUT = 1400,
         MO_Y_AXIS_READY_POS_TIMEOUT,
         MO_Y_AXIS_INJECT_POS_TIMEOUT,
         MO_Y_AXIS_DUMMY_POS_TIMEOUT,
@@ -48,7 +48,7 @@ namespace SDV_MoldingInjection.Defines
         MO_Y_AXIS_H24_DOT_WEIGHT_POS_TIMEOUT,
         MO_Y_AXIS_NEEDLE_CLEAN_TIMEOUT,
 
-        MO_Z1_AXIS_HOME_TIMEOUT = 650,
+        MO_Z1_AXIS_HOME_TIMEOUT = 1500,
         MO_Z1_AXIS_SAFE_POS_TIMEOUT,
         MO_SPD_H01_Z1_AXIS_INJECT_POS_TIMEOUT,
         MO_SPD_H01_Z1_AXIS_DUMMY_POS_TIMEOUT,
@@ -58,7 +58,7 @@ namespace SDV_MoldingInjection.Defines
         MO_SPD_H01_Z1_AXIS_ASSEMBLE_POS_TIMEOUT,
         MO_SPD_H01_Z1_AXIS_ADDTAIL_UP_TIMEOUT,
 
-        MO_Z2_AXIS_HOME_TIMEOUT = 700,
+        MO_Z2_AXIS_HOME_TIMEOUT = 1600,
         MO_Z2_AXIS_SAFE_POS_TIMEOUT,
         MO_SPD_H02_Z2_AXIS_INJECT_POS_TIMEOUT,
         MO_SPD_H02_Z2_AXIS_DUMMY_POS_TIMEOUT,
@@ -68,7 +68,7 @@ namespace SDV_MoldingInjection.Defines
         MO_SPD_H02_Z2_AXIS_ASSEMBLE_POS_TIMEOUT,
         MO_SPD_H02_Z2_AXIS_ADDTAIL_UP_TIMEOUT,
 
-        MO_Z3_AXIS_HOME_TIMEOUT = 750,
+        MO_Z3_AXIS_HOME_TIMEOUT = 1700,
         MO_Z3_AXIS_SAFE_POS_TIMEOUT,
         MO_SPD_H03_Z3_AXIS_INJECT_POS_TIMEOUT,
         MO_SPD_H03_Z3_AXIS_DUMMY_POS_TIMEOUT,
@@ -78,7 +78,7 @@ namespace SDV_MoldingInjection.Defines
         MO_SPD_H03_Z3_AXIS_ASSEMBLE_POS_TIMEOUT,
         MO_SPD_H03_Z3_AXIS_ADDTAIL_UP_TIMEOUT,
 
-        MO_Z4_AXIS_HOME_TIMEOUT = 800,
+        MO_Z4_AXIS_HOME_TIMEOUT = 1800,
         MO_Z4_AXIS_SAFE_POS_TIMEOUT,
         MO_SPD_H04_Z4_AXIS_INJECT_POS_TIMEOUT,
         MO_SPD_H04_Z4_AXIS_DUMMY_POS_TIMEOUT,
@@ -88,19 +88,18 @@ namespace SDV_MoldingInjection.Defines
         MO_SPD_H04_Z4_AXIS_ASSEMBLE_POS_TIMEOUT,
         MO_SPD_H04_Z4_AXIS_ADDTAIL_UP_TIMEOUT,
 
-        CY_BELLOW_DOWN_FAIL = 900,
+        CY_BELLOW_DOWN_FAIL = 1900,
         CY_BELLOW_UP_FAIL,
         VC_CHAMBER_VAC_DETECT_WARNING,
         SE_CHAMBER_LEFT_JIG_TILT_DETECT,
         SE_CHAMBER_RIGHT_JIG_TILT_DETECT,
         EF_CHAMBER_LEFT_JIG_INJECT_NOT_FINISHED,
         EF_CHAMBER_RIGHT_JIG_INJECT_NOT_FINISHED,
-
         CY_NOZZLE_CLEAN_GRIP_FAIL,
         CY_NOZZLE_CLEAN_UNGRIP_FAIL,
 
-        //--------- 1000 -> 1499 : Dry ---------
-        CY_ANGLE_VALUE_CLOSE_FAIL = 1000,
+        //--------- 2000 -> 2199 : Dry ---------
+        CY_ANGLE_VALUE_CLOSE_FAIL = 2000,
         CY_ANGLE_VALUE_OPEN_FAIL,
         MO_DRYPUMP_RUN_TIMEOUT,
         VA_MACHINE_NEED_CALIBRATION,
@@ -110,8 +109,8 @@ namespace SDV_MoldingInjection.Defines
         SE_RIGHT_JIG_TILT_STATE,
         SE_RIGHT_JIG_NOT_DETECT,
 
-        //--------- 1500 -> 1999 : Head 1 ---------
-        MO_SPD_H01_P1_AXIS_HOME_TIMEOUT = 1500,
+        //--------- 2200 -> 2399 : Head 1 ---------
+        MO_SPD_H01_P1_AXIS_HOME_TIMEOUT = 2200,
         MO_SPD_H01_G1_AXIS_HOME_TIMEOUT,
         [Description("HEAD1_IN00")]
         CY_SPD_H01_PISTON_UP_FAIL,
@@ -134,8 +133,8 @@ namespace SDV_MoldingInjection.Defines
         [Description("HEAD1_IN06")]
         SE_SPD_H01_SYRING_AIR_NOT_DETECT,
 
-        //--------- 2000 -> 2499 : Head 2 ---------
-        MO_SPD_H02_P2_AXIS_HOME_TIMEOUT = 2000,
+        //--------- 2400 -> 2599 : Head 2 ---------
+        MO_SPD_H02_P2_AXIS_HOME_TIMEOUT = 2400,
         MO_SPD_H02_G2_AXIS_HOME_TIMEOUT,
         [Description("HEAD2_IN00")]
         CY_SPD_H02_PISTON_UP_FAIL,
@@ -158,8 +157,8 @@ namespace SDV_MoldingInjection.Defines
         [Description("HEAD2_IN06")]
         SE_SPD_H02_SYRING_AIR_NOT_DETECT,
 
-        //--------- 2500 -> 2999 : Head 3 ---------
-        MO_SPD_H03_P3_AXIS_HOME_TIMEOUT = 2500,
+        //--------- 2600 -> 2799 : Head 3 ---------
+        MO_SPD_H03_P3_AXIS_HOME_TIMEOUT = 2600,
         MO_SPD_H03_G3_AXIS_HOME_TIMEOUT,
         [Description("HEAD3_IN00")]
         CY_SPD_H03_PISTON_UP_FAIL,
@@ -182,8 +181,8 @@ namespace SDV_MoldingInjection.Defines
         [Description("HEAD3_IN06")]
         SE_SPD_H03_SYRING_AIR_NOT_DETECT,
 
-        //--------- 3000 -> 3499 : Head 4 ---------
-        MO_SPD_H03_P4_AXIS_HOME_TIMEOUT = 3000,
+        //--------- 2800 -> 2999 : Head 4 ---------
+        MO_SPD_H04_P4_AXIS_HOME_TIMEOUT = 2800,
         MO_SPD_H04_G4_AXIS_HOME_TIMEOUT,
         [Description("HEAD4_IN00")]
         CY_SPD_H04_PISTON_UP_FAIL,

@@ -12,9 +12,8 @@ namespace SDV_MoldingInjection.Defines
     public enum EAlarm
     {
         ET_NONE = 10,
-
         [Description("IN14")]
-        UT_MAIN_CP_PWR_MAIN_SERVO_OFF = 20,
+        UT_MAIN_CP_PWR_MAIN_SERVO_OFF,
         [Description("IN15")]
         VC_MAIN_AIR_NOT_SUPPLIED,
         [Description("IN16,IN18,IN69,IN71")]
@@ -34,35 +33,38 @@ namespace SDV_MoldingInjection.Defines
         [Description("IN10")]
         TE_MAIN_SENSOR_TEMP_OVER,
 
-        //--------- 500 -> 999 : Mold ---------
+        //--------- 100 -> 399 : Mold ---------
 
 
-        //--------- 1000 -> 1499 : Dry ---------
+        //--------- 400 -> 599 : Dry ---------
 
 
-        //--------- 1500 -> 1999 : Head 1 ---------
-        MO_SPD_H01_G1_AXIS_OPEN_POS_TIMEOUT = 1500,
+        //--------- 600 -> 699 : Head 1 ---------
+        MO_SPD_H01_G1_AXIS_OPEN_POS_TIMEOUT = 600,
         MO_SPD_H01_G1_AXIS_CLOSE_POS_TIMEOUT,
         MO_SPD_H01_P1_AXIS_CHARGE_POS_TIMEOUT,
         MO_SPD_H01_P1_AXIS_INJECT_POS_TIMEOUT,
         MO_SPD_H01_P1_AXIS_ASSEMBLE_POS_TIMEOUT,
         MO_SPD_H01_P1_AXIS_BASE_POS_TIMEOUT,
 
-        MO_SPD_H02_G2_AXIS_OPEN_POS_TIMEOUT = 2000,
+        //--------- 700 -> 799 : Head 1 ---------
+        MO_SPD_H02_G2_AXIS_OPEN_POS_TIMEOUT = 700,
         MO_SPD_H02_G2_AXIS_CLOSE_POS_TIMEOUT,
         MO_SPD_H02_P2_AXIS_CHARGE_POS_TIMEOUT,
         MO_SPD_H02_P2_AXIS_INJECT_POS_TIMEOUT,
         MO_SPD_H02_P2_AXIS_ASSEMBLE_POS_TIMEOUT,
         MO_SPD_H02_P2_AXIS_BASE_POS_TIMEOUT,
 
-        MO_SPD_H03_G3_AXIS_OPEN_POS_TIMEOUT = 2500,
+        //--------- 800 -> 899 : Head 1 ---------
+        MO_SPD_H03_G3_AXIS_OPEN_POS_TIMEOUT = 800,
         MO_SPD_H03_G3_AXIS_CLOSE_POS_TIMEOUT,
         MO_SPD_H03_P3_AXIS_CHARGE_POS_TIMEOUT,
         MO_SPD_H03_P3_AXIS_INJECT_POS_TIMEOUT,
         MO_SPD_H03_P3_AXIS_ASSEMBLE_POS_TIMEOUT,
         MO_SPD_H03_P3_AXIS_BASE_POS_TIMEOUT,
 
-        MO_SPD_H04_G4_AXIS_OPEN_POS_TIMEOUT = 3000,
+        //--------- 900 -> 999 : Head 1 ---------
+        MO_SPD_H04_G4_AXIS_OPEN_POS_TIMEOUT = 900,
         MO_SPD_H04_G4_AXIS_CLOSE_POS_TIMEOUT,
         MO_SPD_H04_P4_AXIS_CHARGE_POS_TIMEOUT,
         MO_SPD_H04_P4_AXIS_INJECT_POS_TIMEOUT,
