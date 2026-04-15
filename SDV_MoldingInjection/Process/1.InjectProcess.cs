@@ -718,6 +718,7 @@ namespace SDV_MoldingInjection.Process
             {
                 case EMoldProcAutoRunStep.Start:
                     Log.Debug("AutoRun start");
+                    _tactTimeList.Chamber.CycleTimeCounter = Environment.TickCount;
                     Step.RunStep++;
                     break;
                 case EMoldProcAutoRunStep.JigDetect_Check:
@@ -893,8 +894,8 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    if (_currentRecipe.OptionRecipe.SkipVentTime == false && 
-                        procInputs[EInjectProcInput.VentComplete].Value == false && 
+                    if (_currentRecipe.OptionRecipe.SkipVentTime == false &&
+                        procInputs[EInjectProcInput.VentComplete].Value == false &&
                         _machineStatus.IsDryRunMode == false)
                     {
                         Wait(20);
@@ -1100,6 +1101,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.Start:
                     if (isLoading)
                     {
+                        _tactTimeList.Chamber.CycleTimeCounter = Environment.TickCount;
                         Log.Info("Loading start");
                         _machineStatus.ConfirmLoadingFinish = false;
                     }
@@ -1146,8 +1148,9 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    if(isLoading == false)
+                    if (isLoading == false)
                     {
+                        _tactTimeList.Chamber.SetTactTime();
                         _tactTimeList.TactCounterEnd();
                     }
 
@@ -1315,6 +1318,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Chamber_CoverClose:
+                    _tactTimeList.Chamber.TactTimeCounter = Environment.TickCount;
                     _tactTimeList.TactCounterStart();
                     Log.Debug($"Close {ChamberOpenClose} cylinder");
                     ChamberOpenClose.Close();
@@ -1346,6 +1350,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Info("Unloading end");
+                    _tactTimeList.Chamber.SetCycleTime();
                     Sequence = ESequence.Loading;
 
                     break;
@@ -1658,6 +1663,7 @@ namespace SDV_MoldingInjection.Process
                         RaiseHeadWarning(EWarning.MO_Z1_AXIS_SAFE_POS_TIMEOUT, _failHead);
                         break;
                     }
+                    
                     Log.Debug("Z axis up after clean done");
                     Step.RunStep++;
                     break;
@@ -1969,13 +1975,21 @@ namespace SDV_MoldingInjection.Process
         private void ZAxisInjectPosMove()
         {
             if (!_currentRecipe.OptionRecipe.SkipHead12)
+            {
                 Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisInjectPos);
+            }
             if (!_currentRecipe.OptionRecipe.SkipHead12)
+            {
                 Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisInjectPos);
+            }
             if (!_currentRecipe.OptionRecipe.SkipHead34)
+            {
                 Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisInjectPos);
+            }
             if (!_currentRecipe.OptionRecipe.SkipHead34)
+            {
                 Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisInjectPos);
+            }
         }
 
         private bool AllZAxisInInjectPos(ref ESPDHead failHead)
@@ -2430,7 +2444,7 @@ namespace SDV_MoldingInjection.Process
         {
             if (head == ESPDHead.All)
             {
-                return  (procInputs[EInjectProcInput.SPDHead1_WorkDone].Value || _machineStatus.IsSkipHead1) &&
+                return (procInputs[EInjectProcInput.SPDHead1_WorkDone].Value || _machineStatus.IsSkipHead1) &&
                         (procInputs[EInjectProcInput.SPDHead2_WorkDone].Value || _machineStatus.IsSkipHead2) &&
                         (procInputs[EInjectProcInput.SPDHead3_WorkDone].Value || _machineStatus.IsSkipHead3) &&
                         (procInputs[EInjectProcInput.SPDHead4_WorkDone].Value || _machineStatus.IsSkipHead4);

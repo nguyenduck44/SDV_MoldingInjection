@@ -129,7 +129,8 @@ namespace SDV_MoldingInjection.Process
             [FromKeyedServices("BalanceRight")] MettlerToledoWKC204C balanceRight,
             SyringAmountStatusList syringeAmountStatusList,
             MachineStatus machineStatus,
-            CarrierJigStatusList carrierJigStatusList)
+            CarrierJigStatusList carrierJigStatusList,
+            TactTimeList tactTimeList)
         {
             _devices = devices;
             _recipeSelector = recipeSelector;
@@ -139,6 +140,7 @@ namespace SDV_MoldingInjection.Process
             _syringeAmountStatusList = syringeAmountStatusList;
             _machineStatus = machineStatus;
             _carrierJigStatusList = carrierJigStatusList;
+           _tactTimeList = tactTimeList;
         }
 
         #region Process Methods
@@ -873,6 +875,11 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcCommonStep.Start:
                     Log.Debug($"{sequence} start");
                     _bubbleRemoveCount = 1;
+                    if (sequence == ESequence.ResinInject)
+                    {
+                        CurrentTactTimeList.CycleTimeCounter = (int)Environment.TickCount64;
+                        CurrentTactTimeList.TactTimeCounter = (int)Environment.TickCount64;
+                    }
                     if (_machineStatus.IsDryRunMode)
                     {
                         Step.RunStep = (int)ESPDHeadProcCommonStep.WorkRequest_Wait;
@@ -1250,10 +1257,15 @@ namespace SDV_MoldingInjection.Process
                     {
                         Log.Info($"Set next sequence DummyShot");
                         Sequence = ESequence.DummyShot;
+                        break;
                     }
                     else
+                    {
+                        CurrentTactTimeList.SetCycleTime();
+                        CurrentTactTimeList.SetTactTime();
                         Sequence = ESequence.ResinInject;
-                    break;
+                        break;
+                    }
             }
         }
 
@@ -1811,6 +1823,8 @@ namespace SDV_MoldingInjection.Process
         private readonly SyringAmountStatusList _syringeAmountStatusList;
         private readonly MachineStatus _machineStatus;
         private readonly CarrierJigStatusList _carrierJigStatusList;
+        private readonly TactTimeList _tactTimeList;
+
         public double PAxisInjectVelocity => _pAxisInject_Vel;
 
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
@@ -1861,6 +1875,16 @@ namespace SDV_MoldingInjection.Process
             "SPDHead4" => _currentRecipe.CylinderDelayTimeRecipe.PistonCylinderMoveDelay_4,
             _ => throw new Exception($"Invalid process name: {Name}")
         };
+
+        private TactTime CurrentTactTimeList => head switch
+        {
+            ESPDHead.SPDHead1 => _tactTimeList.SPDHead1,
+            ESPDHead.SPDHead2 => _tactTimeList.SPDHead2,
+            ESPDHead.SPDHead3 => _tactTimeList.SPDHead3,
+            ESPDHead.SPDHead4 => _tactTimeList.SPDHead4,
+            _ => throw new Exception($"Invalid head for tact time: {head}")
+        };
+        
 
         private SPDHeadRecipe _currentSPDHeadRecipe => Name switch
         {

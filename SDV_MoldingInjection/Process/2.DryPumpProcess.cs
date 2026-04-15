@@ -315,6 +315,7 @@ namespace SDV_MoldingInjection.Process
             {
                 case EDryPumpProcResinInjectStep.Start:
                     Log.Info("ResinInject start");
+                    _tactTimeList.DryPump.CycleTimeCounter = Environment.TickCount;
                     _delayTime = 0;
                     Step.RunStep++;
                     break;
@@ -384,6 +385,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Info($"Input detect {EDryPumpProcInput.Vacuum_WorkRequest}");
+                    _tactTimeList.DryPump.TactTimeCounter = Environment.TickCount;
                     _plotter.ClearData();
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
@@ -603,6 +605,8 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    _tactTimeList.DryPump.SetCycleTime();
+                    _tactTimeList.DryPump.SetTactTime();
                     Log.Info("ResinInject end, starting new cycle");
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.Start;
                     break;
