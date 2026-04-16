@@ -1,0 +1,75 @@
+<Window x:Class="SDV_MoldingInjection.MVVM.Views.LeakTestResultWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Title="Leak Test — Chamber pressure"
+        xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
+        xmlns:uiControls="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type={x:Type vm:LeakTestResultViewModel}}"
+        Height="580"
+        Width="920"
+        WindowStartupLocation="CenterOwner">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*"
+                           MinHeight="200" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.ColumnSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="16" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0"
+                       Grid.Column="0"
+                       Margin="2"
+                       VerticalAlignment="Center"
+                       Text="{Binding StartToTargetLabelText}" />
+            <TextBlock Grid.Row="1"
+                       Grid.Column="0"
+                       Margin="2"
+                       VerticalAlignment="Center"
+                       Text="{Binding TargetToSpecLabelText}" />
+            <TextBlock Grid.Row="2"
+                       Grid.Column="0"
+                       Margin="2"
+                       VerticalAlignment="Center"
+                       Text="{Binding TotalLabelText}" />
+
+            <TextBlock Grid.Row="0"
+                       Grid.Column="2"
+                       Margin="2"
+                       VerticalAlignment="Center"
+                       Text="{Binding StartToTargetTimeText}" />
+            <TextBlock Grid.Row="1"
+                       Grid.Column="2"
+                       Margin="2"
+                       VerticalAlignment="Center"
+                       Text="{Binding TargetToSpecTimeText}" />
+            <TextBlock Grid.Row="2"
+                       Grid.Column="2"
+                       Margin="2"
+                       VerticalAlignment="Center"
+                       Text="{Binding TotalTimeText}" />
+        </Grid>
+        <ContentControl Grid.Row="1"
+                        Grid.ColumnSpan="2"
+                        Margin="8"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        Content="{Binding ChamberPressurePlot}" />
+    </Grid>
+</Window>

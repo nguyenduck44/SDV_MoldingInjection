@@ -1,16 +1,16 @@
 using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
 using EQX.Core.InOut;
-using EQX.Core.Motion;
 using EQX.Core.Recipe;
 using EQX.InOut;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.TeachingPosition;
 using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;
-using System;
+using SDV_MoldingInjection.MVVM.Views;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Windows;
 using System.Windows.Input;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
@@ -41,6 +41,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     tickCount = Environment.TickCount;
                     enableExternalTimerAction = true;
                     specReached = false;
+                    _leakTestSamples.Clear();
+                    _milestonePressureSpecSec = null;
+                    _milestoneTestEndSec = null;
+                    _leakTestSamples.Add((0, CurrentPressure));
                 });
             }
         }
@@ -52,6 +56,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 return new RelayCommand(() =>
                 {
                     if (!enableExternalTimerAction) return;
+
+                    double tSec = ElapsedSecSinceLeakStart;
+                    _milestoneTestEndSec = tSec;
+                    _leakTestSamples.Add((tSec, CurrentPressure));
 
                     _devices.Cylinders.AngleValve.Close();
                     PressureLog(CurrentPressure, "Valve Close");
@@ -67,6 +75,18 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
+                    if (_leakTestSamples.Count == 0)
+                    {
+                        return;
+                    }
+
+                    var resultVm = _leakTestResultViewModelFactory.Create(
+                        _leakTestSamples,
+                        _milestonePressureSpecSec,
+                        _milestoneTestEndSec,
+                        PressureSpec,
+                        _recipeSelector.CurrentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec);
+                    _leakTestResultDialogService.Show(resultVm);
                 });
             }
         }
@@ -74,15 +94,19 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         #endregion
 
         public DryPumpMaintenanceViewModel(NavigationStore navigationStore,
-            Devices devices, 
+            Devices devices,
             RecipeSelector recipeSelector,
-            MachineStatus machineStatus, 
-            DryPumpMaintenanceTeachingPosition dryPumpMaintenanceTeachingPosition)
+            MachineStatus machineStatus,
+            DryPumpMaintenanceTeachingPosition dryPumpMaintenanceTeachingPosition,
+            ILeakTestResultViewModelFactory leakTestResultViewModelFactory,
+            ILeakTestResultDialogService leakTestResultDialogService)
             : base(navigationStore, machineStatus, recipeSelector, devices)
         {
             _devices = devices;
             _recipeSelector = recipeSelector;
             DryPumpMaintenanceTeachingPosition = dryPumpMaintenanceTeachingPosition;
+            _leakTestResultViewModelFactory = leakTestResultViewModelFactory;
+            _leakTestResultDialogService = leakTestResultDialogService;
             if (GroupedPositions != null && GroupedPositions.Count > 0)
             {
                 SelectedGroupedPosition = GroupedPositions.FirstOrDefault()!;
@@ -145,12 +169,17 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
             if (enableExternalTimerAction == false) return;
 
-            TimeInSecond = 1.0 * (Environment.TickCount - tickCount) / 1000.0;
+            double tSec = ElapsedSecSinceLeakStart;
+            TimeInSecond = tSec;
             OnPropertyChanged(nameof(TimeInSecond));
+
+            if (tSec > 0)
+                _leakTestSamples.Add((tSec, pressure));
 
             if (pressure < PressureSpec && specReached == false)
             {
                 specReached = true;
+                _milestonePressureSpecSec = tSec;
                 _devices.Cylinders.AngleValve.Close();
                 PressureLog(pressure, "Valve Close");
                 return;
@@ -158,6 +187,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
             if (pressure > _recipeSelector.CurrentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec && specReached)
             {
+                _milestoneTestEndSec = tSec;
                 enableExternalTimerAction = false;
                 PressureLog(pressure, "Reach 1.0 Torr");
                 return;
@@ -187,10 +217,19 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private string logFileName = "";
         private readonly Devices _devices;
         private readonly RecipeSelector _recipeSelector;
+        private readonly ILeakTestResultViewModelFactory _leakTestResultViewModelFactory;
+        private readonly ILeakTestResultDialogService _leakTestResultDialogService;
 
         private int tickCount;
         private bool enableExternalTimerAction;
         private bool specReached;
+
+        private readonly List<(double TimeSec, double PressureTorr)> _leakTestSamples = new();
+
+        private double? _milestonePressureSpecSec;
+        private double? _milestoneTestEndSec;
+
+        private double ElapsedSecSinceLeakStart => 1.0 * (Environment.TickCount - tickCount) / 1000.0;
         #endregion
     }
 }

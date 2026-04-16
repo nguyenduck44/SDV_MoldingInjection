@@ -66,6 +66,8 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddViewModel<OPCallMessageViewModel>();
                 services.AddViewModel<InterlockMessageViewModel>();
                 services.AddViewModel<TerminalMessageViewModel>();
+                services.AddSingleton<ILeakTestResultViewModelFactory, LeakTestResultViewModelFactory>();
+                services.AddSingleton<ILeakTestResultDialogService, LeakTestResultDialogService>();
                 services.AddSingleton<MotionsStatusViewModel>((s) =>
                 {
                     return new MotionsStatusViewModel()
