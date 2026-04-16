@@ -1,9 +1,10 @@
-﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
 using EQX.Core.Recipe;
 using EQX.UI.Controls;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Recipe;
+using System;
 using System.ComponentModel;
 using System.Windows.Input;
 
@@ -21,7 +22,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     if (MessageBoxEx.ShowDialog($"Do you want to Save Position Teaching") == false) return;
 
                     _recipeSelector.Save();
-                    CaptureTeachingSnapshot();
+                    RequestTeachingSnapshotSync();
                 });
             }
         }
@@ -33,7 +34,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 return new RelayCommand(() =>
                 {
                     _recipeSelector.Load();
-                    CaptureTeachingSnapshot();
+                    RequestTeachingSnapshotSync();
                 });
             }
         }
@@ -48,6 +49,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         {
             _recipeSelector = recipeSelector;
             _devices = devices;
+            TeachingSnapshotSyncRequested += HandleTeachingSnapshotSyncRequested;
         }
         #endregion
 
@@ -83,7 +85,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 _recipeSelector.Load();
             }
 
-            CaptureTeachingSnapshot();
+            RequestTeachingSnapshotSync();
             return true;
         }
 
@@ -182,6 +184,16 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 return;
             }
 
+            lock (_globalTeachingPromptLock)
+            {
+                if (_isGlobalTeachingPromptActive || DateTime.UtcNow < _globalPromptSuppressUntilUtc)
+                {
+                    return;
+                }
+
+                _isGlobalTeachingPromptActive = true;
+            }
+
             _isHandlingTeachingChange = true;
             try
             {
@@ -189,15 +201,21 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 if (shouldSave)
                 {
                     _recipeSelector.Save();
-                    CaptureTeachingSnapshot();
                 }
                 else
                 {
                     RestoreTeachingSnapshot();
                 }
+
+                RequestTeachingSnapshotSync();
             }
             finally
             {
+                lock (_globalTeachingPromptLock)
+                {
+                    _globalPromptSuppressUntilUtc = DateTime.UtcNow.AddMilliseconds(300);
+                    _isGlobalTeachingPromptActive = false;
+                }
                 _isHandlingTeachingChange = false;
             }
         }
@@ -219,6 +237,16 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
         }
 
+        private void HandleTeachingSnapshotSyncRequested()
+        {
+            CaptureTeachingSnapshot();
+        }
+
+        private static void RequestTeachingSnapshotSync()
+        {
+            TeachingSnapshotSyncRequested?.Invoke();
+        }
+
         #region Privates
         protected readonly RecipeSelector _recipeSelector;
         protected readonly Devices _devices;
@@ -226,6 +254,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly HashSet<PositionPoint> _hookedTeachingPoints = new();
         private bool _isRestoringTeachingSnapshot;
         private bool _isHandlingTeachingChange;
+        private static readonly object _globalTeachingPromptLock = new();
+        private static bool _isGlobalTeachingPromptActive;
+        private static DateTime _globalPromptSuppressUntilUtc = DateTime.MinValue;
+        private static event Action? TeachingSnapshotSyncRequested;
         #endregion
     }
 }
