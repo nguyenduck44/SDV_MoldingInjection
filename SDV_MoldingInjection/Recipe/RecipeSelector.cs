@@ -349,6 +349,27 @@ namespace SDV_MoldingInjection.Recipe
             {
                 RecipeSetting.CurrentRecipe = tempRecipe;
                 File.WriteAllText((Path.Combine(recipeFolder, "RecipeSetting.json")), JsonConvert.SerializeObject(RecipeSetting));
+                Load();
+                return;
+            }
+        }
+        #endregion
+
+        #region Private Methods
+        private void CopyDirectory(string sourceDir, string destinationDir)
+        {
+            Directory.CreateDirectory(destinationDir);
+
+            foreach (var file in Directory.GetFiles(sourceDir))
+            {
+                string destFile = Path.Combine(destinationDir, Path.GetFileName(file));
+                File.Copy(file, destFile, true);
+            }
+
+            foreach (var folder in Directory.GetDirectories(sourceDir))
+            {
+                string destFolder = Path.Combine(destinationDir, Path.GetFileName(folder));
+                CopyDirectory(folder, destFolder);
             }
         }
         #endregion
