@@ -166,9 +166,9 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EDryPumpProcToRunStep.ChamberTorrCheck:
                     Log.Debug($"Chamber torr check: {_devices.AnalogInputs.VacuumPressureInTorr}");
-                    if(_devices.AnalogInputs.VacuumPressureInTorr > 749)
+                    if(In_ChamberPurgeOn.Value == false)
                     {
-                        Log.Debug("Chamber pressure over 740 torr, skip purge");
+                        Log.Debug("No pressure in the chamber, skip purge");
                         Step.ToRunStep = (int)EDryPumpProcToRunStep.ChamperPurge_Off;
                         break;
                     }
@@ -181,7 +181,7 @@ namespace SDV_MoldingInjection.Process
                     Step.ToRunStep++;
                     break;
                 case EDryPumpProcToRunStep.ChamperPurge_Off:
-                    if (_devices.AnalogInputs.VacuumPressureInTorr < 749)
+                    if (In_ChamberPurgeOn.Value)
                     {
                         Wait(20);
                         break;
