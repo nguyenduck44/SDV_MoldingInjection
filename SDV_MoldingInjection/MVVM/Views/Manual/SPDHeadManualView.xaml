@@ -103,6 +103,7 @@
                         Grid.Column="2"
                         Header="Inputs"
                         Style="{StaticResource TextBlockHeaderGroupBox}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <ItemsControl ItemsSource="{Binding Inputs}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
@@ -110,6 +111,7 @@
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                             </ItemsControl>
+                        </ScrollViewer>
                     </GroupBox>
 
                     <!--OUTPUTS VIEW-->

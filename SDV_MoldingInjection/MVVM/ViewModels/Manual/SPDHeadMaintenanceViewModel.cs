@@ -167,6 +167,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 Inputs = new ObservableCollection<IDInput>
                 {
+                    _devices.Inputs.H1_CylUp,
+                    _devices.Inputs.H1_CylDown,
                     _devices.Inputs.H1_GateOpen,
                     _devices.Inputs.H1_GateClose,
                     _devices.Inputs.H1_AssembleCheck,
@@ -184,6 +186,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 Inputs = new ObservableCollection<IDInput>
                 {
+                    _devices.Inputs.H2_CylUp,
+                    _devices.Inputs.H2_CylDown,
                     _devices.Inputs.H2_GateOpen,
                     _devices.Inputs.H2_GateClose,
                     _devices.Inputs.H2_AssembleCheck,
@@ -202,6 +206,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 Inputs = new ObservableCollection<IDInput>
                 {
+                    _devices.Inputs.H3_CylUp,
+                    _devices.Inputs.H3_CylDown,
                     _devices.Inputs.H3_GateOpen,
                     _devices.Inputs.H3_GateClose,
                     _devices.Inputs.H3_AssembleCheck,
@@ -220,6 +226,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 Inputs = new ObservableCollection<IDInput>
                 {
+                    _devices.Inputs.H4_CylUp,
+                    _devices.Inputs.H4_CylDown,
                     _devices.Inputs.H4_GateOpen,
                     _devices.Inputs.H4_GateClose,
                     _devices.Inputs.H4_AssembleCheck,
