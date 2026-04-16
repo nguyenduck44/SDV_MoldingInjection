@@ -101,19 +101,6 @@ namespace SDV_MoldingInjection.Process
                 }
             }
 
-            //if (EnablePressureHold2nd && _machineStatus.IsDryRunMode == false)
-            //{
-            //    if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpecSecond)
-            //    {
-            //        AngleValve.Open();
-            //    }
-
-            //    if (_devices.AnalogInputs.VacuumPressureInTorr <= _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpecSecond - 0.2)
-            //    {
-            //        AngleValve.Close();
-            //    }
-            //}
-
             if (EnableWritePressureLog && _currentRecipe.OptionRecipe.SavePressureLog == true)
             {
                 PressureLog(_devices.AnalogInputs.VacuumPressureInTorr);
@@ -489,28 +476,6 @@ namespace SDV_MoldingInjection.Process
 
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
-                case EDryPumpProcResinInjectStep.WaitEndHoldPressure1st_StartHoldPressure2nd:
-                    //if(_currentRecipe.DryPumpRecipe.TimeStartHoldUnderSpecSecond <= 0 || _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpecSecond <= 0)
-                    //{
-                    //    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
-                    //    break;
-                    //}
-
-                    //if (((_carrierJigStatusList.CarrierJigStatusH1.InjectTime < _currentRecipe.DryPumpRecipe.TimeStartHoldUnderSpecSecond) && !_currentRecipe.OptionRecipe.SkipHead12) ||
-                    //    ((_carrierJigStatusList.CarrierJigStatusH2.InjectTime < _currentRecipe.DryPumpRecipe.TimeStartHoldUnderSpecSecond) && !_currentRecipe.OptionRecipe.SkipHead12) ||
-                    //    ((_carrierJigStatusList.CarrierJigStatusH3.InjectTime < _currentRecipe.DryPumpRecipe.TimeStartHoldUnderSpecSecond) && !_currentRecipe.OptionRecipe.SkipHead34) ||
-                    //    ((_carrierJigStatusList.CarrierJigStatusH4.InjectTime < _currentRecipe.DryPumpRecipe.TimeStartHoldUnderSpecSecond) && !_currentRecipe.OptionRecipe.SkipHead34))
-                    //{
-                    //    Wait(10);
-                    //    break;
-                    //}
-
-                    //Log.Debug($"Disable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
-                    //EnablePressureHold = false;
-                    //Log.Debug($"Enable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpecSecond}");
-                    //EnablePressureHold2nd = true;
-                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
-                    break;
                 case EDryPumpProcResinInjectStep.DryPump_WaitVentTime:
                     if (((_carrierJigStatusList.CarrierJigStatusH1.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead12) ||
                         ((_carrierJigStatusList.CarrierJigStatusH2.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead12) ||
@@ -523,7 +488,6 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"Disable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
                     EnablePressureHold = false;
-                    EnablePressureHold2nd = false;
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.SetStartVent:
@@ -562,7 +526,6 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Detected inject request purge");
                     Log.Debug($"Disable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
                     EnablePressureHold = false;
-                    EnablePressureHold2nd = false;
                     Out_ChamberPurgeOn.Value = true;
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
@@ -616,44 +579,6 @@ namespace SDV_MoldingInjection.Process
         #endregion
 
         #region Private Methods
-        private void ZAxisSafetyPosMove()
-        {
-            Z1Axis.MoveAbs(_currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos);
-            Z2Axis.MoveAbs(_currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos);
-            Z3Axis.MoveAbs(_currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos);
-            Z4Axis.MoveAbs(_currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos);
-        }
-
-        private bool AllZAxisInSafetyPos(ref ESPDHead failHead)
-        {
-            bool result = true;
-            bool ret = false;
-
-            ret = Z1Axis.Status.ActualPosition >= _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos;
-            result &= ret;
-            if (!ret) failHead = ESPDHead.SPDHead1;
-
-            ret = Z2Axis.Status.ActualPosition >= _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos;
-            result &= ret;
-            if (!ret) failHead = ESPDHead.SPDHead2;
-
-            ret = Z3Axis.Status.ActualPosition >= _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos;
-            result &= ret;
-            if (!ret) failHead = ESPDHead.SPDHead3;
-
-            ret = Z4Axis.Status.ActualPosition >= _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos;
-            result &= ret;
-            if (!ret) failHead = ESPDHead.SPDHead4;
-
-            return result;
-        }
-
-        private void RaiseHeadWarning(EWarning warning, ESPDHead _failHead)
-        {
-            RaiseWarning(warning + ((int)(EWarning.MO_Z2_AXIS_HOME_TIMEOUT - EWarning.MO_Z1_AXIS_HOME_TIMEOUT)) * (_failHead - ESPDHead.SPDHead1));
-        }
-
-
         private enum EPumpAction
         {
             ValveOpen,
@@ -716,13 +641,11 @@ namespace SDV_MoldingInjection.Process
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
         private InjectTimeRecipe InjectTimeRecipe => _recipeSelector.CurrentRecipe.InjectTimeRecipe;
         private string pressureLogFolder => _configuration.GetValue<string>("Folders:PressureLogFolder");
-        private ESPDHead _failHead;
         private double _ventStartTick;
         private double _delayStartTick;
         private double _delayTime;
 
         private bool EnablePressureHold;
-        private bool EnablePressureHold2nd;
         private bool EnableTimerDelay;
         private bool EnableWritePressureLog;
 

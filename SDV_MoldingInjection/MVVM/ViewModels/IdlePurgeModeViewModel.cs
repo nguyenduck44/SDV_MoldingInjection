@@ -66,7 +66,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         private void RefreshIdlePurgeOverlay()
         {
-            IdlePurgeCount = _injectProcess!.IdlePurgeCount;
             int cycleMs = (int)Math.Max(0, _recipeSelector.CurrentRecipe.IdlePurgeRecipe.IdlePurgeAfterStopTime * 60000);
             long elapsedMs = Math.Max(0, Environment.TickCount64 - _machineStatus.MachineIdleTick);
             int remainMs = Math.Max(0, cycleMs - (int)Math.Min(int.MaxValue, elapsedMs));

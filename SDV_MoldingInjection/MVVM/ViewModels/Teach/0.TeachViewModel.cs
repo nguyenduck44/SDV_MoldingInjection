@@ -39,7 +39,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 {
                     if (_navigationStore.CurrentViewModel is AppMaintenanceViewModel maintenanceViewModel == false) return;
                     if (maintenanceViewModel.MaintenanceView != EMaintenanceView.Teach) return;
-                    if (MaintenanceViewModels.First(vm => vm.Name == name) == null) return;
+                    if (MaintenanceViewModels.FirstOrDefault(vm => vm.Name == name) == null) return;
 
                     MaintenanceViewModels.First(vm => vm.Name == name).MaintenanceView = maintenanceViewModel.MaintenanceView;
                     _navigationService.NavigateTo(MaintenanceViewModels.First(vm => vm.Name == name));

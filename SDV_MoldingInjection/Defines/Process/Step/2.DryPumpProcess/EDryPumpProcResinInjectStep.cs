@@ -29,8 +29,6 @@
 
         DryPump_VacuumDone_Send,
 
-        WaitEndHoldPressure1st_StartHoldPressure2nd,
-
         DryPump_WaitVentTime,
         SetStartVent,
         DryPump_PurgeAndWait,

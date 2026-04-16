@@ -26,6 +26,7 @@ namespace SDV_MoldingInjection.Extensions
                         ser.GetRequiredService<RecipeSelector>().CurrentRecipe,
                         ser.GetRequiredService<Devices>().Motions.All);
                 });
+                services.AddSingleton<PositionList>();
                 services.AddSingleton<InjectMaintenanceTeachingPosition>();
                 services.AddSingleton<DryPumpMaintenanceTeachingPosition>();
                 services.AddSingleton<SPDHeadMaintenanceTeachingPosition>(s =>
