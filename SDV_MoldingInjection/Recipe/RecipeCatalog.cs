@@ -171,7 +171,7 @@ namespace SDV_MoldingInjection.Recipe
             lock (_sync)
             {
                 return _recipesByName.TryGetValue(recipeName, out RecipeInfo? info)
-                    ? info.DisplayName
+                    ? info.Name
                     : recipeName;
             }
         }
