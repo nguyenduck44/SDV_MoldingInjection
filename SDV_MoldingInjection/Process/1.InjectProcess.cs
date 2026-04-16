@@ -1563,13 +1563,13 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcNeedleCleaningStep.YAxis_CleanPos_Calculator:
-                    _yAxisCleaningTargetMm = Recipe.YAxisNeddleClean - _nzlCleanCount * Recipe.NiddleCleanShiftDist;
+                    _yAxisCleaningTargetMm = Recipe.YAxisNeedleCleanPos - _nzlCleanCount * Recipe.NiddleCleanShiftDist;
                     if (_yAxisCleaningTargetMm < -19 || //Limit sensor
-                       (Recipe.YAxisNeddleClean - _yAxisCleaningTargetMm) > 130) //Distance clean
+                       (Recipe.YAxisNeedleCleanPos - _yAxisCleaningTargetMm) > 130) //Distance clean
                     {
                         Log.Debug("Reset nozzle clean count");
                         _nzlCleanCount = 0;
-                        _yAxisCleaningTargetMm = Recipe.YAxisNeddleClean;
+                        _yAxisCleaningTargetMm = Recipe.YAxisNeedleCleanPos;
                     }
 
                     Step.RunStep++;
@@ -1588,7 +1588,7 @@ namespace SDV_MoldingInjection.Process
                     {
                         if (!XAxis.IsOnPosition(Recipe.XAxisNeedleCleanPos))
                             RaiseWarning(EWarning.MO_X_AXIS_NEEDLE_CLEAN_TIMEOUT);
-                        if (!YAxis.IsOnPosition(Recipe.YAxisNeddleClean))
+                        if (!YAxis.IsOnPosition(Recipe.YAxisNeedleCleanPos))
                             RaiseWarning(EWarning.MO_Y_AXIS_NEEDLE_CLEAN_TIMEOUT);
                         break;
                     }

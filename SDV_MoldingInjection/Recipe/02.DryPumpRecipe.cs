@@ -20,20 +20,7 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _vacuumPressureHoldUnderSpec, value, nameof(VacuumPressureHoldUnderSpec));
         }
 
-        //TODO: Use hold pressure second instead of hold pressure under spec second
-        //public double TimeStartHoldUnderSpecSecond
-        //{
-        //    get => _timeStartHoldUnderSpecSecond;
-        //    set => SetRecipe(ref _timeStartHoldUnderSpecSecond, value, nameof(TimeStartHoldUnderSpecSecond));
-        //}
-
-        //public double VacuumPressureHoldUnderSpecSecond
-        //{
-        //    get => _vacuumPressureHoldUnderSpecSecond;
-        //    set => SetRecipe(ref _vacuumPressureHoldUnderSpecSecond, value, nameof(VacuumPressureHoldUnderSpecSecond));
-        //}
-
-        [SingleRecipeDescription(Description = "Pressure log timelaps", Unit = Unit.Second)]
+        [SingleRecipeDescription(Description = "Pressure Log Time Lapse", Unit = Unit.Second)]
         public double PressureLogTimelaps
         {
             get => _pressureLogTimelaps;
@@ -44,8 +31,6 @@ namespace SDV_MoldingInjection.Recipe
         private double _vacuumPressureSpec;
         private double _vacuumPressureHoldUnderSpec;
         private double _pressureLogTimelaps;
-        private double _vacuumPressureHoldUnderSpecSecond;
-        private double _timeStartHoldUnderSpecSecond;
         #endregion
     }
 }

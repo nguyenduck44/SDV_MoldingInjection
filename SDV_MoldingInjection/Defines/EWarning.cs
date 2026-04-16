@@ -132,6 +132,8 @@ namespace SDV_MoldingInjection.Defines
         VA_SPD_H01_SYRING_AMOUNT_TIMEOVER,
         [Description("HEAD1_IN06")]
         SE_SPD_H01_SYRING_AIR_NOT_DETECT,
+        [Description("IN64")]
+        SE_SPD_H01_DUMMY_OVER_FLOW_DETECT,
 
         //--------- 2400 -> 2599 : Head 2 ---------
         MO_SPD_H02_P2_AXIS_HOME_TIMEOUT = 2400,
@@ -156,6 +158,8 @@ namespace SDV_MoldingInjection.Defines
         VA_SPD_H02_SYRING_AMOUNT_TIMEOVER,
         [Description("HEAD2_IN06")]
         SE_SPD_H02_SYRING_AIR_NOT_DETECT,
+        [Description("IN65")]
+        SE_SPD_H02_DUMMY_OVER_FLOW_DETECT,
 
         //--------- 2600 -> 2799 : Head 3 ---------
         MO_SPD_H03_P3_AXIS_HOME_TIMEOUT = 2600,
@@ -180,6 +184,8 @@ namespace SDV_MoldingInjection.Defines
         VA_SPD_H03_SYRING_AMOUNT_TIMEOVER,
         [Description("HEAD3_IN06")]
         SE_SPD_H03_SYRING_AIR_NOT_DETECT,
+        [Description("IN66")]
+        SE_SPD_H03_DUMMY_OVER_FLOW_DETECT,
 
         //--------- 2800 -> 2999 : Head 4 ---------
         MO_SPD_H04_P4_AXIS_HOME_TIMEOUT = 2800,
@@ -204,5 +210,7 @@ namespace SDV_MoldingInjection.Defines
         VA_SPD_H04_SYRING_AMOUNT_TIMEOVER,
         [Description("HEAD4_IN06")]
         SE_SPD_H04_SYRING_AIR_NOT_DETECT,
+        [Description("IN67")]
+        SE_SPD_H04_DUMMY_OVER_FLOW_DETECT,
     }
 }

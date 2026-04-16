@@ -1,8 +1,9 @@
-﻿using EQX.Core.Common;
+using EQX.Core.Common;
 using EQX.Core.InOut;
 using EQX.Core.Motion;
 using EQX.Core.Recipe;
 using SDV_MoldingInjection.Defines;
+using SDV_MoldingInjection.Defines.TeachingPosition;
 using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;
 using System.Collections.ObjectModel;
@@ -14,15 +15,20 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
     public class InjectMaintenanceViewModel : AppMaintenanceViewModel
     {
         #region Properties
+        public InjectMaintenanceTeachingPosition InjectMaintenanceTeachingPosition { get; }
+
         #endregion
 
         public InjectMaintenanceViewModel(NavigationStore navigationStore,
-            Devices devices, MachineStatus machineStatus, RecipeSelector recipeSelector)
-            : base(navigationStore, machineStatus, recipeSelector)
+            Devices devices, 
+            MachineStatus machineStatus, 
+            RecipeSelector recipeSelector,
+            InjectMaintenanceTeachingPosition injectMaintenanceTeachingPosition)
+            : base(navigationStore, machineStatus, recipeSelector, devices)
         {
             _devices = devices;
             _recipeSelector = recipeSelector;
-
+            InjectMaintenanceTeachingPosition = injectMaintenanceTeachingPosition;
             if (GroupedPositions != null && GroupedPositions.Count > 0)
             {
                 SelectedGroupedPosition = GroupedPositions.FirstOrDefault()!;
@@ -83,73 +89,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         protected override RecipePositionManagerBase<RecipeList> UpdatePositionManager()
         {
-            var positionManager = new RecipePositionManager(_recipeSelector.CurrentRecipe, _devices.Motions.All);
-
-            var zReadyGroup = new MultiPointPosition
-            {
-                Name = "Z Ready Pos",
-                Points = new ObservableCollection<PositionPoint>
-                {
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
-                }
-            };
-
-            var readyGroup = new MultiPointPosition
-            {
-                Name = "Ready Pos",
-                Points = new ObservableCollection<PositionPoint>
-                {
-                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisReadyPos, _devices.Motions.XAxis),
-                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
-                }
-            };
-
-            var injectZSafetyGroup = new MultiPointPosition
-            {
-                Name = "Inject Pos (Z Safety)",
-                Points = new ObservableCollection<PositionPoint>
-                {
-                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisInjectPos, _devices.Motions.XAxis),
-                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisInjectPos, _devices.Motions.StageYAxis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
-                }
-            };
-
-            var injectGroup = new MultiPointPosition
-            {
-                Name = "Inject Pos",
-                Points = new ObservableCollection<PositionPoint>
-                {
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisInjectPos, _devices.Motions.XAxis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisInjectPos, _devices.Motions.StageYAxis),
-                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisInjectPos, _devices.Motions.Z1Axis),
-                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisInjectPos, _devices.Motions.Z2Axis),
-                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisInjectPos, _devices.Motions.Z3Axis),
-                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisInjectPos, _devices.Motions.Z4Axis),
-                }
-            };
-
-            positionManager.GroupedPositions.Add(zReadyGroup);
-            positionManager.GroupedPositions.Add(readyGroup);
-            positionManager.GroupedPositions.Add(injectZSafetyGroup);
-            positionManager.GroupedPositions.Add(injectGroup);
-
-            return positionManager;
+            return InjectMaintenanceTeachingPosition.PositionManager;
         }
 
         #region Privates
         private readonly Devices _devices;
         private readonly RecipeSelector _recipeSelector;
+
         #endregion
     }
 }

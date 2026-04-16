@@ -8,11 +8,17 @@ namespace SDV_MoldingInjection.Process
 {
     public class MonitoringProcess : ProcessBase<ESequence>
     {
-        public MonitoringProcess(MachineStatus machineStatus,
-            RecipeSelector recipeSelector)
+        private readonly MachineStatus _machineStatus;
+        private readonly RecipeSelector _recipeSelector;
+        private readonly Devices _devices;
+        private Queue<IGrouping<uint, PositionPoint>> MoveMultiPointQueueSteps = new Queue<IGrouping<uint, PositionPoint>>();
+        private List<PositionPoint> currentPoints = new List<PositionPoint>();
+
+        public MonitoringProcess(MachineStatus machineStatus, RecipeSelector recipeSelector, Devices devices)
         {
             _machineStatus = machineStatus;
             _recipeSelector = recipeSelector;
+            _devices = devices;
         }
 
         public override bool ProcessRun()
@@ -35,7 +41,12 @@ namespace SDV_MoldingInjection.Process
             switch ((EMonitoringProcessMoveMultiPointStep)Step.RunStep)
             {
                 case EMonitoringProcessMoveMultiPointStep.Start:
-                    Log.Info($"Move To {_machineStatus.MultiPointPosition.Name} Start");
+                    if (_devices.Inputs.AutoSW.Value == false)
+                    {
+                        RaiseWarning(EWarning.OP_MAIN_KEY_NOT_IN_AUTO_MODE);
+                        break;
+                    }
+                    Log.Debug("Move Target Position Start");
                     Step.RunStep++;
                     break;
                 case EMonitoringProcessMoveMultiPointStep.Init_QueuePosition:
@@ -61,12 +72,12 @@ namespace SDV_MoldingInjection.Process
                 case EMonitoringProcessMoveMultiPointStep.PointMove:
                     foreach (var pp in currentPoints)
                     {
-                        pp.Motion.MoveAbs(pp.Value);
+                        pp.Motion.MoveAbs(pp.TargetValue);
                     }
 
                     Wait(_recipeSelector.CurrentRecipe.CommonRecipe.MotionMoveTimeout, () =>
                     {
-                        return currentPoints.All(pp => pp.Motion.IsOnPosition(pp.Value));
+                        return currentPoints.All(pp => pp.Motion.IsOnPosition(pp.TargetValue));
                     });
 
                     Step.RunStep++;
@@ -89,9 +100,5 @@ namespace SDV_MoldingInjection.Process
             }
         }
 
-        private Queue<IGrouping<uint, PositionPoint>> MoveMultiPointQueueSteps = new Queue<IGrouping<uint, PositionPoint>>();
-        private List<PositionPoint> currentPoints = new List<PositionPoint>();
-        private readonly MachineStatus _machineStatus;
-        private readonly RecipeSelector _recipeSelector;
     }
 }

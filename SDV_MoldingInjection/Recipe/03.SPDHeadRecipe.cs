@@ -48,12 +48,24 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        public double ZAxisSafetyPosOffset
+        {
+            get => _zAxisSafetyPosOffset;
+            set => SetRecipe(ref _zAxisSafetyPosOffset, value, nameof(ZAxisSafetyPosOffset));
+        }
+
         [SingleRecipeDescription(Description = "Z-Axis INJECT position (down position)", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "ZAxis")]
         public double ZAxisInjectPos
         {
             get => _zAxisInjectPos;
             set => SetRecipe(ref _zAxisInjectPos, value, nameof(ZAxisInjectPos));
+        }
+
+        public double ZAxisInjectPosOffset
+        {
+            get => _zAxisInjectPosOffset;
+            set => SetRecipe(ref _zAxisInjectPosOffset, value, nameof(ZAxisInjectPosOffset));
         }
 
         [SingleRecipeDescription(Description = "Z-Axis Dummy Shot position", Unit = Unit.mm)]
@@ -64,12 +76,24 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _zAxisDummyPos, value, nameof(ZAxisDummyPos));
         }
 
+        public double ZAxisDummyPosOffset
+        {
+            get => _zAxisDummyPosOffset;
+            set => SetRecipe(ref _zAxisDummyPosOffset, value, nameof(ZAxisDummyPosOffset));
+        }
+
         [SingleRecipeDescription(Description = "Z-Axis Assemble-Disassemble position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "ZAxis")]
         public double ZAxisAssembleDisassemblePos
         {
             get => _zAxisAssembleDisassemble;
             set => SetRecipe(ref _zAxisAssembleDisassemble, value, nameof(ZAxisAssembleDisassemblePos));
+        }
+
+        public double ZAxisAssembleDisassemblePosOffset
+        {
+            get => _zAxisAssembleDisassemblePosOffset;
+            set => SetRecipe(ref _zAxisAssembleDisassemblePosOffset, value, nameof(ZAxisAssembleDisassemblePosOffset));
         }
 
         [SingleRecipeDescription(Description = "Z-Axis Neddle Clean position", Unit = Unit.mm)]
@@ -80,12 +104,24 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _zAxisNeedleCleanPos, value, nameof(ZAxisNeedleCleanPos));
         }
 
+        public double ZAxisNeedleCleanPosOffset
+        {
+            get => _zAxisNeedleCleanPosOffset;
+            set => SetRecipe(ref _zAxisNeedleCleanPosOffset, value, nameof(ZAxisNeedleCleanPosOffset));
+        }
+
         [SingleRecipeDescription(Description = "Z-Axis Weighting position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "ZAxis")]
         public double ZAxisWeightingPos
         {
             get => _zAxisWeightingPos;
             set => SetRecipe(ref _zAxisWeightingPos, value, nameof(ZAxisWeightingPos));
+        }
+
+        public double ZAxisWeightingPosOffset
+        {
+            get => _zAxisWeightingPosOffset;
+            set => SetRecipe(ref _zAxisWeightingPosOffset, value, nameof(ZAxisWeightingPosOffset));
         }
 
         [SingleRecipeDescription(Description = "Gate open position (Nozzle <----> SPD)", Unit = Unit.Degree)]
@@ -95,11 +131,23 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _gateOpenPos, value, nameof(GateOpenPos));
         }
 
+        public double GateOpenPosOffset
+        {
+            get => _gateOpenPosOffset;
+            set => SetRecipe(ref _gateOpenPosOffset, value, nameof(GateOpenPosOffset));
+        }
+
         [SingleRecipeDescription(Description = "Gate close position (Nozzle <--|--> SPD)", Unit = Unit.Degree)]
         public double GateClosePos
         {
             get => _gateClosePos;
             set => SetRecipe(ref _gateClosePos, value, nameof(GateClosePos));
+        }
+
+        public double GateClosePosOffset
+        {
+            get => _gateClosePosOffset;
+            set => SetRecipe(ref _gateClosePosOffset, value, nameof(GateClosePosOffset));
         }
 
         [SingleRecipeDescription(Description = "DummyShot Weight", Unit = Unit.mg)]
@@ -124,18 +172,33 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _pAxisInjectChargePos, value, nameof(PAxisInjectChargePos));
         }
 
+        public double PAxisInjectChargePosOffset
+        {
+            get => _pAxisInjectChargePosOffset;
+            set => SetRecipe(ref _pAxisInjectChargePosOffset, value, nameof(PAxisInjectChargePosOffset));
+        }
+
         #region Privates
         private double _zAxisSafetyPos;
+        private double _zAxisSafetyPosOffset;
         private double _zAxisInjectPos;
+        private double _zAxisInjectPosOffset;
         private double _zAxisNeedleCleanPos;
+        private double _zAxisNeedleCleanPosOffset;
         private double _zAxisDummyPos;
+        private double _zAxisDummyPosOffset;
         private double _zAxisAssembleDisassemble;
+        private double _zAxisAssembleDisassemblePosOffset;
         private double _zAxisWeightingPos;
+        private double _zAxisWeightingPosOffset;
 
         private double _gateClosePos;
+        private double _gateClosePosOffset;
         private double _gateOpenPos;
+        private double _gateOpenPosOffset;
 
         private double _pAxisInjectChargePos;
+        private double _pAxisInjectChargePosOffset;
 
         private double _resinWeight;
         private double _resinWeightSpec;

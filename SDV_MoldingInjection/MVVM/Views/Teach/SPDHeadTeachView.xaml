@@ -55,7 +55,7 @@
                     <ColumnDefinition Width="2*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1.5*" />
                     <RowDefinition Height="2*" />
                 </Grid.RowDefinitions>
                 <!-- POSITION TABLE -->

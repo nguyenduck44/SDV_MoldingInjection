@@ -28,6 +28,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Add Tail Weight", Unit = Unit.mg)]
+        [SingleRecipeMinMax(Max = 380, Min = 0)]
         public double AddTailWeight
         {
             get => _addTailWeight;

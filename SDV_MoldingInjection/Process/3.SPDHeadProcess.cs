@@ -42,6 +42,14 @@ namespace SDV_MoldingInjection.Process
             "SPDHead4" => _devices.Inputs.H4_AssembleCheck,
             _ => throw new Exception($"Invalid process name: {Name}")
         };
+        private IDInput In_DummyOverflowDetect => Name switch
+        {
+            "SPDHead1" => _devices.Inputs.DummyOverflowDetect1,
+            "SPDHead2" => _devices.Inputs.DummyOverflowDetect2,
+            "SPDHead3" => _devices.Inputs.DummyOverflowDetect3,
+            "SPDHead4" => _devices.Inputs.DummyOverflowDetect4,
+            _ => throw new Exception($"Invalid process name: {Name}")
+        };
         private IDInput In_SyringeCheck => Name switch
         {
             "SPDHead1" => _devices.Inputs.H1_SyringeCheck,
@@ -829,6 +837,11 @@ namespace SDV_MoldingInjection.Process
                 IsSequenceAssembleOrDisassemble(Parent!.Sequence) == false)
             {
                 RaiseHeadWarning(EWarning.SE_SPD_H01_SYRING_NOT_DETECT);
+            }
+
+            if (In_DummyOverflowDetect.Value == false)
+            {
+                RaiseHeadWarning(EWarning.SE_SPD_H01_DUMMY_OVER_FLOW_DETECT);
             }
 #endif
             return base.PreProcess();

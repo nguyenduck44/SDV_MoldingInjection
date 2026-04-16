@@ -38,7 +38,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             Balances balances,
             RecipeSelector recipeSelector,
             Devices devices)
-            : base(navigationStore, machineStatus, recipeSelector)
+            : base(navigationStore, machineStatus, recipeSelector, devices)
         {
             MachineStatus = machineStatus;
             _balances = balances;

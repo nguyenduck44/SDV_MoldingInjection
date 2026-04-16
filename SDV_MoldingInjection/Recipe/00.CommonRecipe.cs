@@ -26,7 +26,7 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref motionOriginTimeout, value, nameof(MotionOriginTimeout));
         }
 
-        [SingleRecipeDescription(Description = "Motion move timeout", Unit = Unit.Second)]
+        [SingleRecipeDescription(Description = "Motion Move Timeout", Unit = Unit.Second)]
         public double MotionMoveTimeout
         {
             get => motionMoveTimeout;
@@ -38,16 +38,6 @@ namespace SDV_MoldingInjection.Recipe
         {
             get => vacDelay;
             set => SetRecipe(ref vacDelay, value, nameof(VacDelay));
-        }
-
-        private double materialInputTimeout = 1800.0;
-
-        [SingleRecipeDescription(Description = "Material Input Timeout",
-            Detail = "Time Machine Not Have Material To Stop", Unit = Unit.Second)]
-        public double MaterialInputTimeout
-        {
-            get => materialInputTimeout;
-            set => SetRecipe(ref materialInputTimeout, value, nameof(MaterialInputTimeout));
         }
 
         [SingleRecipeDescription(Description = "Syringe Mount Time Change", Unit = Unit.Hour)]
@@ -65,7 +55,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Log Save Day")]
-        [SingleRecipeMinMax(Max = 100, Min = 5)]
+        [SingleRecipeMinMax(Max = 180, Min = 5)]
         public int LogSaveDay
         {
             get => logSaveDay;

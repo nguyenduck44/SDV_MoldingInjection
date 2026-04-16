@@ -5,6 +5,7 @@ using EQX.Core.Motion;
 using EQX.Core.Recipe;
 using EQX.InOut;
 using SDV_MoldingInjection.Defines;
+using SDV_MoldingInjection.Defines.TeachingPosition;
 using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;
 using System;
@@ -20,6 +21,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public double PressureSpec => _recipeSelector.CurrentRecipe.DryPumpRecipe.VacuumPressureSpec;
         public double CurrentPressure => _devices.AnalogInputs.VacuumPressureInTorr;
         public double TimeInSecond { get; set; }
+        public DryPumpMaintenanceTeachingPosition DryPumpMaintenanceTeachingPosition { get; }
         #endregion
 
         #region Commands
@@ -68,15 +70,19 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 });
             }
         }
+
         #endregion
 
         public DryPumpMaintenanceViewModel(NavigationStore navigationStore,
-            Devices devices, RecipeSelector recipeSelector, MachineStatus machineStatus)
-            : base(navigationStore, machineStatus, recipeSelector)
+            Devices devices, 
+            RecipeSelector recipeSelector,
+            MachineStatus machineStatus, 
+            DryPumpMaintenanceTeachingPosition dryPumpMaintenanceTeachingPosition)
+            : base(navigationStore, machineStatus, recipeSelector, devices)
         {
             _devices = devices;
             _recipeSelector = recipeSelector;
-
+            DryPumpMaintenanceTeachingPosition = dryPumpMaintenanceTeachingPosition;
             if (GroupedPositions != null && GroupedPositions.Count > 0)
             {
                 SelectedGroupedPosition = GroupedPositions.FirstOrDefault()!;
@@ -129,25 +135,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         protected override RecipePositionManagerBase<RecipeList> UpdatePositionManager()
         {
-            var positionManager = new RecipePositionManager(_recipeSelector.CurrentRecipe, _devices.Motions.All);
-
-            var readyGroup = new MultiPointPosition
-            {
-                Name = "Ready Pos",
-                Points = new ObservableCollection<PositionPoint>
-                {
-                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisReadyPos, _devices.Motions.XAxis),
-                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
-                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
-                }
-            };
-
-            positionManager.GroupedPositions.Add(readyGroup);
-
-            return positionManager;
+            return DryPumpMaintenanceTeachingPosition.PositionManager;
         }
 
         protected override void ExternalTimerElapsedAction()

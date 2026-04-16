@@ -7,6 +7,7 @@ using EQX.Core.Sequence;
 using EQX.Device.Balance;
 using EQX.UI.Controls;
 using SDV_MoldingInjection.Defines;
+using SDV_MoldingInjection.Defines.TeachingPosition;
 using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;
 using System.Collections.ObjectModel;
@@ -17,19 +18,26 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 {
     public class SPDHeadMaintenanceViewModel : AppMaintenanceViewModel
     {
+        #region Properties
+        public SPDHeadMaintenanceTeachingPosition SPDHeadMaintenanceTeachingPosition =>
+            _spdHeadMaintenanceTeachingPositions.First(p => p.Head == Head);
+        #endregion
+
+        #region Contructor(s)
         public SPDHeadMaintenanceViewModel(
             Devices devices,
             NavigationStore navigationStore,
             Balances balances,
             MachineStatus machineStatus,
-            RecipeSelector recipeSelector)
-            : base(navigationStore, machineStatus, recipeSelector)
+            RecipeSelector recipeSelector,
+            IEnumerable<SPDHeadMaintenanceTeachingPosition> sPDHeadMaintenanceTeachingPositions)
+            : base(navigationStore, machineStatus, recipeSelector, devices)
         {
             _devices = devices;
             _balances = balances;
             _machineStatus = machineStatus;
             _recipeSelector = recipeSelector;
-
+            _spdHeadMaintenanceTeachingPositions = sPDHeadMaintenanceTeachingPositions.ToList();
             Motions = new ObservableCollection<IMotion>();
             if (GroupedPositions != null && GroupedPositions.Count > 0)
             {
@@ -37,6 +45,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
 
         }
+        #endregion
 
         protected override void ExternalTimerElapsedAction()
         {
@@ -230,560 +239,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         protected override RecipePositionManagerBase<RecipeList> UpdatePositionManager()
         {
-            var positionManager = new RecipePositionManager(_recipeSelector.CurrentRecipe, _devices.Motions.All);
-
-            var readyGroup = new MultiPointPosition
-            {
-                Name = "Ready Pos",
-                Points = new ObservableCollection<PositionPoint>
-                {
-                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisReadyPos, _devices.Motions.XAxis),
-                    positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                    positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
-                }
-            };
-
-            var injectZSafetyGroup = new MultiPointPosition();
-            switch (Head)
-            {
-                case ESPDHead.SPDHead1:
-                    injectZSafetyGroup = new MultiPointPosition
-                    {
-                        Name = $"Inject Pos (Z Safety) {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                    {
-                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisInjectPos, _devices.Motions.XAxis),
-                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisInjectPos, _devices.Motions.StageYAxis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
-                    }
-                    };
-                    break;
-                case ESPDHead.SPDHead2:
-                    injectZSafetyGroup = new MultiPointPosition
-                    {
-                        Name = $"Inject Pos (Z Safety) {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                    {
-                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisInjectPos, _devices.Motions.XAxis),
-                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisInjectPos, _devices.Motions.StageYAxis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
-                    }
-                    };
-                    break;
-                case ESPDHead.SPDHead3:
-                    injectZSafetyGroup = new MultiPointPosition
-                    {
-                        Name = $"Inject Pos (Z Safety) {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                    {
-                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisInjectPos, _devices.Motions.XAxis),
-                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisInjectPos, _devices.Motions.StageYAxis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
-                    }
-                    };
-                    break;
-                case ESPDHead.SPDHead4:
-                    injectZSafetyGroup = new MultiPointPosition
-                    {
-                        Name = $"Inject Pos (Z Safety) {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                    {
-                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisInjectPos, _devices.Motions.XAxis),
-                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisInjectPos, _devices.Motions.StageYAxis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
-                    }
-                    };
-                    break;
-            }
-
-            var injectGroup = new MultiPointPosition();
-            switch (Head)
-            {
-                case ESPDHead.SPDHead1:
-                    injectGroup = new MultiPointPosition
-                    {
-                        Name = $"Inject Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisInjectPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisInjectPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisInjectPos, _devices.Motions.Z1Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead2:
-                    injectGroup = new MultiPointPosition
-                    {
-                        Name = $"Inject Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisInjectPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisInjectPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisInjectPos, _devices.Motions.Z2Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead3:
-                    injectGroup = new MultiPointPosition
-                    {
-                        Name = $"Inject Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisInjectPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisInjectPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisInjectPos, _devices.Motions.Z3Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead4:
-                    injectGroup = new MultiPointPosition
-                    {
-                        Name = $"Inject Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisInjectPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisInjectPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisInjectPos, _devices.Motions.Z4Axis),
-                        }
-                    };
-                    break;
-            }
-
-
-            var dummyZSafetyGroup = new MultiPointPosition();
-            switch (Head)
-            {
-                case ESPDHead.SPDHead1:
-                    dummyZSafetyGroup = new MultiPointPosition
-                    {
-                        Name = $"Dummy Pos (Z Safety) {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                    {
-                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisDummyPos, _devices.Motions.XAxis),
-                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisDummyPos, _devices.Motions.StageYAxis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
-                    }
-                    };
-                    break;
-                case ESPDHead.SPDHead2:
-                    dummyZSafetyGroup = new MultiPointPosition
-                    {
-                        Name = $"Dummy Pos (Z Safety) {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                    {
-                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisDummyPos, _devices.Motions.XAxis),
-                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisDummyPos, _devices.Motions.StageYAxis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
-                    }
-                    };
-                    break;
-                case ESPDHead.SPDHead3:
-                    dummyZSafetyGroup = new MultiPointPosition
-                    {
-                        Name = $"Dummy Pos (Z Safety) {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                    {
-                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisDummyPos, _devices.Motions.XAxis),
-                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisDummyPos, _devices.Motions.StageYAxis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
-                    }
-                    };
-                    break;
-                case ESPDHead.SPDHead4:
-                    dummyZSafetyGroup = new MultiPointPosition
-                    {
-                        Name = $"Dummy Pos (Z Safety) {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                    {
-                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisDummyPos, _devices.Motions.XAxis),
-                        positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisDummyPos, _devices.Motions.StageYAxis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                        positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
-                    }
-                    };
-                    break;
-            }
-
-            var dummyGroup = new MultiPointPosition();
-            switch (Head)
-            {
-                case ESPDHead.SPDHead1:
-                    dummyGroup = new MultiPointPosition
-                    {
-                        Name = $"Dummy Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisDummyPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisDummyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisDummyPos, _devices.Motions.Z1Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead2:
-                    dummyGroup = new MultiPointPosition
-                    {
-                        Name = $"Dummy Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisDummyPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisDummyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisDummyPos, _devices.Motions.Z2Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead3:
-                    dummyGroup = new MultiPointPosition
-                    {
-                        Name = $"Dummy Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisDummyPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisDummyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisDummyPos, _devices.Motions.Z3Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead4:
-                    dummyGroup = new MultiPointPosition
-                    {
-                        Name = $"Dummy Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisDummyPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisDummyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisDummyPos, _devices.Motions.Z4Axis),
-                        }
-                    };
-                    break;
-            }
-
-            var weightingZSafetyGroup = new MultiPointPosition();
-            switch (Head)
-            {
-                case ESPDHead.SPDHead1:
-                    weightingZSafetyGroup = new MultiPointPosition
-                    {
-                        Name = $"Dot Weighting (Z Safety) Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisH13DotWeightingPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead2:
-                    weightingZSafetyGroup = new MultiPointPosition
-                    {
-                        Name = $"Dot Weighting (Z Safety) Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisH24DotWeightingPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead3:
-                    weightingZSafetyGroup = new MultiPointPosition
-                    {
-                        Name = $"Dot Weighting (Z Safety) Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisH13DotWeightingPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead4:
-                    weightingZSafetyGroup = new MultiPointPosition
-                    {
-                        Name = $"Dot Weighting (Z Safety) Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisH24DotWeightingPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
-                        }
-                    };
-                    break;
-            }
-
-            var weightingGroup = new MultiPointPosition();
-            switch (Head)
-            {
-                case ESPDHead.SPDHead1:
-                    weightingGroup = new MultiPointPosition
-                    {
-                        Name = $"Dot Weighting Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisH13DotWeightingPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisWeightingPos, _devices.Motions.Z1Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead2:
-                    weightingGroup = new MultiPointPosition
-                    {
-                        Name = $"Dot Weighting Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisH24DotWeightingPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisWeightingPos, _devices.Motions.Z2Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead3:
-                    weightingGroup = new MultiPointPosition
-                    {
-                        Name = $"Dot Weighting Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisH13DotWeightingPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisWeightingPos, _devices.Motions.Z3Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead4:
-                    weightingGroup = new MultiPointPosition
-                    {
-                        Name = $"Dot Weighting Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisH24DotWeightingPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisReadyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisWeightingPos, _devices.Motions.Z4Axis),
-                        }
-                    };
-                    break;
-            }
-
-            var cleaningZSafetyGroup = new MultiPointPosition();
-            switch (Head)
-            {
-                case ESPDHead.SPDHead1:
-                    cleaningZSafetyGroup = new MultiPointPosition
-                    {
-                        Name = $"Clean (Z Safety) Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisNeedleCleanPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisNeddleClean, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead2:
-                    cleaningZSafetyGroup = new MultiPointPosition
-                    {
-                        Name = $"Clean (Z Safety) Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisNeedleCleanPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisNeddleClean, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead3:
-                    cleaningZSafetyGroup = new MultiPointPosition
-                    {
-                        Name = $"Clean (Z Safety) Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisNeedleCleanPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisNeddleClean, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead4:
-                    cleaningZSafetyGroup = new MultiPointPosition
-                    {
-                        Name = $"Clean (Z Safety) Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.XAxisNeedleCleanPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.InjectRecipe.YAxisNeddleClean, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisSafetyPos, _devices.Motions.Z1Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisSafetyPos, _devices.Motions.Z2Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisSafetyPos, _devices.Motions.Z3Axis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisSafetyPos, _devices.Motions.Z4Axis),
-                        }
-                    };
-                    break;
-            }
-
-            var cleaningGroup = new MultiPointPosition();
-            switch (Head)
-            {
-                case ESPDHead.SPDHead1:
-                    cleaningGroup = new MultiPointPosition
-                    {
-                        Name = $"Clean Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisNeedleCleanPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisNeddleClean, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisNeedleCleanPos, _devices.Motions.Z1Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead2:
-                    cleaningGroup = new MultiPointPosition
-                    {
-                        Name = $"Clean Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisNeedleCleanPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisNeddleClean, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisNeedleCleanPos, _devices.Motions.Z2Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead3:
-                    cleaningGroup = new MultiPointPosition
-                    {
-                        Name = $"Clean Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisNeedleCleanPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisNeddleClean, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisNeedleCleanPos, _devices.Motions.Z3Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead4:
-                    cleaningGroup = new MultiPointPosition
-                    {
-                        Name = $"Clean Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisNeedleCleanPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisNeddleClean, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisNeedleCleanPos, _devices.Motions.Z4Axis),
-                        }
-                    };
-                    break;
-            }
-
-            var assembleDisassembleGroup = new MultiPointPosition();
-            switch (Head)
-            {
-                case ESPDHead.SPDHead1:
-                    assembleDisassembleGroup = new MultiPointPosition
-                    {
-                        Name = $"Assemble/DisAssemble Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisDummyPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisDummyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisAssembleDisassemblePos, _devices.Motions.Z1Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead2:
-                    assembleDisassembleGroup = new MultiPointPosition
-                    {
-                        Name = $"Assemble/DisAssemble Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisDummyPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisDummyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisAssembleDisassemblePos, _devices.Motions.Z2Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead3:
-                    assembleDisassembleGroup = new MultiPointPosition
-                    {
-                        Name = $"Assemble/DisAssemble Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisDummyPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisDummyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisAssembleDisassemblePos, _devices.Motions.Z3Axis),
-                        }
-                    };
-                    break;
-                case ESPDHead.SPDHead4:
-                    assembleDisassembleGroup = new MultiPointPosition
-                    {
-                        Name = $"Assemble/DisAssemble Pos {Name}",
-                        Points = new ObservableCollection<PositionPoint>
-                        {
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.XAxisDummyPos, _devices.Motions.XAxis),
-                            positionManager.CreatePositionPoint(1, _currentRecipe => _currentRecipe.InjectRecipe.YAxisDummyPos, _devices.Motions.StageYAxis),
-                            positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisAssembleDisassemblePos, _devices.Motions.Z4Axis),
-                        }
-                    };
-                    break;
-            }
-
-            positionManager.GroupedPositions.Add(readyGroup);
-            positionManager.GroupedPositions.Add(injectZSafetyGroup);
-            positionManager.GroupedPositions.Add(injectGroup);
-            positionManager.GroupedPositions.Add(dummyZSafetyGroup);
-            positionManager.GroupedPositions.Add(dummyGroup);
-            positionManager.GroupedPositions.Add(cleaningZSafetyGroup);
-            positionManager.GroupedPositions.Add(cleaningGroup);
-            positionManager.GroupedPositions.Add(weightingZSafetyGroup);
-            positionManager.GroupedPositions.Add(weightingGroup);
-            positionManager.GroupedPositions.Add(assembleDisassembleGroup);
-
-            return positionManager;
+            return SPDHeadMaintenanceTeachingPosition.PositionManager;
         }
 
         #region Privates
@@ -791,6 +247,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly Balances _balances;
         private readonly MachineStatus _machineStatus;
         private readonly RecipeSelector _recipeSelector;
+        private readonly List<SPDHeadMaintenanceTeachingPosition> _spdHeadMaintenanceTeachingPositions;
         private double balanceStableWeight;
 
         private ESPDHead Head => Name switch
@@ -849,6 +306,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             "SPDHead4" => _recipeSelector.CurrentRecipe.SPDHead4_Recipe,
             _ => throw new Exception($"Invalid process name: {Name}")
         };
+
         #endregion
     }
 }

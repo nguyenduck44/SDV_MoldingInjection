@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
+using EQX.Core.Recipe;
 using EQX.UI.Controls;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Recipe;
@@ -35,12 +36,20 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         #region Constructor(s)
         public AppMaintenanceViewModel(NavigationStore navigationStore,
-           MachineStatus machineStatus, RecipeSelector recipeSelector)
+           MachineStatus machineStatus, 
+           RecipeSelector recipeSelector,
+           Devices devices)
            : base(navigationStore, machineStatus)
         {
             _recipeSelector = recipeSelector;
+            _devices = devices;
         }
         #endregion
+
+        protected override RecipePositionManagerBase<RecipeList> UpdatePositionManager()
+        {
+            return new RecipePositionManager(_recipeSelector.CurrentRecipe, _devices.Motions.All);
+        }
 
         protected override bool ConfirmSemiSequence(string message)
         {
@@ -49,6 +58,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         #region Privates
         private readonly RecipeSelector _recipeSelector;
+        private readonly Devices _devices;
         #endregion
     }
 }
