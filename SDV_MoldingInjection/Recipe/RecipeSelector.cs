@@ -14,6 +14,7 @@ using SDV_MoldingInjection.MVVM.ViewModels;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using TOPENG_Device;
@@ -201,6 +202,7 @@ namespace SDV_MoldingInjection.Recipe
                     if (backupRecipe != null)
                     {
                         CurrentRecipe.CloneFrom(backupRecipe);
+                        NormalizeSelectedLanguageReference();
                         EQPPPIDArea ppipArea = new EQPPPIDArea
                         {
                             EQPPPID = RecipeSetting.CurrentRecipe,
@@ -480,6 +482,23 @@ namespace SDV_MoldingInjection.Recipe
             {
                 string destFolder = Path.Combine(destinationDir, Path.GetFileName(folder));
                 CopyDirectory(folder, destFolder);
+            }
+        }
+
+        private void NormalizeSelectedLanguageReference()
+        {
+            ILanguageDefinition? selectedLanguage = CurrentRecipe.CommonRecipe.SelectedLanguage;
+            if (selectedLanguage == null)
+            {
+                return;
+            }
+
+            ILanguageDefinition? languageDefinition = _languageService.AvailableLanguages
+                .FirstOrDefault(language => language.Id == selectedLanguage.Id);
+
+            if (languageDefinition != null && ReferenceEquals(selectedLanguage, languageDefinition) == false)
+            {
+                CurrentRecipe.CommonRecipe.SelectedLanguage = languageDefinition;
             }
         }
         #endregion

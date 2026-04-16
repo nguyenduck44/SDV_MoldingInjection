@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
 using EQX.Core.Communication.CIM;
 using EQX.Core.Communication.CIM.Custom;
@@ -25,6 +25,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly Motions _motions;
         private readonly ILanguageService _languageService;
         private readonly IConfiguration _configuration;
+        public ObservableCollection<ILanguageDefinition> Cultures { get; }
         public RecipeViewModel(RecipeSelector recipeSelector,
             Motions motions,
             ILanguageService languageService,
@@ -37,9 +38,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _configuration = configuration;
             MachineStatus = machineStatus;
             Log = LogManager.GetLogger("Data");
+            Cultures = new ObservableCollection<ILanguageDefinition>(_languageService.AvailableLanguages);
         }
-
-        public ObservableCollection<ILanguageDefinition> Cultures => new ObservableCollection<ILanguageDefinition>(_languageService.AvailableLanguages);
 
         public ObservableCollection<IMotion> AllMotions
         {
