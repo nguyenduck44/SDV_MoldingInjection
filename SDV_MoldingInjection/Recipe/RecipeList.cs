@@ -1,5 +1,4 @@
 ﻿using EQX.Core.Recipe;
-using Newtonsoft.Json;
 
 namespace SDV_MoldingInjection.Recipe
 {

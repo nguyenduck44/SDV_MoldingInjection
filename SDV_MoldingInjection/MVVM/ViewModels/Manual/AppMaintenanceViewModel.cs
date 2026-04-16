@@ -63,7 +63,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         protected override bool BeforeTeachingPositionSelectionChanged(MultiPointPosition? currentSelection, MultiPointPosition nextSelection)
         {
-            if (currentSelection == null || currentSelection == nextSelection)
+            if (currentSelection == null || currentSelection == nextSelection || _recipeSelector.IsLoadingRecipe)
             {
                 return true;
             }
@@ -153,7 +153,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         private void OnTeachingPointPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (_isRestoringTeachingSnapshot || _isHandlingTeachingChange)
+            if (_recipeSelector.IsLoadingRecipe || _isRestoringTeachingSnapshot || _isHandlingTeachingChange)
             {
                 return;
             }

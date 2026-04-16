@@ -266,9 +266,11 @@
 
                     <ScrollViewer HorizontalScrollBarVisibility="Auto"
                                   VerticalScrollBarVisibility="Auto">
-                        <ListBox ItemsSource="{Binding RecipeSelector.ValidRecipes}"
+                        <ListBox ItemsSource="{Binding RecipeSelector.ValidRecipeInfos}"
+                                 DisplayMemberPath="DisplayName"
                                  Loaded="ModelsListBox_Loaded"
-                                 SelectedItem="{Binding SelectedModel,Mode=OneWayToSource}"
+                                 SelectedValuePath="Name"
+                                 SelectedValue="{Binding SelectedModel,Mode=OneWayToSource}"
                                  Style="{StaticResource ModelsListBoxStyle}">
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="ListBoxItem"

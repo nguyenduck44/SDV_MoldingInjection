@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using EQX.Core.Common;
 using EQX.Core.Communication.CIM;
 using EQX.Core.Communication.CIM.Custom;
@@ -7,13 +7,12 @@ using EQX.Core.Recipe;
 using EQX.UI.Controls;
 using EQX.UI.Language;
 using log4net;
-using log4net.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SDV_MoldingInjection.MVVM.ViewModels;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -23,28 +22,42 @@ namespace SDV_MoldingInjection.Recipe
 {
     public class RecipeSelector : ObservableObject
     {
-        public string GetRecipeFolderPath(string recipeName)
-        {
-            return Path.Combine(recipeFolder, recipeName);
-        }
-
         #region Privates
         private RecipeSetting recipeSetting;
         private readonly IConfiguration _configuration;
+        private readonly RecipeCatalog _recipeCatalog;
+        private readonly ObservableCollection<string> _validRecipes = new ObservableCollection<string>();
+        private readonly ObservableCollection<RecipeInfo> _validRecipeInfos = new ObservableCollection<RecipeInfo>();
+        private int _loadingDepth;
 
         private readonly IAlertService _alarmService;
         private readonly IAlertService _warningService;
         private readonly ILanguageService _languageService;
         private readonly NavigationStore _navigationStore;
-        private readonly ObservableCollection<string> _validRecipes = new ObservableCollection<string>();
+
         private string recipeFolder => _configuration.GetValue<string>("Folders:RecipeFolder") ?? "";
         #endregion
 
         #region Properties
         public string[] AllRecipe;
-        public ObservableCollection<string> ValidRecipes
+        public ObservableCollection<string> ValidRecipes => _validRecipes;
+        public ObservableCollection<RecipeInfo> ValidRecipeInfos => _validRecipeInfos;
+        public string CurrentRecipeDisplayName => _recipeCatalog.ToDisplayName(RecipeSetting.CurrentRecipe);
+        public bool IsLoadingRecipe => _loadingDepth > 0;
+
+        public int CurrentRecipeNumber
         {
-            get => _validRecipes;
+            get
+            {
+                string selectedRecipe = ResolveRecipeName(RecipeSetting.CurrentRecipe);
+                bool result1 = CIMHelpers.TryParseRecipeNumber(selectedRecipe, out int index);
+                if (result1 == false)
+                {
+                    throw new Exception("PPID Name format is not match");
+                }
+
+                return index;
+            }
         }
 
         public RecipeSetting RecipeSetting
@@ -52,29 +65,41 @@ namespace SDV_MoldingInjection.Recipe
             get { return recipeSetting; }
             set
             {
+                if (recipeSetting != null)
+                {
+                    recipeSetting.PropertyChanged -= RecipeSetting_PropertyChanged;
+                }
+
                 recipeSetting = value;
+                recipeSetting.PropertyChanged += RecipeSetting_PropertyChanged;
                 OnPropertyChanged(nameof(RecipeSetting));
+                OnPropertyChanged(nameof(CurrentRecipeDisplayName));
             }
         }
 
         public RecipeList CurrentRecipe { get; private set; }
+        public event Action? CurrentModelChanged;
         #endregion
 
         #region Constructor
         public RecipeSelector(IConfiguration configuration,
+            RecipeList currentRecipe,
+            RecipeCatalog recipeCatalog,
             [FromKeyedServices("AlarmService")] IAlertService alarmService,
             [FromKeyedServices("WarningService")] IAlertService warningService,
             ILanguageService languageService, NavigationStore navigationStore)
         {
             _configuration = configuration;
+            _recipeCatalog = recipeCatalog;
+            CurrentRecipe = currentRecipe;
             recipeSetting = new RecipeSetting();
             _alarmService = alarmService;
             _warningService = warningService;
             _languageService = languageService;
             _navigationStore = navigationStore;
+
             UpdateValidRecipes();
 
-            CurrentRecipe = new RecipeList();
             CurrentRecipe.CommonRecipe.SelectedLanguageEvent += CommonRecipe_SelectedLanguageEvent;
 
             CurrentRecipe.CommonRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
@@ -91,10 +116,11 @@ namespace SDV_MoldingInjection.Recipe
             CurrentRecipe.CylinderDelayTimeRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
         }
 
-        private async void SingleRecipe_RecipeChanged(object oldValue, object newValue, string? propertyName = null)
+        private async void SingleRecipe_RecipeChanged(object? oldValue, object? newValue, string? propertyName = null)
         {
             if (_navigationStore.CurrentViewModel.GetType() == typeof(InitDeinitViewModel)) return;
-            bool result1 = CIMHelpers.TryParseRecipeNumber(RecipeSetting.CurrentRecipe, out int index);
+            string selectedRecipe = ResolveRecipeName(RecipeSetting.CurrentRecipe);
+            bool result1 = CIMHelpers.TryParseRecipeNumber(selectedRecipe, out int index);
             if (result1 == false)
             {
                 throw new Exception("PPID Name format is not match");
@@ -103,7 +129,7 @@ namespace SDV_MoldingInjection.Recipe
             {
                 var parameterArea = new ParameterWordArea
                 {
-                    PPIDName = RecipeSetting.CurrentRecipe,
+                    PPIDName = selectedRecipe,
                 };
                 parameterArea.Parameters[0] = CurrentRecipe.CommonRecipe.LogSaveDay;
                 EquipEventHelpers.ParameterChange(parameterArea, index);
@@ -121,98 +147,145 @@ namespace SDV_MoldingInjection.Recipe
         #endregion
 
         #region Methods
+        public string GetRecipeFolderPath(string recipeName)
+        {
+            return Path.Combine(recipeFolder, ResolveRecipeFolderName(recipeName));
+        }
+
         public bool Load()
         {
-            // 1. Get Current Recipe
-            string recipeSettingFile = Path.Combine(recipeFolder, "RecipeSetting.json");
-            if (File.Exists(recipeSettingFile) == false)
-            {
-                MessageBoxEx.Show($"{recipeSettingFile} file not found");
-                return false;
-            }
-
-            string currentRecipeFileContain = File.ReadAllText(recipeSettingFile);
-
+            BeginRecipeLoading();
             try
             {
-                RecipeSetting = JsonConvert.DeserializeObject<RecipeSetting>(currentRecipeFileContain);
-            }
-            catch (Exception ex)
-            {
-                MessageBoxEx.Show(ex.Message);
-                return false;
-            }
-
-            // 2. Get Current Recipe
-            string currentRecipeFolder = Path.Combine(recipeFolder, RecipeSetting.CurrentRecipe);
-            string currentRecipeFile = Path.Combine(currentRecipeFolder, "Recipe.json");
-            if (Directory.Exists(currentRecipeFolder) == false)
-                MessageBoxEx.Show($" Recipe folder \"{currentRecipeFolder}\" not found");
-
-            var settings = new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.Auto
-            };
-            try
-            {
-                RecipeList? backupRecipe = JsonConvert.DeserializeObject<RecipeList>(File.ReadAllText(currentRecipeFile), settings);
-                if (backupRecipe != null)
+                string recipeSettingFile = Path.Combine(recipeFolder, "RecipeSetting.json");
+                if (File.Exists(recipeSettingFile) == false)
                 {
-                    CurrentRecipe.CloneFrom(backupRecipe);
-                    EQPPPIDArea ppipArea = new EQPPPIDArea
-                    {
-                        EQPPPID = RecipeSetting.CurrentRecipe,
-                    };
-                    EquipEventDetail.Create(EquipEvent.EQPPIDUpdate).Write(ppipArea.ToCIMData());
-                }
-                else
-                {
-                    MessageBoxEx.Show($"Failed to load recipe file: {currentRecipeFile}");
+                    MessageBox.Show($"{recipeSettingFile} file not found");
                     return false;
                 }
+
+                string currentRecipeFileContain = File.ReadAllText(recipeSettingFile);
+
+                try
+                {
+                    RecipeSetting? loadedSetting = JsonConvert.DeserializeObject<RecipeSetting>(currentRecipeFileContain);
+                    if (loadedSetting == null)
+                    {
+                        MessageBox.Show("Failed to load RecipeSetting.json");
+                        return false;
+                    }
+
+                    RecipeSetting = loadedSetting;
+                    RecipeSetting.CurrentRecipe = ResolveRecipeName(RecipeSetting.CurrentRecipe);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    return false;
+                }
+
+                string currentRecipeFolder = GetRecipeFolderPath(RecipeSetting.CurrentRecipe);
+                string currentRecipeFile = Path.Combine(currentRecipeFolder, "Recipe.json");
+                if (Directory.Exists(currentRecipeFolder) == false)
+                {
+                    MessageBox.Show($" Recipe folder \"{currentRecipeFolder}\" not found");
+                }
+
+                var settings = new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.Auto
+                };
+                try
+                {
+                    RecipeList? backupRecipe = JsonConvert.DeserializeObject<RecipeList>(File.ReadAllText(currentRecipeFile), settings);
+                    if (backupRecipe != null)
+                    {
+                        CurrentRecipe.CloneFrom(backupRecipe);
+                        EQPPPIDArea ppipArea = new EQPPPIDArea
+                        {
+                            EQPPPID = RecipeSetting.CurrentRecipe,
+                        };
+                        EquipEventDetail.Create(EquipEvent.EQPPIDUpdate).Write(ppipArea.ToCIMData());
+                    }
+                    else
+                    {
+                        MessageBoxEx.Show($"Failed to load recipe file: {currentRecipeFile}");
+                        return false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBoxEx.Show($"Error loading recipe: {ex.Message}");
+                    return false;
+                }
+                return true;
             }
-            catch (Exception ex)
+            finally
             {
-                MessageBoxEx.Show($"Error loading recipe: {ex.Message}");
-                return false;
+                EndRecipeLoading();
             }
-            return true;
         }
 
         public void Create(string newRecipe, string cimRecipeNumber = "")
         {
-            string createFolder = Path.Combine(recipeFolder, newRecipe);
-            if (Directory.Exists(createFolder))
+            string currentRecipeName = ResolveRecipeName(RecipeSetting.CurrentRecipe);
+            string currentRecipeFolder = GetRecipeFolderPath(currentRecipeName);
+            string newRecipeName = ResolveRecipeName(newRecipe);
+            if (string.IsNullOrWhiteSpace(newRecipeName))
             {
-                MessageBoxEx.Show($"Recipe folder \"{createFolder}\" exist.");
+                MessageBoxEx.Show("Recipe name is empty.");
+                return;
+            }
+
+            int recipeId = ParseRecipeId(newRecipeName);
+            if (_recipeCatalog.ContainsName(newRecipeName))
+            {
+                MessageBoxEx.Show($"Recipe name '{newRecipeName}' already exists in RecipeInfo.");
+                return;
+            }
+
+            if (recipeId > 0 && _recipeCatalog.ContainsId(recipeId))
+            {
+                MessageBoxEx.Show($"Recipe Id '{recipeId}' already exists in RecipeInfo.");
+                return;
+            }
+
+            string recipeFolderName = newRecipeName;
+            string createRecipeFolder = Path.Combine(recipeFolder, recipeFolderName);
+            if (Directory.Exists(createRecipeFolder))
+            {
+                MessageBox.Show($"Recipe folder \"{createRecipeFolder}\" exist.");
                 return;
             }
 
             try
             {
-                Directory.CreateDirectory(createFolder);
+                Directory.CreateDirectory(createRecipeFolder);
 
-                // TODO: Update recipe
-                foreach (var file in Directory.GetFiles(createFolder))
-                {
-                    string destFile = Path.Combine(createFolder, Path.GetFileName(file));
-                    File.Copy(file, destFile, true);
-                }
+                CopyDirectory(currentRecipeFolder, createRecipeFolder);
+                _recipeCatalog.WriteRecipeInfo(recipeFolderName, recipeId, newRecipeName);
 
-                EquipEventHelpers.PPIDCreate(Path.GetFileName(createFolder), cimRecipeNumber);
-                
-                UpdateValidRecipes(); // Refresh the list to show the new copied recipe
+                EquipEventHelpers.PPIDCreate(newRecipeName, cimRecipeNumber);
 
-                MessageBoxEx.Show($"Recipe '{createFolder}' copied successfully to '{Path.GetFileName(createFolder)}'.");
+                UpdateValidRecipes();
+
+                MessageBoxEx.Show($"Recipe '{currentRecipeName}' copied successfully to '{newRecipeName}'.");
             }
             catch (Exception ex)
             {
-                MessageBoxEx.Show($"Failed to copy recipe: {ex.Message}");
+                MessageBox.Show($"Failed to copy recipe: {ex.Message}");
             }
         }
 
         public void Delete(string selectedRecipe, string fromCIMRecipeNumber = "")
         {
+            selectedRecipe = ResolveRecipeName(selectedRecipe);
+            if (_recipeCatalog.TryGetRecipeInfo(selectedRecipe, out RecipeInfo? recipeInfo) == false || recipeInfo == null)
+            {
+                MessageBoxEx.Show($"Recipe info for '{selectedRecipe}' not found.");
+                return;
+            }
+
             if (string.IsNullOrEmpty(fromCIMRecipeNumber))
             {
                 bool? confirm = MessageBoxEx.ShowDialog($"DO you realy want to DELETE RECIPE {selectedRecipe}");
@@ -220,13 +293,13 @@ namespace SDV_MoldingInjection.Recipe
                 if (confirm != true) return;
             }
 
-            string CopyRecipe = (string)Application.Current.Resources["str_CopyRecipe"];
+            string copyRecipe = (string)Application.Current.Resources["str_CopyRecipe"];
             if (selectedRecipe == RecipeSetting.CurrentRecipe)
             {
                 MessageBoxEx.ShowDialog($"Can not delete CURRENT RECIPE {selectedRecipe}");
                 return;
             }
-            string folderPath = GetRecipeFolderPath(selectedRecipe);
+            string folderPath = Path.Combine(recipeFolder, recipeInfo.FolderName);
             if (Directory.Exists(folderPath))
             {
                 Directory.Delete(folderPath, true);
@@ -239,38 +312,24 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        // FROM EQUIPMENT ONLY
         public void Copy(string selectedRecipe)
         {
-            if (string.IsNullOrEmpty(selectedRecipe)) return;
-
-            string sourceFolder = Path.Combine(recipeFolder, selectedRecipe);
-            if (!Directory.Exists(sourceFolder))
+            selectedRecipe = ResolveRecipeName(selectedRecipe);
+            string currentRecipeFolder = GetRecipeFolderPath(selectedRecipe);
+            if (Directory.Exists(currentRecipeFolder) == false)
             {
-                MessageBoxEx.Show($"Recipe folder \"{sourceFolder}\" not found.");
-                return;
+                MessageBox.Show($" Recipe folder \"{currentRecipeFolder}\" not found");
             }
 
-            string destinationFolder = $"D:\\MoldInjection\\Recipe\\TT_094_MODEL094";
-            if (Directory.Exists(destinationFolder))
-            {
-                MessageBoxEx.Show($"Recipe folder \"{destinationFolder}\" already exists.");
-                return;
-            }
-
-            try
+            string destinationFolder = "D:\\MoldInjection\\Recipe\\TT_094_MODEL094";
+            if (Directory.Exists(destinationFolder) == false)
             {
                 Directory.CreateDirectory(destinationFolder);
 
-                foreach (var file in Directory.GetFiles(sourceFolder))
-                {
-                    string destFile = Path.Combine(destinationFolder, Path.GetFileName(file));
-                    File.Copy(file, destFile, true);
-                }
-                MessageBoxEx.Show($"Recipe '{selectedRecipe}' copied successfully to '{Path.GetFileName(destinationFolder)}'.");
-                UpdateValidRecipes(); // Refresh the list to show the new copied recipe
+                CopyDirectory(currentRecipeFolder, destinationFolder);
 
-                // TODO: WRITE PARAMETER DATA TO RMS AREA
+                UpdateValidRecipes();
+
                 EquipEventHelpers.ParameterWordSingleParameterUpdate(1, CurrentRecipe.CommonRecipe.LogSaveDay);
 
                 bool result1 = CIMHelpers.TryParseRecipeNumber(Path.GetFileName(destinationFolder), out int index);
@@ -281,62 +340,59 @@ namespace SDV_MoldingInjection.Recipe
 
                 EquipEventHelpers.PPIDCreate(Path.GetFileName(destinationFolder));
             }
-            catch (Exception ex)
+            else
             {
-                MessageBoxEx.Show($"Failed to copy recipe: {ex.Message}");
+                MessageBox.Show($" Recipe folder \"$\"{currentRecipeFolder}_copy\"\" exists");
             }
         }
 
         public void Save()
         {
-            lock (_locker)
+            string currentRecipeFolder = GetRecipeFolderPath(RecipeSetting.CurrentRecipe);
+            string currentRecipeFile = Path.Combine(currentRecipeFolder, "Recipe.json");
+            if (Directory.Exists(currentRecipeFolder) == false)
             {
-                string currentRecipeFolder = Path.Combine(recipeFolder, RecipeSetting.CurrentRecipe);
-                string currentRecipeFile = Path.Combine(currentRecipeFolder, "Recipe.json");
-                if (Directory.Exists(currentRecipeFolder) == false)
-                    MessageBoxEx.Show($" Recipe folder \"{currentRecipeFolder}\" not found");
-
-                var settings = new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.Auto
-                };
-
-                string serializeStr = JsonConvert.SerializeObject(CurrentRecipe, Formatting.Indented, settings);
-                File.WriteAllText(currentRecipeFile, serializeStr);
+                Directory.CreateDirectory(currentRecipeFolder);
             }
+
+            var settings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            };
+
+            string serializeStr = JsonConvert.SerializeObject(CurrentRecipe, Formatting.Indented, settings);
+            File.WriteAllText(currentRecipeFile, serializeStr);
         }
 
         public void UpdateValidRecipes()
         {
-            Application.Current.Dispatcher.Invoke(() => {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
                 try
                 {
-                    if (!Directory.Exists(recipeFolder))
-                    {
-                        _validRecipes.Clear();
-                        return;
-                    }
-
-                    var onDiskRecipes = Directory.GetDirectories(recipeFolder, "*", SearchOption.TopDirectoryOnly)
-                                                 .Select(Path.GetFileName)
-                                                 .Where(name => name != null)
-                                                 .ToList();
+                    _recipeCatalog.Refresh();
+                    IReadOnlyList<RecipeInfo> recipes = _recipeCatalog.GetAll();
 
                     _validRecipes.Clear();
-                    foreach (var recipe in onDiskRecipes.OrderBy(r => r))
+                    _validRecipeInfos.Clear();
+                    foreach (RecipeInfo recipe in recipes)
                     {
-                        _validRecipes.Add(recipe!);
+                        _validRecipes.Add(recipe.Name);
+                        _validRecipeInfos.Add(recipe);
                     }
 
                     AllRecipe = _validRecipes.ToArray();
                     OnPropertyChanged(nameof(ValidRecipes));
+                    OnPropertyChanged(nameof(ValidRecipeInfos));
                 }
                 catch (Exception ex) { MessageBoxEx.Show($"Failed to update recipe list: {ex.Message}"); }
             });
         }
+
         public void SetCurrentModel(string selectedRecipe)
         {
-            string selectedRecipeFolder = Path.Combine(recipeFolder, selectedRecipe);
+            selectedRecipe = ResolveRecipeName(selectedRecipe);
+            string selectedRecipeFolder = GetRecipeFolderPath(selectedRecipe);
             if (Directory.Exists(selectedRecipeFolder) == false)
             {
                 MessageBoxEx.ShowDialog($"{selectedRecipeFolder} folder not exits");
@@ -352,10 +408,64 @@ namespace SDV_MoldingInjection.Recipe
                 Load();
                 return;
             }
+
+            CurrentModelChanged?.Invoke();
+            OnPropertyChanged(nameof(CurrentRecipeDisplayName));
         }
         #endregion
 
         #region Private Methods
+        private void RecipeSetting_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(RecipeSetting.CurrentRecipe))
+            {
+                OnPropertyChanged(nameof(CurrentRecipeDisplayName));
+            }
+        }
+
+        private void BeginRecipeLoading()
+        {
+            _loadingDepth++;
+            if (_loadingDepth == 1)
+            {
+                OnPropertyChanged(nameof(IsLoadingRecipe));
+            }
+        }
+
+        private void EndRecipeLoading()
+        {
+            if (_loadingDepth <= 0)
+            {
+                return;
+            }
+
+            _loadingDepth--;
+            if (_loadingDepth == 0)
+            {
+                OnPropertyChanged(nameof(IsLoadingRecipe));
+            }
+        }
+
+        private string ResolveRecipeName(string recipeNameOrDisplay)
+        {
+            return _recipeCatalog.ResolveRecipeName(recipeNameOrDisplay);
+        }
+
+        private string ResolveRecipeFolderName(string recipeNameOrDisplay)
+        {
+            return _recipeCatalog.ResolveFolderName(recipeNameOrDisplay);
+        }
+
+        private int ParseRecipeId(string recipeName)
+        {
+            if (CIMHelpers.TryParseRecipeNumber(recipeName, out int recipeId))
+            {
+                return recipeId;
+            }
+
+            return -1;
+        }
+
         private void CopyDirectory(string sourceDir, string destinationDir)
         {
             Directory.CreateDirectory(destinationDir);
@@ -373,7 +483,5 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
         #endregion
-
-        private readonly object _locker = new object();
     }
 }

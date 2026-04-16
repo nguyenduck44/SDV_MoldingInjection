@@ -16,6 +16,7 @@ namespace SDV_MoldingInjection.Extensions
         {
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
+                services.AddSingleton<RecipeCatalog>();
                 services.AddSingleton<RecipeSelector>();
                 services.AddSingleton<RecipeList>();
 

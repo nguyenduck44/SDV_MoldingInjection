@@ -135,8 +135,7 @@
                         Foreground="{StaticResource PrimaryBackgroundColor}" />
                     <Border
                         BorderThickness="0 3 0 0">
-                        <TextBlock
-                            Text="{Binding RecipeSelector.RecipeSetting.CurrentRecipe,StringFormat='{}PPID   : {0}'}"
+                        <TextBlock Text="{Binding RecipeSelector.CurrentRecipeDisplayName,StringFormat='{}PPID   : {0}'}"
                             Margin="10 0"
                             FontWeight="SemiBold"
                             FontSize="16"

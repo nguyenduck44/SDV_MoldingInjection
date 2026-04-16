@@ -189,7 +189,7 @@ namespace SDV_MoldingInjection.MVVM.Views
             {
                 string currentRecipeName = viewModel.RecipeSelector.RecipeSetting.CurrentRecipe;
                 viewModel.SelectedModel = currentRecipeName;
-                listBox.SelectedItem = currentRecipeName;
+                listBox.SelectedValue = currentRecipeName;
             }
             else if (listBox.Items.Count > 0)
             {
