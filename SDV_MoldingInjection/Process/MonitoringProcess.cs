@@ -72,12 +72,12 @@ namespace SDV_MoldingInjection.Process
                 case EMonitoringProcessMoveMultiPointStep.PointMove:
                     foreach (var pp in currentPoints)
                     {
-                        pp.Motion.MoveAbs(pp.TargetValue);
+                        pp.Motion.MoveAbs(pp.TargetPos);
                     }
 
                     Wait(_recipeSelector.CurrentRecipe.CommonRecipe.MotionMoveTimeout, () =>
                     {
-                        return currentPoints.All(pp => pp.Motion.IsOnPosition(pp.TargetValue));
+                        return currentPoints.All(pp => pp.Motion.IsOnPosition(pp.TargetPos));
                     });
 
                     Step.RunStep++;

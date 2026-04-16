@@ -783,7 +783,7 @@ namespace SDV_MoldingInjection.Process
                     {
                         _devices.Outputs.EQPStop.Value = false;
                         Thread.Sleep(50);
-                        ProcessMode = EProcessMode.Run;
+                        ProcessMode = EProcessMode.ToRun;
                     }
                     else
                     {
