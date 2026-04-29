@@ -1,27 +1,27 @@
 [submodule "EQX.Core"]
 	path = EQX.Core
-	url = //192.168.100.12/GitServer/EQX.Core.git
+	url = \\192.168.100.12\GitServer\EQX.Core.git
 [submodule "EQX.Device"]
 	path = EQX.Device
-	url = //192.168.100.12/GitServer/EQX.Device.git
+	url = \\192.168.100.12\GitServer\EQX.Device.git
 [submodule "EQX.Motion"]
 	path = EQX.Motion
-	url = //192.168.100.12/GitServer/EQX.Motion.git
+	url = \\192.168.100.12\GitServer\EQX.Motion.git
 [submodule "EQX.InOut"]
 	path = EQX.InOut
-	url = //192.168.100.12/GitServer/EQX.InOut.git
+	url = \\192.168.100.12\GitServer\EQX.InOut.git
 [submodule "EQX.UI"]
 	path = EQX.UI
-	url = //192.168.100.12/GitServer/EQX.UI.git
+	url = \\192.168.100.12\GitServer\EQX.UI.git
 [submodule "EQX.Process"]
 	path = EQX.Process
-	url = //192.168.100.12/GitServer/EQX.Process.git
+	url = \\192.168.100.12\GitServer\EQX.Process.git
 [submodule "EQX.ThirdParty"]
 	path = EQX.ThirdParty
-	url = //192.168.100.12/GitServer/EQX.ThirdParty.git
+	url = \\192.168.100.12\GitServer\EQX.ThirdParty.git
 [submodule "EQX.Vision"]
 	path = EQX.Vision
-	url = //192.168.100.12/GitServer/EQX.Vision.git
+	url = \\192.168.100.12\GitServer\EQX.Vision.git
 [submodule "EQX.VisionUI"]
 	path = EQX.VisionUI
-	url = //192.168.100.12/GitServer/EQX.VisionUI.git
+	url = \\192.168.100.12\GitServer\EQX.VisionUI.git
