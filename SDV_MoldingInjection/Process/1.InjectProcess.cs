@@ -29,7 +29,7 @@ namespace SDV_MoldingInjection.Process
         private double YAxisDummyPos => _positionList.InjectMaintenanceTeachingPosition.YAxisDummyPos.TargetPos;
         private double XAxisNeedleCleanPos => _positionList.InjectMaintenanceTeachingPosition.XAxisNeedleCleanPos.TargetPos;
         private double YAxisNeedleCleanPos => _positionList.InjectMaintenanceTeachingPosition.YAxisNeedleCleanPos.TargetPos;
-        
+
         private double Z1AxisSafetyPos => _positionList.SPDHead1MaintenanceTeachingPosition.Z1AxisSafetyPos.TargetPos;
         private double Z2AxisSafetyPos => _positionList.SPDHead2MaintenanceTeachingPosition.Z2AxisSafetyPos.TargetPos;
         private double Z3AxisSafetyPos => _positionList.SPDHead3MaintenanceTeachingPosition.Z3AxisSafetyPos.TargetPos;
@@ -1291,7 +1291,7 @@ namespace SDV_MoldingInjection.Process
                         _productionService.WriteData(EProductionWriteType.Input, inputCount);
                     }
 
-                    if (isLoading == false && _machineStatus.IsDryRunMode == false)
+                    if (isLoading == false)
                     {
                         if (_optionRecipe.SkipHead12 == false &&
                             In_Jig1Detect.Value == false &&
@@ -1319,8 +1319,12 @@ namespace SDV_MoldingInjection.Process
                             break;
                         }
 
-                        Log.Debug($"Write data output count: {outputCount}");
-                        _productionService.WriteData(EProductionWriteType.Output, outputCount);
+                        if (_machineStatus.IsDryRunMode == false)
+                        {
+                            Log.Debug($"Write data output count: {outputCount}");
+                            _productionService.WriteData(EProductionWriteType.Output, outputCount);
+                        }
+
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
                         break;
                     }
@@ -1341,11 +1345,6 @@ namespace SDV_MoldingInjection.Process
                     {
                         //TODO : MCR read for loading
                         Log.Debug($"MCR_Read");
-                    }
-                    else
-                    {
-                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
-                        break;
                     }
 
                     Step.RunStep++;
@@ -1696,7 +1695,7 @@ namespace SDV_MoldingInjection.Process
                         RaiseHeadWarning(EWarning.MO_Z1_AXIS_SAFE_POS_TIMEOUT, _failHead);
                         break;
                     }
-                    
+
                     Log.Debug("Z axis up after clean done");
                     Step.RunStep++;
                     break;

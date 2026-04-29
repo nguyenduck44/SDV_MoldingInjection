@@ -212,15 +212,20 @@ namespace SDV_MoldingInjection.Defines
             var opt = _recipeSelector.CurrentRecipe.OptionRecipe;
             var inj = InjectProcess;
 
+            bool JigDetect1 = _machineStatus.IsDryRunMode ? true : _devices.Inputs.Jig1Detect.Value;
+            bool JigDetect2 = _machineStatus.IsDryRunMode ? true : _devices.Inputs.Jig2Detect.Value;
+            bool JigDetect3 = _machineStatus.IsDryRunMode ? true : _devices.Inputs.Jig3Detect.Value;
+            bool JigDetect4 = _machineStatus.IsDryRunMode ? true : _devices.Inputs.Jig4Detect.Value;
+            
             byte jig1Status = MapJigPairToProtocolStatus(opt.SkipHead12,
                 inj.JigStatuses[0],
-                _devices.Inputs.Jig1Detect.Value,
-                _devices.Inputs.Jig2Detect.Value);
+                JigDetect1,
+                JigDetect2);
 
             byte jig2Status = MapJigPairToProtocolStatus(opt.SkipHead34,
                 inj.JigStatuses[1],
-                _devices.Inputs.Jig3Detect.Value,
-                _devices.Inputs.Jig4Detect.Value);
+                JigDetect3,
+                JigDetect4);
 
             byte[] buffer = new byte[] {
                 0x02,
