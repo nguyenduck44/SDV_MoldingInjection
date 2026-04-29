@@ -102,6 +102,7 @@ namespace SDV_MoldingInjection.Defines
         public IDInput SmokeDetectAlarmEBox => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SMOKE_DETECT_DETECT_ALARM_EBOX);
         public IDInput TempHighAlarmEBox => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SMOKE_DETECT_TEMP_HIGH_ALARM_EBOX);
         public IDInput TempHighWarningEBox => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SMOKE_DETECT_TEMP_HIGH_WARNING_EBOX);
+        public IDInput PumpMCOn => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_MC_ON);
 
         public IDInput Nozzle1Touch => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.NOZZLE1_TOUCH_DETECT);
         public IDInput Nozzle2Touch => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.NOZZLE2_TOUCH_DETECT);
@@ -145,7 +146,7 @@ namespace SDV_MoldingInjection.Defines
         public IDInput DummyOverflowDetect2 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DUMMY_OVERFLOW_DETECT_2);
         public IDInput DummyOverflowDetect3 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DUMMY_OVERFLOW_DETECT_3);
         public IDInput DummyOverflowDetect4 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DUMMY_OVERFLOW_DETECT_4);
-        public IDInput EmoInterfaceKNK => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.EMO_INTERFACE_KNK);
+        public IDInput EmoInterfaceKNK_OK => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.EMO_INTERFACE_KNK);
 
         public IDInput DoorOpenRearLeft => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_OPEN_REAR_LEFT);
         public IDInput DoorReleaseRearLeft => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_RELEASE_REAR_LEFT);
