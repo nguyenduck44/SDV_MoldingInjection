@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="SDV_MoldingInjection.MVVM.Views.InOutHandlerMonitoring"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
+             mc:Ignorable="d"
+             xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
+             d:DataContext="{d:DesignInstance Type={x:Type vm:InOutHandlerMonitoringViewModel}}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="8*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Label Content="Send"/>
+        <Label Content="Receive"
+               Grid.Column="1"/>
+
+        <ListView Grid.Row="1"
+                  ItemsSource="{Binding InOutHandlerSendList}"/>
+        <ListView Grid.Row="1"
+                  Grid.Column="1"
+                  ItemsSource="{Binding InOutHandlerReceivedList}">
+        </ListView>
+
+        <StackPanel Grid.Row="2"
+                    Grid.ColumnSpan="2">
+            <Button Content="Send End"
+                    Command="{Binding SendEndCommand}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

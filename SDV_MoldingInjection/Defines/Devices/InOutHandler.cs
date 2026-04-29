@@ -27,6 +27,9 @@ namespace SDV_MoldingInjection.Defines
         private IProcess<ESequence> RootProcess => _processes.RootProcess;
         private InjectProcess InjectProcess => _processes.All.OfType<InjectProcess>().First();
 
+        public EventHandler InOutHandlerReceived;
+        public EventHandler InOutHandlerSend;
+
         public InOutHandler([FromKeyedServices("InOutHandlerSerialCommunication")] SerialCommunicator serialCommunicator,
             RecipeSelector recipeSelector,
             IServiceProvider serviceProvider,
@@ -132,6 +135,8 @@ namespace SDV_MoldingInjection.Defines
             {
                 return;
             }
+
+            InOutHandlerReceived?.Invoke(messageBuffer, new EventArgs());
 
             string command = messageBuffer.Substring(1, 4);
 
@@ -250,8 +255,8 @@ namespace SDV_MoldingInjection.Defines
             int head = message[5] - 0x31;
             bool isUse = message[6] == 0x16;
 
-            if (head == 0) _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 = isUse;
-            else if (head == 1) _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34 = isUse;
+            if (head == 0) _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 = !isUse;
+            else if (head == 1) _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34 = !isUse;
 
             Handler_Send_HeadUse_Success(head);
         }
@@ -361,6 +366,8 @@ namespace SDV_MoldingInjection.Defines
                 (byte)(isChamberOpen ? 0x32 : 0x31),
                 0x03
             };
+
+            TransmitData(buffer);
         }
 
         public void Handler_SendError(int errorCode)
@@ -374,6 +381,8 @@ namespace SDV_MoldingInjection.Defines
                 (byte)(0x30 + (errorCode % 10)),
                 0x03
             };
+
+            TransmitData(buffer);
         }
 
         /// <summary>11–15 theo bảng 제품 상태 protocol.</summary>
@@ -396,6 +405,8 @@ namespace SDV_MoldingInjection.Defines
             if (_recipeSelector.CurrentRecipe.OptionRecipe.InputTypeManual) return;
 
             _serialCommunicator.Write(buffer);
+
+            InOutHandlerSend?.Invoke(buffer,new EventArgs());
         }
 
         private bool MachineReadyCheck()

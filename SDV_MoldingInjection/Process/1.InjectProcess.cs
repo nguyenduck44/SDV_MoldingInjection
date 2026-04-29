@@ -1153,6 +1153,7 @@ namespace SDV_MoldingInjection.Process
                     {
                         Log.Info("Unloading start");
                     }
+
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.YAxis_ReadyPos_Move:
@@ -1175,8 +1176,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Wait(100);
-
+                    Log.Debug($"{YAxis.Name} move to ready pos [{YAxisReadyPos}mm] DONE");
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Chamber_CoverOpen:
@@ -1202,19 +1202,6 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Transfer_Load_SendRequest:
-                    if (_machineStatus.IsDryRunMode)
-                    {
-                        if (isLoading)
-                        {
-                            Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Chamber_CoverClose;
-                            break;
-                        }
-
-                        Wait(3000);
-                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
-                        break;
-                    }
-
                     if (_optionRecipe.InputTypeManual)
                     {
                         if (isLoading && _machineStatus.ConfirmLoadingFinish)
@@ -1239,7 +1226,7 @@ namespace SDV_MoldingInjection.Process
                             break;
                         }
 
-                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Update_Jig_Status;
+                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Jig_Check;
                         break;
                     }
 
@@ -1251,15 +1238,8 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    Log.Debug("InOut send transfer done");
                     _machineStatus.InOutHandlerStartRequest = false;
-                    Step.RunStep++;
-                    break;
-                case EMoldProcLoadingUnloadingStep.Update_Jig_Status:
-                    if (isLoading)
-                    {
-                        UpdateBothJigStatus(EJigStatus.None);
-                    }
-
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Jig_Check:
@@ -1343,6 +1323,15 @@ namespace SDV_MoldingInjection.Process
                         _productionService.WriteData(EProductionWriteType.Output, outputCount);
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
                         break;
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case EMoldProcLoadingUnloadingStep.Update_Jig_Status:
+                    if (isLoading)
+                    {
+                        Log.Debug($"Update Jig Status: {EJigStatus.Ready}");
+                        UpdateBothJigStatus(EJigStatus.Ready);
                     }
 
                     Step.RunStep++;
