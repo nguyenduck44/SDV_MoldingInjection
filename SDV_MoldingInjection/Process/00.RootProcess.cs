@@ -552,9 +552,7 @@ namespace SDV_MoldingInjection.Process
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
-                Log.Error("POWER OFF");
                 RaiseAlarm((int)EAlarm.UT_MAIN_MC_OFF);
-                return;
             }
 #endif
             if (_devices.Inputs.Emergency.Value == true)
@@ -647,6 +645,11 @@ namespace SDV_MoldingInjection.Process
                     //Log.Error($"{motion.Name} Motion Alarm");
                 });
                 RaiseAlarm((int)EAlarm.MO_MAIN_SERVO_ALARM_DETECT);
+            }
+
+            if(_devices.Inputs.EmoInterfaceKNK_OK.Value == false)
+            {
+                RaiseWarning(EWarning.EM_INOUT_MACHINE_EMO);
             }
         }
 
@@ -862,6 +865,16 @@ namespace SDV_MoldingInjection.Process
                 if (_machineStatus.CurrentAlarms.Any(e => e.ErrorCode == errorLogEntry.ErrorCode) == false)
                 {
                     _machineStatus.CurrentAlarms.Add(errorLogEntry);
+                    if(isAlarm)
+                    {
+                        raisedAlarmCode = id;
+                        ProcessMode = EProcessMode.ToAlarm;
+                    }
+                    else
+                    {
+                        raisedWarningCode = id;
+                        ProcessMode = EProcessMode.ToWarning;
+                    }
                 }
             });
         }

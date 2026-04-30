@@ -146,19 +146,19 @@ namespace SDV_MoldingInjection.Process
         #region Process Methods
         public override bool ProcessToAlarm()
         {
-            DisableChamberOpenCloes();
+            DisableChamberOpenClose();
             return base.ProcessToAlarm();
         }
 
         public override bool ProcessToStop()
         {
-            DisableChamberOpenCloes();
+            DisableChamberOpenClose();
             return base.ProcessToStop();
         }
 
         public override bool ProcessToWarning()
         {
-            DisableChamberOpenCloes();
+            DisableChamberOpenClose();
             return base.ProcessToWarning();
         }
 
@@ -1225,7 +1225,7 @@ namespace SDV_MoldingInjection.Process
                             Step.RunStep++;
                             break;
                         }
-
+                        _inOutHandler.Handler_Send_End(JigStatuses);
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Jig_Check;
                         break;
                     }
@@ -1238,7 +1238,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Debug("InOut send transfer done");
+                    Log.Debug("Received Start Request");
                     _machineStatus.InOutHandlerStartRequest = false;
                     Step.RunStep++;
                     break;
@@ -2636,7 +2636,7 @@ namespace SDV_MoldingInjection.Process
             return Z4Axis.IsOnPosition(Z4AxisWeightingPos);
         }
 
-        private void DisableChamberOpenCloes()
+        private void DisableChamberOpenClose()
         {
             if (Out_ChamberOpen == true || Out_ChamberClose == true)
             {
