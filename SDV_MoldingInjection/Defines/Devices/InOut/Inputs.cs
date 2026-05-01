@@ -146,12 +146,14 @@ namespace SDV_MoldingInjection.Defines
         public IDInput DummyOverflowDetect2 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DUMMY_OVERFLOW_DETECT_2);
         public IDInput DummyOverflowDetect3 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DUMMY_OVERFLOW_DETECT_3);
         public IDInput DummyOverflowDetect4 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DUMMY_OVERFLOW_DETECT_4);
-        public IDInput EmoInterfaceKNK_OK => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.EMO_INTERFACE_KNK);
+        public IDInput InOutMachineEmo => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.INOUT_MACHINE_EMO);
 
         public IDInput DoorOpenRearLeft => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_OPEN_REAR_LEFT);
         public IDInput DoorReleaseRearLeft => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_RELEASE_REAR_LEFT);
         public IDInput DoorOpenRearRight => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_OPEN_REAR_RIGHT);
         public IDInput DoorReleaseRearRight => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_RELEASE_REAR_RIGHT);
+        public IDInput InOutMachineDoorClose => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.INOUT_MACHINE_DOOR_CLOSE);
+        public IDInput InOutMachineMCOn => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.INOUT_MACHINE_MC_ON);
 
         #region SPD Head Inputs
         public IDInput H1_CylUp => _dHead1InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.CYL_UP_POS);

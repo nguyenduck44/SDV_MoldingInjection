@@ -647,7 +647,7 @@ namespace SDV_MoldingInjection.Process
                 RaiseAlarm((int)EAlarm.MO_MAIN_SERVO_ALARM_DETECT);
             }
 
-            if(_devices.Inputs.EmoInterfaceKNK_OK.Value == false)
+            if(_devices.Inputs.InOutMachineEmo.Value == false)
             {
                 RaiseWarning(EWarning.EM_INOUT_MACHINE_EMO);
             }
