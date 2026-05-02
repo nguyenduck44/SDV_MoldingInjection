@@ -659,7 +659,7 @@ namespace SDV_MoldingInjection.Process
                 RaiseWarning((int)EWarning.UT_INOUT_MACHINE_MC_OFF);
             }
 
-            if (_devices.Inputs.InOutMachineDoorOpen.Value == false)
+            if (_devices.Inputs.InOutMachineDoorOpen.Value == true)
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);

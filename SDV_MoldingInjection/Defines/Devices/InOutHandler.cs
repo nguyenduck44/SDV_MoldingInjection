@@ -179,7 +179,7 @@ namespace SDV_MoldingInjection.Defines
             byte[] buffer = new byte[] {
                 0x02,
                 0x43, 0x54, 0x52, 0x44,
-                (byte)(isMachineReady == false ? 0x15 : 0x16),
+                (byte)(isMachineReady ? 0x15 : 0x16),
                 0x03
             };
 
