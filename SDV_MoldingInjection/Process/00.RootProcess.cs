@@ -585,9 +585,7 @@ namespace SDV_MoldingInjection.Process
                 RaiseAlarm((int)EAlarm.UT_MAIN_SMOKE_DETECT);
             }
 
-            if (_devices.Inputs.TempHighWarning.Value == true &&
-                ProcessMode != EProcessMode.Warning &&
-                ProcessMode != EProcessMode.ToWarning)
+            if (_devices.Inputs.TempHighWarning.Value == true)
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
@@ -649,7 +647,23 @@ namespace SDV_MoldingInjection.Process
 
             if(_devices.Inputs.InOutMachineEmo.Value == false)
             {
+                Childs!.ToList().ForEach(p => p.IsAlarm = true);
+                Childs!.ToList().ForEach(p => p.IsCanStop = true);
                 RaiseWarning(EWarning.EM_INOUT_MACHINE_EMO);
+            }
+
+            if (_devices.Inputs.InOutMachineMCOn.Value == false)
+            {
+                Childs!.ToList().ForEach(p => p.IsAlarm = true);
+                Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                RaiseWarning((int)EWarning.UT_INOUT_MACHINE_MC_OFF);
+            }
+
+            if (_devices.Inputs.InOutMachineDoorOpen.Value == false)
+            {
+                Childs!.ToList().ForEach(p => p.IsAlarm = true);
+                Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                RaiseWarning((int)EWarning.DO_INOUT_MACHINE_DOOR_OPEN);
             }
         }
 

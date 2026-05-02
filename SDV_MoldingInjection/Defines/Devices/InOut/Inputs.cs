@@ -152,7 +152,7 @@ namespace SDV_MoldingInjection.Defines
         public IDInput DoorReleaseRearLeft => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_RELEASE_REAR_LEFT);
         public IDInput DoorOpenRearRight => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_OPEN_REAR_RIGHT);
         public IDInput DoorReleaseRearRight => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_RELEASE_REAR_RIGHT);
-        public IDInput InOutMachineDoorClose => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.INOUT_MACHINE_DOOR_CLOSE);
+        public IDInput InOutMachineDoorOpen => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.INOUT_MACHINE_DOOR_OPEN);
         public IDInput InOutMachineMCOn => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.INOUT_MACHINE_MC_ON);
 
         #region SPD Head Inputs
@@ -193,7 +193,8 @@ namespace SDV_MoldingInjection.Defines
             DoorOpenRearLeft.Value == false &&
             DoorOpenRearRight.Value == false &&
             DoorOpenLeft.Value == false &&
-            DoorOpenRight.Value == false;
+            DoorOpenRight.Value == false &&
+            InOutMachineDoorOpen.Value == false;
 
         public bool DoorLock =>
             DoorReleaseRearLeft.Value == false &&

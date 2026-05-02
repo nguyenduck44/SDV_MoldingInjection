@@ -24,7 +24,12 @@ namespace SDV_MoldingInjection.Defines
         OP_MAIN_KEY_NOT_IN_AUTO_MODE,
         [Description("IN04")]
         OP_MAIN_MACHINE_NOT_IN_AUTO_MODE,
+        [Description("IN68")]
         EM_INOUT_MACHINE_EMO,
+        [Description("IN74")]
+        UT_INOUT_MACHINE_MC_OFF,
+        [Description("IN73")]
+        DO_INOUT_MACHINE_DOOR_OPEN,
 
         //--------- 1200 -> 1999 : Mold ---------
         CY_MOLD_CHAMBER_OPEN_WARNING = 1200,
