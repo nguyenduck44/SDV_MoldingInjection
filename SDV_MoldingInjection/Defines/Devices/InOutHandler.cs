@@ -169,7 +169,28 @@ namespace SDV_MoldingInjection.Defines
                 case "CRCI": //CLEAR ILDE PURGE MODE
                     Handler_ClearIdlePurgeMode_Received(messageBuffer);
                     break;
+                case "CRCC": //COVER CHECK
+                    Handler_CoverCheck_Received(messageBuffer);
+                    break;
             }
+        }
+
+        private void Handler_CoverCheck_Received(string messageBuffer)
+        {
+            bool isChamberOpen = _devices.Cylinders.ChamberOpenClose.IsOpen();
+
+            byte ChamberStarus;
+            if (isChamberOpen) ChamberStarus = 0x32;
+            else if (isChamberOpen == false) ChamberStarus = 0x31;
+            else ChamberStarus = 0x16;
+            byte[] buffer = new byte[] {
+                0x02,
+                0x43, 0x54, 0x43, 0x43,
+                ChamberStarus,
+                0x03
+            };
+
+            TransmitData(buffer);
         }
 
         private void Handler_ReadyCheck_Received(string message)
@@ -212,11 +233,11 @@ namespace SDV_MoldingInjection.Defines
             var opt = _recipeSelector.CurrentRecipe.OptionRecipe;
             var inj = InjectProcess;
 
-            bool JigDetect1 = _machineStatus.IsDryRunMode ? true : _devices.Inputs.Jig1Detect.Value;
-            bool JigDetect2 = _machineStatus.IsDryRunMode ? true : _devices.Inputs.Jig2Detect.Value;
-            bool JigDetect3 = _machineStatus.IsDryRunMode ? true : _devices.Inputs.Jig3Detect.Value;
-            bool JigDetect4 = _machineStatus.IsDryRunMode ? true : _devices.Inputs.Jig4Detect.Value;
-            
+            bool JigDetect1 = _devices.Inputs.Jig1Detect.Value;
+            bool JigDetect2 = _devices.Inputs.Jig2Detect.Value;
+            bool JigDetect3 = _devices.Inputs.Jig3Detect.Value;
+            bool JigDetect4 = _devices.Inputs.Jig4Detect.Value;
+
             byte jig1Status = MapJigPairToProtocolStatus(opt.SkipHead12,
                 inj.JigStatuses[0],
                 JigDetect1,
@@ -346,7 +367,7 @@ namespace SDV_MoldingInjection.Defines
 
         public void Handler_Send_End(EJigStatus[] jigStatuses)
         {
-            if(jigStatuses.Length != 2) return;
+            if (jigStatuses.Length != 2) return;
 
             bool isChamberOpen = _devices.Cylinders.ChamberOpenClose.IsOpen();
 
@@ -357,14 +378,15 @@ namespace SDV_MoldingInjection.Defines
             bool JigDetect2 = _machineStatus.IsDryRunMode ? true : _devices.Inputs.Jig2Detect.Value;
             bool JigDetect3 = _machineStatus.IsDryRunMode ? true : _devices.Inputs.Jig3Detect.Value;
             bool JigDetect4 = _machineStatus.IsDryRunMode ? true : _devices.Inputs.Jig4Detect.Value;
+            EJigStatus eJigStatus2 = _machineStatus.IsDryRunMode ? EJigStatus.InMolding : inj.JigStatuses[1];
 
             byte jig1Status = MapJigPairToProtocolStatus(opt.SkipHead12,
-                inj.JigStatuses[0],
-                JigDetect1,
-                JigDetect2);
+            inj.JigStatuses[0],
+            JigDetect1,
+            JigDetect2);
 
             byte jig2Status = MapJigPairToProtocolStatus(opt.SkipHead34,
-                inj.JigStatuses[1],
+                eJigStatus2,
                 JigDetect3,
                 JigDetect4);
 
@@ -416,7 +438,7 @@ namespace SDV_MoldingInjection.Defines
 
             _serialCommunicator.Write(buffer);
 
-            InOutHandlerSend?.Invoke(buffer,new EventArgs());
+            InOutHandlerSend?.Invoke(buffer, new EventArgs());
         }
 
         private bool MachineReadyCheck()
