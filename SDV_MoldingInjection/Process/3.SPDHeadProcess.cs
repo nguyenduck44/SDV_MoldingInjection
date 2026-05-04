@@ -1594,7 +1594,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     double target = _currentSPDHeadRecipe.ResinWeight;
-                    double tolerance = _currentSPDHeadRecipe.ResinWeightSpec;
+                    double tolerance = _currentSPDHeadRecipe.ResinWeight * (_currentSPDHeadRecipe.ResinWeightSpec / 100);
 
                     if (Math.Abs(_calibWeight_mg - target) <= tolerance)
                     {
