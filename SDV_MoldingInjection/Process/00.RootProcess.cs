@@ -547,21 +547,6 @@ namespace SDV_MoldingInjection.Process
 
         private void CheckRealTimeAlarmStatus()
         {
-#if !SIMULATION
-            if (_devices.Inputs.ServoOn.Value == false)
-            {
-                Childs!.ToList().ForEach(p => p.IsAlarm = true);
-                Childs!.ToList().ForEach(p => p.IsCanStop = true);
-                RaiseAlarm((int)EAlarm.UT_MAIN_MC_OFF);
-            }
-#endif
-            if (_devices.Inputs.Emergency.Value == true)
-            {
-                Childs!.ToList().ForEach(p => p.IsAlarm = true);
-                Childs!.ToList().ForEach(p => p.IsCanStop = true);
-                //Log.Error("Emergency Stop Activated. MC OFF");
-                RaiseAlarm((int)EAlarm.EM_MAIN_CP_EMS_SERVO_OFF);
-            }
             if (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run ||
                 ProcessMode == EProcessMode.ToOrigin || ProcessMode == EProcessMode.Origin)
             {
@@ -577,6 +562,37 @@ namespace SDV_MoldingInjection.Process
                 }
             }
 
+            if (_devices.Motions.All.Count(motion => motion.Status.HwNegLimitDetect == true || motion.Status.HwPosLimitDetect == true) > 0
+                && (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run))
+            {
+                _devices.Motions.All.Where(m => m.Status.HwNegLimitDetect == true).ToList().ForEach(motion =>
+                {
+                    //Log.Error($"{motion.Name} Limit (-) Detect");
+                });
+                _devices.Motions.All.Where(m => m.Status.HwPosLimitDetect == true).ToList().ForEach(motion =>
+                {
+                    //Log.Error($"{motion.Name} Limit (+) Detect");
+                });
+
+                RaiseAlarm((int)EAlarm.MO_MAIN_AXIS_LIMIT_DETECT);
+            }
+
+#if !SIMULATION
+            if (_devices.Inputs.ServoOn.Value == false)
+            {
+                Childs!.ToList().ForEach(p => p.IsAlarm = true);
+                Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                RaiseAlarm((int)EAlarm.UT_MAIN_MC_OFF);
+            }
+#endif
+            if (_devices.Inputs.Emergency.Value == true)
+            {
+                Childs!.ToList().ForEach(p => p.IsAlarm = true);
+                Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                //Log.Error("Emergency Stop Activated. MC OFF");
+                RaiseAlarm((int)EAlarm.EM_MAIN_CP_EMS_SERVO_OFF);
+            }
+            
             if (_devices.Inputs.SmokeDetectAlarm.Value == true)
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
@@ -620,20 +636,7 @@ namespace SDV_MoldingInjection.Process
                 });
                 RaiseAlarm((int)EAlarm.MO_MAIN_SERVO_PWR_OFF);
             }
-            if (_devices.Motions.All.Count(motion => motion.Status.HwNegLimitDetect == true || motion.Status.HwPosLimitDetect == true) > 0
-                && (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run))
-            {
-                _devices.Motions.All.Where(m => m.Status.HwNegLimitDetect == true).ToList().ForEach(motion =>
-                {
-                    //Log.Error($"{motion.Name} Limit (-) Detect");
-                });
-                _devices.Motions.All.Where(m => m.Status.HwPosLimitDetect == true).ToList().ForEach(motion =>
-                {
-                    //Log.Error($"{motion.Name} Limit (+) Detect");
-                });
-
-                RaiseAlarm((int)EAlarm.MO_MAIN_AXIS_LIMIT_DETECT);
-            }
+            
             if (_devices.Motions.All.Count(motion => motion.Status.IsAlarm == true) > 0)
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
