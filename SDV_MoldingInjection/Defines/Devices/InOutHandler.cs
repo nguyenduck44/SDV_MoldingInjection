@@ -178,10 +178,11 @@ namespace SDV_MoldingInjection.Defines
         private void Handler_CoverCheck_Received(string messageBuffer)
         {
             bool isChamberOpen = _devices.Cylinders.ChamberOpenClose.IsOpen();
+            bool isChamberClose = _devices.Cylinders.ChamberOpenClose.IsClose();
 
             byte ChamberStarus;
             if (isChamberOpen) ChamberStarus = 0x32;
-            else if (isChamberOpen == false) ChamberStarus = 0x31;
+            else if (isChamberClose) ChamberStarus = 0x31;
             else ChamberStarus = 0x16;
             byte[] buffer = new byte[] {
                 0x02,
