@@ -57,6 +57,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     Balance.SendRequestImmediateWeightCommand();
                 }
             }
+
+            base.ExternalTimerElapsedAction();
         }
 
         public double BalanceStableWeight

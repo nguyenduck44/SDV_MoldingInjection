@@ -22,7 +22,7 @@
     </UserControl.Resources>
     <UniformGrid Rows="1">
         <GroupBox Header="I/O Status"
-                  Margin="5 0">
+                  Margin="5">
             <StackPanel Orientation="Vertical">
 
                 <Button Content="Machine In/Out"
@@ -39,7 +39,7 @@
         </GroupBox>
 
         <GroupBox Header="Product Monitor"
-                  Margin="5 0">
+                  Margin="5">
             <StackPanel Orientation="Vertical">
                 <Button Content="Production Infor"
                         Command="{Binding ProductionInforNavigateCommand}" />
@@ -51,20 +51,18 @@
                         Command="{Binding OPCallMsgNavigateCommand}" />
                 <Button Content="Interlock Msg"
                         Command="{Binding InterlockMsgNavigateCommand}" />
-                <Button Content="InOut Handler"
-                        Command="{Binding InOutHandlerMonitoringNavigateCommand}" />
             </StackPanel>
         </GroupBox>
 
         <GroupBox Header="Servo Status"
-                  Margin="5 0">
+                  Margin="5">
             <StackPanel Margin="5 0">
                 <Button Content="Motions Status"
                         Command="{Binding MotionsStatusNavigateCommand}" />
             </StackPanel>
         </GroupBox>
         <GroupBox Header="Others"
-                  Margin="5 0">
+                  Margin="5">
             <StackPanel Margin="5 0">
                 <Button Content="Interface In/Out"
                         Command="{Binding InterfaceInOutNavigateCommand}" />

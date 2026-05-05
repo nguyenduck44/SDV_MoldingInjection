@@ -127,17 +127,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
         }
 
-        public ICommand InOutHandlerMonitoringNavigateCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    _navigationService.NavigateTo<InOutHandlerMonitoringViewModel>();
-                });
-            }
-        }
-
         public ICommand TerminalMessageNavigateCommand
         {
             get
