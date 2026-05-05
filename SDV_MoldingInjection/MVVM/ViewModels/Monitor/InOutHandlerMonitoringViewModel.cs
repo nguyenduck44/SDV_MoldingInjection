@@ -18,8 +18,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public InOutHandlerMonitoringViewModel(InOutHandler inOutHandler)
         {
             InOutHandler = inOutHandler;
-            InOutHandler.InOutHandlerSend += InOutHandlerSendEventHandler;
-            InOutHandler.InOutHandlerReceived += InOutHandlerReceivedEventHandler;
         }
 
         public InOutHandler InOutHandler { get; }
