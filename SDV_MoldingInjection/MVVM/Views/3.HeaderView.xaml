@@ -60,13 +60,31 @@
             <UniformGrid
                 Columns="2"
                 Grid.Row="1">
-                <TextBlock
-                    Text="ONLINE"
-                    FontSize="16"
-                    FontWeight="SemiBold"
-                    TextAlignment="Center"
-                    VerticalAlignment="Center"
-                    Foreground="{StaticResource PrimaryBackgroundColor}" />
+                <Label FontSize="16"
+       Content="{Binding IsMasterAlive}"
+       FontWeight="Bold"
+       HorizontalContentAlignment="Center"
+       VerticalAlignment="Center">
+                    <Label.Style>
+                        <Style TargetType="{x:Type Label}"
+               BasedOn="{StaticResource {x:Type Label}}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsMasterAlive}"
+                             Value="ONLINE">
+                                    <Setter Property="Foreground"
+                            Value="{StaticResource PrimaryBackgroundColor}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsMasterAlive}"
+                             Value="OFFLINE">
+                                    <Setter Property="Foreground"
+                            Value="Tomato" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                            <Style.Setters>
+                            </Style.Setters>
+                        </Style>
+                    </Label.Style>
+                </Label>
                 <Border
                     BorderThickness="3 0">
                     <TextBlock

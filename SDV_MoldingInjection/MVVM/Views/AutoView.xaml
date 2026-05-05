@@ -158,7 +158,7 @@
             <StackPanel Grid.Column="1">
                 <GroupBox Header="PRODUCTION"
                           Style="{x:Null}"
-                          Width="145"
+                          Width="142"
                           Height="100"
                           VerticalAlignment="Top"
                           HorizontalAlignment="Left">
@@ -230,7 +230,7 @@
 
                 <GroupBox Header="TACT TIME"
                           Style="{x:Null}"
-                          Width="145"
+                          Width="142"
                           Height="100"
                           VerticalAlignment="Top"
                           HorizontalAlignment="Left">
