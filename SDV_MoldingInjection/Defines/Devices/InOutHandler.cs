@@ -7,6 +7,8 @@ using log4net;
 using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;
+using System;
+using System.Linq;
 
 namespace SDV_MoldingInjection.Defines
 {
@@ -43,6 +45,8 @@ namespace SDV_MoldingInjection.Defines
         public bool IsConnected => _serialCommunicator.IsConnected;
 
         public ILog Log => LogManager.GetLogger("InOutHandler");
+        public event Action<string>? MessageReceived;
+        public event Action<string>? MessageTransmitted;
 
         public bool Connect()
         {
@@ -125,6 +129,10 @@ namespace SDV_MoldingInjection.Defines
             {
                 return;
             }
+
+            byte[] receivedBytes = ToBytes(messageBuffer);
+            string receivedCommand = ExtractCommand(receivedBytes);
+            MessageReceived?.Invoke($"{receivedCommand}: {FormatBytes(receivedBytes)}");
 
             if (_recipeSelector.CurrentRecipe.OptionRecipe.InputTypeManual) return;
 
@@ -376,6 +384,36 @@ namespace SDV_MoldingInjection.Defines
             };
         }
 
+        public void SendTransmitCTRD() => Handler_ReadyCheck_Received(string.Empty);
+        public void SendTransmitCTRN() => Handler_CheckRun_Received(string.Empty);
+        public void SendTransmitCTCH() => Handler_ProductCheck_Received(string.Empty);
+        public void SendTransmitCTPT() => Handler_PositionCheck_Received(string.Empty);
+        public void SendTransmitCTST() => Handler_Start_Received(string.Empty);
+        public void SendTransmitCTSP() => Handler_Stop_Received(string.Empty);
+        public void SendTransmitCTSI() => Handler_SetIdlePurgeMode_Received(string.Empty);
+        public void SendTransmitCTCI() => Handler_ClearIdlePurgeMode_Received(string.Empty);
+        public void SendTransmitCTUSAndCTUE(int head, bool isUse)
+        {
+            if (head != 1 && head != 2)
+            {
+                return;
+            }
+
+            if (head == 1)
+            {
+                _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 = !isUse;
+                Response_HeadUse_Received();
+                Handler_Send_HeadUse_Success(0);
+                return;
+            }
+
+            _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34 = !isUse;
+            Response_HeadUse_Received();
+            Handler_Send_HeadUse_Success(1);
+        }
+        public void SendTransmitCTEN() => Handler_Send_End(InjectProcess.JigStatuses);
+        public void SendTransmitCTER(int errorCode) => Handler_SendError(errorCode);
+
         /// <summary>11–15 theo bảng 제품 상태 protocol.</summary>
         private byte MapJigPairToProtocolStatus(bool skipPair, EJigStatus jigStatus, bool jigDet1, bool jigDet2)
         {
@@ -393,9 +431,17 @@ namespace SDV_MoldingInjection.Defines
 
         private void TransmitData(byte[] buffer)
         {
-            if (_recipeSelector.CurrentRecipe.OptionRecipe.InputTypeManual) return;
+            string command = ExtractCommand(buffer);
+            string formattedData = $"{command}: {FormatBytes(buffer)}";
+
+            if (_recipeSelector.CurrentRecipe.OptionRecipe.InputTypeManual)
+            {
+                MessageTransmitted?.Invoke($"{formattedData} [SKIPPED: InputTypeManual]");
+                return;
+            }
 
             _serialCommunicator.Write(buffer);
+            MessageTransmitted?.Invoke(formattedData);
         }
 
         private bool MachineReadyCheck()
@@ -413,6 +459,32 @@ namespace SDV_MoldingInjection.Defines
             }
 
             return true;
+        }
+
+        private static byte[] ToBytes(string message)
+        {
+            byte[] bytes = new byte[message.Length];
+            for (int i = 0; i < message.Length; i++)
+            {
+                bytes[i] = (byte)message[i];
+            }
+
+            return bytes;
+        }
+
+        private static string FormatBytes(byte[] data)
+        {
+            return string.Join(" ", data.Select(b => $"0x{b:X2},"));
+        }
+
+        private static string ExtractCommand(byte[] data)
+        {
+            if (data.Length < 6)
+            {
+                return "UNKNOWN";
+            }
+
+            return $"{(char)data[1]}{(char)data[2]}{(char)data[3]}{(char)data[4]}";
         }
     }
 }

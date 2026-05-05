@@ -25,15 +25,15 @@
                   Margin="5 0">
             <StackPanel Orientation="Vertical">
 
-                <Button Content="Machine In/Out Check"
+                <Button Content="Machine In/Out"
                         Command="{Binding MachineIONavigate}" />
-                <Button Content="Head 1 In/Out Check"
+                <Button Content="Head 1 In/Out"
                         Command="{Binding Head1IONavigate}" />
-                <Button Content="Head 2 In/Out Check"
+                <Button Content="Head 2 In/Out"
                         Command="{Binding Head2IONavigate}" />
-                <Button Content="Head 3 In/Out Check"
+                <Button Content="Head 3 In/Out"
                         Command="{Binding Head3IONavigate}" />
-                <Button Content="Head 4 In/Out Check"
+                <Button Content="Head 4 In/Out"
                         Command="{Binding Head4IONavigate}" />
             </StackPanel>
         </GroupBox>
@@ -59,6 +59,13 @@
             <StackPanel Margin="5 0">
                 <Button Content="Motions Status"
                         Command="{Binding MotionsStatusNavigateCommand}" />
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="Others"
+                  Margin="5 0">
+            <StackPanel Margin="5 0">
+                <Button Content="Interface In/Out"
+                        Command="{Binding InterfaceInOutNavigateCommand}" />
             </StackPanel>
         </GroupBox>
     </UniformGrid>

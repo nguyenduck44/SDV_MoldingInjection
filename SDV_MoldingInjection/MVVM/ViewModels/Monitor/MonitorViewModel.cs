@@ -148,6 +148,17 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 });
             }
         }
+
+        public ICommand InterfaceInOutNavigateCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    _navigationService.NavigateTo<InterfaceInOutViewModel>();
+                });
+            }
+        }
         #endregion
 
         public MonitorViewModel(INavigationService navigationService,
