@@ -27,9 +27,6 @@ namespace SDV_MoldingInjection.Defines
         private IProcess<ESequence> RootProcess => _processes.RootProcess;
         private InjectProcess InjectProcess => _processes.All.OfType<InjectProcess>().First();
 
-        public EventHandler InOutHandlerReceived;
-        public EventHandler InOutHandlerSend;
-
         public InOutHandler([FromKeyedServices("InOutHandlerSerialCommunication")] SerialCommunicator serialCommunicator,
             RecipeSelector recipeSelector,
             IServiceProvider serviceProvider,
@@ -135,8 +132,6 @@ namespace SDV_MoldingInjection.Defines
             {
                 return;
             }
-
-            InOutHandlerReceived?.Invoke(messageBuffer, new EventArgs());
 
             string command = messageBuffer.Substring(1, 4);
 
@@ -438,8 +433,6 @@ namespace SDV_MoldingInjection.Defines
             if (_recipeSelector.CurrentRecipe.OptionRecipe.InputTypeManual) return;
 
             _serialCommunicator.Write(buffer);
-
-            InOutHandlerSend?.Invoke(buffer, new EventArgs());
         }
 
         private bool MachineReadyCheck()
