@@ -144,6 +144,7 @@
                         Style="{StaticResource TextBlockHeaderGroupBox}"
                         FontSize="14"
                         FontWeight="Bold"
+                        IsEnabled="{Binding IsOPSwitchTeachMode}"
                         Header="Motions">
                         <ItemsControl
                             ItemsSource="{Binding Motions}">

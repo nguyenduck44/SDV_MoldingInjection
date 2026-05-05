@@ -1594,7 +1594,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     double target = _currentSPDHeadRecipe.ResinWeight;
-                    double tolerance = _currentSPDHeadRecipe.ResinWeightSpec;
+                    double tolerance = _currentSPDHeadRecipe.ResinWeight * (_currentSPDHeadRecipe.ResinWeightSpec / 100);
 
                     if (Math.Abs(_calibWeight_mg - target) <= tolerance)
                     {
@@ -1823,7 +1823,7 @@ namespace SDV_MoldingInjection.Process
         }
         private void RaiseHeadAlarm(EAlarm alarm)
         {
-            RaiseWarning(alarm + ((int)(EAlarm.MO_SPD_H02_G2_AXIS_OPEN_POS_TIMEOUT - EAlarm.MO_SPD_H01_G1_AXIS_OPEN_POS_TIMEOUT)) * ((int)head - 1));
+            RaiseAlarm(alarm + ((int)(EAlarm.MO_SPD_H02_G2_AXIS_OPEN_POS_TIMEOUT - EAlarm.MO_SPD_H01_G1_AXIS_OPEN_POS_TIMEOUT)) * ((int)head - 1));
         }
         #endregion
 

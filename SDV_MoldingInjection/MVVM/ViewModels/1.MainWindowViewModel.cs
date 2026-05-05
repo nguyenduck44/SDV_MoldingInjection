@@ -69,6 +69,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _machineStatus.IsDoorPasswordVerified = true;
             RefreshDoorSafetyOverlay();
         });
+
+        public bool IsDoorClose => Devices.Inputs.DoorClose;
         #endregion
 
         public MainWindowViewModel(NavigationStore navigationStore,
@@ -110,6 +112,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         private void DoorSafetyTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
+            if(Devices.Inputs.DoorLock == false)
+            {
+                Devices.Outputs.SWKeyLock.Value = false;
+            }
+            OnPropertyChanged(nameof(IsDoorClose));
             var isDoorClose = Devices.Inputs.DoorClose;
             // Re-authenticate only when door transitions from CLOSE -> OPEN.
             if (_lastDoorClose && isDoorClose == false)

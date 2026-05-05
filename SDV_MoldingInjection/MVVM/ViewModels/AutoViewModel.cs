@@ -135,7 +135,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         return;
                     }
 
+                    if (Devices.Inputs.AutoSW.Value) return;
+
                     Devices.Outputs.EQPStop.Value = !Devices.Outputs.EQPStop.Value;
+                    if(Devices.Outputs.EQPStop.Value == false)
+                    {
+                        Devices.Outputs.SWKeyLock.Value = true;
+                    }
                 });
             }
         }

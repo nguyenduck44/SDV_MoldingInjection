@@ -59,6 +59,24 @@ namespace SDV_MoldingInjection.Defines
 
         private void MotionInterlock(bool disable)
         {
+            if(disable == false)
+            {
+                foreach(var motion in _devices.Motions.All)
+                {
+                    motion.OriginInterlocks = new Dictionary<string, Func<bool>>()
+                    {
+                        { "Machine is Teach Mode", () => _devices.Inputs.AutoSW.Value && _devices.Inputs.TeachSW.Value == false},
+                    };
+                }
+            }
+            else
+            {
+                foreach (var motion in _devices.Motions.All)
+                {
+                    motion.OriginInterlocks = new Dictionary<string, Func<bool>>();
+                }
+            }
+
             if (disable) _devices.Motions.StageYAxis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>();
             _devices.Motions.StageYAxis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>
             {

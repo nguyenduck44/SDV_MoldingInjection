@@ -12,9 +12,11 @@
 
         Transfer_Load_SendRequest,
         Wait_InOutHandlerStart_Request,
-        Update_Jig_Status,
 
         Jig_Check,
+
+        Update_Jig_Status,
+
 
         MCR_Read,
 

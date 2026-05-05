@@ -29,7 +29,7 @@ namespace SDV_MoldingInjection.Process
         private double YAxisDummyPos => _positionList.InjectMaintenanceTeachingPosition.YAxisDummyPos.TargetPos;
         private double XAxisNeedleCleanPos => _positionList.InjectMaintenanceTeachingPosition.XAxisNeedleCleanPos.TargetPos;
         private double YAxisNeedleCleanPos => _positionList.InjectMaintenanceTeachingPosition.YAxisNeedleCleanPos.TargetPos;
-        
+
         private double Z1AxisSafetyPos => _positionList.SPDHead1MaintenanceTeachingPosition.Z1AxisSafetyPos.TargetPos;
         private double Z2AxisSafetyPos => _positionList.SPDHead2MaintenanceTeachingPosition.Z2AxisSafetyPos.TargetPos;
         private double Z3AxisSafetyPos => _positionList.SPDHead3MaintenanceTeachingPosition.Z3AxisSafetyPos.TargetPos;
@@ -146,19 +146,19 @@ namespace SDV_MoldingInjection.Process
         #region Process Methods
         public override bool ProcessToAlarm()
         {
-            DisableChamberOpenCloes();
+            DisableChamberOpenClose();
             return base.ProcessToAlarm();
         }
 
         public override bool ProcessToStop()
         {
-            DisableChamberOpenCloes();
+            DisableChamberOpenClose();
             return base.ProcessToStop();
         }
 
         public override bool ProcessToWarning()
         {
-            DisableChamberOpenCloes();
+            DisableChamberOpenClose();
             return base.ProcessToWarning();
         }
 
@@ -1153,6 +1153,7 @@ namespace SDV_MoldingInjection.Process
                     {
                         Log.Info("Unloading start");
                     }
+
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.YAxis_ReadyPos_Move:
@@ -1175,8 +1176,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Wait(100);
-
+                    Log.Debug($"{YAxis.Name} move to ready pos [{YAxisReadyPos}mm] DONE");
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Chamber_CoverOpen:
@@ -1202,19 +1202,6 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Transfer_Load_SendRequest:
-                    if (_machineStatus.IsDryRunMode)
-                    {
-                        if (isLoading)
-                        {
-                            Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Chamber_CoverClose;
-                            break;
-                        }
-
-                        Wait(3000);
-                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
-                        break;
-                    }
-
                     if (_optionRecipe.InputTypeManual)
                     {
                         if (isLoading && _machineStatus.ConfirmLoadingFinish)
@@ -1238,8 +1225,8 @@ namespace SDV_MoldingInjection.Process
                             Step.RunStep++;
                             break;
                         }
-
-                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Update_Jig_Status;
+                        _inOutHandler.Handler_Send_End(JigStatuses);
+                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Jig_Check;
                         break;
                     }
 
@@ -1251,15 +1238,8 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    Log.Debug("Received Start Request");
                     _machineStatus.InOutHandlerStartRequest = false;
-                    Step.RunStep++;
-                    break;
-                case EMoldProcLoadingUnloadingStep.Update_Jig_Status:
-                    if (isLoading)
-                    {
-                        UpdateBothJigStatus(EJigStatus.None);
-                    }
-
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Jig_Check:
@@ -1311,7 +1291,7 @@ namespace SDV_MoldingInjection.Process
                         _productionService.WriteData(EProductionWriteType.Input, inputCount);
                     }
 
-                    if (isLoading == false && _machineStatus.IsDryRunMode == false)
+                    if (isLoading == false)
                     {
                         if (_optionRecipe.SkipHead12 == false &&
                             In_Jig1Detect.Value == false &&
@@ -1339,10 +1319,23 @@ namespace SDV_MoldingInjection.Process
                             break;
                         }
 
-                        Log.Debug($"Write data output count: {outputCount}");
-                        _productionService.WriteData(EProductionWriteType.Output, outputCount);
+                        if (_machineStatus.IsDryRunMode == false)
+                        {
+                            Log.Debug($"Write data output count: {outputCount}");
+                            _productionService.WriteData(EProductionWriteType.Output, outputCount);
+                        }
+
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
                         break;
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case EMoldProcLoadingUnloadingStep.Update_Jig_Status:
+                    if (isLoading)
+                    {
+                        Log.Debug($"Update Jig Status: {EJigStatus.Ready}");
+                        UpdateBothJigStatus(EJigStatus.Ready);
                     }
 
                     Step.RunStep++;
@@ -1352,11 +1345,6 @@ namespace SDV_MoldingInjection.Process
                     {
                         //TODO : MCR read for loading
                         Log.Debug($"MCR_Read");
-                    }
-                    else
-                    {
-                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
-                        break;
                     }
 
                     Step.RunStep++;
@@ -1707,7 +1695,7 @@ namespace SDV_MoldingInjection.Process
                         RaiseHeadWarning(EWarning.MO_Z1_AXIS_SAFE_POS_TIMEOUT, _failHead);
                         break;
                     }
-                    
+
                     Log.Debug("Z axis up after clean done");
                     Step.RunStep++;
                     break;
@@ -2648,7 +2636,7 @@ namespace SDV_MoldingInjection.Process
             return Z4Axis.IsOnPosition(Z4AxisWeightingPos);
         }
 
-        private void DisableChamberOpenCloes()
+        private void DisableChamberOpenClose()
         {
             if (Out_ChamberOpen == true || Out_ChamberClose == true)
             {
