@@ -553,12 +553,12 @@ namespace SDV_MoldingInjection.Process
                 if (_devices.Inputs.DoorClose == false)
                 {
                     //Log.Error("Door Open");
-                    RaiseAlarm(EAlarm.DO_MAIN_DOOR_OPEN);
+                    RaiseWarning(EAlarm.DO_MAIN_DOOR_OPEN);
                 }
                 if ((ProcessMode == EProcessMode.Run || ProcessMode == EProcessMode.Origin) && _devices.Inputs.DoorLock == false)
                 {
                     //Log.Error("Door Not Safety Lock");
-                    RaiseAlarm(EAlarm.DO_MAIN_DOOR_INTERLOCK_ON);
+                    RaiseWarning(EAlarm.DO_MAIN_DOOR_INTERLOCK_ON);
                 }
             }
 
