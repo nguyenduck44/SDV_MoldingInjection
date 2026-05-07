@@ -70,7 +70,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             RefreshDoorSafetyOverlay();
         });
 
-        public bool IsDoorClose => Devices.Inputs.DoorClose;
+        public bool IsDoorClose => Devices.Inputs.DoorClose && Devices.Inputs.InOutMachineDoorClose;
         #endregion
 
         public MainWindowViewModel(NavigationStore navigationStore,
@@ -88,7 +88,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             FooterVM = _viewModelFactory.Create<FooterViewModel>();
             RightPanelVM = _viewModelFactory.Create<RightPanelViewModel>();
 
-            _lastDoorClose = Devices.Inputs.DoorClose;
+            _lastDoorClose = Devices.Inputs.DoorClose && Devices.Inputs.InOutMachineDoorClose;
             _machineStatus.IsDoorPasswordVerified = _lastDoorClose;
             RefreshDoorSafetyOverlay();
 
@@ -117,7 +117,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 Devices.Outputs.SWKeyLock.Value = false;
             }
             OnPropertyChanged(nameof(IsDoorClose));
-            var isDoorClose = Devices.Inputs.DoorClose;
+            var isDoorClose = Devices.Inputs.DoorClose && Devices.Inputs.InOutMachineDoorClose;
             // Re-authenticate only when door transitions from CLOSE -> OPEN.
             if (_lastDoorClose && isDoorClose == false)
             {
@@ -133,7 +133,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         private void RefreshDoorSafetyOverlay()
         {
-            var isDoorClose = Devices.Inputs.DoorClose;
+            var isDoorClose = Devices.Inputs.DoorClose && Devices.Inputs.InOutMachineDoorClose;
             IsDoorSafetyOverlayVisible = !_machineStatus.IsDoorPasswordVerified;
             DoorSafetyOverlayMessage = isDoorClose
                 ? "DON'T TOUCH\nPlease enter password to resume operation."

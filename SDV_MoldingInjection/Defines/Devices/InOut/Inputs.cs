@@ -193,8 +193,8 @@ namespace SDV_MoldingInjection.Defines
             DoorOpenRearLeft.Value == false &&
             DoorOpenRearRight.Value == false &&
             DoorOpenLeft.Value == false &&
-            DoorOpenRight.Value == false &&
-            InOutMachineDoorOpen.Value == false;
+            DoorOpenRight.Value == false;
+        public bool InOutMachineDoorClose => InOutMachineDoorOpen.Value == false;
 
         public bool DoorLock =>
             DoorReleaseRearLeft.Value == false &&

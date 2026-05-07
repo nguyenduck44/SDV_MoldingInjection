@@ -332,6 +332,16 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Doors safety locked.");
                     Step.OriginStep++;
                     break;
+                case ERootProcToOriginStep.InOutMachine_DoorClose_Check:
+                    if (_devices.Inputs.InOutMachineDoorClose == false)
+                    {
+                        RaiseWarning((int)EWarning.DO_INOUT_MACHINE_DOOR_OPEN);
+                        break;
+                    }
+
+                    Log.Debug("InOut machine doors closed.");
+                    Step.OriginStep++;
+                    break;
                 case ERootProcToOriginStep.Motion_AlarmReset:
                     if (_devices.Motions.All.All(m => m.Status.IsAlarm == false))
                     {
@@ -469,6 +479,16 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Doors safety locked.");
                     Step.ToRunStep++;
                     break;
+                case ERootProcToRunStep.InOutMachine_DoorClose_Check:
+                    if (_devices.Inputs.InOutMachineDoorClose == false)
+                    {
+                        RaiseWarning((int)EWarning.DO_INOUT_MACHINE_DOOR_OPEN);
+                        break;
+                    }
+
+                    Log.Debug("InOut machine doors closed.");
+                    Step.ToRunStep++;
+                    break;
                 case ERootProcToRunStep.ChildsToRunDone_Wait:
                     if (Childs!.Count(child => child.ProcessStatus != EProcessStatus.ToRunDone) != 0)
                     {
@@ -550,15 +570,25 @@ namespace SDV_MoldingInjection.Process
             if (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run ||
                 ProcessMode == EProcessMode.ToOrigin || ProcessMode == EProcessMode.Origin)
             {
+                if (_devices.Inputs.InOutMachineDoorClose == false)
+                {
+                    Childs!.ToList().ForEach(p => p.IsAlarm = true);
+                    Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                    RaiseWarning(EWarning.DO_INOUT_MACHINE_DOOR_OPEN);
+                }
+
                 if (_devices.Inputs.DoorClose == false)
                 {
-                    //Log.Error("Door Open");
-                    RaiseWarning(EAlarm.DO_MAIN_DOOR_OPEN);
+                    Childs!.ToList().ForEach(p => p.IsAlarm = true);
+                    Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                    RaiseWarning(EWarning.DO_MAIN_DOOR_OPEN);
                 }
+
                 if ((ProcessMode == EProcessMode.Run || ProcessMode == EProcessMode.Origin) && _devices.Inputs.DoorLock == false)
                 {
-                    //Log.Error("Door Not Safety Lock");
-                    RaiseWarning(EAlarm.DO_MAIN_DOOR_INTERLOCK_ON);
+                    Childs!.ToList().ForEach(p => p.IsAlarm = true);
+                    Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                    RaiseWarning(EWarning.DO_MAIN_DOOR_INTERLOCK_ON);
                 }
             }
 
@@ -655,12 +685,12 @@ namespace SDV_MoldingInjection.Process
                 RaiseWarning(EWarning.EM_INOUT_MACHINE_EMO);
             }
 
-            if (_devices.Inputs.InOutMachineMCOn.Value == false)
-            {
-                Childs!.ToList().ForEach(p => p.IsAlarm = true);
-                Childs!.ToList().ForEach(p => p.IsCanStop = true);
-                RaiseWarning((int)EWarning.UT_INOUT_MACHINE_MC_OFF);
-            }
+            //if (_devices.Inputs.InOutMachineMCOn.Value == false)
+            //{
+            //    Childs!.ToList().ForEach(p => p.IsAlarm = true);
+            //    Childs!.ToList().ForEach(p => p.IsCanStop = true);
+            //    RaiseWarning((int)EWarning.UT_INOUT_MACHINE_MC_OFF);
+            //}
 
             if (_devices.Inputs.InOutMachineDoorOpen.Value == true)
             {
