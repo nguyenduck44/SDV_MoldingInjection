@@ -35,6 +35,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
         }
         public Devices Devices { get; }
+        public MachineStatusAutoViewModel MachineStatusAutoViewModel { get; }
 
         public bool IsDoorSafetyOverlayVisible
         {
@@ -71,17 +72,20 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         });
 
         public bool IsDoorClose => Devices.Inputs.DoorClose && Devices.Inputs.InOutMachineDoorClose;
+        public bool IsDoorOpen => !Devices.Inputs.DoorClose || !Devices.Inputs.InOutMachineDoorClose;
         #endregion
 
         public MainWindowViewModel(NavigationStore navigationStore,
                                    IViewModelFactory viewModelFactory,
                                    MachineStatus machineStatus,
                                    Devices devices,
-                                   ISecurityControlStore securityControlStore)
+                                   ISecurityControlStore securityControlStore,
+                                   MachineStatusAutoViewModel machineStatusAutoViewModel)
         {
             _navigationStore = navigationStore;
             _viewModelFactory = viewModelFactory;
             _securityControlStore = securityControlStore;
+            MachineStatusAutoViewModel = machineStatusAutoViewModel;
             _machineStatus = machineStatus;
             Devices = devices;
             HeaderVM = _viewModelFactory.Create<HeaderViewModel>();
@@ -116,7 +120,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 Devices.Outputs.SWKeyLock.Value = false;
             }
+
             OnPropertyChanged(nameof(IsDoorClose));
+            OnPropertyChanged(nameof(IsDoorOpen));
+            Devices.Inputs.InOutMachineDoorOpen.RaiseValueUpdated();
+
             var isDoorClose = Devices.Inputs.DoorClose && Devices.Inputs.InOutMachineDoorClose;
             // Re-authenticate only when door transitions from CLOSE -> OPEN.
             if (_lastDoorClose && isDoorClose == false)

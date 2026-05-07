@@ -15,6 +15,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly RecipeSelector _recipeSelector;
         private readonly NonOverlappingTimer statusUpdateTimer;
         #endregion
+
         #region Properties
         public Devices Devices { get; }
         public double PanelTemperature => Devices.PanelIndicator.Temperature;
@@ -62,6 +63,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         public MachineStatus MachineStatus { get; }
         #endregion
+
         #region Contructors
         public MachineStatusAutoViewModel(Devices devices,
             NavigationStore navigationStore,

@@ -17,7 +17,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
     public class DataViewModel : ViewModelBase
     {
         public string RunModeButtonContent =>
-            _machineStatus.MachineRunMode == EMachineRunMode.Auto ? "Dry Run Mode" : "Auto Run Mode";
+            MachineStatus.MachineRunMode == EMachineRunMode.Auto ? "Dry Run Mode" : "Auto Run Mode";
 
         #region Commands
         public ICommand RecipeDataNavigateCommand => new RelayCommand(() =>
@@ -68,14 +68,14 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         public ICommand RunModeChangeCommand => new RelayCommand(() =>
         {
-            EMachineRunMode currentMode = _machineStatus.MachineRunMode;
+            EMachineRunMode currentMode = MachineStatus.MachineRunMode;
             EMachineRunMode newMode = currentMode == EMachineRunMode.Auto ? EMachineRunMode.DryRun : EMachineRunMode.Auto;
 
             bool? result = MessageBoxEx.ShowDialog($"Do you want to change RunMode {currentMode} -> {newMode}");
 
             if (result == true)
             {
-                _machineStatus.MachineRunMode = newMode;
+                MachineStatus.MachineRunMode = newMode;
                 OnPropertyChanged(nameof(RunModeButtonContent));
             }
         });
@@ -111,19 +111,20 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 });
             }
         }
+
+        public MachineStatus MachineStatus { get; }
         #endregion
 
         #region Constructor(s)
         public DataViewModel(INavigationService navigationService, MachineStatus machineStatus)
         {
             _navigationService = navigationService;
-            _machineStatus = machineStatus;
+            MachineStatus = machineStatus;
         }
         #endregion
 
         #region Privates
         private readonly INavigationService _navigationService;
-        private readonly MachineStatus _machineStatus;
         #endregion
     }
 }
