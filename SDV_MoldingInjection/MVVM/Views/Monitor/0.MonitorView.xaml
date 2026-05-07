@@ -54,11 +54,14 @@
             </StackPanel>
         </GroupBox>
 
-        <GroupBox Header="Servo Status"
+        <GroupBox Header="Status"
                   Margin="5">
             <StackPanel Margin="5 0">
                 <Button Content="Motions Status"
                         Command="{Binding MotionsStatusNavigateCommand}" />
+                <Button Content="Processes Status"
+                        Command="{Binding ProcessesStatusNavigateCommand}"
+                        Visibility="{Binding IsSuperUserPermission,Converter={StaticResource BooleanToVisibilityConverter}}" />
             </StackPanel>
         </GroupBox>
         <GroupBox Header="Others"

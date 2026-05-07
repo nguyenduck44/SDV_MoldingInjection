@@ -45,7 +45,7 @@
                     <cvt:ObjectSelectedConverter x:Key="ObjectSelectedConverter" />
                     <uiCvt:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
                     <uiCvt:DoorStatusToBrushConverterRevers x:Key="DoorStatusToBrushConverterRevers" />
-
+                    <cvt:RunStepDisplayConverter x:Key="RunStepDisplayConverter" />
                     <cvt:HeadSkipStatusTextConverter x:Key="HeadSkipStatusTextConverter" />
                     <cvt:HeadSkipStatusBrushConverter x:Key="HeadSkipStatusBrushConverter" />
                 </ResourceDictionary>
@@ -208,6 +208,9 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:MonitorViewModel}">
                 <views:MonitorView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ProcessesMonitoringViewModel}">
+                <views:ProcessesMonitoring />
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:ProductionInforViewModel}">
                 <views:ProductionInforView />

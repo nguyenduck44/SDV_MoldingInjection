@@ -567,6 +567,7 @@ namespace SDV_MoldingInjection.Process
 
         private void CheckRealTimeAlarmStatus()
         {
+#if !SIMULATION
             if (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run ||
                 ProcessMode == EProcessMode.ToOrigin || ProcessMode == EProcessMode.Origin)
             {
@@ -607,13 +608,20 @@ namespace SDV_MoldingInjection.Process
                 RaiseAlarm((int)EAlarm.MO_MAIN_AXIS_LIMIT_DETECT);
             }
 
-#if !SIMULATION
             if (_devices.Inputs.ServoOn.Value == false)
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
                 RaiseAlarm((int)EAlarm.UT_MAIN_MC_OFF);
             }
+            
+            if(_devices.Inputs.InOutMachineEmo.Value == false)
+            {
+                Childs!.ToList().ForEach(p => p.IsAlarm = true);
+                Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                RaiseWarning(EWarning.EM_INOUT_MACHINE_EMO);
+            }
+
 #endif
             if (_devices.Inputs.Emergency.Value == true)
             {
@@ -676,13 +684,6 @@ namespace SDV_MoldingInjection.Process
                     //Log.Error($"{motion.Name} Motion Alarm");
                 });
                 RaiseAlarm((int)EAlarm.MO_MAIN_SERVO_ALARM_DETECT);
-            }
-
-            if(_devices.Inputs.InOutMachineEmo.Value == false)
-            {
-                Childs!.ToList().ForEach(p => p.IsAlarm = true);
-                Childs!.ToList().ForEach(p => p.IsCanStop = true);
-                RaiseWarning(EWarning.EM_INOUT_MACHINE_EMO);
             }
 
             //if (_devices.Inputs.InOutMachineMCOn.Value == false)

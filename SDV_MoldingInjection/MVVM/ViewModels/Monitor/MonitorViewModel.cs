@@ -149,6 +149,17 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
         }
 
+        public ICommand ProcessesStatusNavigateCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    _navigationService.NavigateTo<ProcessesMonitoringViewModel>();
+                });
+            }
+        }
+
         public ICommand InterfaceInOutNavigateCommand
         {
             get
