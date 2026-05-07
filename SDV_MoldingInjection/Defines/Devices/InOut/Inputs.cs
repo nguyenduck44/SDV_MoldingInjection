@@ -1,8 +1,12 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using EQX.Core.Common;
 using EQX.Core.InOut;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.Extensions;
 using System.Linq;
+using TOPENG_Device;
 
 namespace SDV_MoldingInjection.Defines
 {
@@ -14,7 +18,10 @@ namespace SDV_MoldingInjection.Defines
         private readonly IDInputDevice _dHead3InputDevice;
         private readonly IDInputDevice _dHead4InputDevice;
 
-        public Inputs(IEnumerable<IDInputDevice> dInputDevices)
+        private int SensorMapStartBit { get; }
+
+        public Inputs(IEnumerable<IDInputDevice> dInputDevices,
+            IConfiguration configuration)
         {
             _dMachineInputDevice = dInputDevices.First(device => device.Name == EInputDevice.MachineInput.ToString());
             _dHead1InputDevice = dInputDevices.First(device => device.Name == EInputDevice.Head1Input.ToString());
@@ -22,7 +29,21 @@ namespace SDV_MoldingInjection.Defines
             _dHead3InputDevice = dInputDevices.First(device => device.Name == EInputDevice.Head3Input.ToString());
             _dHead4InputDevice = dInputDevices.First(device => device.Name == EInputDevice.Head4Input.ToString());
 
+            SensorMapStartBit = int.Parse(configuration["Values:SensorMapStartBit"]!, System.Globalization.NumberStyles.HexNumber);
+
             Initialize();
+
+            NonOverlappingTimer timer = new NonOverlappingTimer(100);
+            timer.Elapsed += Timer_Elapsed;
+            timer.Start();
+        }
+
+        private void Timer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
+        {
+            CIMAddressMap.WritePLCBit(string.Format("{0:X}", SensorMapStartBit + ESensorMap.Dispensing_Chamber_Left_Detect_Sensor),
+                (short)(Jig1Detect.Value && Jig2Detect.Value ? 1 : 0));
+            CIMAddressMap.WritePLCBit(string.Format("{0:X}", SensorMapStartBit + ESensorMap.Dispensing_Chamber_Right_Detect_Sensor),
+               (short)(Jig3Detect.Value && Jig4Detect.Value ? 1 : 0));
         }
 
         public bool Initialize()
@@ -91,7 +112,7 @@ namespace SDV_MoldingInjection.Defines
         public IDInput DoorReleaseLeft => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_RELEASE_LEFT);
         public IDInput DoorOpenRight => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_OPEN_RIGHT);
         public IDInput DoorReleaseRight => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_RELEASE_RIGHT);
-        public IDInput MainPanelCloseCheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_PANEL_CLOSE_CHECK);    
+        public IDInput MainPanelCloseCheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_PANEL_CLOSE_CHECK);
 
         public IDInput MainBreakerTripEBox => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_BREAKER_TRIP_EBOX);
         public IDInput MainPanelFanRun1EBox => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_PANEL_FAN_RUN1_EBOX);
