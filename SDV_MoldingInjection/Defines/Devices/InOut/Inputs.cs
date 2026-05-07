@@ -41,9 +41,9 @@ namespace SDV_MoldingInjection.Defines
         private void Timer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
             CIMAddressMap.WritePLCBit(string.Format("{0:X}", SensorMapStartBit + ESensorMap.Dispensing_Chamber_Left_Detect_Sensor),
-                (short)(Jig1Detect.Value && Jig2Detect.Value ? 1 : 0));
+                (short)(Jig1Detect.Value && Jig2Detect.Value ? 1 : 0), false);
             CIMAddressMap.WritePLCBit(string.Format("{0:X}", SensorMapStartBit + ESensorMap.Dispensing_Chamber_Right_Detect_Sensor),
-               (short)(Jig3Detect.Value && Jig4Detect.Value ? 1 : 0));
+               (short)(Jig3Detect.Value && Jig4Detect.Value ? 1 : 0), false);
         }
 
         public bool Initialize()
