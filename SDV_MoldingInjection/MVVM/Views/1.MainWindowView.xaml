@@ -68,17 +68,19 @@
         <Border Background="#CC000000"
                 Visibility="{Binding IsDoorSafetyOverlayVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid>
-                <Grid Opacity="0.6"
+                <!--<Grid Opacity="0.3"
                       Visibility="{Binding IsDoorOpen, Converter={StaticResource BooleanToVisibilityConverter}}"
                       Margin="234,123,234,236">
-                    <!-- MACHINE -->
+                    --><!-- MACHINE --><!--
                     <DockPanel Grid.Row="2"
                                Margin="0 8 0 0">
                         <local:MachineStatusAutoView DataContext="{Binding MachineStatusAutoViewModel}" />
                     </DockPanel>
-                </Grid>
+                </Grid>-->
                 <!-- DoorLock View -->
-                <Grid Visibility="{Binding IsDoorOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <!--<Grid
+                    Opacity="0.3"
+                    Visibility="{Binding IsDoorOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Canvas>
                         <Grid Width="322"
                               Height="30"
@@ -107,8 +109,7 @@
                             </TextBlock>
                         </Grid>
                     </Canvas>
-
-                </Grid>
+                </Grid>-->
                 <StackPanel VerticalAlignment="Center"
                             HorizontalAlignment="Center"
                             Width="860">

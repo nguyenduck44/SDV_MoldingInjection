@@ -140,7 +140,7 @@
                     <!--MOTIONS VIEW-->
                     <GroupBox
                         Style="{StaticResource TextBlockHeaderGroupBox}"
-                        FontSize="14"
+                        FontSize="12"
                         FontWeight="Bold"
                         IsEnabled="{Binding IsOPSwitchTeachMode}"
                         Header="Motions">

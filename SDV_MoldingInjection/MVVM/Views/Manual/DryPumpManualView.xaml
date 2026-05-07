@@ -172,7 +172,7 @@
                     <!--SEMI SEQUENCES VIEW-->
                     <GroupBox Grid.Column="2"
                               Style="{StaticResource TextBlockHeaderGroupBox}"
-                              FontSize="14"
+                              FontSize="12"
                               FontWeight="Bold"
                               Header="Semi Sequences">
                         <ItemsControl ItemsSource="{Binding Sequences}"

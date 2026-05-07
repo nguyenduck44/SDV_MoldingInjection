@@ -161,7 +161,7 @@
                     <GroupBox
                         Grid.Column="1"
                         Style="{StaticResource TextBlockHeaderGroupBox}"
-                        FontSize="14"
+                        FontSize="12"
                         FontWeight="Bold"
                         Header="Semi Sequences">
                         <ItemsControl

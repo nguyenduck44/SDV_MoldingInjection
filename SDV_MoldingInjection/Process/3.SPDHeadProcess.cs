@@ -1710,7 +1710,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAssembleDisAssembleStep.WaitDisOrAssembleSensorStatus:
-                    Wait(300000, () => isAssemble == In_AssembleCheck.Value); //5 minutes wait time for assemble/disassemble check
+                    Wait(5 * 60 * 1000, () => isAssemble == In_AssembleCheck.Value); //5 minutes wait time for assemble/disassemble check
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAssembleDisAssembleStep.DisOrAssembleSensorStatusCheck:
