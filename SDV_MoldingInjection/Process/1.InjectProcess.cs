@@ -1397,6 +1397,7 @@ namespace SDV_MoldingInjection.Process
                     if (sequence == ESequence.IdlePurge)
                     {
                         Log.Debug("Idle Purge start");
+                        _devices.Outputs.DryPumpRun.Value = false;
                     }
 
                     Log.Info($"Move dummy position start");

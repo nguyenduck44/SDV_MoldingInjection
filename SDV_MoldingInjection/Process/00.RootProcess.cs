@@ -692,12 +692,12 @@ namespace SDV_MoldingInjection.Process
             //    RaiseWarning((int)EWarning.UT_INOUT_MACHINE_MC_OFF);
             //}
 
-            if (_devices.Inputs.InOutMachineDoorOpen.Value == true)
-            {
-                Childs!.ToList().ForEach(p => p.IsAlarm = true);
-                Childs!.ToList().ForEach(p => p.IsCanStop = true);
-                RaiseWarning((int)EWarning.DO_INOUT_MACHINE_DOOR_OPEN);
-            }
+            //if (_devices.Inputs.InOutMachineDoorOpen.Value == true)
+            //{
+            //    Childs!.ToList().ForEach(p => p.IsAlarm = true);
+            //    Childs!.ToList().ForEach(p => p.IsCanStop = true);
+            //    RaiseWarning((int)EWarning.DO_INOUT_MACHINE_DOOR_OPEN);
+            //}
         }
 
         private void HandleOPCommand(EOperationCommand command)
