@@ -196,11 +196,11 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcToRunStep.Head_Use_Check:
                     Log.Debug("Check head use");
-                    if (_currentRecipe.OptionRecipe.SkipHead12 && _currentRecipe.OptionRecipe.SkipHead34)
-                    {
-                        RaiseWarning(EWarning.ET_MOLD_HEAD_USE_ERROR);
-                        break;
-                    }
+                    //if (_currentRecipe.OptionRecipe.SkipHead12 && _currentRecipe.OptionRecipe.SkipHead34)
+                    //{
+                    //    RaiseWarning(EWarning.ET_MOLD_HEAD_USE_ERROR);
+                    //    break;
+                    //}
 
                     Step.ToRunStep++;
                     break;
