@@ -148,7 +148,7 @@ namespace SDV_MoldingInjection.Process
             _syringeAmountStatusList = syringeAmountStatusList;
             _machineStatus = machineStatus;
             _carrierJigStatusList = carrierJigStatusList;
-           _tactTimeList = tactTimeList;
+            _tactTimeList = tactTimeList;
         }
 
         #region Process Methods
@@ -227,7 +227,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESPDHeadProcToRunStep.End:
                     procOutputs.ClearOutputs();
-
+                    AssembleActive = false; 
                     Log.Debug("ToRun end");
                     Step.ToRunStep++;
                     base.ProcessToRun();
@@ -824,26 +824,67 @@ namespace SDV_MoldingInjection.Process
 
         public override bool PreProcess()
         {
-            if (_injectSequenceStartTick >= 0 && EnableTimerInject)
+            switch ((ESPDHeadPreProcessStep)Step.PreProcessStep)
             {
-                CarrierJigStatus.InjectTime = (Environment.TickCount64 - _injectSequenceStartTick) / 1000.0;
-            }
+                case ESPDHeadPreProcessStep.Start:
+                    Step.PreProcessStep++;
+                    break;
+                case ESPDHeadPreProcessStep.WriteCarrierJigStatus_InjectTime:
+                    if (_injectSequenceStartTick >= 0 && EnableTimerInject)
+                    {
+                        CarrierJigStatus.InjectTime = (Environment.TickCount64 - _injectSequenceStartTick) / 1000.0;
+                    }
+
+                    Step.PreProcessStep++;
+                    break;
+                case ESPDHeadPreProcessStep.DummyOverFlowDetect_Check:
+                    if (In_DummyOverflowDetect.Value == false)
+                    {
+                        RaiseHeadWarning(EWarning.SE_SPD_H01_DUMMY_OVER_FLOW_DETECT);
+                    }
+
+                    Step.PreProcessStep++;
+                    break;
+                case ESPDHeadPreProcessStep.Syringe_Check:
 #if !SIMULATION
-            if (In_SyringeCheck.Value == false &&
-                In_AssembleCheck.Value == true &&
-                CurrentHeadSkip == false &&
-                _machineStatus.DisableSyringeCheck == false &&
-                (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run) &&
-                IsSequenceAssembleOrDisassemble(Parent!.Sequence) == false)
-            {
-                RaiseHeadWarning(EWarning.SE_SPD_H01_SYRING_NOT_DETECT);
+                    if (In_SyringeCheck.Value == false &&
+                        In_AssembleCheck.Value == true &&
+                        CurrentHeadSkip == false &&
+                        _machineStatus.DisableSyringeCheck == false &&
+                        (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run) &&
+                        IsSequenceAssembleOrDisassemble(Parent!.Sequence) == false)
+                    {
+                        RaiseHeadWarning(EWarning.SE_SPD_H01_SYRING_NOT_DETECT);
+                    }
+#endif
+                    Step.PreProcessStep++;
+                    break;
+                case ESPDHeadPreProcessStep.AssembleDetect_Check:
+                    if (In_AssembleCheck.Value && AssembleActive)
+                    {
+                        AssembleCheckCounter = Environment.TickCount;
+                        Step.PreProcessStep++;
+                        break;
+                    }
+
+                    Step.PreProcessStep = (int)ESPDHeadPreProcessStep.End;
+                    break;
+                case ESPDHeadPreProcessStep.Assemble_Cyl_Up:
+                    if (Environment.TickCount - AssembleCheckCounter >= 1500)
+                    {
+                        Log.Debug("Piston cylinder up");
+                        PistonCyl.Up();
+                        Step.PreProcessStep++;
+                    }
+                    
+                    break;
+                case ESPDHeadPreProcessStep.End:
+                    Step.PreProcessStep = (int)ESPDHeadPreProcessStep.Start;
+                    break;
+                default:
+                    break;
             }
 
-            if (In_DummyOverflowDetect.Value == false)
-            {
-                RaiseHeadWarning(EWarning.SE_SPD_H01_DUMMY_OVER_FLOW_DETECT);
-            }
-#endif
             return base.PreProcess();
         }
         #endregion
@@ -1709,35 +1750,20 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Move {PistonCyl} down done");
                     Step.RunStep++;
                     break;
-                case ESPDHeadProcAssembleDisAssembleStep.WaitDisOrAssembleSensorStatus:
-                    Wait(5 * 60 * 1000, () => isAssemble == In_AssembleCheck.Value); //5 minutes wait time for assemble/disassemble check
-                    Step.RunStep++;
-                    break;
-                case ESPDHeadProcAssembleDisAssembleStep.DisOrAssembleSensorStatusCheck:
-                    if (WaitTimeOutOccurred)
-                    {
-                        if (isAssemble) RaiseHeadWarning(EWarning.MO_SPD_H01_ASSEMBLE_CHECK_TIMEOUT);
-                        else RaiseHeadWarning(EWarning.MO_SPD_H01_DISASSEMBLE_CHECK_TIMEOUT);
-                        break;
-                    }
-
+                case ESPDHeadProcAssembleDisAssembleStep.AssembleSensorStatus_Confirm:
                     if (!isAssemble)
                     {
                         Step.RunStep = (int)ESPDHeadProcAssembleDisAssembleStep.WorkDone_Send;
                         break;
                     }
 
-                    Wait(1500);
-                    Step.RunStep++;
-                    break;
-                case ESPDHeadProcAssembleDisAssembleStep.AssembleSensorStatus_Confirm:
                     if (In_AssembleCheck.Value == false)
                     {
-                        Step.RunStep = (int)ESPDHeadProcAssembleDisAssembleStep.WaitDisOrAssembleSensorStatus;
+                        RaiseHeadWarning(EWarning.MO_SPD_H01_ASSEMBLE_CHECK_FAIL);
                         break;
                     }
 
-                    Log.Debug($"{In_AssembleCheck} detected, proceed PistonCyl Up");
+                    Log.Debug($"{In_AssembleCheck} detected, PistonCyl Up");
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAssembleDisAssembleStep.PistonCyl_Up:
@@ -1807,7 +1833,17 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAssembleDisAssembleStep.End:
-                    Log.Debug(isAssemble ? "Head Assemble End" : "Head DisAssemble End");
+                    if (isAssemble)
+                    {
+                        AssembleActive = false;
+                        Log.Debug("Assemble End");
+                    }
+                    else
+                    {
+                        AssembleActive = true;
+                        Log.Debug("Disassemble End");
+                    }
+                    
                     string message = isAssemble ? $"{head} Assemble Finish!" : $"{head} DisAssemble Finish!";
                     MessageBoxEx.Show(message, false);
                     Sequence = ESequence.Stop;
@@ -1897,7 +1933,7 @@ namespace SDV_MoldingInjection.Process
             ESPDHead.SPDHead4 => _tactTimeList.SPDHead4,
             _ => throw new Exception($"Invalid head for tact time: {head}")
         };
-        
+
 
         private SPDHeadRecipe _currentSPDHeadRecipe => Name switch
         {
@@ -1967,12 +2003,14 @@ namespace SDV_MoldingInjection.Process
         private int _bubbleRemoveRotateCount;
         private int _bubbleRemoveTotalRotateCount = 2;
         private long _injectSequenceStartTick = -1;
+        private int AssembleCheckCounter = 0;
 
         private double _pAxisInjectCharge_Height;
         private double _pAxisInjectCharge_Pos => _pAxisBase_Pos - _pAxisInjectCharge_Height;
 
         private bool EnableTimerInject;
         private bool InjectAddTail;
+        private bool AssembleActive;
         #endregion
     }
 }

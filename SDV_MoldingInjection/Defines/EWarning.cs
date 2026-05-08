@@ -123,7 +123,7 @@ namespace SDV_MoldingInjection.Defines
         [Description("HEAD1_IN01")]
         CY_SPD_H01_PISTON_DOWN_FAIL,
         [Description("HEAD1_IN04")]
-        MO_SPD_H01_ASSEMBLE_CHECK_TIMEOUT,
+        MO_SPD_H01_ASSEMBLE_CHECK_FAIL,
         [Description("HEAD1_IN04")]
         MO_SPD_H01_DISASSEMBLE_CHECK_TIMEOUT,
         VA_SPD_H01_BALANCE_NOT_STABLE,
@@ -149,7 +149,7 @@ namespace SDV_MoldingInjection.Defines
         [Description("HEAD2_IN01")]
         CY_SPD_H02_PISTON_DOWN_FAIL,
         [Description("HEAD2_IN04")]
-        MO_SPD_H02_ASSEMBLE_CHECK_TIMEOUT,
+        MO_SPD_H02_ASSEMBLE_CHECK_FAIL,
         [Description("HEAD2_IN04")]
         MO_SPD_H02_DISASSEMBLE_CHECK_TIMEOUT,
         VA_SPD_H02_BALANCE_NOT_STABLE,
@@ -175,7 +175,7 @@ namespace SDV_MoldingInjection.Defines
         [Description("HEAD3_IN01")]
         CY_SPD_H03_PISTON_DOWN_FAIL,
         [Description("HEAD3_IN04")]
-        MO_SPD_H03_ASSEMBLE_CHECK_TIMEOUT,
+        MO_SPD_H03_ASSEMBLE_CHECK_FAIL,
         [Description("HEAD3_IN04")]
         MO_SPD_H03_DISASSEMBLE_CHECK_TIMEOUT,
         VA_SPD_H03_BALANCE_NOT_STABLE,
@@ -201,7 +201,7 @@ namespace SDV_MoldingInjection.Defines
         [Description("HEAD4_IN01")]
         CY_SPD_H04_PISTON_DOWN_FAIL,
         [Description("HEAD4_IN04")]
-        MO_SPD_H04_ASSEMBLE_CHECK_TIMEOUT,
+        MO_SPD_H04_ASSEMBLE_CHECK_FAIL,
         [Description("HEAD4_IN04")]
         MO_SPD_H04_DISASSEMBLE_CHECK_TIMEOUT,
         VA_SPD_H04_BALANCE_NOT_STABLE,
