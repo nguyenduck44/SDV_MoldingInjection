@@ -802,6 +802,16 @@ namespace SDV_MoldingInjection.Process
                     _tactTimeList.Chamber.CycleTimeCounter = Environment.TickCount;
                     Step.RunStep++;
                     break;
+                case EMoldProcAutoRunStep.Wait_HeadUse:
+                    if(_optionRecipe.SkipHead12 && _optionRecipe.SkipHead34)
+                    {
+                        Wait(100);
+                        break;
+                    }
+
+                    Log.Debug("Deteced head use");
+                    Step.RunStep++;
+                    break;
                 case EMoldProcAutoRunStep.JigDetect_Check:
                     if (LeftJigTiltState)
                     {

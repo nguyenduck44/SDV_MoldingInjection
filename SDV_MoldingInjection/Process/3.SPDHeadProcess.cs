@@ -227,7 +227,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESPDHeadProcToRunStep.End:
                     procOutputs.ClearOutputs();
-                    AssembleActive = false; 
+                    AssembleActive = false;
                     Log.Debug("ToRun end");
                     Step.ToRunStep++;
                     base.ProcessToRun();
@@ -923,7 +923,7 @@ namespace SDV_MoldingInjection.Process
                         PistonCyl.Up();
                         Step.PreProcessStep++;
                     }
-                    
+
                     break;
                 case ESPDHeadPreProcessStep.End:
                     Step.PreProcessStep = (int)ESPDHeadPreProcessStep.Start;
@@ -934,7 +934,7 @@ namespace SDV_MoldingInjection.Process
 
             return base.PreProcess();
         }
-#endregion
+        #endregion
 
         public override bool ProcessToAlarm()
         {
@@ -979,13 +979,19 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.Wait_HeadUse:
-                    if (CurrentHeadSkip)
+                    if (CurrentHeadSkip == false)
                     {
-                        Wait(50);
+                        Step.RunStep++;
                         break;
                     }
 
-                    Step.RunStep++;
+                    if (Parent!.Sequence != ESequence.AutoRun)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
+
+                    Wait(50);
                     break;
                 case ESPDHeadProcCommonStep.Start_Set_TactTime:
                     if (sequence == ESequence.ResinInject)
@@ -1211,7 +1217,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.WorkRequest_Wait:
-                    if (procInputs[ESPDHeadProcInput.WorkRequest].Value == false)
+                    if (procInputs[ESPDHeadProcInput.WorkRequest].Value == false || CurrentHeadSkip)
                     {
                         Wait(50);
                         break;
@@ -1911,7 +1917,7 @@ namespace SDV_MoldingInjection.Process
                         message = $"DisAssemble Finish!";
                         Log.Debug("DisAssemble End");
                     }
-                    
+
                     MessageBoxEx.Show(message, false);
                     Sequence = ESequence.Stop;
                     break;
