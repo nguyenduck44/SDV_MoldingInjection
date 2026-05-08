@@ -436,20 +436,35 @@ namespace SDV_MoldingInjection.Process
                 case ESequence.DotWeighting_H4:
                     Sequence_DotWeighting(ESPDHead.SPDHead4);
                     break;
-                case ESequence.HeadAssemble:
-                    Sequence_AtDummyPos(ESequence.HeadAssemble, ESPDHead.All);
+                case ESequence.HeadAssemble_Step1:
+                    Sequence_AtDummyPos(ESequence.HeadAssemble_Step1, ESPDHead.All);
                     break;
-                case ESequence.HeadAssemble_H1:
-                    Sequence_AtDummyPos(ESequence.HeadAssemble_H1, ESPDHead.SPDHead1);
+                case ESequence.HeadAssemble_Step1_H1:
+                    Sequence_AtDummyPos(ESequence.HeadAssemble_Step1_H1, ESPDHead.SPDHead1);
                     break;
-                case ESequence.HeadAssemble_H2:
-                    Sequence_AtDummyPos(ESequence.HeadAssemble_H2, ESPDHead.SPDHead2);
+                case ESequence.HeadAssemble_Step1_H2:
+                    Sequence_AtDummyPos(ESequence.HeadAssemble_Step1_H2, ESPDHead.SPDHead2);
                     break;
-                case ESequence.HeadAssemble_H3:
-                    Sequence_AtDummyPos(ESequence.HeadAssemble_H3, ESPDHead.SPDHead3);
+                case ESequence.HeadAssemble_Step1_H3:
+                    Sequence_AtDummyPos(ESequence.HeadAssemble_Step1_H3, ESPDHead.SPDHead3);
                     break;
-                case ESequence.HeadAssemble_H4:
-                    Sequence_AtDummyPos(ESequence.HeadAssemble_H4, ESPDHead.SPDHead4);
+                case ESequence.HeadAssemble_Step1_H4:
+                    Sequence_AtDummyPos(ESequence.HeadAssemble_Step1_H4, ESPDHead.SPDHead4);
+                    break;
+                case ESequence.HeadAssemble_Step2:
+                    Sequence_AtDummyPos(ESequence.HeadAssemble_Step2, ESPDHead.All);
+                    break;
+                case ESequence.HeadAssemble_Step2_H1:
+                    Sequence_AtDummyPos(ESequence.HeadAssemble_Step2_H1, ESPDHead.SPDHead1);
+                    break;
+                case ESequence.HeadAssemble_Step2_H2:
+                    Sequence_AtDummyPos(ESequence.HeadAssemble_Step2_H2, ESPDHead.SPDHead2);
+                    break;
+                case ESequence.HeadAssemble_Step2_H3:
+                    Sequence_AtDummyPos(ESequence.HeadAssemble_Step2_H3, ESPDHead.SPDHead3);
+                    break;
+                case ESequence.HeadAssemble_Step2_H4:
+                    Sequence_AtDummyPos(ESequence.HeadAssemble_Step2_H4, ESPDHead.SPDHead4);
                     break;
                 case ESequence.HeadDisassemble:
                     Sequence_AtDummyPos(ESequence.HeadDisassemble, ESPDHead.All);
@@ -2044,9 +2059,13 @@ namespace SDV_MoldingInjection.Process
 
         private bool IsSequenceAssembleOrDisassemble(ESequence sequence)
         {
-            return sequence == ESequence.HeadAssemble || sequence == ESequence.HeadDisassemble ||
-                   sequence == ESequence.HeadAssemble_H1 || sequence == ESequence.HeadAssemble_H2 ||
-                   sequence == ESequence.HeadAssemble_H3 || sequence == ESequence.HeadAssemble_H4 ||
+            return sequence == ESequence.HeadAssemble_Step1 || 
+                   sequence == ESequence.HeadAssemble_Step1_H1 || sequence == ESequence.HeadAssemble_Step1_H2 ||
+                   sequence == ESequence.HeadAssemble_Step1_H3 || sequence == ESequence.HeadAssemble_Step1_H4 || 
+                   sequence == ESequence.HeadAssemble_Step2 ||
+                   sequence == ESequence.HeadAssemble_Step2_H1 || sequence == ESequence.HeadAssemble_Step2_H2 ||
+                   sequence == ESequence.HeadAssemble_Step2_H3 || sequence == ESequence.HeadAssemble_Step2_H4 ||
+                   sequence == ESequence.HeadDisassemble ||
                    sequence == ESequence.HeadDisassemble_H1 || sequence == ESequence.HeadDisassemble_H2 ||
                    sequence == ESequence.HeadDisassemble_H3 || sequence == ESequence.HeadDisassemble_H4;
         }

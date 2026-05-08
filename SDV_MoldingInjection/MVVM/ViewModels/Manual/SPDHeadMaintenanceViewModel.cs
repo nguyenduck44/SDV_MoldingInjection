@@ -162,8 +162,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 ESemiSequence.NeedleCleaning_H1 + (int)(Head - ESPDHead.SPDHead1),
                 ESemiSequence.BubbleRemove_H1 + (int)(Head - ESPDHead.SPDHead1),
                 ESemiSequence.DotWeighting_H1 + (int)(Head - ESPDHead.SPDHead1),
-                ESemiSequence.HeadAssemble_H1 + (int)(Head - ESPDHead.SPDHead1),
-                ESemiSequence.HeadDisassemble_H1 + (int)(Head - ESPDHead.SPDHead1),
             };
             if (Name == EProcess.SPDHead1.ToString())
             {

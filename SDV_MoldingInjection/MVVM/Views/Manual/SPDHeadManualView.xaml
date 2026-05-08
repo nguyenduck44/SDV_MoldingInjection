@@ -161,7 +161,7 @@
                     <GroupBox
                         Grid.Column="1"
                         Style="{StaticResource TextBlockHeaderGroupBox}"
-                        FontSize="12"
+                        FontSize="14"
                         FontWeight="Bold"
                         Header="Semi Sequences">
                         <ItemsControl
@@ -170,7 +170,8 @@
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <UniformGrid
-                                        Columns="2" />
+                                        Columns="2" 
+                                        Rows="4"/>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>

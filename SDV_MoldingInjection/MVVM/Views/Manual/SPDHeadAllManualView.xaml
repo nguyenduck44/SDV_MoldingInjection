@@ -107,7 +107,7 @@
 
             <GroupBox Grid.Row="3"
                       Style="{StaticResource TextBlockHeaderGroupBox}"
-                      FontSize="12"
+                      FontSize="14"
                       FontWeight="Bold"
                       Header="Semi Sequences">
                 <ItemsControl ItemsSource="{Binding Sequences}"

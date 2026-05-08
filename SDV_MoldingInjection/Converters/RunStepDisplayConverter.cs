@@ -40,7 +40,7 @@ namespace SDV_MoldingInjection.Converters
                     ESequence.NeedleCleaning => typeof(EMoldProcNeedleCleaningStep),
                     ESequence.BubbleRemove => typeof(EMoldProcDummyShotStep),
                     ESequence.DotWeighting => typeof(EMoldProcDotWeightingStep),
-                    ESequence.HeadAssemble or ESequence.HeadDisassemble => typeof(EMoldProcDummyShotStep),
+                    ESequence.HeadAssemble_Step1 or ESequence.HeadDisassemble => typeof(EMoldProcDummyShotStep),
                     _ => null
                 },
                 "DryPump" => sequence switch
@@ -54,7 +54,7 @@ namespace SDV_MoldingInjection.Converters
                     ESequence.DummyShot => typeof(ESPDHeadProcCommonStep),
                     ESequence.BubbleRemove => typeof(ESPDHeadProcCommonStep),
                     ESequence.DotWeighting => typeof(ESPDHeadProcDotWeightingStep),
-                    ESequence.HeadAssemble or ESequence.HeadDisassemble => typeof(ESPDHeadProcAssembleDisAssembleStep),
+                    ESequence.HeadAssemble_Step1 or ESequence.HeadDisassemble => typeof(ESPDHeadProcAssembleDisAssembleStep),
                     _ => null
                 },
                 "Monitoring" => sequence switch

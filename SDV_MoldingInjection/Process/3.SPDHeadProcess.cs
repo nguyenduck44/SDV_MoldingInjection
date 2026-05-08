@@ -646,7 +646,71 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.Stop;
                     }
                     break;
-                case ESequence.HeadAssemble:
+                case ESequence.HeadAssemble_Step1:
+                    if (head == ESPDHead.SPDHead1 && _machineStatus.IsSkipHead1)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
+                    if (head == ESPDHead.SPDHead2 && _machineStatus.IsSkipHead2)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
+                    if (head == ESPDHead.SPDHead3 && _machineStatus.IsSkipHead3)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
+                    if (head == ESPDHead.SPDHead4 && _machineStatus.IsSkipHead4)
+                    {
+                        Sequence = ESequence.Stop;
+                        break;
+                    }
+                    Sequence_HeadAssembleDisAssemble(isAssemble: false, true);
+                    break;
+                case ESequence.HeadAssemble_Step1_H1:
+                    if (head == ESPDHead.SPDHead1)
+                    {
+                        Sequence_HeadAssembleDisAssemble(isAssemble: false, true);
+                    }
+                    else
+                    {
+                        Sequence = ESequence.Stop;
+                    }
+                    break;
+                case ESequence.HeadAssemble_Step1_H2:
+                    if (head == ESPDHead.SPDHead2)
+                    {
+                        Sequence_HeadAssembleDisAssemble(isAssemble: false, true);
+                    }
+                    else
+                    {
+                        Sequence = ESequence.Stop;
+                    }
+                    break;
+                case ESequence.HeadAssemble_Step1_H3:
+                    if (head == ESPDHead.SPDHead3)
+                    {
+                        Sequence_HeadAssembleDisAssemble(isAssemble: false, true);
+                    }
+                    else
+                    {
+                        Sequence = ESequence.Stop;
+                    }
+                    break;
+                case ESequence.HeadAssemble_Step1_H4:
+                    if (head == ESPDHead.SPDHead4)
+                    {
+                        Sequence_HeadAssembleDisAssemble(isAssemble: false, true);
+                    }
+                    else
+                    {
+                        Sequence = ESequence.Stop;
+                    }
+                    break;
+
+                case ESequence.HeadAssemble_Step2:
                     if (head == ESPDHead.SPDHead1 && _machineStatus.IsSkipHead1)
                     {
                         Sequence = ESequence.Stop;
@@ -669,7 +733,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     Sequence_HeadAssembleDisAssemble(isAssemble: true);
                     break;
-                case ESequence.HeadAssemble_H1:
+                case ESequence.HeadAssemble_Step2_H1:
                     if (head == ESPDHead.SPDHead1)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: true);
@@ -679,7 +743,7 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.Stop;
                     }
                     break;
-                case ESequence.HeadAssemble_H2:
+                case ESequence.HeadAssemble_Step2_H2:
                     if (head == ESPDHead.SPDHead2)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: true);
@@ -689,7 +753,7 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.Stop;
                     }
                     break;
-                case ESequence.HeadAssemble_H3:
+                case ESequence.HeadAssemble_Step2_H3:
                     if (head == ESPDHead.SPDHead3)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: true);
@@ -699,7 +763,7 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.Stop;
                     }
                     break;
-                case ESequence.HeadAssemble_H4:
+                case ESequence.HeadAssemble_Step2_H4:
                     if (head == ESPDHead.SPDHead4)
                     {
                         Sequence_HeadAssembleDisAssemble(isAssemble: true);
@@ -1674,7 +1738,7 @@ namespace SDV_MoldingInjection.Process
             }
         }
 
-        private void Sequence_HeadAssembleDisAssemble(bool isAssemble)
+        private void Sequence_HeadAssembleDisAssemble(bool isAssemble, bool assembleActive = false)
         {
             switch ((ESPDHeadProcAssembleDisAssembleStep)Step.RunStep)
             {
@@ -1829,7 +1893,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAssembleDisAssembleStep.End:
-                    if (isAssemble)
+                    if (!isAssemble && assembleActive == true)
                     {
                         AssembleActive = false;
                         Log.Debug("Assemble End");
@@ -1969,9 +2033,9 @@ namespace SDV_MoldingInjection.Process
 
         private bool IsSequenceAssembleOrDisassemble(ESequence sequence)
         {
-            return sequence == ESequence.HeadAssemble || sequence == ESequence.HeadDisassemble ||
-                   sequence == ESequence.HeadAssemble_H1 || sequence == ESequence.HeadAssemble_H2 ||
-                   sequence == ESequence.HeadAssemble_H3 || sequence == ESequence.HeadAssemble_H4 ||
+            return sequence == ESequence.HeadAssemble_Step1 || sequence == ESequence.HeadDisassemble ||
+                   sequence == ESequence.HeadAssemble_Step1_H1 || sequence == ESequence.HeadAssemble_Step1_H2 ||
+                   sequence == ESequence.HeadAssemble_Step1_H3 || sequence == ESequence.HeadAssemble_Step1_H4 ||
                    sequence == ESequence.HeadDisassemble_H1 || sequence == ESequence.HeadDisassemble_H2 ||
                    sequence == ESequence.HeadDisassemble_H3 || sequence == ESequence.HeadDisassemble_H4;
         }
