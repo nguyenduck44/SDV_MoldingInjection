@@ -490,7 +490,8 @@ namespace SDV_MoldingInjection.Defines
             }
 
             if (InjectProcess.Sequence != ESequence.Loading ||
-               InjectProcess.Step.RunStep != (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request)
+               InjectProcess.Step.RunStep < (int)EMoldProcLoadingUnloadingStep.Wait_Cell1SendBitOn ||
+               InjectProcess.Step.RunStep > (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request)
             {
                 return false;
             }

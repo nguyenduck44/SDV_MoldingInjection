@@ -1,4 +1,5 @@
 using EQX.Core.Communication.CIM;
+using EQX.Core.Communication.CIM.Custom.WordArea;
 using EQX.Core.InOut;
 using EQX.Core.Motion;
 using EQX.Core.Sequence;
@@ -8,6 +9,8 @@ using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Productions;
 using SDV_MoldingInjection.Defines.TeachingPosition;
 using SDV_MoldingInjection.Recipe;
+using System.Text;
+using TOPENG_Device;
 
 namespace SDV_MoldingInjection.Process
 {
@@ -59,6 +62,25 @@ namespace SDV_MoldingInjection.Process
         private double Z2AxisAssembleDisassemblePos => _positionList.SPDHead2MaintenanceTeachingPosition.ZAxisAssembleDisassemblePos.TargetPos;
         private double Z3AxisAssembleDisassemblePos => _positionList.SPDHead3MaintenanceTeachingPosition.ZAxisAssembleDisassemblePos.TargetPos;
         private double Z4AxisAssembleDisassemblePos => _positionList.SPDHead4MaintenanceTeachingPosition.ZAxisAssembleDisassemblePos.TargetPos;
+
+        private bool CellId1SendOn => CIMAddressMap.ReadPLCBit("B2107") == 1;
+        private bool CellId2SendOn => CIMAddressMap.ReadPLCBit("B2108") == 1;
+
+        private bool CellId1Reply
+        {
+            set
+            {
+                CIMAddressMap.WritePLCBit("B2007", (short)(value ? 1 : 0));
+            }
+        }
+
+        private bool CellId2Reply
+        {
+            set
+            {
+                CIMAddressMap.WritePLCBit("B2008", (short)(value ? 1 : 0));
+            }
+        }
 
         #endregion
 
@@ -1222,6 +1244,12 @@ namespace SDV_MoldingInjection.Process
                     {
                         if (isLoading)
                         {
+                            if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12)
+                            {
+                                Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_Cell2SendBitOn;
+                                break;
+                            }
+
                             Step.RunStep++;
                             break;
                         }
@@ -1230,6 +1258,68 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    break;
+                case EMoldProcLoadingUnloadingStep.Wait_Cell1SendBitOn:
+                    if (CellId1SendOn == false)
+                    {
+                        Wait(20);
+                        break;
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case EMoldProcLoadingUnloadingStep.GetCellId1:
+                    GetCellId(true);
+                    Step.RunStep++;
+                    break;
+                case EMoldProcLoadingUnloadingStep.Set_Cell1ReplyBitOn:
+                    CellId1Reply = true;
+                    Step.RunStep++;
+                    break;
+                case EMoldProcLoadingUnloadingStep.Wait_Cell1SendBitOff:
+                    if (CellId1SendOn)
+                    {
+                        Wait(20);
+                        break;
+                    }
+
+                    CellId1Reply = false;
+
+                    if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34)
+                    {
+                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request;
+                        break;
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case EMoldProcLoadingUnloadingStep.Wait_Cell2SendBitOn:
+                    if (CellId2SendOn == false)
+                    {
+                        Wait(20);
+                        break;
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case EMoldProcLoadingUnloadingStep.GetCellId2:
+                    GetCellId(false);
+                    Step.RunStep++;
+                    break;
+                case EMoldProcLoadingUnloadingStep.Set_Cell2ReplyBitOn:
+                    CellId2Reply = true;
+                    Step.RunStep++;
+                    break;
+                case EMoldProcLoadingUnloadingStep.Wait_Cell2SendBitOff:
+                    if (CellId2SendOn)
+                    {
+                        Wait(20);
+                        break;
+                    }
+
+                    CellId2Reply = false;
+
+                    Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request:
                     if (_machineStatus.InOutHandlerStartRequest == false)
@@ -2519,6 +2609,19 @@ namespace SDV_MoldingInjection.Process
         private void RaiseHeadWarning(EWarning warning, ESPDHead _failHead)
         {
             RaiseWarning(warning + ((int)(EWarning.MO_Z2_AXIS_HOME_TIMEOUT - EWarning.MO_Z1_AXIS_HOME_TIMEOUT)) * (_failHead - ESPDHead.SPDHead1));
+        }
+
+        private string GetCellId(bool isJigLeft)
+        {
+            short[] buffer = new short[20];
+            if (isJigLeft)
+            {
+                CIMAddressMap.ReadWords(0xCCC8, 20, buffer);
+                return PlcDataConverter.GetString(buffer, 0, 20).Trim();
+            }
+
+            CIMAddressMap.ReadWords(0xCD34, 20, buffer);
+            return PlcDataConverter.GetString(buffer, 0, 20).Trim();
         }
         #endregion
 
