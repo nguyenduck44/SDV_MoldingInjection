@@ -4,6 +4,10 @@
     {
         Start,
 
+        Wait_HeadUse,
+
+        Start_Set_TactTime,
+
         ResetInjectTime,
         BubbleRemoveResetCountRotate,
         // ----- CHARGING PHASE -----

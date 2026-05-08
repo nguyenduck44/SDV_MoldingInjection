@@ -1244,15 +1244,19 @@ namespace SDV_MoldingInjection.Process
                     {
                         if (isLoading)
                         {
-                            if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12)
-                            {
-                                Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_Cell2SendBitOn;
-                                break;
-                            }
+                            //TODO: Wait InOut machine write program
+                            //if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12)
+                            //{
+                            //    Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_Cell2SendBitOn;
+                            //    break;
+                            //}
+                            //Step.RunStep++;
 
-                            Step.RunStep++;
+                            Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request;
                             break;
                         }
+
+                        //UNLOADING
                         _inOutHandler.Handler_Send_End(JigStatuses);
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Jig_Check;
                         break;

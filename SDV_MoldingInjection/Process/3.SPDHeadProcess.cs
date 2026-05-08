@@ -423,30 +423,12 @@ namespace SDV_MoldingInjection.Process
                     Sequence_Ready();
                     break;
                 case ESequence.AutoRun:
-                    if (CurrentHeadSkip)
-                    {
-                        Sequence = ESequence.Stop;
-                        break;
-                    }
-
                     Sequence_AutoRun();
                     break;
                 case ESequence.ResinInject:
-                    if (CurrentHeadSkip)
-                    {
-                        Sequence = ESequence.Stop;
-                        break;
-                    }
-
                     Sequence_SPDHeadCommon(ESequence.ResinInject);
                     break;
                 case ESequence.ResinInjectAddTail:
-                    if (CurrentHeadSkip)
-                    {
-                        Sequence = ESequence.Stop;
-                        break;
-                    }
-
                     Sequence_SPDHeadAddTail();
                     break;
                 case ESequence.IdlePurge:
@@ -838,11 +820,12 @@ namespace SDV_MoldingInjection.Process
                     Step.PreProcessStep++;
                     break;
                 case ESPDHeadPreProcessStep.DummyOverFlowDetect_Check:
+#if !SIMULATION
                     if (In_DummyOverflowDetect.Value == false)
                     {
                         RaiseHeadWarning(EWarning.SE_SPD_H01_DUMMY_OVER_FLOW_DETECT);
                     }
-
+#endif
                     Step.PreProcessStep++;
                     break;
                 case ESPDHeadPreProcessStep.Syringe_Check:
@@ -887,7 +870,7 @@ namespace SDV_MoldingInjection.Process
 
             return base.PreProcess();
         }
-        #endregion
+#endregion
 
         public override bool ProcessToAlarm()
         {
@@ -929,11 +912,24 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcCommonStep.Start:
                     Log.Debug($"{sequence} start");
                     _bubbleRemoveCount = 1;
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcCommonStep.Wait_HeadUse:
+                    if (CurrentHeadSkip)
+                    {
+                        Wait(50);
+                        break;
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcCommonStep.Start_Set_TactTime:
                     if (sequence == ESequence.ResinInject)
                     {
                         CurrentTactTimeList.CycleTimeCounter = (int)Environment.TickCount64;
                         CurrentTactTimeList.TactTimeCounter = (int)Environment.TickCount64;
                     }
+
                     if (_machineStatus.IsDryRunMode)
                     {
                         Step.RunStep = (int)ESPDHeadProcCommonStep.WorkRequest_Wait;
