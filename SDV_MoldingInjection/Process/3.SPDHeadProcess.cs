@@ -1893,18 +1893,25 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAssembleDisAssembleStep.End:
-                    if (!isAssemble && assembleActive == true)
+                    string message;
+                    if (isAssemble)
                     {
+                        message = $"Assemble Step #2 Finish!";
                         AssembleActive = false;
                         Log.Debug("Assemble End");
                     }
+                    else if (!isAssemble && assembleActive)
+                    {
+                        message = $"Assemble Step #1 Finish!";
+                        AssembleActive = true;
+                        Log.Debug("Assemble Step #1 End");
+                    }
                     else
                     {
-                        AssembleActive = true;
-                        Log.Debug("Disassemble End");
+                        message = $"DisAssemble Finish!";
+                        Log.Debug("DisAssemble End");
                     }
                     
-                    string message = isAssemble ? $"{head} Assemble Finish!" : $"{head} DisAssemble Finish!";
                     MessageBoxEx.Show(message, false);
                     Sequence = ESequence.Stop;
                     break;
