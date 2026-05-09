@@ -125,6 +125,18 @@ namespace SDV_MoldingInjection.Process
                     }
                 }
 
+                List<SPDHeadProcess> SPDProcesses = Childs!.OfType<SPDHeadProcess>().ToList();
+                InjectProcess injectProcess = Childs!.OfType<InjectProcess>().First();
+                if ((SPDProcesses.Any(spdProcess => spdProcess.Sequence == ESequence.ResinInject && spdProcess.Step.RunStep > (int)ESPDHeadProcCommonStep.WorkRequest_Wait) ||
+                    injectProcess.Sequence == ESequence.DummyShot || injectProcess.Sequence == ESequence.NeedleCleaning ||
+                    injectProcess.Sequence == ESequence.IdlePurge) == false)
+                {
+                    if (_machineStatus.OPCommand == EOperationCommand.SemiAuto)
+                    {
+                        command = EOperationCommand.SemiAuto;
+                    }
+                }
+
                 // Block run OPCommand actived while machine is Runiing
                 _machineStatus.OPCommand = EOperationCommand.None;
             }
@@ -614,8 +626,8 @@ namespace SDV_MoldingInjection.Process
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
                 RaiseAlarm((int)EAlarm.UT_MAIN_MC_OFF);
             }
-            
-            if(_devices.Inputs.InOutMachineEmo.Value == false)
+
+            if (_devices.Inputs.InOutMachineEmo.Value == false)
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
@@ -630,7 +642,7 @@ namespace SDV_MoldingInjection.Process
                 //Log.Error("Emergency Stop Activated. MC OFF");
                 RaiseAlarm((int)EAlarm.EM_MAIN_CP_EMS_SERVO_OFF);
             }
-            
+
             if (_devices.Inputs.SmokeDetectAlarm.Value == true)
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
@@ -674,7 +686,7 @@ namespace SDV_MoldingInjection.Process
                 });
                 RaiseAlarm((int)EAlarm.MO_MAIN_SERVO_PWR_OFF);
             }
-            
+
             if (_devices.Motions.All.Count(motion => motion.Status.IsAlarm == true) > 0)
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
@@ -834,12 +846,9 @@ namespace SDV_MoldingInjection.Process
                     {
                         _devices.Outputs.EQPStop.Value = false;
                         Thread.Sleep(50);
-                        ProcessMode = EProcessMode.ToRun;
                     }
-                    else
-                    {
-                        ProcessMode = EProcessMode.ToRun;
-                    }
+
+                    ProcessMode = EProcessMode.ToRun;
 
                     _machineStatus.OPCommand = EOperationCommand.None;
                     _machineStatus.SemiAutoSequence = ESemiSequence.None;
@@ -913,7 +922,7 @@ namespace SDV_MoldingInjection.Process
                 if (_machineStatus.CurrentAlarms.Any(e => e.ErrorCode == errorLogEntry.ErrorCode) == false)
                 {
                     _machineStatus.CurrentAlarms.Add(errorLogEntry);
-                    if(isAlarm)
+                    if (isAlarm)
                     {
                         raisedAlarmCode = id;
                         ProcessMode = EProcessMode.ToAlarm;

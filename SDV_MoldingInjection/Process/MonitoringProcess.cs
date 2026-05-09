@@ -1,7 +1,9 @@
+using EQX.Core.Common;
 using EQX.Core.Recipe;
 using EQX.Core.Sequence;
 using EQX.Process;
 using SDV_MoldingInjection.Defines;
+using SDV_MoldingInjection.MVVM.ViewModels;
 using SDV_MoldingInjection.Recipe;
 
 namespace SDV_MoldingInjection.Process
@@ -11,16 +13,35 @@ namespace SDV_MoldingInjection.Process
         private readonly MachineStatus _machineStatus;
         private readonly RecipeSelector _recipeSelector;
         private readonly Devices _devices;
+        private readonly NavigationStore _navigationStore;
         private Queue<IGrouping<uint, PositionPoint>> MoveMultiPointQueueSteps = new Queue<IGrouping<uint, PositionPoint>>();
         private List<PositionPoint> currentPoints = new List<PositionPoint>();
 
-        public MonitoringProcess(MachineStatus machineStatus, RecipeSelector recipeSelector, Devices devices)
+        public MonitoringProcess(MachineStatus machineStatus,
+            RecipeSelector recipeSelector,
+            Devices devices,
+            NavigationStore navigationStore)
         {
             _machineStatus = machineStatus;
             _recipeSelector = recipeSelector;
             _devices = devices;
+            _navigationStore = navigationStore;
         }
 
+        public override bool PreProcess()
+        {
+            if (_navigationStore.CurrentViewModel is not SPDHeadAllMaintenanceViewModel)
+            {
+                if (_machineStatus.CurrentProcessMode != EProcessMode.ToRun && _machineStatus.CurrentProcessMode != EProcessMode.Run)
+                {
+                    _machineStatus.IsSkipHead1 = true;
+                    _machineStatus.IsSkipHead2 = true;
+                    _machineStatus.IsSkipHead3 = true;
+                    _machineStatus.IsSkipHead4 = true;
+                }
+            }
+            return base.PreProcess();
+        }
         public override bool ProcessRun()
         {
             switch (Sequence)

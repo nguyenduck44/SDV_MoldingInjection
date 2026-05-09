@@ -1351,8 +1351,10 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request:
-                    if (_machineStatus.InOutHandlerStartRequest == false)
+                    if (_machineStatus.InOutHandlerStartRequest == false ||
+                       (_optionRecipe.SkipHead12 && _optionRecipe.SkipHead34))
                     {
+                        _machineStatus.InOutHandlerStartRequest = false;
                         Wait(20);
                         break;
                     }

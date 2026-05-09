@@ -174,6 +174,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     BalanceRight.SendRequestImmediateWeightCommand();
                 }
             }
+            
         }
 
         protected override void ActualInit()

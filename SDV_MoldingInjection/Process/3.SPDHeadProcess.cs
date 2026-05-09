@@ -979,17 +979,17 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.Wait_HeadUse:
-                    if (CurrentHeadSkip == false)
+                    if (CurrentHeadSkip == false || MachineStatusHeadSkip == false)
                     {
                         Step.RunStep++;
                         break;
                     }
 
-                    if (Parent!.Sequence != ESequence.AutoRun)
-                    {
-                        Sequence = ESequence.Stop;
-                        break;
-                    }
+                    //if (Parent!.Sequence != ESequence.AutoRun )
+                    //{
+                    //    Sequence = ESequence.Stop;
+                    //    break;
+                    //}
 
                     Wait(50);
                     break;
@@ -1217,7 +1217,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.WorkRequest_Wait:
-                    if (procInputs[ESPDHeadProcInput.WorkRequest].Value == false || CurrentHeadSkip)
+                    if (procInputs[ESPDHeadProcInput.WorkRequest].Value == false || (CurrentHeadSkip && MachineStatusHeadSkip))
                     {
                         Wait(50);
                         break;
@@ -2041,6 +2041,15 @@ namespace SDV_MoldingInjection.Process
             "SPDHead2" => OptionRecipe.SkipHead12,
             "SPDHead3" => OptionRecipe.SkipHead34,
             "SPDHead4" => OptionRecipe.SkipHead34,
+            _ => throw new Exception($"Invalid process name: {Name}")
+        };
+
+        private bool MachineStatusHeadSkip => Name switch
+        {
+            "SPDHead1" => _machineStatus.IsSkipHead1,
+            "SPDHead2" => _machineStatus.IsSkipHead2,
+            "SPDHead3" => _machineStatus.IsSkipHead3,
+            "SPDHead4" => _machineStatus.IsSkipHead4,
             _ => throw new Exception($"Invalid process name: {Name}")
         };
 

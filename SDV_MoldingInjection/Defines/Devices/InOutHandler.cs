@@ -5,10 +5,12 @@ using EQX.Core.Sequence;
 using EQX.InOut;
 using log4net;
 using Microsoft.Extensions.DependencyInjection;
+using SDV_MoldingInjection.MVVM.ViewModels;
 using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;
 using System;
 using System.Linq;
+using System.Windows.Navigation;
 
 namespace SDV_MoldingInjection.Defines
 {
@@ -26,6 +28,7 @@ namespace SDV_MoldingInjection.Defines
         private CancellationTokenSource? _cancellationTokenSource;
 
         private Processes _processes => _serviceProvider.GetRequiredService<Processes>();
+        private INavigationService _navigationService => _serviceProvider.GetRequiredService<INavigationService>();
         private IProcess<ESequence> RootProcess => _processes.RootProcess;
         private InjectProcess InjectProcess => _processes.All.OfType<InjectProcess>().First();
         private List<SPDHeadProcess> SPDProcesses => _processes.All.OfType<SPDHeadProcess>().ToList();
@@ -286,15 +289,15 @@ namespace SDV_MoldingInjection.Defines
             int head = message[5] - 0x31;
             bool isUse = message[6] == 0x16;
 
-            //foreach (var spdProcess in SPDProcesses)
-            //{
-            //    if ((spdProcess.Sequence == ESequence.ResinInject && spdProcess.Step.RunStep <= (int)ESPDHeadProcCommonStep.Wait_HeadUse) ||
-            //        spdProcess.Sequence == ESequence.DummyShot && spdProcess.Step.RunStep <= (int)ESPDHeadProcCommonStep.Wait_HeadUse)
-            //    {
-            //        Handler_Send_HeadUse_Success(head);
-            //        return;
-            //    }
-            //}
+            foreach (var spdProcess in SPDProcesses)
+            {
+                if ((spdProcess.Sequence == ESequence.ResinInject && spdProcess.Step.RunStep > (int)ESPDHeadProcCommonStep.WorkRequest_Wait) ||
+                    spdProcess.Sequence == ESequence.DummyShot && spdProcess.Step.RunStep > (int)ESPDHeadProcCommonStep.WorkRequest_Wait)
+                {
+                    Handler_Send_HeadUse_Success(head);
+                    return;
+                }
+            }
 
             if (head == 0) _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 = !isUse;
             else if (head == 1) _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34 = !isUse;
@@ -370,6 +373,8 @@ namespace SDV_MoldingInjection.Defines
         private void Handler_ClearIdlePurgeMode_Received(string message)
         {
             _machineStatus.OPCommand = EOperationCommand.Stop;
+            _navigationService.NavigateTo<AutoViewModel>();
+            _machineStatus.MachineIdleTick = (int)Environment.TickCount64;
 
             byte[] buffer = new byte[] {
                 0x02,
