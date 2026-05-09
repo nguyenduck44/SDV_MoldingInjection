@@ -28,6 +28,7 @@ namespace SDV_MoldingInjection.Defines
         private Processes _processes => _serviceProvider.GetRequiredService<Processes>();
         private IProcess<ESequence> RootProcess => _processes.RootProcess;
         private InjectProcess InjectProcess => _processes.All.OfType<InjectProcess>().First();
+        private List<SPDHeadProcess> SPDProcesses => _processes.All.OfType<SPDHeadProcess>().ToList();
 
         public InOutHandler([FromKeyedServices("InOutHandlerSerialCommunication")] SerialCommunicator serialCommunicator,
             RecipeSelector recipeSelector,
@@ -284,6 +285,16 @@ namespace SDV_MoldingInjection.Defines
             Response_HeadUse_Received();
             int head = message[5] - 0x31;
             bool isUse = message[6] == 0x16;
+
+            foreach (var spdProcess in SPDProcesses)
+            {
+                if ((spdProcess.Sequence == ESequence.ResinInject && spdProcess.Step.RunStep > (int)ESPDHeadProcCommonStep.Wait_HeadUse) ||
+                    spdProcess.Sequence == ESequence.DummyShot && spdProcess.Step.RunStep > (int)ESPDHeadProcCommonStep.Wait_HeadUse)
+                {
+                    Handler_Send_HeadUse_Success(head);
+                    return;
+                }
+            }
 
             if (head == 0) _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 = !isUse;
             else if (head == 1) _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34 = !isUse;
