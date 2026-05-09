@@ -160,7 +160,8 @@ namespace SDV_MoldingInjection.Process
                     }
                     else if ((_machineStatus.OPCommand == EOperationCommand.Start
                         || _devices.Inputs.OPButtonStart.Value == true)
-                        && (_viewModelavigationStore.CurrentViewModel is AutoViewModel))
+                        && (_viewModelavigationStore.CurrentViewModel is AutoViewModel
+                        && _machineStatus.IsDoorPasswordVerified))
                     {
                         command = EOperationCommand.Start;
                     }
