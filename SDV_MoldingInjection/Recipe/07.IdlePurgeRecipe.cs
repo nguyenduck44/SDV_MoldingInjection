@@ -26,6 +26,7 @@ namespace SDV_MoldingInjection.Recipe
         [SingleRecipeDescription(
             Description = "Enable Idle Purge",
             Detail = "Check to Enable Idle Purge")]
+        [SingleRecipeMinMax(Max = 1800, Min = 5)]
         public bool EnableIdlePurge
         {
             get { return enableIdlePurge; }

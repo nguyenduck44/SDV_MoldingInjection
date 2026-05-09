@@ -803,7 +803,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcAutoRunStep.Wait_HeadUse:
-                    if(_optionRecipe.SkipHead12 && _optionRecipe.SkipHead34)
+                    if (_optionRecipe.SkipHead12 && _optionRecipe.SkipHead34)
                     {
                         Wait(100);
                         break;
@@ -1557,7 +1557,7 @@ namespace SDV_MoldingInjection.Process
                     {
                         Log.Debug("ZAxis move dummy position");
                         ZAxisDummyPosMove(sequence, head);
-                        Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => ZAxisInDummyPos(head));
+                        Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => ZAxisInDummyPos(sequence, head));
                     }
 
                     Step.RunStep++;
@@ -1565,7 +1565,26 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcDummyShotStep.ZAxis_DummyPos_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        if (sequence == ESequence.DummyShot || sequence == ESequence.BubbleRemove || sequence == ESequence.IdlePurge)
+                        if (sequence == ESequence.IdlePurge)
+                        {
+                            if (!Z1Axis.IsOnPosition(Z1AxisDummyPos))
+                            {
+                                RaiseWarning(EWarning.MO_SPD_H01_Z1_AXIS_DUMMY_POS_TIMEOUT);
+                            }
+                            if (!Z2Axis.IsOnPosition(Z2AxisDummyPos))
+                            {
+                                RaiseWarning(EWarning.MO_SPD_H02_Z2_AXIS_DUMMY_POS_TIMEOUT);
+                            }
+                            if (!Z3Axis.IsOnPosition(Z3AxisDummyPos))
+                            {
+                                RaiseWarning(EWarning.MO_SPD_H03_Z3_AXIS_DUMMY_POS_TIMEOUT);
+                            }
+                            if (!Z4Axis.IsOnPosition(Z4AxisDummyPos))
+                            {
+                                RaiseWarning(EWarning.MO_SPD_H04_Z4_AXIS_DUMMY_POS_TIMEOUT);
+                            }
+                        }
+                        else if (sequence == ESequence.DummyShot || sequence == ESequence.BubbleRemove)
                         {
                             if (Parent!.Sequence == ESequence.AutoRun || sequence == ESequence.IdlePurge)
                             {
@@ -1606,8 +1625,7 @@ namespace SDV_MoldingInjection.Process
                                 }
                             }
                         }
-
-                        if (sequence == ESequence.BubbleRemove_H1 ||
+                        else if (sequence == ESequence.BubbleRemove_H1 ||
                             sequence == ESequence.BubbleRemove_H2 ||
                             sequence == ESequence.BubbleRemove_H3 ||
                             sequence == ESequence.BubbleRemove_H4)
@@ -2071,9 +2089,9 @@ namespace SDV_MoldingInjection.Process
 
         private bool IsSequenceAssembleOrDisassemble(ESequence sequence)
         {
-            return sequence == ESequence.HeadAssemble_Step1 || 
+            return sequence == ESequence.HeadAssemble_Step1 ||
                    sequence == ESequence.HeadAssemble_Step1_H1 || sequence == ESequence.HeadAssemble_Step1_H2 ||
-                   sequence == ESequence.HeadAssemble_Step1_H3 || sequence == ESequence.HeadAssemble_Step1_H4 || 
+                   sequence == ESequence.HeadAssemble_Step1_H3 || sequence == ESequence.HeadAssemble_Step1_H4 ||
                    sequence == ESequence.HeadAssemble_Step2 ||
                    sequence == ESequence.HeadAssemble_Step2_H1 || sequence == ESequence.HeadAssemble_Step2_H2 ||
                    sequence == ESequence.HeadAssemble_Step2_H3 || sequence == ESequence.HeadAssemble_Step2_H4 ||
@@ -2305,6 +2323,14 @@ namespace SDV_MoldingInjection.Process
 
         private void ZAxisDummyPosMove(ESequence sequence, ESPDHead head)
         {
+            if (sequence == ESequence.IdlePurge)
+            {
+                Z1Axis.MoveAbs(Z1AxisDummyPos);
+                Z2Axis.MoveAbs(Z2AxisDummyPos);
+                Z3Axis.MoveAbs(Z3AxisDummyPos);
+                Z4Axis.MoveAbs(Z4AxisDummyPos);
+            }
+
             if (Parent!.Sequence != ESequence.AutoRun && head == ESPDHead.All && sequence != ESequence.IdlePurge)
             {
                 if (_machineStatus.IsSkipHead1 == false)
@@ -2329,8 +2355,16 @@ namespace SDV_MoldingInjection.Process
             }
         }
 
-        private bool ZAxisInDummyPos(ESPDHead head)
+        private bool ZAxisInDummyPos(ESequence sequence, ESPDHead head)
         {
+            if (sequence == ESequence.IdlePurge)
+            {
+                return Z1Axis.IsOnPosition(Z1AxisDummyPos) &&
+                        Z2Axis.IsOnPosition(Z2AxisDummyPos) &&
+                        Z3Axis.IsOnPosition(Z3AxisDummyPos) &&
+                        Z4Axis.IsOnPosition(Z4AxisDummyPos);
+            }
+
             if (head == ESPDHead.All && Parent!.Sequence == ESequence.AutoRun)
             {
                 return
@@ -2570,7 +2604,14 @@ namespace SDV_MoldingInjection.Process
         {
             if (head == ESPDHead.All)
             {
-                if (Parent!.Sequence == ESequence.AutoRun || sequence == ESequence.IdlePurge)
+                if (sequence == ESequence.IdlePurge)
+                {
+                    return procInputs[EInjectProcInput.SPDHead1_WorkDone].Value &&
+                            procInputs[EInjectProcInput.SPDHead2_WorkDone].Value &&
+                            procInputs[EInjectProcInput.SPDHead3_WorkDone].Value &&
+                            procInputs[EInjectProcInput.SPDHead4_WorkDone].Value;
+                }
+                else if (Parent!.Sequence == ESequence.AutoRun)
                 {
                     return
                     (procInputs[EInjectProcInput.SPDHead1_WorkDone].Value || _currentRecipe.OptionRecipe.SkipHead12) &&

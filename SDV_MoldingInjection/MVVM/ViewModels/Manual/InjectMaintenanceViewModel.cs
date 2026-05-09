@@ -84,6 +84,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 ESemiSequence.Loading,
                 ESemiSequence.Unloading,
+                ESemiSequence.IdlePurge,
             };
         }
 

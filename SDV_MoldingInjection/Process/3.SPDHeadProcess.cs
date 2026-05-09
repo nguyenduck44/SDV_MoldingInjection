@@ -432,12 +432,6 @@ namespace SDV_MoldingInjection.Process
                     Sequence_SPDHeadAddTail();
                     break;
                 case ESequence.IdlePurge:
-                    if (CurrentHeadSkip)
-                    {
-                        Sequence = ESequence.Stop;
-                        break;
-                    }
-
                     Sequence_SPDHeadCommon(ESequence.IdlePurge);
                     break;
                 case ESequence.DummyShot:
@@ -979,7 +973,9 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.Wait_HeadUse:
-                    if (CurrentHeadSkip == false || MachineStatusHeadSkip == false)
+                    if (CurrentHeadSkip == false || 
+                        MachineStatusHeadSkip == false ||
+                        sequence == ESequence.IdlePurge)
                     {
                         Step.RunStep++;
                         break;
@@ -1217,7 +1213,8 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.WorkRequest_Wait:
-                    if (procInputs[ESPDHeadProcInput.WorkRequest].Value == false || (CurrentHeadSkip && MachineStatusHeadSkip))
+                    if (procInputs[ESPDHeadProcInput.WorkRequest].Value == false || 
+                       ((CurrentHeadSkip && MachineStatusHeadSkip && sequence != ESequence.IdlePurge)))
                     {
                         Wait(50);
                         break;
