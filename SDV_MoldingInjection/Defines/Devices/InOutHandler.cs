@@ -286,15 +286,15 @@ namespace SDV_MoldingInjection.Defines
             int head = message[5] - 0x31;
             bool isUse = message[6] == 0x16;
 
-            foreach (var spdProcess in SPDProcesses)
-            {
-                if ((spdProcess.Sequence == ESequence.ResinInject && spdProcess.Step.RunStep > (int)ESPDHeadProcCommonStep.Wait_HeadUse) ||
-                    spdProcess.Sequence == ESequence.DummyShot && spdProcess.Step.RunStep > (int)ESPDHeadProcCommonStep.Wait_HeadUse)
-                {
-                    Handler_Send_HeadUse_Success(head);
-                    return;
-                }
-            }
+            //foreach (var spdProcess in SPDProcesses)
+            //{
+            //    if ((spdProcess.Sequence == ESequence.ResinInject && spdProcess.Step.RunStep <= (int)ESPDHeadProcCommonStep.Wait_HeadUse) ||
+            //        spdProcess.Sequence == ESequence.DummyShot && spdProcess.Step.RunStep <= (int)ESPDHeadProcCommonStep.Wait_HeadUse)
+            //    {
+            //        Handler_Send_HeadUse_Success(head);
+            //        return;
+            //    }
+            //}
 
             if (head == 0) _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 = !isUse;
             else if (head == 1) _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34 = !isUse;
