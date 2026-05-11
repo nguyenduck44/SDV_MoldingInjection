@@ -13,9 +13,20 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
     {
         private readonly Devices _devices;
         private readonly INavigationService _navigationService;
+        private readonly InterlockService _interlockService;
         private readonly Plotter _plotter;
+        private bool isDisableInterlock = false;
 
         #region Properties
+        public bool IsDisableInterLock
+        {
+            get { return isDisableInterlock; }
+            set
+            {
+                isDisableInterlock = value;
+                _interlockService.Config(value);
+            }
+        }
         #endregion
 
         #region Commands
@@ -69,13 +80,14 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             Devices devices,
             MachineStatus machineStatus,
             INavigationService navigationService,
-            Plotter plotter)
+            Plotter plotter,
+            InterlockService interlockService)
         {
             _devices = devices;
             MachineStatus = machineStatus;
             _navigationService = navigationService;
             _plotter = plotter;
-
+            _interlockService = interlockService;
             Log = LogManager.GetLogger("DevVM");
         }
 
