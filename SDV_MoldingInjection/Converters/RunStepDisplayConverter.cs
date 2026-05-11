@@ -45,10 +45,38 @@ namespace SDV_MoldingInjection.Converters
                 },
                 "DryPump" => sequence switch
                 {
+                    ESequence.AutoRun => typeof(EDryPumpProcResinInjectStep),
                     ESequence.ResinInject => typeof(EDryPumpProcResinInjectStep),
                     _ => null
                 },
                 "SPDHead1" => sequence switch
+                {
+                    ESequence.ResinInject => typeof(ESPDHeadProcCommonStep),
+                    ESequence.DummyShot => typeof(ESPDHeadProcCommonStep),
+                    ESequence.BubbleRemove => typeof(ESPDHeadProcCommonStep),
+                    ESequence.DotWeighting => typeof(ESPDHeadProcDotWeightingStep),
+                    ESequence.HeadAssemble_Step1 or ESequence.HeadDisassemble => typeof(ESPDHeadProcAssembleDisAssembleStep),
+                    _ => null
+                },
+                "SPDHead2" => sequence switch
+                {
+                    ESequence.ResinInject => typeof(ESPDHeadProcCommonStep),
+                    ESequence.DummyShot => typeof(ESPDHeadProcCommonStep),
+                    ESequence.BubbleRemove => typeof(ESPDHeadProcCommonStep),
+                    ESequence.DotWeighting => typeof(ESPDHeadProcDotWeightingStep),
+                    ESequence.HeadAssemble_Step1 or ESequence.HeadDisassemble => typeof(ESPDHeadProcAssembleDisAssembleStep),
+                    _ => null
+                },
+                "SPDHead3" => sequence switch
+                {
+                    ESequence.ResinInject => typeof(ESPDHeadProcCommonStep),
+                    ESequence.DummyShot => typeof(ESPDHeadProcCommonStep),
+                    ESequence.BubbleRemove => typeof(ESPDHeadProcCommonStep),
+                    ESequence.DotWeighting => typeof(ESPDHeadProcDotWeightingStep),
+                    ESequence.HeadAssemble_Step1 or ESequence.HeadDisassemble => typeof(ESPDHeadProcAssembleDisAssembleStep),
+                    _ => null
+                },
+                "SPDHead4" => sequence switch
                 {
                     ESequence.ResinInject => typeof(ESPDHeadProcCommonStep),
                     ESequence.DummyShot => typeof(ESPDHeadProcCommonStep),
