@@ -3,6 +3,7 @@ using EQX.Core.Common;
 using EQX.Core.InOut;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Win32;
 using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.Extensions;
 using System.Linq;
@@ -29,7 +30,8 @@ namespace SDV_MoldingInjection.Defines
             _dHead3InputDevice = dInputDevices.First(device => device.Name == EInputDevice.Head3Input.ToString());
             _dHead4InputDevice = dInputDevices.First(device => device.Name == EInputDevice.Head4Input.ToString());
 
-            SensorMapStartBit = int.Parse(configuration["Values:SensorMapStartBit"]!, System.Globalization.NumberStyles.HexNumber);
+            object val = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Top Engineering", "SensorStartBit", "");
+            SensorMapStartBit = int.Parse(val.ToString(), System.Globalization.NumberStyles.HexNumber);
 
             Initialize();
 
