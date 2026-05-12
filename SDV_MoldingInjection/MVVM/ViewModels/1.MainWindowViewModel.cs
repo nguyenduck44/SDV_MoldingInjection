@@ -116,7 +116,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         private void DoorSafetyTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
-            if(Devices.Inputs.DoorLock == false)
+            if(Devices.Inputs.DoorClose == false)
             {
                 Devices.Outputs.SWKeyLock.Value = false;
             }

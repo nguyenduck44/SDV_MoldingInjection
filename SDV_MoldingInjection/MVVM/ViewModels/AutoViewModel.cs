@@ -135,7 +135,17 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         return;
                     }
 
-                    if (Devices.Inputs.AutoSW.Value) return;
+                    if (Devices.Inputs.AutoSW.Value)
+                    {
+                        MessageBoxEx.ShowDialog("OP KEY IN AUTO MODE, CAN NOT OPEN THE DOOR!!!", false, "WARNING");
+                        return;
+                    }
+
+                    if (Devices.Inputs.LockKeyCheckSwitch.Value == false && Devices.Inputs.DoorLock)
+                    {
+                        MessageBoxEx.ShowDialog("PLEASE REMOVE KEY OUT MACHINE!!!", false, "WARNING");
+                        return;
+                    }
 
                     Devices.Outputs.EQPStop.Value = !Devices.Outputs.EQPStop.Value;
                     if(Devices.Outputs.EQPStop.Value == false)
