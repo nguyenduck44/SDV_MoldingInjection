@@ -14,170 +14,136 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary
-                    Source="pack://application:,,,/EQX.UI;component/Styles/ComboBoxCommonStyle.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/EQX.UI;component/Styles/ComboBoxCommonStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition
-                Width="300" />
+            <ColumnDefinition Width="300" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <TreeView
-            x:Name="LogTreeView"
-            Grid.Column="0"
-            ItemsSource="{Binding LogFiles}"
-            Margin="5"
-            SelectedItemChanged="LogTreeView_SelectedItemChanged">
+        <TreeView x:Name="LogTreeView"
+                  Grid.Column="0"
+                  ItemsSource="{Binding LogFiles}"
+                  Margin="5"
+                  SelectedItemChanged="LogTreeView_SelectedItemChanged">
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate
-                    ItemsSource="{Binding Children}">
-                    <TextBlock
-                        Text="{Binding Name}"
-                        FontSize="16"
-                        FontWeight="SemiBold" />
+                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                    <TextBlock Text="{Binding Name}"
+                               FontSize="16"
+                               FontWeight="SemiBold" />
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
             <TreeView.ItemContainerStyle>
-                <Style
-                    TargetType="TreeViewItem">
-                    <Setter
-                        Property="IsExpanded"
-                        Value="True" />
+                <Style TargetType="TreeViewItem">
+                    <Setter Property="IsExpanded"
+                            Value="True" />
                 </Style>
             </TreeView.ItemContainerStyle>
         </TreeView>
 
-        <Grid
-            Grid.Column="1">
+        <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition
-                    Height="60" />
+                <RowDefinition Height="60" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <GroupBox
-                Margin="5 0 5 0"
-                Style="{x:Null}">
+            <GroupBox Margin="5 0 5 0"
+                      Style="{x:Null}">
                 <GroupBox.Header>
-                    <TextBlock
-                        Text="Filter" />
+                    <TextBlock Text="Filter" />
                 </GroupBox.Header>
-                <StackPanel
-                    Orientation="Horizontal">
-                    <TextBlock
-                        Text="Filter Type:"
-                        VerticalAlignment="Center"
-                        Margin="5" />
-                    <ComboBox
-                        x:Name="FilterTypeComboBox"
-                        Width="120"
-                        Margin="5"
-                        SelectionChanged="FilterTypeComboBox_SelectionChanged">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Filter Type:"
+                               VerticalAlignment="Center"
+                               Margin="5" />
+                    <ComboBox x:Name="FilterTypeComboBox"
+                              Width="120"
+                              Margin="5"
+                              SelectionChanged="FilterTypeComboBox_SelectionChanged">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock
-                                    Text="{Binding Name}"
-                                    Foreground="{Binding Color}" />
+                                <TextBlock Text="{Binding Name}"
+                                           Foreground="{Binding Color}" />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
 
-                    <TextBlock
-                        Text="Filter Source:"
-                        VerticalAlignment="Center"
-                        Margin="10,5,5,5" />
-                    <ComboBox
-                        x:Name="FilterSourceComboBox"
-                        Width="260"
-                        Margin="5"
-                        SelectionChanged="FilterSourceComboBox_SelectionChanged">
+                    <TextBlock Text="Filter Source:"
+                               VerticalAlignment="Center"
+                               Margin="10,5,5,5" />
+                    <ComboBox x:Name="FilterSourceComboBox"
+                              Width="260"
+                              Margin="5"
+                              SelectionChanged="FilterSourceComboBox_SelectionChanged">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <CheckBox
-                                    Content="{Binding Name}"
-                                    IsChecked="{Binding IsSelected}"
-                                    Checked="FilterSourceCheckBox_Changed"
-                                    Unchecked="FilterSourceCheckBox_Changed" />
+                                <CheckBox Content="{Binding Name}"
+                                          IsChecked="{Binding IsSelected}"
+                                          Checked="FilterSourceCheckBox_Changed"
+                                          Unchecked="FilterSourceCheckBox_Changed" />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
                 </StackPanel>
             </GroupBox>
-            <DataGrid
-                x:Name="LogDataGrid"
-                Grid.Row="1"
-                FontSize="13"
-                AutoGenerateColumns="False"
-                CanUserResizeColumns="False"
-                CanUserSortColumns="False"
-                SelectionUnit="CellOrRowHeader"
-                SelectionMode="Extended"
-                ClipboardCopyMode="ExcludeHeader"
-                CanUserAddRows="False"
-                Margin="5">
+            <DataGrid x:Name="LogDataGrid"
+                      Grid.Row="1"
+                      FontSize="13"
+                      AutoGenerateColumns="False"
+                      CanUserResizeColumns="False"
+                      CanUserSortColumns="False"
+                      SelectionUnit="CellOrRowHeader"
+                      SelectionMode="Extended"
+                      ClipboardCopyMode="ExcludeHeader"
+                      CanUserAddRows="False"
+                      Margin="5">
                 <DataGrid.RowStyle>
-                    <Style
-                        TargetType="DataGridRow">
+                    <Style TargetType="DataGridRow">
                         <Style.Triggers>
-                            <DataTrigger
-                                Binding="{Binding Type}"
-                                Value="INFO">
-                                <Setter
-                                    Property="Background"
-                                    Value="#90CAF9" />
+                            <DataTrigger Binding="{Binding Type}"
+                                         Value="INFO">
+                                <Setter Property="Background"
+                                        Value="#90CAF9" />
                             </DataTrigger>
-                            <DataTrigger
-                                Binding="{Binding Type}"
-                                Value="WARN">
-                                <Setter
-                                    Property="Background"
-                                    Value="#FFF4CE" />
+                            <DataTrigger Binding="{Binding Type}"
+                                         Value="WARN">
+                                <Setter Property="Background"
+                                        Value="#FFF4CE" />
                             </DataTrigger>
-                            <DataTrigger
-                                Binding="{Binding Type}"
-                                Value="ERROR">
-                                <Setter
-                                    Property="Background"
-                                    Value="#FFAB91" />
+                            <DataTrigger Binding="{Binding Type}"
+                                         Value="ERROR">
+                                <Setter Property="Background"
+                                        Value="#FFAB91" />
                             </DataTrigger>
-                            <DataTrigger
-                                Binding="{Binding Type}"
-                                Value="FATAL">
-                                <Setter
-                                    Property="Background"
-                                    Value="#FF7043" />
+                            <DataTrigger Binding="{Binding Type}"
+                                         Value="FATAL">
+                                <Setter Property="Background"
+                                        Value="#FF7043" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </DataGrid.RowStyle>
                 <DataGrid.Columns>
-                    <DataGridTextColumn
-                        Header="Time"
-                        IsReadOnly="True"
-                        Binding="{Binding Time}"
-                        Width="150" />
-                    <DataGridTextColumn
-                        Header="Type"
-                        IsReadOnly="True"
-                        Binding="{Binding Type}"
-                        Width="100" />
-                    <DataGridTextColumn
-                        Header="Source"
-                        IsReadOnly="True"
-                        Binding="{Binding Source}"
-                        Width="200" />
-                    <DataGridTextColumn
-                        Header="Description"
-                        Binding="{Binding Description}"
-                        Width="*">
+                    <DataGridTextColumn Header="Time"
+                                        IsReadOnly="True"
+                                        Binding="{Binding Time}"
+                                        Width="150" />
+                    <DataGridTextColumn Header="Type"
+                                        IsReadOnly="True"
+                                        Binding="{Binding Type}"
+                                        Width="100" />
+                    <DataGridTextColumn Header="Source"
+                                        IsReadOnly="True"
+                                        Binding="{Binding Source}"
+                                        Width="100" />
+                    <DataGridTextColumn Header="Description"
+                                        Binding="{Binding Description}"
+                                        Width="*">
                         <DataGridTextColumn.ElementStyle>
-                            <Style
-                                TargetType="TextBlock">
-                                <Setter
-                                    Property="TextWrapping"
-                                    Value="Wrap" />
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextWrapping"
+                                        Value="Wrap" />
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>

@@ -159,7 +159,7 @@
                 <GroupBox Header="PRODUCTION"
                           Style="{x:Null}"
                           Width="142"
-                          Height="100"
+                          Height="90"
                           VerticalAlignment="Top"
                           HorizontalAlignment="Left">
                     <Grid Margin="8 6">
@@ -231,7 +231,7 @@
                 <GroupBox Header="TACT TIME"
                           Style="{x:Null}"
                           Width="142"
-                          Height="100"
+                          Height="90"
                           VerticalAlignment="Top"
                           HorizontalAlignment="Left">
                     <Grid Margin="8 6">
