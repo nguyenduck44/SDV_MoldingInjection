@@ -915,7 +915,7 @@ namespace SDV_MoldingInjection.Process
             ErrorLogEntry errorLogEntry = new ErrorLogEntry();
             errorLogEntry.ErrorCode = id;
             errorLogEntry.Message = isAlarm ? ((EAlarm)id).ToString() : ((EWarning)id).ToString();
-            errorLogEntry.IOName = isAlarm ? ((EAlarm)id).GetDescription() : ((EWarning)id).GetDescription();
+            errorLogEntry.IOName = isAlarm ? ((EAlarm)id).GetDescription(true) : ((EWarning)id).GetDescription(true);
             errorLogEntry.Type = isAlarm ? "ALARM" : "WARNING";
 
             Application.Current.Dispatcher.Invoke(() =>
@@ -925,11 +925,35 @@ namespace SDV_MoldingInjection.Process
                     _machineStatus.CurrentAlarms.Add(errorLogEntry);
                     if (isAlarm)
                     {
+                        CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmOccur, new CIMScenarioContext
+                        {
+                            CIMAlarmData = new CIMAlarmData
+                            {
+                                ALCD = 2, // LIGHT ALARM
+                                ALID = id,
+                                AlarmDescription = ((EAlarm)id).ToString(),
+                            }
+                        });
+
+                        Log.Error($"[{(int)(EAlarm)id}] {(EAlarm)id}");
+                        _machineStatus.Message = $"[{(int)(EAlarm)id}] {(EAlarm)id}";
                         raisedAlarmCode = id;
                         ProcessMode = EProcessMode.ToAlarm;
                     }
                     else
                     {
+                        CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmOccur, new CIMScenarioContext
+                        {
+                            CIMAlarmData = new CIMAlarmData
+                            {
+                                ALCD = 2, // HEAVY ALARM
+                                ALID = id,
+                                AlarmDescription = ((EWarning)id).ToString(),
+                            }
+                        });
+
+                        Log.Warn($"[{(int)(EWarning)id}] {(EWarning)id}");
+                        _machineStatus.Message = $"[{(int)(EWarning)id}] {(EWarning)id}";
                         raisedWarningCode = id;
                         ProcessMode = EProcessMode.ToWarning;
                     }
