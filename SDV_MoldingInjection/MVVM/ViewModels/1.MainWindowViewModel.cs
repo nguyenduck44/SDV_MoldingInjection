@@ -154,7 +154,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 Width = Application.Current.MainWindow.Width,
-                Height = Application.Current.MainWindow.Height * 0.6
+                Height = Application.Current.MainWindow.Height * 0.5
             };
 
             var result = virtualKeyboard.ShowDialog();

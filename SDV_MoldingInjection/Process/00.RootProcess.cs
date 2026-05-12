@@ -673,7 +673,7 @@ namespace SDV_MoldingInjection.Process
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
                 //Log.Error("Main Air Not Supplied");
-                RaiseAlarm((int)EAlarm.VC_MAIN_AIR_NOT_SUPPLIED);
+                RaiseWarning((int)EWarning.VC_MAIN_AIR_NOT_SUPPLIED);
             }
 #endif
             if (_devices.Motions.All.Count(motion => motion.Status.IsMotionOn != true) > 0 &&
