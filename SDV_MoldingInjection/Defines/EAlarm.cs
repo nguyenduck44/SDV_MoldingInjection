@@ -23,7 +23,7 @@ namespace SDV_MoldingInjection.Defines
         [Description("IN03")]
         EM_MAIN_CP_EMS_SERVO_OFF,
         [Description("IN13")]
-        UT_MAIN_MC_OFF,
+        UT_MAIN_POWER_MC_OFF,
         MO_MAIN_SERVO_ALARM_DETECT,
         MO_MAIN_SERVO_RESET_FAIL,
         MO_MAIN_SERVO_PWR_OFF,

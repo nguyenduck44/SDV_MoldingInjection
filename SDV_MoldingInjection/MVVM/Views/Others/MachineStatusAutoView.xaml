@@ -86,7 +86,7 @@
         <!-- LEAK SENSOR -->
         <Canvas>
             <Border Canvas.Left="305"
-                    Canvas.Top="107"
+                    Canvas.Top="105"
                     CornerRadius="10"
                     BorderThickness="1"
                     Background="{Binding IsLeakSensor_H1, Converter={StaticResource BooleanToOnOffBrushConverter}, ConverterParameter=true}"
@@ -95,21 +95,21 @@
                 <Border.Style>
                     <Style TargetType="Border">
                         <Setter Property="Visibility"
-                Value="Collapsed" />
+                                Value="Collapsed" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsLeakSensor_H1}"
-                         Value="True">
+                                         Value="True">
                                 <Setter Property="Visibility"
-                        Value="Visible" />
+                                        Value="Visible" />
                                 <DataTrigger.EnterActions>
                                     <BeginStoryboard Name="BlinkAnimation">
                                         <Storyboard>
                                             <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                             From="1.0"
-                             To="0.0"
-                             Duration="0:0:0.5"
-                             AutoReverse="True"
-                             RepeatBehavior="Forever" />
+                                                             From="1.0"
+                                                             To="0.0"
+                                                             Duration="0:0:0.5"
+                                                             AutoReverse="True"
+                                                             RepeatBehavior="Forever" />
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </DataTrigger.EnterActions>
@@ -118,16 +118,16 @@
                                 </DataTrigger.ExitActions>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding IsLeakSensor_H1}"
-                         Value="False">
+                                         Value="False">
                                 <Setter Property="Visibility"
-                        Value="Visible" />
+                                        Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
             </Border>
             <Border Canvas.Left="345"
-                    Canvas.Top="107"
+                    Canvas.Top="105"
                     CornerRadius="10"
                     BorderThickness="1"
                     Background="{Binding IsLeakSensor_H2, Converter={StaticResource BooleanToOnOffBrushConverter}, ConverterParameter=true}"
@@ -136,21 +136,21 @@
                 <Border.Style>
                     <Style TargetType="Border">
                         <Setter Property="Visibility"
-                Value="Collapsed" />
+                                Value="Collapsed" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsLeakSensor_H2}"
-                         Value="True">
+                                         Value="True">
                                 <Setter Property="Visibility"
-                        Value="Visible" />
+                                        Value="Visible" />
                                 <DataTrigger.EnterActions>
                                     <BeginStoryboard Name="BlinkAnimation">
                                         <Storyboard>
                                             <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                             From="1.0"
-                             To="0.0"
-                             Duration="0:0:0.5"
-                             AutoReverse="True"
-                             RepeatBehavior="Forever" />
+                                                             From="1.0"
+                                                             To="0.0"
+                                                             Duration="0:0:0.5"
+                                                             AutoReverse="True"
+                                                             RepeatBehavior="Forever" />            
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </DataTrigger.EnterActions>
@@ -159,16 +159,16 @@
                                 </DataTrigger.ExitActions>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding IsLeakSensor_H2}"
-                         Value="False">
+                                         Value="False">
                                 <Setter Property="Visibility"
-                        Value="Visible" />
+                                        Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
             </Border>
             <Border Canvas.Left="410"
-                    Canvas.Top="107"
+                    Canvas.Top="105"
                     CornerRadius="10"
                     BorderThickness="1"
                     Background="{Binding IsLeakSensor_H3, Converter={StaticResource BooleanToOnOffBrushConverter}, ConverterParameter=true}"
@@ -177,21 +177,21 @@
                 <Border.Style>
                     <Style TargetType="Border">
                         <Setter Property="Visibility"
-                Value="Collapsed" />
+                                Value="Collapsed" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsLeakSensor_H3}"
-                         Value="True">
+                                         Value="True">
                                 <Setter Property="Visibility"
-                        Value="Visible" />
+                                        Value="Visible" />
                                 <DataTrigger.EnterActions>
                                     <BeginStoryboard Name="BlinkAnimation">
                                         <Storyboard>
                                             <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                             From="1.0"
-                             To="0.0"
-                             Duration="0:0:0.5"
-                             AutoReverse="True"
-                             RepeatBehavior="Forever" />
+                                                             From="1.0"
+                                                             To="0.0"
+                                                             Duration="0:0:0.5"
+                                                             AutoReverse="True"
+                                                             RepeatBehavior="Forever" />
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </DataTrigger.EnterActions>
@@ -200,16 +200,16 @@
                                 </DataTrigger.ExitActions>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding IsLeakSensor_H3}"
-                         Value="False">
+                                         Value="False">
                                 <Setter Property="Visibility"
-                        Value="Visible" />
+                                        Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
             </Border>
             <Border Canvas.Left="450"
-                    Canvas.Top="107"
+                    Canvas.Top="105"
                     CornerRadius="10"
                     BorderThickness="1"
                     Background="{Binding IsLeakSensor_H4, Converter={StaticResource BooleanToOnOffBrushConverter}, ConverterParameter=true}"

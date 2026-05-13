@@ -581,25 +581,26 @@ namespace SDV_MoldingInjection.Process
         private void CheckRealTimeAlarmStatus()
         {
 #if !SIMULATION
-            if (_devices.Inputs.InOutMachineDoorClose == false)
+            if (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run ||
+                ProcessMode == EProcessMode.ToOrigin || ProcessMode == EProcessMode.Origin)
             {
-                Childs!.ToList().ForEach(p => p.IsAlarm = true);
-                Childs!.ToList().ForEach(p => p.IsCanStop = true);
-                RaiseWarning(EWarning.DO_INOUT_MACHINE_DOOR_OPEN);
-            }
+                if (_devices.Inputs.InOutMachineDoorClose == false)
+                {
+                    Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                    RaiseWarning(EWarning.DO_INOUT_MACHINE_DOOR_OPEN);
+                }
 
-            if (_devices.Inputs.DoorClose == false)
-            {
-                Childs!.ToList().ForEach(p => p.IsAlarm = true);
-                Childs!.ToList().ForEach(p => p.IsCanStop = true);
-                RaiseWarning(EWarning.DO_MAIN_DOOR_OPEN);
-            }
+                if (_devices.Inputs.DoorClose == false)
+                {
+                    Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                    RaiseWarning(EWarning.DO_MAIN_DOOR_OPEN);
+                }
 
-            if (_devices.Inputs.DoorLock == false)
-            {
-                Childs!.ToList().ForEach(p => p.IsAlarm = true);
-                Childs!.ToList().ForEach(p => p.IsCanStop = true);
-                RaiseWarning(EWarning.DO_MAIN_DOOR_INTERLOCK_ON);
+                if (_devices.Inputs.DoorLock == false)
+                {
+                    Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                    RaiseWarning(EWarning.DO_MAIN_DOOR_INTERLOCK_ON);
+                }
             }
 
             if (_devices.Motions.All.Count(motion => motion.Status.HwNegLimitDetect == true || motion.Status.HwPosLimitDetect == true) > 0
@@ -621,12 +622,11 @@ namespace SDV_MoldingInjection.Process
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
-                RaiseAlarm((int)EAlarm.UT_MAIN_MC_OFF);
+                RaiseAlarm((int)EAlarm.UT_MAIN_POWER_MC_OFF);
             }
 
             if (_devices.Inputs.InOutMachineEmo.Value == false)
             {
-                Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
                 RaiseWarning(EWarning.EM_INOUT_MACHINE_EMO);
             }
