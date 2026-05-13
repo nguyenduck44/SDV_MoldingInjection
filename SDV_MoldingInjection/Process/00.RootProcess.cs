@@ -581,29 +581,25 @@ namespace SDV_MoldingInjection.Process
         private void CheckRealTimeAlarmStatus()
         {
 #if !SIMULATION
-            if (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run ||
-                ProcessMode == EProcessMode.ToOrigin || ProcessMode == EProcessMode.Origin)
+            if (_devices.Inputs.InOutMachineDoorClose == false)
             {
-                if (_devices.Inputs.InOutMachineDoorClose == false)
-                {
-                    Childs!.ToList().ForEach(p => p.IsAlarm = true);
-                    Childs!.ToList().ForEach(p => p.IsCanStop = true);
-                    RaiseWarning(EWarning.DO_INOUT_MACHINE_DOOR_OPEN);
-                }
+                Childs!.ToList().ForEach(p => p.IsAlarm = true);
+                Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                RaiseWarning(EWarning.DO_INOUT_MACHINE_DOOR_OPEN);
+            }
 
-                if (_devices.Inputs.DoorClose == false)
-                {
-                    Childs!.ToList().ForEach(p => p.IsAlarm = true);
-                    Childs!.ToList().ForEach(p => p.IsCanStop = true);
-                    RaiseWarning(EWarning.DO_MAIN_DOOR_OPEN);
-                }
+            if (_devices.Inputs.DoorClose == false)
+            {
+                Childs!.ToList().ForEach(p => p.IsAlarm = true);
+                Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                RaiseWarning(EWarning.DO_MAIN_DOOR_OPEN);
+            }
 
-                if ((ProcessMode == EProcessMode.Run || ProcessMode == EProcessMode.Origin) && _devices.Inputs.DoorLock == false)
-                {
-                    Childs!.ToList().ForEach(p => p.IsAlarm = true);
-                    Childs!.ToList().ForEach(p => p.IsCanStop = true);
-                    RaiseWarning(EWarning.DO_MAIN_DOOR_INTERLOCK_ON);
-                }
+            if (_devices.Inputs.DoorLock == false)
+            {
+                Childs!.ToList().ForEach(p => p.IsAlarm = true);
+                Childs!.ToList().ForEach(p => p.IsCanStop = true);
+                RaiseWarning(EWarning.DO_MAIN_DOOR_INTERLOCK_ON);
             }
 
             if (_devices.Motions.All.Count(motion => motion.Status.HwNegLimitDetect == true || motion.Status.HwPosLimitDetect == true) > 0

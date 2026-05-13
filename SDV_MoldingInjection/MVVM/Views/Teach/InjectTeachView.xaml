@@ -132,9 +132,11 @@
                                 Content="STOP" 
                                 Margin="2 1"/>
 
-                        <uiControls:IncControlView Grid.Row="2"
-                                                   ItemsSource="{Binding SelectedGroupedPosition.Points}"
-                                                   IncStep="{Binding IncStep, Mode=TwoWay}" />
+                        <uiControls:JogControlView Grid.Row="2"
+                           ItemsSource="{Binding SelectedGroupedPosition.Points}"
+                           JogSpeedItemsSource="{Binding JogSpeedLevels}"
+                           SelectedJogSpeed="{Binding SelectedJogSpeed}" />
+                        
                         <UniformGrid Grid.Row="3"
                                      Columns="2"
                                      Margin="0 5 0 0">
