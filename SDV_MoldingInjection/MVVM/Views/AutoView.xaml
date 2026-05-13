@@ -322,7 +322,7 @@
                                 Canvas.Top="140"
                                 Canvas.Left="120"
                                 Width="100"
-                                Height="50"
+                                Height="55"
                                 Margin="2">
                     <ui:ImageButton.Style>
                         <Style TargetType="{x:Type ui:ImageButton}"
@@ -331,12 +331,16 @@
                                 <DataTrigger Binding="{Binding Devices.Outputs.EQPStop.Value}"
                                              Value="True">
                                     <Setter Property="Content"
-                                            Value="Door Lock" />
+                                            Value="DOOR LOCK"/>
+                                    <Setter Property="Background"
+                                            Value="Tomato"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Devices.Outputs.EQPStop.Value}"
                                              Value="False">
                                     <Setter Property="Content"
-                                            Value="Door Unlock" />
+                                            Value="DOOR UNLOCK" />
+                                    <Setter Property="Background"
+                                            Value="LightCyan"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
