@@ -1,8 +1,11 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using EQX.Core.Common;
 using EQX.Core.InOut;
+using EQX.UI.Controls;
+using log4net;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Win32;
 using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.Extensions;
 using System.Linq;
@@ -29,7 +32,16 @@ namespace SDV_MoldingInjection.Defines
             _dHead3InputDevice = dInputDevices.First(device => device.Name == EInputDevice.Head3Input.ToString());
             _dHead4InputDevice = dInputDevices.First(device => device.Name == EInputDevice.Head4Input.ToString());
 
-            SensorMapStartBit = int.Parse(configuration["Values:SensorMapStartBit"]!, System.Globalization.NumberStyles.HexNumber);
+            try
+            {
+                object? sensorStartBit = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Top Engineering", "SensorStartBit", "");
+                SensorMapStartBit = int.Parse(sensorStartBit.ToString(), System.Globalization.NumberStyles.HexNumber);
+            }
+            catch
+            {
+                LogManager.GetLogger("IO").Error("Get Value SensorStartBit Fail . Check Registry Value");
+                MessageBoxEx.ShowDialog("Get Value SensorStartBit Fail . Check Registry Value");
+            }
 
             Initialize();
 
