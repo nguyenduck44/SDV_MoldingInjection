@@ -21,9 +21,9 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public double PanelTemperature => Devices.PanelIndicator.Temperature;
         public double PanelHumidity => Devices.PanelIndicator.Humidity;
         public bool IsLeakSensor_H1 => Devices.Inputs.DummyOverflowDetect1.Value == false;
-        public bool IsLeakSensor_H2 => Devices.Inputs.DummyOverflowDetect1.Value == false;
-        public bool IsLeakSensor_H3 => Devices.Inputs.DummyOverflowDetect1.Value == false;
-        public bool IsLeakSensor_H4 => Devices.Inputs.DummyOverflowDetect1.Value == false;
+        public bool IsLeakSensor_H2 => Devices.Inputs.DummyOverflowDetect2.Value == false;
+        public bool IsLeakSensor_H3 => Devices.Inputs.DummyOverflowDetect3.Value == false;
+        public bool IsLeakSensor_H4 => Devices.Inputs.DummyOverflowDetect4.Value == false;
 
         public bool H1Working
         {
