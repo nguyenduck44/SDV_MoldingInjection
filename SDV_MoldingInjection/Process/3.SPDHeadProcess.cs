@@ -881,7 +881,7 @@ namespace SDV_MoldingInjection.Process
 #if !SIMULATION
                     if (In_DummyOverflowDetect.Value == false)
                     {
-                        RaiseHeadWarning(EWarning.SE_SPD_H01_DUMMY_OVER_FLOW_DETECT);
+                        RaiseHeadWarning(EWarning.SE_SPD_H01_DUMMY_RESIN_LEAK_DETECT);
                     }
 #endif
                     Step.PreProcessStep++;

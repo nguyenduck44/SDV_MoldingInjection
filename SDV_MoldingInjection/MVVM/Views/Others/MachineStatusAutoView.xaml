@@ -83,6 +83,42 @@
             </Canvas>
         </Grid>
 
+        <!-- LEAK SENSOR -->
+        <Canvas>
+            <Border Canvas.Left="305"
+                    Canvas.Top="107"
+                    CornerRadius="10"
+                    BorderThickness="1"
+                    Background="{Binding IsLeakSensor_H1, Converter={StaticResource BooleanToOnOffBrushConverter}, ConverterParameter=true}"
+                    Width="20"
+                    Height="20">        
+            </Border>
+            <Border Canvas.Left="345"
+                    Canvas.Top="107"
+                    CornerRadius="10"
+                    BorderThickness="1"
+                    Background="{Binding IsLeakSensor_H2, Converter={StaticResource BooleanToOnOffBrushConverter}, ConverterParameter=true}"
+                    Width="20"
+                    Height="20">
+            </Border>
+            <Border Canvas.Left="410"
+                    Canvas.Top="107"
+                    CornerRadius="10"
+                    BorderThickness="1"
+                    Background="{Binding IsLeakSensor_H3, Converter={StaticResource BooleanToOnOffBrushConverter}, ConverterParameter=true}"
+                    Width="20"
+                    Height="20">
+            </Border>
+            <Border Canvas.Left="450"
+                    Canvas.Top="107"
+                    CornerRadius="10"
+                    BorderThickness="1"
+                    Background="{Binding IsLeakSensor_H4, Converter={StaticResource BooleanToOnOffBrushConverter}, ConverterParameter=true}"
+                    Width="20"
+                    Height="20">
+            </Border>
+        </Canvas>
+        
         <!-- DoorLock View -->
         <Grid Grid.Row="0"
               Grid.Column="1"
