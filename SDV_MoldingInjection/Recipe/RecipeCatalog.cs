@@ -108,6 +108,24 @@ namespace SDV_MoldingInjection.Recipe
             return recipeNameOrDisplay;
         }
 
+        public bool TryGetRecipeId(string recipeNameOrDisplay, out int recipeId)
+        {
+            if (TryGetRecipeInfo(recipeNameOrDisplay, out RecipeInfo? recipeInfo) == false)
+            {
+                recipeId = -1;
+                return false;
+            }
+
+            if (recipeInfo == null)
+            {
+                recipeId = -1;
+                return false;
+            }
+
+            recipeId = recipeInfo.Id;
+            return true;
+        }
+
         public bool TryGetRecipeInfo(string recipeNameOrDisplay, out RecipeInfo? recipeInfo)
         {
             lock (_sync)

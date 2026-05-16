@@ -19,11 +19,16 @@ namespace SDV_MoldingInjection.Defines.CIM
         public event Action<CIMCommandArgs> FromCIMCommandAction;
         #endregion
 
-        public CIMAction(MachineStatus machineStatus, ICIMMapHelper mapHelper, RecipeSelector recipeSelector, CIMFunctionViewModel cimFunctionVM)
+        public CIMAction(MachineStatus machineStatus,
+            ICIMMapHelper mapHelper,
+            RecipeSelector recipeSelector,
+            CIMFunctionViewModel cimFunctionVM,
+            RecipeCatalog recipeCatalog)
         {
             _mapHelper = mapHelper;
             _recipeSelector = recipeSelector;
             _cimFunctionVM = cimFunctionVM;
+            _recipeCatalog = recipeCatalog;
             _machineStatus = machineStatus;
             cimCommandDetail = new CIMCommandDetail(_mapHelper);
 
@@ -233,9 +238,20 @@ namespace SDV_MoldingInjection.Defines.CIM
                 while (true)
                 {
                     EquipEventHelpers.EquipStateReport(_machineStatus.EquipState);
+
                     foreach (var recipe in _recipeSelector.AllRecipe)
                     {
-                        EquipEventHelpers.PPIDListSinglePPIDWrite(recipe);
+                        if (_recipeCatalog.TryGetRecipeId(recipe, out int recipeId))
+                        {
+                            EquipEventHelpers.PPIDListSinglePPIDWrite(recipe, recipeId.ToString());
+                        }
+                    }
+
+                    {
+                        short[] data = new short[20];
+                        PlcDataConverter.SetString(data, 0, 20, _recipeSelector.RecipeSetting.CurrentRecipe);
+
+                        //CIMAddressMap.WriteWords(CIMAddressMap.GetWriteWordIndexFromDAddress("9226"), 20, data);
                     }
 
                     for (int i = 0; i < ECMValues.Length; i++)
@@ -329,6 +345,7 @@ namespace SDV_MoldingInjection.Defines.CIM
         private ICIMMapHelper _mapHelper;
         private readonly RecipeSelector _recipeSelector;
         private readonly CIMFunctionViewModel _cimFunctionVM;
+        private readonly RecipeCatalog _recipeCatalog;
         private Dictionary<CIMCommand, bool> _commandHandling = new Dictionary<CIMCommand, bool>();
         private readonly MachineStatus _machineStatus;
         private object _locker = new object();

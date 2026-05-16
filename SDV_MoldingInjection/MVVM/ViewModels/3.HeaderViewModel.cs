@@ -76,8 +76,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _navigationStore = navigationStore;
             Devices = devices;
 
-            cimAction.FromCIMCommandAction += CimAction_FromCIMCommandAction;
-
             System.Timers.Timer timer = new System.Timers.Timer(500);
             timer.Elapsed += Timer_Elapsed;
             timer.Start();
@@ -85,54 +83,36 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _navigationStore.CurrentViewModelChanged += _navigationStore_CurrentViewModelChanged;
         }
 
-        private void CimAction_FromCIMCommandAction(EQX.Core.Communication.CIM.CIMCommandArgs obj)
-        {
-            if (CIMConstants.FromCIMCommands.Contains(obj.CIMCommand) == false) return;
-
-            switch (obj.CIMCommand)
-            {
-                case CIMCommand.AliveBit:
-                    masterAliveWatcher = DateTime.Now;
-                    CheckMasterAlive();
-                    break;
-            }
-        }
-
         #region Private Methods
-        private void CheckMasterAlive()
-        {
-            if (isCheckingMasterAlive) return;
-
-            Task.Run(() =>
-            {
-                isCheckingMasterAlive = true;
-
-                DateTime start = DateTime.Now;
-                bool isMasterAliveBitOn = true;
-                var aliveCommand = CIMCommandDetail.Create(CIMCommand.AliveBit);
-
-                while (isMasterAliveBitOn &&
-                    (DateTime.Now - start).TotalSeconds <= _cimMasterTimeout)
-                {
-                    isMasterAliveBitOn = aliveCommand.IsCIMBitOn();
-                }
-
-                MachineStatus.EquipState.IsMasterAlive = !isMasterAliveBitOn;
-                OnPropertyChanged(nameof(IsMasterAlive));
-
-                isCheckingMasterAlive = false;
-            });
-        }
-
         private void Timer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
             OnPropertyChanged(nameof(Now));
 
+            if (CIMCommandDetail.Create(CIMCommand.AliveBit).IsCIMBitOn())
+            {
+                if (isAliveBitLastOn == false)
+                {
+                    isAliveBitLastOn = true;
+                    masterAliveWatcher = DateTime.Now;
+                }
+            }
+            else
+            {
+                if (isAliveBitLastOn)
+                {
+                    isAliveBitLastOn = false;
+                }
+            }
+
             if ((DateTime.Now - masterAliveWatcher).TotalSeconds > _cimMasterTimeout)
             {
                 MachineStatus.EquipState.IsMasterAlive = false;
-                OnPropertyChanged(nameof(IsMasterAlive));
             }
+            else
+            {
+                MachineStatus.EquipState.IsMasterAlive = true;
+            }
+            OnPropertyChanged(nameof(IsMasterAlive));
         }
 
         private void _navigationStore_CurrentViewModelChanged()
@@ -145,6 +125,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private int _cimMasterTimeout = 20;
         private DateTime masterAliveWatcher = DateTime.Now;
         private bool isCheckingMasterAlive = false;
+        private bool isAliveBitLastOn = false;
         #endregion
     }
 }
