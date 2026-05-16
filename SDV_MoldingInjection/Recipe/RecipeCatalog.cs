@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.IO;
+using System.Windows;
 
 namespace SDV_MoldingInjection.Recipe
 {
@@ -221,9 +222,10 @@ namespace SDV_MoldingInjection.Recipe
                 recipeInfo.Name = recipeFolderName;
             }
 
-            if (recipeInfo.Id <= 0 && CIMHelpers.TryParseRecipeNumber(recipeInfo.Name, out int recipeId))
+            if (recipeInfo.Id <= 0)
             {
-                recipeInfo.Id = recipeId;
+                MessageBox.Show("Recipe Id is not valid");
+                return recipeInfo;
             }
 
             recipeInfo.FolderName = recipeFolderName;

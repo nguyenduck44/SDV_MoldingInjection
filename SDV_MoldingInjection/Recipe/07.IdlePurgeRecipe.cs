@@ -14,18 +14,20 @@ namespace SDV_MoldingInjection.Recipe
 
         [SingleRecipeDescription(Description = "IdlePurge Weight", Unit = Unit.mg)]
         [SingleRecipeMinMax(Max = 380, Min = 0)]
+        [ParameterDescription(213)]
         public double IdlePurgeWeight
         {
             get => _idlePurgeWeight;
             set
             {
                 if (_idlePurgeWeight == value) return;
-                SetRecipe(ref _idlePurgeWeight, value, nameof(IdlePurgeWeight));
+                SetRecipe(ref _idlePurgeWeight, value);
             }
         }
         [SingleRecipeDescription(
             Description = "Enable Idle Purge",
             Detail = "Check to Enable Idle Purge")]
+        [ParameterDescription(214)]
         public bool EnableIdlePurge
         {
             get { return enableIdlePurge; }
@@ -38,6 +40,7 @@ namespace SDV_MoldingInjection.Recipe
 
         [SingleRecipeDescription(Description = "Idle Purge After Stop Time", Unit = Unit.Minute)]
         [SingleRecipeMinMax(Max = 1800, Min = 5)]
+        [ParameterDescription(215)]
         public double IdlePurgeAfterStopTime
         {
             get { return idlePurgeAfterStopTime; }

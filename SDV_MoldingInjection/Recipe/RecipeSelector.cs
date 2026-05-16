@@ -51,13 +51,12 @@ namespace SDV_MoldingInjection.Recipe
             get
             {
                 string selectedRecipe = ResolveRecipeName(RecipeSetting.CurrentRecipe);
-                bool result1 = CIMHelpers.TryParseRecipeNumber(selectedRecipe, out int index);
-                if (result1 == false)
+                if (_recipeCatalog.TryGetRecipeId(selectedRecipe, out int recipeId) == false)
                 {
                     throw new Exception("PPID Name format is not match");
                 }
 
-                return index;
+                return recipeId;
             }
         }
 
@@ -117,15 +116,18 @@ namespace SDV_MoldingInjection.Recipe
             CurrentRecipe.CylinderDelayTimeRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
         }
 
-        private async void SingleRecipe_RecipeChanged(object? oldValue, object? newValue, string? propertyName = null)
+        private async void SingleRecipe_RecipeChanged(object? oldValue, object? newValue, string? propertyName = null, int parameterIndex = -1)
         {
             if (_navigationStore.CurrentViewModel.GetType() == typeof(InitDeinitViewModel)) return;
+
+            var props = CurrentRecipe.CommonRecipe.GetType().GetProperties();
+
             string selectedRecipe = ResolveRecipeName(RecipeSetting.CurrentRecipe);
-            bool result1 = CIMHelpers.TryParseRecipeNumber(selectedRecipe, out int index);
-            if (result1 == false)
+            if (_recipeCatalog.TryGetRecipeId(selectedRecipe, out int recipeId) == false)
             {
                 throw new Exception("PPID Name format is not match");
             }
+
             await Task.Run(() =>
             {
                 var parameterArea = new ParameterWordArea
@@ -133,7 +135,7 @@ namespace SDV_MoldingInjection.Recipe
                     PPIDName = selectedRecipe,
                 };
                 parameterArea.Parameters[0] = CurrentRecipe.CommonRecipe.LogSaveDay;
-                EquipEventHelpers.ParameterChange(parameterArea, index);
+                EquipEventHelpers.ParameterChange(parameterArea, recipeId);
             });
 
             LogManager.GetLogger("Data").Info($"{propertyName} value changed {oldValue} -> {newValue}");
@@ -239,13 +241,21 @@ namespace SDV_MoldingInjection.Recipe
                 return;
             }
 
-            int recipeId = ParseRecipeId(newRecipeName);
+            if (int.TryParse(cimRecipeNumber, out int recipeId) == false)
+            {
+                MessageBoxEx.Show($"Recipe Id for '{newRecipeName}' is not valid.");
+                return;
+            }
             if (_recipeCatalog.ContainsName(newRecipeName))
             {
                 MessageBoxEx.Show($"Recipe name '{newRecipeName}' already exists in RecipeInfo.");
                 return;
             }
-
+            if (recipeId < 0)
+            {
+                MessageBoxEx.Show($"Recipe Id for '{newRecipeName}' is not valid.");
+                return;
+            }
             if (recipeId > 0 && _recipeCatalog.ContainsId(recipeId))
             {
                 MessageBoxEx.Show($"Recipe Id '{recipeId}' already exists in RecipeInfo.");
@@ -308,9 +318,9 @@ namespace SDV_MoldingInjection.Recipe
 
                 UpdateValidRecipes();
 
-                EquipEventHelpers.PPIDListSinglePPIDWrite(selectedRecipe, true);
+                EquipEventHelpers.PPIDListSinglePPIDWrite(selectedRecipe, recipeInfo.Id.ToString(), true);
                 EquipEventHelpers.PPIDDelete(selectedRecipe, fromCIMRecipeNumber);
-                EquipEventHelpers.PPIDListSinglePPIDWrite(selectedRecipe, true);
+                EquipEventHelpers.PPIDListSinglePPIDWrite(selectedRecipe, recipeInfo.Id.ToString(), true);
             }
         }
 
@@ -330,15 +340,10 @@ namespace SDV_MoldingInjection.Recipe
 
                 CopyDirectory(currentRecipeFolder, destinationFolder);
 
-                UpdateValidRecipes();
+                UpdateValidRecipes(); // Refresh the list to show the new copied recipe
 
+                // TODO: WRITE PARAMETER DATA TO RMS AREA
                 EquipEventHelpers.ParameterWordSingleParameterUpdate(1, CurrentRecipe.CommonRecipe.LogSaveDay);
-
-                bool result1 = CIMHelpers.TryParseRecipeNumber(Path.GetFileName(destinationFolder), out int index);
-                if (result1 == false)
-                {
-                    throw new Exception("PPID Name format is not match");
-                }
 
                 EquipEventHelpers.PPIDCreate(Path.GetFileName(destinationFolder));
             }
@@ -456,16 +461,6 @@ namespace SDV_MoldingInjection.Recipe
         private string ResolveRecipeFolderName(string recipeNameOrDisplay)
         {
             return _recipeCatalog.ResolveFolderName(recipeNameOrDisplay);
-        }
-
-        private int ParseRecipeId(string recipeName)
-        {
-            if (CIMHelpers.TryParseRecipeNumber(recipeName, out int recipeId))
-            {
-                return recipeId;
-            }
-
-            return -1;
         }
 
         private void CopyDirectory(string sourceDir, string destinationDir)

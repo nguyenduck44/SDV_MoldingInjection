@@ -7,156 +7,178 @@ namespace SDV_MoldingInjection.Recipe
     {
         [SingleRecipeDescription(Description = "XAxis ready position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
+        [ParameterDescription(7)]
         public double XAxisReadyPos
         {
             get => _xAxisReadyPos;
-            set => SetRecipe(ref _xAxisReadyPos, value, nameof(XAxisReadyPos));
+            set => SetRecipe(ref _xAxisReadyPos, value);
         }
 
+        [ParameterDescription(8)]
         public double XAxisReadyPosOffset
         {
             get => _xAxisReadyPosOffset;
-            set => SetRecipe(ref _xAxisReadyPosOffset, value, nameof(XAxisReadyPosOffset));
+            set => SetRecipe(ref _xAxisReadyPosOffset, value);
         }
 
         [SingleRecipeDescription(Description = "XAxis work (inject) position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
+        [ParameterDescription(9)]
         public double XAxisInjectPos
         {
             get => _xAxisInjectPos;
-            set => SetRecipe(ref _xAxisInjectPos, value, nameof(XAxisInjectPos));
+            set => SetRecipe(ref _xAxisInjectPos, value);
         }
 
+        [ParameterDescription(10)]
         public double XAxisInjectPosOffset
         {
             get => _xAxisInjectPosOffset;
-            set => SetRecipe(ref _xAxisInjectPosOffset, value, nameof(XAxisInjectPosOffset));
+            set => SetRecipe(ref _xAxisInjectPosOffset, value);
         }
 
         [SingleRecipeDescription(Description = "YAxis ready position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "YAxis")]
+        [ParameterDescription(11)]
         public double YAxisReadyPos
         {
             get => _yAxisReadyPos;
-            set => SetRecipe(ref _yAxisReadyPos, value, nameof(YAxisReadyPos));
+            set => SetRecipe(ref _yAxisReadyPos, value);
         }
 
+        [ParameterDescription(12)]
         public double YAxisReadyPosOffset
         {
             get => _yAxisReadyPosOffset;
-            set => SetRecipe(ref _yAxisReadyPosOffset, value, nameof(YAxisReadyPosOffset));
+            set => SetRecipe(ref _yAxisReadyPosOffset, value);
         }
 
         [SingleRecipeDescription(Description = "YAxis work position (inject, chamber vacuum...)", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "YAxis")]
+        [ParameterDescription(13)]
         public double YAxisInjectPos
         {
             get => _yAxisInjectPos;
-            set => SetRecipe(ref _yAxisInjectPos, value, nameof(YAxisInjectPos));
+            set => SetRecipe(ref _yAxisInjectPos, value);
         }
 
+        [ParameterDescription(14)]
         public double YAxisInjectPosOffset
         {
             get => _yAxisInjectPosOffset;
-            set => SetRecipe(ref _yAxisInjectPosOffset, value, nameof(YAxisInjectPosOffset));
+            set => SetRecipe(ref _yAxisInjectPosOffset, value);
         }
 
         [SingleRecipeDescription(Description = "X-Axis H13 Weighting position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
+        [ParameterDescription(15)]
         public double XAxisH13DotWeightingPos
         {
             get => _xAxisH13DotWeightPos;
-            set => SetRecipe(ref _xAxisH13DotWeightPos, value, nameof(XAxisH13DotWeightingPos));
+            set => SetRecipe(ref _xAxisH13DotWeightPos, value);
         }
 
+        [ParameterDescription(16)]
         public double XAxisH13DotWeightingPosOffset
         {
             get => _xAxisH13DotWeightingPosOffset;
-            set => SetRecipe(ref _xAxisH13DotWeightingPosOffset, value, nameof(XAxisH13DotWeightingPosOffset));
+            set => SetRecipe(ref _xAxisH13DotWeightingPosOffset, value);
         }
 
         [SingleRecipeDescription(Description = "X-Axis H24 Weighting position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
+        [ParameterDescription(17)]
         public double XAxisH24DotWeightingPos
         {
             get => _xAxisH24DotWeightPos;
-            set => SetRecipe(ref _xAxisH24DotWeightPos, value, nameof(XAxisH24DotWeightingPos));
+            set => SetRecipe(ref _xAxisH24DotWeightPos, value);
         }
 
+        [ParameterDescription(18)]
         public double XAxisH24DotWeightingPosOffset
         {
             get => _xAxisH24DotWeightingPosOffset;
-            set => SetRecipe(ref _xAxisH24DotWeightingPosOffset, value, nameof(XAxisH24DotWeightingPosOffset));
+            set => SetRecipe(ref _xAxisH24DotWeightingPosOffset, value);
         }
 
         [SingleRecipeDescription(Description = "X-Axis Dummy Shot position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
+        [ParameterDescription(19)]
         public double XAxisDummyPos
         {
             get => _xAxisDummyPos;
-            set => SetRecipe(ref _xAxisDummyPos, value, nameof(XAxisDummyPos));
+            set => SetRecipe(ref _xAxisDummyPos, value);
         }
 
+        [ParameterDescription(20)]
         public double XAxisDummyPosOffset
         {
             get => _xAxisDummyPosOffset;
-            set => SetRecipe(ref _xAxisDummyPosOffset, value, nameof(XAxisDummyPosOffset));
+            set => SetRecipe(ref _xAxisDummyPosOffset, value);
         }
 
         [SingleRecipeDescription(Description = "Y-Axis Dummy Shot position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "YAxis")]
+        [ParameterDescription(21)]
         public double YAxisDummyPos
         {
             get => _yAxisDummyPos;
-            set => SetRecipe(ref _yAxisDummyPos, value, nameof(YAxisDummyPos));
+            set => SetRecipe(ref _yAxisDummyPos, value);
         }
 
+        [ParameterDescription(22)]
         public double YAxisDummyPosOffset
         {
             get => _yAxisDummyPosOffset;
-            set => SetRecipe(ref _yAxisDummyPosOffset, value, nameof(YAxisDummyPosOffset));
+            set => SetRecipe(ref _yAxisDummyPosOffset, value);
         }
 
         [SingleRecipeDescription(Description = "X-Axis needle clean position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
+        [ParameterDescription(23)]
         public double XAxisNeedleCleanPos
         {
             get => _xAxisNeedleCleanPos;
-            set => SetRecipe(ref _xAxisNeedleCleanPos, value, nameof(XAxisNeedleCleanPos));
+            set => SetRecipe(ref _xAxisNeedleCleanPos, value);
         }
 
+        [ParameterDescription(24)]
         public double XAxisNeedleCleanPosOffset
         {
             get => _xAxisNeedleCleanPosOffset;
-            set => SetRecipe(ref _xAxisNeedleCleanPosOffset, value, nameof(XAxisNeedleCleanPosOffset));
+            set => SetRecipe(ref _xAxisNeedleCleanPosOffset, value);
         }
 
         [SingleRecipeDescription(Description = "Y-Axis needle clean position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "YAxis")]
+        [ParameterDescription(25)]
         public double YAxisNeedleCleanPos
         {
             get => _yAxisNeedleClean;
-            set => SetRecipe(ref _yAxisNeedleClean, value, nameof(YAxisNeedleCleanPos));
+            set => SetRecipe(ref _yAxisNeedleClean, value);
         }
 
+        [ParameterDescription(26)]
         public double YAxisNeedleCleanPosOffset
         {
             get => _yAxisNeedleCleanPosOffset;
-            set => SetRecipe(ref _yAxisNeedleCleanPosOffset, value, nameof(YAxisNeedleCleanPosOffset));
+            set => SetRecipe(ref _yAxisNeedleCleanPosOffset, value);
         }
 
         [SingleRecipeDescription(Description = "Needle Clean Cycle Count")]
-        public double NiddleCleanCycleCount
+        [ParameterDescription(27)]
+        public int NiddleCleanCycleCount
         {
             get => _niddleCleanCycleCount;
-            set => SetRecipe(ref _niddleCleanCycleCount, value, nameof(NiddleCleanCycleCount));
+            set => SetRecipe(ref _niddleCleanCycleCount, value);
         }
 
         [SingleRecipeDescription(Description = "Needle Clean Shift Dist", Unit = Unit.mm)]
+        [ParameterDescription(28)]
         public double NiddleCleanShiftDist
         {
             get => _niddleCleanShiftDist;
-            set => SetRecipe(ref _niddleCleanShiftDist, value, nameof(NiddleCleanShiftDist));
+            set => SetRecipe(ref _niddleCleanShiftDist, value);
         }
 
         #region Privates
@@ -177,7 +199,7 @@ namespace SDV_MoldingInjection.Recipe
         private double _xAxisNeedleCleanPos;
         private double _xAxisNeedleCleanPosOffset;
 
-        private double _niddleCleanCycleCount;
+        private int _niddleCleanCycleCount;
         private double _niddleCleanShiftDist;
 
         private double _yAxisNeedleClean;

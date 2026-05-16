@@ -20,46 +20,52 @@ namespace SDV_MoldingInjection.Recipe
 
         #region Properties
         [SingleRecipeDescription(Description = "Motion Origin Timeout", Unit = Unit.Second)]
+        [ParameterDescription(1)]
         public double MotionOriginTimeout
         {
             get => motionOriginTimeout;
-            set => SetRecipe(ref motionOriginTimeout, value, nameof(MotionOriginTimeout));
+            set => SetRecipe(ref motionOriginTimeout, value);
         }
 
         [SingleRecipeDescription(Description = "Motion Move Timeout", Unit = Unit.Second)]
+        [ParameterDescription(2)]
         public double MotionMoveTimeout
         {
             get => motionMoveTimeout;
-            set => SetRecipe(ref motionMoveTimeout, value, nameof(MotionMoveTimeout));
+            set => SetRecipe(ref motionMoveTimeout, value);
         }
 
         [SingleRecipeDescription(Description = "Vacuum Delay", Unit = Unit.Second)]
+        [ParameterDescription(3)]
         public double VacDelay
         {
             get => vacDelay;
-            set => SetRecipe(ref vacDelay, value, nameof(VacDelay));
+            set => SetRecipe(ref vacDelay, value);
         }
 
         [SingleRecipeDescription(Description = "Syringe Mount Time Change", Unit = Unit.Hour)]
+        [ParameterDescription(4)]
         public double SyringeMountTimeChange
         {
             get => _syringeAmountTimeChange;
-            set => SetRecipe(ref _syringeAmountTimeChange, value, nameof(SyringeMountTimeChange));
+            set => SetRecipe(ref _syringeAmountTimeChange, value);
         }
 
         [SingleRecipeDescription(Description = "Syringe Amount Weight", Unit = Unit.Gram)]
+        [ParameterDescription(5)]
         public double SyringeAmountWeight
         {
             get => _syringeAmountWeight;
-            set => SetRecipe(ref _syringeAmountWeight, value, nameof(SyringeAmountWeight));
+            set => SetRecipe(ref _syringeAmountWeight, value);
         }
 
         [SingleRecipeDescription(Description = "Log Save Day")]
+        [ParameterDescription(6)]
         [SingleRecipeMinMax(Max = 180, Min = 5)]
         public int LogSaveDay
         {
             get => logSaveDay;
-            set => SetRecipe(ref logSaveDay, value, nameof(LogSaveDay));
+            set => SetRecipe(ref logSaveDay, value);
         }
 
         public ILanguageDefinition SelectedLanguage
@@ -67,7 +73,7 @@ namespace SDV_MoldingInjection.Recipe
             get => selectLanguage;
             set
             {
-                SetRecipe(ref selectLanguage, value, nameof(SelectedLanguage));
+                SetRecipe(ref selectLanguage, value);
                 SelectedLanguageEvent?.Invoke(SelectedLanguage);
                 SelectedLanguageLoadAllRecipe?.Invoke();
             }
