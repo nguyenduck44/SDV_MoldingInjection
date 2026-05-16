@@ -79,6 +79,7 @@ namespace SDV_MoldingInjection.Recipe
 
         public RecipeList CurrentRecipe { get; private set; }
         public event Action? CurrentModelChanged;
+        public ParameterWordArea ParameterWordArea { get; }
         #endregion
 
         #region Constructor
@@ -114,6 +115,8 @@ namespace SDV_MoldingInjection.Recipe
             CurrentRecipe.InjectTimeRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
             CurrentRecipe.IdlePurgeRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
             CurrentRecipe.CylinderDelayTimeRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
+
+            ParameterWordArea = new ParameterWordArea();
         }
 
         private async void SingleRecipe_RecipeChanged(object? oldValue, object? newValue, string? propertyName = null, int parameterIndex = -1)
@@ -128,15 +131,38 @@ namespace SDV_MoldingInjection.Recipe
                 throw new Exception("PPID Name format is not match");
             }
 
-            await Task.Run(() =>
+            if (parameterIndex > 0)
             {
-                var parameterArea = new ParameterWordArea
+                await Task.Run(() =>
                 {
-                    PPIDName = selectedRecipe,
-                };
-                parameterArea.Parameters[0] = CurrentRecipe.CommonRecipe.LogSaveDay;
-                EquipEventHelpers.ParameterChange(parameterArea, recipeId);
-            });
+                    ParameterWordArea.PPIDName = selectedRecipe;
+
+                    int value;
+
+                    if (newValue == null) return;
+
+                    if (newValue.GetType() == typeof(double) ||
+                        newValue.GetType() == typeof(float))
+                    {
+                        value = (int)((double)newValue * 1000.0);
+                    }
+                    else if (newValue.GetType() == typeof(int))
+                    {
+                        value = (int)newValue;
+                    }
+                    else if ((newValue.GetType() == typeof(bool)))
+                    {
+                        value = (bool)newValue ? 1 : 0;
+                    }
+                    else
+                    {
+                        throw new Exception($"Typeof '{propertyName}' ('{newValue.GetType()}') is not supported.");
+                    }
+
+                    ParameterWordArea.Parameters[parameterIndex - 1] = value;
+                    EquipEventHelpers.ParameterChange(ParameterWordArea, recipeId);
+                });
+            }
 
             LogManager.GetLogger("Data").Info($"{propertyName} value changed {oldValue} -> {newValue}");
         }
