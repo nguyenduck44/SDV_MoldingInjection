@@ -981,12 +981,6 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    //if (Parent!.Sequence != ESequence.AutoRun )
-                    //{
-                    //    Sequence = ESequence.Stop;
-                    //    break;
-                    //}
-
                     Wait(50);
                     break;
                 case ESPDHeadProcCommonStep.Start_Set_TactTime:
@@ -996,8 +990,11 @@ namespace SDV_MoldingInjection.Process
                         CurrentTactTimeList.TactTimeCounter = (int)Environment.TickCount64;
                     }
 
-                    if (_machineStatus.IsDryRunMode)
+                    if (_machineStatus.IsDryRunMode || 
+                       (OptionRecipe.SkipDispensing && sequence == ESequence.ResinInject))
                     {
+                        Log.Debug("Skip Dispensing");
+                        CarrierJigStatus.InjectTime = 0;
                         Step.RunStep = (int)ESPDHeadProcCommonStep.WorkRequest_Wait;
                         break;
                     }
@@ -1221,13 +1218,12 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"Input detect {ESPDHeadProcInput.WorkRequest}");
-                    if (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing)
+                    if (_machineStatus.IsDryRunMode || 
+                       (OptionRecipe.SkipDispensing && sequence == ESequence.ResinInject))
                     {
-                        if (OptionRecipe.SkipDispensing)
-                        {
-                            Wait(InjectTimeRecipe.InjectTime);
-                        }
-
+                        EnableTimerInject = true;
+                        _injectSequenceStartTick = Environment.TickCount64;
+                        Wait(InjectTimeRecipe.InjectTime);
                         Step.RunStep = (int)ESPDHeadProcCommonStep.WorkDone_Send;
                         break;
                     }

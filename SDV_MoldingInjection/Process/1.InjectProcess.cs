@@ -1728,17 +1728,17 @@ namespace SDV_MoldingInjection.Process
             switch ((EMoldProcNeedleCleaningStep)Step.RunStep)
             {
                 case EMoldProcNeedleCleaningStep.Start:
+                    Log.Info("NeedleClean start");
                     if (head == ESPDHead.SPDHead1 && _currentRecipe.OptionRecipe.SkipHead12 ||
                         head == ESPDHead.SPDHead2 && _currentRecipe.OptionRecipe.SkipHead12 ||
                         head == ESPDHead.SPDHead3 && _currentRecipe.OptionRecipe.SkipHead34 ||
                         head == ESPDHead.SPDHead4 && _currentRecipe.OptionRecipe.SkipHead34 ||
-                        _optionRecipe.SkipDispensing)
+                        _optionRecipe.SkipNeedleClean)
                     {
                         Step.RunStep = (int)EMoldProcNeedleCleaningStep.End;
                         break;
                     }
 
-                    Log.Info("NeedleClean start");
                     Step.RunStep++;
                     break;
                 case EMoldProcNeedleCleaningStep.YAxis_CleanPos_Calculator:
