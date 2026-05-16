@@ -1100,7 +1100,9 @@ namespace SDV_MoldingInjection.Process
                     }
                     if (_optionRecipe.SkipDummyShot)
                     {
+                        Log.Debug("Skip DummyShot");
                         Sequence = ESequence.NeedleCleaning;
+                        break;
                     }
 
                     Sequence = ESequence.DummyShot;
@@ -1183,6 +1185,7 @@ namespace SDV_MoldingInjection.Process
                     }
                     if (_optionRecipe.SkipDummyShot)
                     {
+                        Log.Debug("Skip DummyShot");
                         Sequence = ESequence.NeedleCleaning;
                     }
 
