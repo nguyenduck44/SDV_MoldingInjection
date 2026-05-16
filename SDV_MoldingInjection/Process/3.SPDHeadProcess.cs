@@ -1221,8 +1221,13 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"Input detect {ESPDHeadProcInput.WorkRequest}");
-                    if (_machineStatus.IsDryRunMode)
+                    if (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing)
                     {
+                        if (OptionRecipe.SkipDispensing)
+                        {
+                            Wait(InjectTimeRecipe.InjectTime);
+                        }
+
                         Step.RunStep = (int)ESPDHeadProcCommonStep.WorkDone_Send;
                         break;
                     }
@@ -1509,15 +1514,26 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAddTailStep.End:
+                    Log.Debug($"Inject add tail end");
                     if (Parent?.Sequence != ESequence.AutoRun)
                     {
                         Sequence = ESequence.Stop;
                         break;
                     }
 
-                    Log.Info($"Set next sequence DummyShot");
-                    Sequence = ESequence.DummyShot;
-                    break;
+                    if (OptionRecipe.SkipDummyShot == false)
+                    {
+                        Log.Info($"Set next sequence to DummyShot");
+                        Sequence = ESequence.DummyShot;
+                        break;
+                    }
+                    else
+                    {
+                        CurrentTactTimeList.SetCycleTime();
+                        CurrentTactTimeList.SetTactTime();
+                        Sequence = ESequence.ResinInject;
+                        break;
+                    }
             }
         }
 

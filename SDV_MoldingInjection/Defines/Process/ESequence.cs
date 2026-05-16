@@ -104,7 +104,7 @@ namespace SDV_MoldingInjection.Defines
         DotWeighting,
         [Description("Drain Shot")]
         DrainShot,
-        [Description("IdlePurge")]
+        [Description("Idle Purge")]
         IdlePurge,
 
         MoveMultiPoint,
@@ -205,7 +205,7 @@ namespace SDV_MoldingInjection.Defines
         DotWeighting,
         [Description("Drain Shot")]
         DrainShot,
-        [Description("IdlePurge")]
+        [Description("Idle Purge")]
         IdlePurge,
 
         MoveMultiPoint,

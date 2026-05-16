@@ -1087,12 +1087,12 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcResinInjectStep.End:
                     _needleCleanCount++;
-                    Log.Info("ResinInject end");
                     if (_currentRecipe.AdditionalMolding_Recipe.UseAddTail)
                     {
                         Sequence = ESequence.ResinInjectAddTail;
                         break;
                     }
+                    Log.Info("ResinInject end");
                     if (Parent?.Sequence != ESequence.AutoRun)
                     {
                         Sequence = ESequence.Stop;
