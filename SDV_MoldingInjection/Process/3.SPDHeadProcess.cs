@@ -1370,9 +1370,9 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"{sequence} end");
-                    if (sequence == ESequence.ResinInject)
+                    if (sequence == ESequence.ResinInject && OptionRecipe.SkipDummyShot == false)
                     {
-                        Log.Info($"Set next sequence DummyShot");
+                        Log.Info($"Set next sequence to DummyShot");
                         Sequence = ESequence.DummyShot;
                         break;
                     }
