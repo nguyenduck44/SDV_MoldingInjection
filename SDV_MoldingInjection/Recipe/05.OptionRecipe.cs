@@ -17,6 +17,9 @@ namespace SDV_MoldingInjection.Recipe
         private bool _delayAfterInjectFinish;
         private bool _enableInjectionPath;
         private bool _injectAfterOpenAngleValve;
+        private bool _skipDummyShot;
+        private bool _skipNeedleClean;
+        private bool _skipDispensing;
 
         #endregion
 
@@ -120,6 +123,27 @@ namespace SDV_MoldingInjection.Recipe
         {
             get => _injectAfterOpenAngleValve;
             set => SetRecipe(ref _injectAfterOpenAngleValve, value);
+        }
+
+        [ParameterDescription(207)]
+        public bool SkipDummyShot
+        {
+            get => _skipDummyShot;
+            set => SetRecipe(ref _skipDummyShot, value);
+        }
+
+        [ParameterDescription(208)]
+        public bool SkipNeedleClean
+        {
+            get => _skipNeedleClean;
+            set => SetRecipe(ref _skipNeedleClean, value);
+        }
+
+        [ParameterDescription(209)]
+        public bool SkipDispensing
+        {
+            get => _skipDispensing;
+            set => SetRecipe(ref _skipDispensing, value);
         }
     }
 }

@@ -1087,6 +1087,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcResinInjectStep.End:
                     _needleCleanCount++;
+                    Log.Info("ResinInject end");
                     if (_currentRecipe.AdditionalMolding_Recipe.UseAddTail)
                     {
                         Sequence = ESequence.ResinInjectAddTail;
@@ -1097,11 +1098,13 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.Stop;
                         break;
                     }
+                    if (_optionRecipe.SkipDummyShot)
+                    {
+                        Sequence = ESequence.NeedleCleaning;
+                    }
 
-                    Log.Info("ResinInject end");
                     Sequence = ESequence.DummyShot;
                     break;
-
             }
         }
 
@@ -1172,16 +1175,19 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectAddTailStep.End:
+                    Log.Info("ResinInject end");
                     if (Parent?.Sequence != ESequence.AutoRun)
                     {
                         Sequence = ESequence.Stop;
                         break;
                     }
+                    if (_optionRecipe.SkipDummyShot)
+                    {
+                        Sequence = ESequence.NeedleCleaning;
+                    }
 
-                    Log.Info("ResinInject end");
                     Sequence = ESequence.DummyShot;
                     break;
-
             }
         }
 
@@ -1725,7 +1731,8 @@ namespace SDV_MoldingInjection.Process
                     if (head == ESPDHead.SPDHead1 && _currentRecipe.OptionRecipe.SkipHead12 ||
                         head == ESPDHead.SPDHead2 && _currentRecipe.OptionRecipe.SkipHead12 ||
                         head == ESPDHead.SPDHead3 && _currentRecipe.OptionRecipe.SkipHead34 ||
-                        head == ESPDHead.SPDHead4 && _currentRecipe.OptionRecipe.SkipHead34)
+                        head == ESPDHead.SPDHead4 && _currentRecipe.OptionRecipe.SkipHead34 ||
+                        _optionRecipe.SkipDispensing)
                     {
                         Step.RunStep = (int)EMoldProcNeedleCleaningStep.End;
                         break;

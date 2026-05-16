@@ -121,7 +121,8 @@ namespace SDV_MoldingInjection.Recipe
 
         private async void SingleRecipe_RecipeChanged(object? oldValue, object? newValue, string? propertyName = null, int parameterIndex = -1)
         {
-            if (_navigationStore.CurrentViewModel.GetType() == typeof(InitDeinitViewModel)) return;
+            // Skip CIM report while program is loading
+            //if (_navigationStore.CurrentViewModel.GetType() == typeof(InitDeinitViewModel)) return;
 
             var props = CurrentRecipe.CommonRecipe.GetType().GetProperties();
 
@@ -305,7 +306,7 @@ namespace SDV_MoldingInjection.Recipe
 
                 EquipEventHelpers.PPIDCreate(newRecipeName, cimRecipeNumber);
 
-                UpdateValidRecipes();
+                UpdateValidRecipes(); // Refresh the list to show the new copied recipe
 
                 MessageBoxEx.Show($"Recipe '{currentRecipeName}' copied successfully to '{newRecipeName}'.");
             }
@@ -331,7 +332,7 @@ namespace SDV_MoldingInjection.Recipe
                 if (confirm != true) return;
             }
 
-            string copyRecipe = (string)Application.Current.Resources["str_CopyRecipe"];
+            string CopyRecipe = (string)Application.Current.Resources["str_CopyRecipe"];
             if (selectedRecipe == RecipeSetting.CurrentRecipe)
             {
                 MessageBoxEx.ShowDialog($"Can not delete CURRENT RECIPE {selectedRecipe}");
@@ -354,10 +355,13 @@ namespace SDV_MoldingInjection.Recipe
         {
             selectedRecipe = ResolveRecipeName(selectedRecipe);
             string currentRecipeFolder = GetRecipeFolderPath(selectedRecipe);
+            string currentRecipeFile = Path.Combine(currentRecipeFolder, "Recipe.json");
             if (Directory.Exists(currentRecipeFolder) == false)
-            {
                 MessageBox.Show($" Recipe folder \"{currentRecipeFolder}\" not found");
-            }
+            var settings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            };
 
             string destinationFolder = "D:\\MoldInjection\\Recipe\\TT_094_MODEL094";
             if (Directory.Exists(destinationFolder) == false)
