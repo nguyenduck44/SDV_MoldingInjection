@@ -26,6 +26,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _cimAction = cimAction;
             _mapHelper = mapHelper;
             _syringAmountStatusList = syringAmountStatusList;
+
+            for (int i = 0; i < MaterialPorts.Count; i++)
+            {
+                MaterialPorts[i].TotalQty = (int)(_syringAmountStatusList.SyringeAmounts[i].MaxVolume);
+                MaterialPorts[i].UseQty = (int)(_syringAmountStatusList.SyringeAmounts[i].UsedVolume);
+            }
+
             _cimAction.FromCIMCommandAction += _cimAction_FromCIMCommandAction;
 
             Log = LogManager.GetLogger("CIM");

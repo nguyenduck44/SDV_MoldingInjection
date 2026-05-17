@@ -88,14 +88,14 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 var status = SyringeAmountStatusList.SyringeAmounts[i];
                 if (status == null) continue;
 
-                if (maxVolumeG > 0 && Math.Abs(status.MaxVolume - maxVolumeG) > 0.0001)
-                {
-                    status.MaxVolume = maxVolumeG;
-                    if (status.RemainVolume <= 0)
-                    {
-                        status.RemainVolume = maxVolumeG;
-                    }
-                }
+                //if (maxVolumeG > 0 && Math.Abs(status.MaxVolume - maxVolumeG) > 0.0001)
+                //{
+                //    status.MaxVolume = maxVolumeG;
+                //    if (status.RemainVolume <= 0)
+                //    {
+                //        status.RemainVolume = maxVolumeG;
+                //    }
+                //}
 
                 bool isOver = false;
                 if (limitHours > 0)
