@@ -1,4 +1,5 @@
 using EQX.Core.Communication.CIM;
+using EQX.Core.Communication.CIM.Custom;
 using EQX.Core.Communication.CIM.Custom.WordArea;
 using EQX.Core.InOut;
 using EQX.Core.Motion;
@@ -6,6 +7,7 @@ using EQX.Core.Sequence;
 using EQX.InOut;
 using EQX.UI.Controls;
 using SDV_MoldingInjection.Defines;
+using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.Defines.Productions;
 using SDV_MoldingInjection.Defines.TeachingPosition;
 using SDV_MoldingInjection.Recipe;
@@ -82,6 +84,16 @@ namespace SDV_MoldingInjection.Process
             }
         }
 
+        private CellJobProcessCimToPlcArea CellJobProcessInfo_Left { get; set; }
+        private CellJobProcessCimToPlcArea CellJobProcessInfo_Right { get; set; }
+
+        public MaterialAssemblyPlcToCimArea MaterialAssemblyArea_Left_1 { get; set; }
+        public MaterialAssemblyPlcToCimArea MaterialAssemblyArea_Left_2 { get; set; }
+        public MaterialAssemblyPlcToCimArea MaterialAssemblyArea_Right_1 { get; set; }
+        public MaterialAssemblyPlcToCimArea MaterialAssemblyArea_Right_2 { get; set; }
+
+        private string LeftJigID { get; set; } = "LEFT_123456789";
+        private string RightJigID { get; set; } = "RIGHT_987654321";
         #endregion
 
         #region Motions
@@ -144,7 +156,8 @@ namespace SDV_MoldingInjection.Process
             ICIMMapHelper mapHelper,
             ProductionService productionService,
             InOutHandler inOutHandler,
-            PositionList positionList)
+            PositionList positionList,
+            CIMCollection cIMCollection)
         {
             _devices = devices;
             _machineStatus = machineStatus;
@@ -154,6 +167,7 @@ namespace SDV_MoldingInjection.Process
             _productionService = productionService;
             _inOutHandler = inOutHandler;
             _positionList = positionList;
+            _cIMCollection = cIMCollection;
             procInputs = processIO.InjectProcInput;
             procOutputs = processIO.InjectProcOutput;
 
@@ -985,6 +999,46 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
+                    {
+                        if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 == false)
+                        {
+                            _cIMCollection.MaterialPorts[0].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, LeftJigID);
+                            Thread.Sleep(300);
+                            _cIMCollection.MaterialPorts[1].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, LeftJigID);
+
+                            MaterialAssemblyArea_Left_1 = _cIMCollection.MaterialPorts[0].MaterialAssemblyArea;
+                            MaterialAssemblyArea_Left_2 = _cIMCollection.MaterialPorts[1].MaterialAssemblyArea;
+                        }
+
+                        if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34 == false)
+                        {
+                            Thread.Sleep(300);
+                            _cIMCollection.MaterialPorts[2].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, RightJigID);
+                            Thread.Sleep(300);
+                            _cIMCollection.MaterialPorts[3].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, RightJigID);
+
+                            MaterialAssemblyArea_Right_1 = _cIMCollection.MaterialPorts[2].MaterialAssemblyArea;
+                            MaterialAssemblyArea_Right_2 = _cIMCollection.MaterialPorts[3].MaterialAssemblyArea;
+                        }
+
+                        string portShortageWarning = string.Empty;
+                        foreach(var materialPort in _cIMCollection.MaterialPorts)
+                        {
+                            if(materialPort.RemainQty <= _recipeSelector.CurrentRecipe.CommonRecipe.MaterialWarningCount)
+                            {
+                                portShortageWarning += materialPort.Name + ",";
+                                EquipEventHelpers.MaterialWarning(materialPort);
+                                Thread.Sleep(300);
+                            }
+                        }
+
+                        if(_cIMCollection.MaterialPorts.Any(mp => mp.RemainQty <= _recipeSelector.CurrentRecipe.CommonRecipe.MaterialWarningCount))
+                        {
+                            MessageBoxEx.Show(portShortageWarning + "SHORTAGE WARNING");
+                        }
+                    }
+
                     if (_currentRecipe.OptionRecipe.SkipVentTime == false &&
                         procInputs[EInjectProcInput.VentComplete].Value == false &&
                         _machineStatus.IsDryRunMode == false)
@@ -1373,7 +1427,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Jig_Check:
-                    if (isLoading && _machineStatus.DisableDetectJig == false && _machineStatus.IsDryRunMode == false)
+                    if (isLoading && _machineStatus.IsDryRunMode == false)
                     {
                         Log.Debug("Jig check");
                         inputCount = 0;
@@ -1383,7 +1437,7 @@ namespace SDV_MoldingInjection.Process
                         SimulationInputSetter.SetSimInput(In_Jig3Detect, true);
                         SimulationInputSetter.SetSimInput(In_Jig4Detect, true);
 #endif
-                        if (_optionRecipe.SkipHead12 == false)
+                        if (_optionRecipe.SkipHead12 == false && _machineStatus.DisableDetectJig == false)
                         {
                             if (LeftJigTiltState)
                             {
@@ -1400,7 +1454,7 @@ namespace SDV_MoldingInjection.Process
                             inputCount++;
                         }
 
-                        if (_optionRecipe.SkipHead34 == false)
+                        if (_optionRecipe.SkipHead34 == false && _machineStatus.DisableDetectJig == false)
                         {
                             if (RightJigTiltState)
                             {
@@ -1415,6 +1469,51 @@ namespace SDV_MoldingInjection.Process
 
                             Log.Debug("Right Jig Loading Done");
                             inputCount++;
+                        }
+
+                        if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
+                        {
+                            //Left
+                            if (EquipEventHelpers.CellTrackIn(1, LeftJigID, 9, 2) == false)
+                            {
+                                RaiseWarning(EWarning.CIM_CELL_TRACKING_FAIL);
+                                return;
+                            }
+
+                            Log.Info($"Jig '{LeftJigID}' tracking successed");
+
+                            CellJobProcessCimToPlcArea cellJobProcess = EquipEventHelpers.CellJobProcessConfirm(1, LeftJigID);
+
+                            if (cellJobProcess.CellJobProcessRCMD != $"{(int)ECellJobProcessRCMD.CellJobProcessStart}")
+                            {
+                                RaiseWarning(EWarning.CIM_CELL_JOB_PROCESS_START_FAIL);
+                                return;
+                            }
+
+                            CellJobProcessInfo_Left = cellJobProcess;
+
+                            Log.Info($"Jig '{LeftJigID}' Job Process Start successed");
+
+                            //Right
+                            if (EquipEventHelpers.CellTrackIn(2, RightJigID, 9, 2) == false)
+                            {
+                                RaiseWarning(EWarning.CIM_CELL_TRACKING_FAIL);
+                                return;
+                            }
+
+                            Log.Info($"Jig '{RightJigID}' tracking successed");
+
+                            CellJobProcessCimToPlcArea cellJobProcess1 = EquipEventHelpers.CellJobProcessConfirm(2, RightJigID);
+
+                            if (cellJobProcess.CellJobProcessRCMD != $"{(int)ECellJobProcessRCMD.CellJobProcessStart}")
+                            {
+                                RaiseWarning(EWarning.CIM_CELL_JOB_PROCESS_START_FAIL);
+                                return;
+                            }
+
+                            CellJobProcessInfo_Right = cellJobProcess1;
+
+                            Log.Info($"Jig '{RightJigID}' Job Process Start successed");
                         }
 
                         Log.Debug($"Write data input count: {inputCount}");
@@ -1442,6 +1541,19 @@ namespace SDV_MoldingInjection.Process
                             outputCount++;
                         }
 
+                        if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
+                        {
+                            if (EquipEventHelpers.CellTrackOut(1, CellJobProcessInfo_Left, false, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Left_1, MaterialAssemblyArea_Left_2 }) == false)
+                            {
+                                RaiseWarning(EWarning.CIM_CELL_TRACKOUT_FAIL);
+                                break;
+                            }
+                            if (EquipEventHelpers.CellTrackOut(2, CellJobProcessInfo_Right, false, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Right_1, MaterialAssemblyArea_Right_2 }) == false)
+                            {
+                                RaiseWarning(EWarning.CIM_CELL_TRACKOUT_FAIL);
+                                break;
+                            }
+                        }
                         if ((_optionRecipe.SkipHead12 == false && JigStatuses[0] != EJigStatus.None) ||
                             (_optionRecipe.SkipHead34 == false && JigStatuses[1] != EJigStatus.None))
                         {
@@ -2851,6 +2963,7 @@ namespace SDV_MoldingInjection.Process
         private readonly ProductionService _productionService;
         private readonly InOutHandler _inOutHandler;
         private readonly PositionList _positionList;
+        private readonly CIMCollection _cIMCollection;
         private int inputCount;
         private int outputCount;
         private int _needleCleanCount = 0;

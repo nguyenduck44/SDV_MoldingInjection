@@ -13,6 +13,7 @@ namespace SDV_MoldingInjection.Recipe
         private double motionMoveTimeout;
         private double vacDelay;
         private int logSaveDay = 30;
+        private double materialWarningCount;
         private ILanguageDefinition selectLanguage;
         public event Action<ILanguageDefinition> SelectedLanguageEvent;
         public event Action SelectedLanguageLoadAllRecipe;
@@ -66,6 +67,16 @@ namespace SDV_MoldingInjection.Recipe
         {
             get => logSaveDay;
             set => SetRecipe(ref logSaveDay, value);
+        }
+
+        [SingleRecipeDescription(Description = "Material Warning Count")]
+        public double MaterialWarningCount
+        {
+            get { return materialWarningCount; }
+            set 
+            {
+                SetRecipe(ref materialWarningCount, value);
+            }
         }
 
         public ILanguageDefinition SelectedLanguage

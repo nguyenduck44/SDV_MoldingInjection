@@ -145,5 +145,14 @@ namespace SDV_MoldingInjection.Recipe
             get => _skipDispensing;
             set => SetRecipe(ref _skipDispensing, value);
         }
+
+        private bool useCIM;
+
+        public bool UseCIM
+        {
+            get { return useCIM; }
+            set { useCIM = value; }
+        }
+
     }
 }

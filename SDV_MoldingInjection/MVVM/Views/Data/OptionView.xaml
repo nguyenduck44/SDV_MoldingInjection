@@ -124,6 +124,10 @@
                                   Margin="5"
                                   IsChecked="{Binding RecipeList.OptionRecipe.SkipNeedleClean}"
                                   Tag="Check to skip needle clean" />
+                        <CheckBox Content="Use CIM"
+                                  Margin="5"
+                                  IsChecked="{Binding RecipeList.OptionRecipe.UseCIM}"
+                                  Tag="Check to Use CIM" />
                     </UniformGrid>
                 </StackPanel>
             </GroupBox>
