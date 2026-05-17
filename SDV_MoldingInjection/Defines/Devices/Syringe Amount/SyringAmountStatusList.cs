@@ -14,10 +14,10 @@ namespace SDV_MoldingInjection.Defines
         {
             SyringeAmounts = new List<SyringeAmountStatus>
             {
-                new SyringeAmountStatus(),
-                new SyringeAmountStatus(),
-                new SyringeAmountStatus(),
-                new SyringeAmountStatus()
+                new SyringeAmountStatus(){Name = "RESIN HEAD 1" },
+                new SyringeAmountStatus(){Name = "RESIN HEAD 2"},
+                new SyringeAmountStatus(){Name = "RESIN HEAD 3"},
+                new SyringeAmountStatus(){Name = "RESIN HEAD 4"}
             };
             _configuration = configuration;
         }

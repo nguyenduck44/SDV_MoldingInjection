@@ -160,7 +160,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                         }
                         else if (fppsArea.CCode == "3") // Parameter Update
                         {
-                            _recipeSelector.CurrentRecipe.CommonRecipe.LogSaveDay = parameterWordArea.Parameters[0];
+                            _recipeSelector.UpdateRecipeFromCIM(parameterWordArea.Parameters);
                         }
                     }
                     break;

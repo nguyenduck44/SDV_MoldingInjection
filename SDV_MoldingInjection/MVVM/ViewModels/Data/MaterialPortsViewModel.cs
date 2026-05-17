@@ -4,6 +4,7 @@ using EQX.Core.Communication.CIM.Custom;
 using EQX.Core.Communication.CIM.Custom.WordArea;
 using EQX.UI.MVVM;
 using log4net;
+using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.CIM;
 using System.Diagnostics;
 using TOPENG_Device;
@@ -17,12 +18,14 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly CIMCollection _cimCollection;
         private readonly CIMAction _cimAction;
         private readonly ICIMMapHelper _mapHelper;
+        private readonly SyringAmountStatusList _syringAmountStatusList;
 
-        public MaterialPortsViewModel(CIMCollection cimCollection, CIMAction cimAction, ICIMMapHelper mapHelper)
+        public MaterialPortsViewModel(CIMCollection cimCollection, CIMAction cimAction, ICIMMapHelper mapHelper, SyringAmountStatusList syringAmountStatusList)
         {
             _cimCollection = cimCollection;
             _cimAction = cimAction;
             _mapHelper = mapHelper;
+            _syringAmountStatusList = syringAmountStatusList;
             _cimAction.FromCIMCommandAction += _cimAction_FromCIMCommandAction;
 
             Log = LogManager.GetLogger("CIM");
@@ -54,31 +57,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 return;
             }
 
+            mp.KittingFeedback(cimArea);
+
+            _syringAmountStatusList.SyringeAmounts[int.Parse(cimArea.MaterialProtID) - 1].IsAttached = mp.LastKittingCEID == EMaterialKittingCEID.KITTING;
+            _syringAmountStatusList.SyringeAmounts[int.Parse(cimArea.MaterialProtID) - 1].MaxVolume = mp.TotalQty;
+            _syringAmountStatusList.SyringeAmounts[int.Parse(cimArea.MaterialProtID) - 1].RemainVolume = mp.RemainQty;
+
             Log.Info($"{cimArea.MaterialReplyText} {cimArea.MaterialTotalQTY} {cimArea.MaterialProtID}");
-
-            if (mp.LastKittingCEID == EMaterialKittingCEID.KITTING)
-            {
-                mp.MaterialState = cimArea.MaterialState;
-                mp.State = cimArea.MaterialST;
-                mp.TotalQty = cimArea.MaterialTotalQTY;
-                mp.RemainQty = cimArea.MaterialTotalQTY;
-                mp.UseQty = cimArea.MaterialUseQTY;
-                mp.UIUpdate();
-
-                EquipEventHelpers.MaterialInfoSendKitting(mp);
-            }
-
-            if (mp.LastKittingCEID == EMaterialKittingCEID.KITTING_CANCEL)
-            {
-                mp.MaterialState = cimArea.MaterialState;
-                mp.State = cimArea.MaterialST;
-                mp.TotalQty = 0;
-                mp.RemainQty = 0;
-                mp.UseQty = 0;
-                mp.UIUpdate();
-
-                EquipEventHelpers.MaterialInfoSendCancel(mp);
-            }
         }
 
         protected override void Dispose(bool disposing)

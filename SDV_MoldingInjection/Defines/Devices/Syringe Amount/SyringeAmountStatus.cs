@@ -10,8 +10,12 @@ namespace SDV_MoldingInjection.Defines
         private DateTime resetTime = DateTime.Now;
         private TimeSpan pausedElapsedTime = TimeSpan.Zero;
         private bool isTimeOver;
+
         private bool isHeadAvailable = true;
 
+        public bool IsAttached { get; set; }
+
+        public string Name { get; set; }
         public double MaxVolume
         {
             get { return maxVolume; }

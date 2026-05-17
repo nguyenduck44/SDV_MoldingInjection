@@ -449,6 +449,68 @@ namespace SDV_MoldingInjection.Recipe
             CurrentModelChanged?.Invoke();
             OnPropertyChanged(nameof(CurrentRecipeDisplayName));
         }
+
+        public void UpdateRecipeFromCIM(int[] parameters)
+        {
+            var recipeObjects = CurrentRecipe.GetType()
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => typeof(RecipeBase).IsAssignableFrom(p.PropertyType))
+                .Select(p => p.GetValue(CurrentRecipe))
+                .OfType<RecipeBase>()
+                .ToList();
+
+            foreach (var recipeObject in recipeObjects)
+            {
+                PropertyInfo[] properties = recipeObject.GetType().GetProperties();
+
+                foreach (var property in properties)
+                {
+                    foreach (var att in property.GetCustomAttributes())
+                    {
+                        if (att is ParameterDescriptionAttribute parameterDescriptionAttribute)
+                        {
+                            int parameterIndex = parameterDescriptionAttribute.Index - 1;
+                            if (recipeObject is SPDHeadRecipe sPDHeadRecipe)
+                            {
+                                if (sPDHeadRecipe.Name == "SPDHead2Recipe")
+                                {
+                                    parameterIndex += 40;
+                                }
+                                else if (sPDHeadRecipe.Name == "SPDHead3Recipe")
+                                {
+                                    parameterIndex += 80;
+                                }
+                                else if (sPDHeadRecipe.Name == "SPDHead4Recipe")
+                                {
+                                    parameterIndex += 120;
+                                }
+                            }
+
+                            object newValue = parameters[parameterIndex];
+
+                            if (property.PropertyType == typeof(double) ||
+                                property.PropertyType == typeof(float))
+                            {
+                                property.SetValue(recipeObject, (Convert.ToDouble(newValue) / 1000.0));
+                            }
+                            else if (property.PropertyType == typeof(int))
+                            {
+                                property.SetValue(recipeObject, (int)newValue);
+                            }
+                            else if ((property.PropertyType == typeof(bool)))
+                            {
+                                property.SetValue(recipeObject, (int)newValue == 1);
+                            }
+                            else
+                            {
+                                throw new Exception($"Typeof '{property}' ('{property.PropertyType}') is not supported.");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Private Methods
