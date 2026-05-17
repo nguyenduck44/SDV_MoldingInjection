@@ -1,6 +1,7 @@
 ﻿using EQX.Core.Communication.CIM;
 using EQX.Core.Communication.CIM.Custom;
 using EQX.Core.Communication.CIM.Custom.WordArea;
+using EQX.Core.Recipe;
 using EQX.Core.Sequence;
 using EQX.UI.Controls;
 using EQX.UI.MVVM;
@@ -8,6 +9,7 @@ using log4net;
 using log4net.Repository.Hierarchy;
 using SDV_MoldingInjection.Recipe;
 using System.Diagnostics;
+using System.Reflection;
 using TOPENG_Device;
 using static EQX.Core.Communication.CIM.Custom.WordArea.PPIDListArea;
 
@@ -150,13 +152,23 @@ namespace SDV_MoldingInjection.Defines.CIM
                             return;
                         }
 
+                        else
+                        {
+                            short[] buf = new short[] { (short)'0' };
+                            EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).Write(buf);
+                            //Thread.Sleep(500);
+                            EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).SetPLCBitOn();
+                            EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).WaitForCIMBitOff();
+                            EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).SetPLCBitOff();
+                        }
+
                         if (fppsArea.CCode == "1") // CREATE NEW
                         {
-                            _recipeSelector.Create(parameterWordArea.PPIDName, fppsArea.RecipeNumber);
+                            _recipeSelector.Create(parameterWordArea.PPIDName, recipeNumber.ToString());
                         }
                         else if (fppsArea.CCode == "2") // Delete PPID
                         {
-                            _recipeSelector.Delete(parameterWordArea.PPIDName, fppsArea.RecipeNumber);
+                            _recipeSelector.Delete(parameterWordArea.PPIDName, recipeNumber.ToString());
                         }
                         else if (fppsArea.CCode == "3") // Parameter Update
                         {
@@ -297,17 +309,25 @@ namespace SDV_MoldingInjection.Defines.CIM
                 bool bitOn = cimCommandDetail.IsCIMBitOn();
                 if (bitOn)
                 {
-                    lock(_locker)
+                    lock (_locker)
                     {
                         if (_commandHandling.ContainsKey(CIMCommandDetail.Create(fromCIMCommand).Command)) continue;
                         _commandHandling.Add(CIMCommandDetail.Create(fromCIMCommand).Command, true);
                     }
 
-                    LogManager.GetLogger("CIM").Info($"{CIMCommandDetail.Create(fromCIMCommand).Command} CIM bit {CIMCommandDetail.Create(fromCIMCommand).CIMAddress} ON");
+                    LogManager.GetLogger("CIM").Info($"{fromCIMCommand} CIM bit {CIMCommandDetail.Create(fromCIMCommand).CIMAddress} ON");
 
                     _ = Task.Run(() =>
                     {
                         var cimCommand = CIMCommandDetail.Create(fromCIMCommand);
+
+                        if (cimCommand.Command == CIMCommand.OperatorCall || cimCommand.Command == CIMCommand.Interlock)
+                        {
+                            cimCommand.SetPLCBitOn();
+                            cimCommand.WaitForCIMBitOff();
+                            cimCommand.SetPLCBitOff();
+                        }
+
                         if (CIMCommandDetail.Create(fromCIMCommand).CIMWordLength > 0)
                         {
                             cimCommand.ReadCIMWords();
@@ -319,15 +339,24 @@ namespace SDV_MoldingInjection.Defines.CIM
 
                             lock (_locker)
                             {
-                                _commandHandling.Remove(CIMCommandDetail.Create(fromCIMCommand).Command);
+                                if (_commandHandling != null && _commandHandling.ContainsKey(CIMCommandDetail.Create(fromCIMCommand).Command))
+                                    _commandHandling.Remove(CIMCommandDetail.Create(fromCIMCommand).Command);
                             }
                         });
+
+                        if (cimCommand.Command == CIMCommand.OperatorCall)
+                        {
+                            lock (_locker)
+                            {
+                                if (_commandHandling != null && _commandHandling.ContainsKey(CIMCommandDetail.Create(fromCIMCommand).Command))
+                                    _commandHandling.Remove(CIMCommandDetail.Create(fromCIMCommand).Command);
+                            }
+                        }
                     });
                 }
             }
-
-            CIMCommandDetail.Create(CIMCommand.AliveBit).IsCIMBitOn();
         }
+
         #endregion
 
         #region Privates

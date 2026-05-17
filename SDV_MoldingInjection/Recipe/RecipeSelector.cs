@@ -35,6 +35,7 @@ namespace SDV_MoldingInjection.Recipe
         private readonly IAlertService _warningService;
         private readonly ILanguageService _languageService;
         private readonly NavigationStore _navigationStore;
+        private bool isChangingModel { get; set; } = false;
 
         private string recipeFolder => _configuration.GetValue<string>("Folders:RecipeFolder") ?? "";
         #endregion
@@ -121,6 +122,8 @@ namespace SDV_MoldingInjection.Recipe
 
         private async void SingleRecipe_RecipeChanged(object? oldValue, object? newValue, string? propertyName = null, int parameterIndex = -1)
         {
+            if (isChangingModel) return;
+
             // Skip CIM report while program is loading
             //if (_navigationStore.CurrentViewModel.GetType() == typeof(InitDeinitViewModel)) return;
 
@@ -428,10 +431,13 @@ namespace SDV_MoldingInjection.Recipe
 
         public void SetCurrentModel(string selectedRecipe)
         {
+            isChangingModel = true;
+
             selectedRecipe = ResolveRecipeName(selectedRecipe);
             string selectedRecipeFolder = GetRecipeFolderPath(selectedRecipe);
             if (Directory.Exists(selectedRecipeFolder) == false)
             {
+                isChangingModel = false;
                 MessageBoxEx.ShowDialog($"{selectedRecipeFolder} folder not exits");
                 return;
             }
@@ -443,11 +449,13 @@ namespace SDV_MoldingInjection.Recipe
                 RecipeSetting.CurrentRecipe = tempRecipe;
                 File.WriteAllText((Path.Combine(recipeFolder, "RecipeSetting.json")), JsonConvert.SerializeObject(RecipeSetting));
                 Load();
+                isChangingModel = false;
                 return;
             }
 
             CurrentModelChanged?.Invoke();
             OnPropertyChanged(nameof(CurrentRecipeDisplayName));
+            isChangingModel = false;
         }
 
         public void UpdateRecipeFromCIM(int[] parameters)
@@ -472,15 +480,15 @@ namespace SDV_MoldingInjection.Recipe
                             int parameterIndex = parameterDescriptionAttribute.Index - 1;
                             if (recipeObject is SPDHeadRecipe sPDHeadRecipe)
                             {
-                                if (sPDHeadRecipe.Name == "SPDHead2Recipe")
+                                if (sPDHeadRecipe.Name == "SPDHead2_Recipe")
                                 {
                                     parameterIndex += 40;
                                 }
-                                else if (sPDHeadRecipe.Name == "SPDHead3Recipe")
+                                else if (sPDHeadRecipe.Name == "SPDHead3_Recipe")
                                 {
                                     parameterIndex += 80;
                                 }
-                                else if (sPDHeadRecipe.Name == "SPDHead4Recipe")
+                                else if (sPDHeadRecipe.Name == "SPDHead4_Recipe")
                                 {
                                     parameterIndex += 120;
                                 }

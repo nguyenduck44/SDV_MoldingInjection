@@ -172,6 +172,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         private void OnTeachingPointPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
+            if (_navigationStore.CurrentViewModel is AppMaintenanceViewModel == false) return;
+
             if (_recipeSelector.IsLoadingRecipe || _isRestoringTeachingSnapshot || _isHandlingTeachingChange)
             {
                 return;

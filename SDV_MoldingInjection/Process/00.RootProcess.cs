@@ -218,7 +218,7 @@ namespace SDV_MoldingInjection.Process
                 AlertNotifyView.ShowDialog(_alarmService.GetById(raisedAlarmCode), true);
 
                 // TODO: CIM
-                CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmRelease, new CIMScenarioContext
+                CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmOccur, new CIMScenarioContext
                 {
                     CIMAlarmData = new CIMAlarmData
                     {
@@ -254,7 +254,7 @@ namespace SDV_MoldingInjection.Process
                 _machineStatus.MachineIdleTick = Environment.TickCount;
 
                 // TODO: CIM
-                CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmRelease, new CIMScenarioContext
+                CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmOccur, new CIMScenarioContext
                 {
                     CIMAlarmData = new CIMAlarmData
                     {

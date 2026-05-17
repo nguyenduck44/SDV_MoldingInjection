@@ -9,10 +9,10 @@ namespace SDV_MoldingInjection.Recipe
             CommonRecipe = new();
             InjectRecipe = new();
             DryPumpRecipe = new();
-            SPDHead1_Recipe = new();
-            SPDHead2_Recipe = new();
-            SPDHead3_Recipe = new();
-            SPDHead4_Recipe = new();
+            SPDHead1_Recipe = new() { Name = "SPDHead1_Recipe" };
+            SPDHead2_Recipe = new() { Name = "SPDHead2_Recipe" }; ;
+            SPDHead3_Recipe = new() { Name = "SPDHead3_Recipe" }; ;
+            SPDHead4_Recipe = new() { Name = "SPDHead4_Recipe" }; ;
             AdditionalMolding_Recipe = new();
             OptionRecipe = new();
             InjectTimeRecipe = new();

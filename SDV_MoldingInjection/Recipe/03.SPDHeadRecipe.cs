@@ -17,7 +17,7 @@ namespace SDV_MoldingInjection.Recipe
             set
             {
                 ResinWeightChanged?.Invoke(value);
-                SetRecipe(ref _resinWeight, value, Name == "SPDHead1Recipe" ? 0 : Name == "SPDHead2Recipe" ? 40 : Name == "SPDHead3Recipe" ? 80 : 120);
+                SetRecipe(ref _resinWeight, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
             }
         }
 
@@ -27,7 +27,7 @@ namespace SDV_MoldingInjection.Recipe
         public double ResinWeightSpec
         {
             get => _resinWeightSpec;
-            set => SetRecipe(ref _resinWeightSpec, value, Name == "SPDHead1Recipe" ? 0 : Name == "SPDHead2Recipe" ? 40 : Name == "SPDHead3Recipe" ? 80 : 120);
+            set => SetRecipe(ref _resinWeightSpec, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
         [SingleRecipeDescription(Description = "Z-Axis SAFETY position (ready position)", Unit = Unit.mm)]
@@ -47,7 +47,7 @@ namespace SDV_MoldingInjection.Recipe
             set
             {
                 var v = value < -5 ? -5 : value;
-                SetRecipe(ref _zAxisSafetyPos, v, Name == "SPDHead1Recipe" ? 0 : Name == "SPDHead2Recipe" ? 40 : Name == "SPDHead3Recipe" ? 80 : 120);
+                SetRecipe(ref _zAxisSafetyPos, v, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
             }
         }
 
@@ -64,14 +64,14 @@ namespace SDV_MoldingInjection.Recipe
         public double ZAxisInjectPos
         {
             get => _zAxisInjectPos;
-            set => SetRecipe(ref _zAxisInjectPos, value, Name == "SPDHead1Recipe" ? 0 : Name == "SPDHead2Recipe" ? 40 : Name == "SPDHead3Recipe" ? 80 : 120);
+            set => SetRecipe(ref _zAxisInjectPos, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
         [ParameterDescription(37)]
         public double ZAxisInjectPosOffset
         {
             get => _zAxisInjectPosOffset;
-            set => SetRecipe(ref _zAxisInjectPosOffset, value, Name == "SPDHead1Recipe" ? 0 : Name == "SPDHead2Recipe" ? 40 : Name == "SPDHead3Recipe" ? 80 : 120);
+            set => SetRecipe(ref _zAxisInjectPosOffset, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
         [SingleRecipeDescription(Description = "Z-Axis Dummy Shot position", Unit = Unit.mm)]
@@ -80,14 +80,14 @@ namespace SDV_MoldingInjection.Recipe
         public double ZAxisDummyPos
         {
             get => _zAxisDummyPos;
-            set => SetRecipe(ref _zAxisDummyPos, value, Name == "SPDHead1Recipe" ? 0 : Name == "SPDHead2Recipe" ? 40 : Name == "SPDHead3Recipe" ? 80 : 120);
+            set => SetRecipe(ref _zAxisDummyPos, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
         [ParameterDescription(39)]
         public double ZAxisDummyPosOffset
         {
             get => _zAxisDummyPosOffset;
-            set => SetRecipe(ref _zAxisDummyPosOffset, value, Name == "SPDHead1Recipe" ? 0 : Name == "SPDHead2Recipe" ? 40 : Name == "SPDHead3Recipe" ? 80 : 120);
+            set => SetRecipe(ref _zAxisDummyPosOffset, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
         [SingleRecipeDescription(Description = "Z-Axis Assemble-Disassemble position", Unit = Unit.mm)]
@@ -96,14 +96,14 @@ namespace SDV_MoldingInjection.Recipe
         public double ZAxisAssembleDisassemblePos
         {
             get => _zAxisAssembleDisassemble;
-            set => SetRecipe(ref _zAxisAssembleDisassemble, value, Name == "SPDHead1Recipe" ? 0 : Name == "SPDHead2Recipe" ? 40 : Name == "SPDHead3Recipe" ? 80 : 120);
+            set => SetRecipe(ref _zAxisAssembleDisassemble, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
         [ParameterDescription(41)]
         public double ZAxisAssembleDisassemblePosOffset
         {
             get => _zAxisAssembleDisassemblePosOffset;
-            set => SetRecipe(ref _zAxisAssembleDisassemblePosOffset, value, Name == "SPDHead1Recipe" ? 0 : Name == "SPDHead2Recipe" ? 40 : Name == "SPDHead3Recipe" ? 80 : 120);
+            set => SetRecipe(ref _zAxisAssembleDisassemblePosOffset, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
         [SingleRecipeDescription(Description = "Z-Axis Neddle Clean position", Unit = Unit.mm)]
@@ -112,14 +112,14 @@ namespace SDV_MoldingInjection.Recipe
         public double ZAxisNeedleCleanPos
         {
             get => _zAxisNeedleCleanPos;
-            set => SetRecipe(ref _zAxisNeedleCleanPos, value, Name == "SPDHead1Recipe" ? 0 : Name == "SPDHead2Recipe" ? 40 : Name == "SPDHead3Recipe" ? 80 : 120);
+            set => SetRecipe(ref _zAxisNeedleCleanPos, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
         [ParameterDescription(43)]
         public double ZAxisNeedleCleanPosOffset
         {
             get => _zAxisNeedleCleanPosOffset;
-            set => SetRecipe(ref _zAxisNeedleCleanPosOffset, value, Name == "SPDHead1Recipe" ? 0 : Name == "SPDHead2Recipe" ? 40 : Name == "SPDHead3Recipe" ? 80 : 120);
+            set => SetRecipe(ref _zAxisNeedleCleanPosOffset, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
         [SingleRecipeDescription(Description = "Z-Axis Weighting position", Unit = Unit.mm)]
@@ -128,14 +128,14 @@ namespace SDV_MoldingInjection.Recipe
         public double ZAxisWeightingPos
         {
             get => _zAxisWeightingPos;
-            set => SetRecipe(ref _zAxisWeightingPos, value, Name == "SPDHead1Recipe" ? 0 : Name == "SPDHead2Recipe" ? 40 : Name == "SPDHead3Recipe" ? 80 : 120);
+            set => SetRecipe(ref _zAxisWeightingPos, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
         [ParameterDescription(45)]
         public double ZAxisWeightingPosOffset
         {
             get => _zAxisWeightingPosOffset;
-            set => SetRecipe(ref _zAxisWeightingPosOffset, value, Name == "SPDHead1Recipe" ? 0 : Name == "SPDHead2Recipe" ? 40 : Name == "SPDHead3Recipe" ? 80 : 120);
+            set => SetRecipe(ref _zAxisWeightingPosOffset, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
         [SingleRecipeDescription(Description = "Gate open position (Nozzle <----> SPD)", Unit = Unit.Degree)]
@@ -143,14 +143,14 @@ namespace SDV_MoldingInjection.Recipe
         public double GateOpenPos
         {
             get => _gateOpenPos;
-            set => SetRecipe(ref _gateOpenPos, value, Name == "SPDHead1Recipe" ? 0 : Name == "SPDHead2Recipe" ? 40 : Name == "SPDHead3Recipe" ? 80 : 120);
+            set => SetRecipe(ref _gateOpenPos, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
         [ParameterDescription(47)]
         public double GateOpenPosOffset
         {
             get => _gateOpenPosOffset;
-            set => SetRecipe(ref _gateOpenPosOffset, value, Name == "SPDHead1Recipe" ? 0 : Name == "SPDHead2Recipe" ? 40 : Name == "SPDHead3Recipe" ? 80 : 120);
+            set => SetRecipe(ref _gateOpenPosOffset, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
         [SingleRecipeDescription(Description = "Gate close position (Nozzle <--|--> SPD)", Unit = Unit.Degree)]
@@ -158,14 +158,14 @@ namespace SDV_MoldingInjection.Recipe
         public double GateClosePos
         {
             get => _gateClosePos;
-            set => SetRecipe(ref _gateClosePos, value, Name == "SPDHead1Recipe" ? 0 : Name == "SPDHead2Recipe" ? 40 : Name == "SPDHead3Recipe" ? 80 : 120);
+            set => SetRecipe(ref _gateClosePos, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
         [ParameterDescription(49)]
         public double GateClosePosOffset
         {
             get => _gateClosePosOffset;
-            set => SetRecipe(ref _gateClosePosOffset, value, Name == "SPDHead1Recipe" ? 0 : Name == "SPDHead2Recipe" ? 40 : Name == "SPDHead3Recipe" ? 80 : 120);
+            set => SetRecipe(ref _gateClosePosOffset, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
         [SingleRecipeDescription(Description = "DummyShot Weight", Unit = Unit.mg)]
@@ -174,7 +174,7 @@ namespace SDV_MoldingInjection.Recipe
         public double DummyShotWeight
         {
             get => _dummyShotWeight;
-            set => SetRecipe(ref _dummyShotWeight, value, Name == "SPDHead1Recipe" ? 0 : Name == "SPDHead2Recipe" ? 40 : Name == "SPDHead3Recipe" ? 80 : 120);
+            set => SetRecipe(ref _dummyShotWeight, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
         [SingleRecipeDescription(Description = "Bubble Remove Weight", Unit = Unit.mg)]
@@ -183,21 +183,21 @@ namespace SDV_MoldingInjection.Recipe
         public double BubbleRemoveWeight
         {
             get => _bubbleRemoveWeight;
-            set => SetRecipe(ref _bubbleRemoveWeight, value, Name == "SPDHead1Recipe" ? 0 : Name == "SPDHead2Recipe" ? 40 : Name == "SPDHead3Recipe" ? 80 : 120);
+            set => SetRecipe(ref _bubbleRemoveWeight, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
         [ParameterDescription(52)]
         public double PAxisInjectChargePos
         {
             get => _pAxisInjectChargePos;
-            set => SetRecipe(ref _pAxisInjectChargePos, value, Name == "SPDHead1Recipe" ? 0 : Name == "SPDHead2Recipe" ? 40 : Name == "SPDHead3Recipe" ? 80 : 120);
+            set => SetRecipe(ref _pAxisInjectChargePos, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
         [ParameterDescription(53)]
         public double PAxisInjectChargePosOffset
         {
             get => _pAxisInjectChargePosOffset;
-            set => SetRecipe(ref _pAxisInjectChargePosOffset, value, Name == "SPDHead1Recipe" ? 0 : Name == "SPDHead2Recipe" ? 40 : Name == "SPDHead3Recipe" ? 80 : 120);
+            set => SetRecipe(ref _pAxisInjectChargePosOffset, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
         #region Privates

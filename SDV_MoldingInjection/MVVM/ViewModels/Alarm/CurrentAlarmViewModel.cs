@@ -2,6 +2,7 @@
 using EQX.Core.Common;
 using SDV_MoldingInjection.Defines;
 using System.Windows.Input;
+using TOPENG_Device;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
@@ -20,6 +21,29 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
+                    CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmRelease, new CIMScenarioContext
+                    {
+                        CIMAlarmData = new CIMAlarmData
+                        {
+                            ALCD = 2, // HEAVY ALARM
+                            ALID = 1,
+                            AlarmDescription = "TC DISCONNECTION ALARM",
+                        }
+                    });
+
+                    foreach (var alarm in MachineStatus.CurrentAlarms)
+                    {
+                        CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmRelease, new CIMScenarioContext
+                        {
+                            CIMAlarmData = new CIMAlarmData
+                            {
+                                ALCD = 2, // HEAVY ALARM
+                                ALID = alarm.ErrorCode,
+                                AlarmDescription = alarm.Type == "WARN" ? ((EWarning)alarm.ErrorCode).ToString() : ((EAlarm)alarm.ErrorCode).ToString(),
+                            }
+                        });
+                    }
+
                     MachineStatus.CurrentAlarms.Clear();
                     MachineStatus.Message = string.Empty;
                 });
