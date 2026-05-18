@@ -8,7 +8,6 @@ using EQX.UI.MVVM;
 using log4net;
 using log4net.Repository.Hierarchy;
 using SDV_MoldingInjection.Recipe;
-using System.Diagnostics;
 using System.Reflection;
 using TOPENG_Device;
 using static EQX.Core.Communication.CIM.Custom.WordArea.PPIDListArea;
@@ -22,10 +21,10 @@ namespace SDV_MoldingInjection.Defines.CIM
         #endregion
 
         public CIMAction(MachineStatus machineStatus,
-            ICIMMapHelper mapHelper,
-            RecipeSelector recipeSelector,
-            CIMFunctionViewModel cimFunctionVM,
-            RecipeCatalog recipeCatalog)
+                         ICIMMapHelper mapHelper,
+                         RecipeSelector recipeSelector,
+                         CIMFunctionViewModel cimFunctionVM,
+                         RecipeCatalog recipeCatalog)
         {
             _mapHelper = mapHelper;
             _recipeSelector = recipeSelector;
@@ -40,6 +39,7 @@ namespace SDV_MoldingInjection.Defines.CIM
         private void CIMAction_FromCIMCommandAction(CIMCommandArgs obj)
         {
             if (CIMConstants.FromCIMCommands.Contains(obj.CIMCommand) == false) return;
+            if (obj.CIMCommand == CIMCommand.AliveBit) return;
 
             switch (obj.CIMCommand)
             {
@@ -51,7 +51,8 @@ namespace SDV_MoldingInjection.Defines.CIM
                         CIMCommandDetail.Create(obj.CIMCommand).WaitForCIMBitOff();
                         CIMCommandDetail.Create(obj.CIMCommand).SetPLCBitOff();
 
-                        MessageBoxEx.Show($"[{cimArea.TerminalNumber}] {cimArea.TerminalDisplayText}", false, "TerminalDisplay", closeItSelf : true);
+                        MessageBoxEx.Show($"[{cimArea.TerminalNumber}] {cimArea.TerminalDisplayText}", false, "TerminalDisplay", closeItSelf: true);
+                        LogManager.GetLogger("Terminal").Info($"{cimArea.TerminalNumber} , {cimArea.TerminalDisplayText}");
                     }
                     return;
                 case CIMCommand.DatetimeSet:
@@ -70,11 +71,6 @@ namespace SDV_MoldingInjection.Defines.CIM
                         OperatorCallCimToPlcArea cimArea = new OperatorCallCimToPlcArea();
                         cimArea.FromCIMData(obj.Buffer);
 
-                        CIMCommandDetail.Create(obj.CIMCommand).WaitForCIMBitOff();
-                        CIMCommandDetail.Create(obj.CIMCommand).SetPLCBitOff();
-
-                        MessageBoxEx.ShowDialog($"[{cimArea.OperatorCallID} {cimArea.OperatorCallText}]", false, "OPCall", closeItSelf: true);
-
                         OperatorCallPlcToCimArea plcArea = new OperatorCallPlcToCimArea()
                         {
                             OPCallIDComfirm = cimArea.OperatorCallID,
@@ -84,15 +80,28 @@ namespace SDV_MoldingInjection.Defines.CIM
                         ExecuteScenario(CIMScenario.OPCallOccurAndRelease,
                             new CIMScenarioContext
                             {
+                                OPCallOccurOnly = true,
+                                OPCallID = plcArea.OPCallIDComfirm,
+                                OPCallMsg = plcArea.OPCallMessageConfirm,
+                            });
+
+                        bool? result = MessageBoxEx.ShowDialog($"[{cimArea.OperatorCallID} {cimArea.OperatorCallText}]", false, "OPCall");
+
+                        if (result == null || result == false) break;
+
+                        ExecuteScenario(CIMScenario.OPCallOccurAndRelease,
+                            new CIMScenarioContext
+                            {
                                 OPCallOccurOnly = false,
                                 OPCallID = plcArea.OPCallIDComfirm,
                                 OPCallMsg = plcArea.OPCallMessageConfirm,
                             });
+
+                        LogManager.GetLogger("OPCall").Info($"{plcArea.OPCallIDComfirm} , {plcArea.OPCallMessageConfirm}");
                     }
                     break;
                 case CIMCommand.Interlock:
                     {
-                        CIMCommandDetail.Create(obj.CIMCommand).SetPLCBitOn();
                         InterlockCimToPlcArea cimArea = new InterlockCimToPlcArea();
                         cimArea.FromCIMData(obj.Buffer);
 
@@ -108,11 +117,15 @@ namespace SDV_MoldingInjection.Defines.CIM
                         _mapHelper.GetWordAddress(obj.CIMCommand, out _, out string plcAddress, out _, out int plcLength);
                         CIMAddressMap.WriteWords(CIMAddressMap.GetWriteWordIndexFromDAddress(plcAddress), plcLength, plcArea.ToCIMData());
 
-                        CIMCommandDetail.Create(obj.CIMCommand).WaitForCIMBitOff();
-                        CIMCommandDetail.Create(obj.CIMCommand).SetPLCBitOff();
+                        lock (_locker)
+                        {
+                            if (_commandHandling != null && _commandHandling.ContainsKey(CIMCommand.Interlock))
+                                _commandHandling.Remove(CIMCommand.Interlock);
+                        }
 
-                        MessageBoxEx.ShowDialog($"[{cimArea.InterlockID} {cimArea.InterlockMessage}]", false, "Interlock", closeItSelf: true);
+                        MessageBoxEx.ShowDialog($"[{cimArea.InterlockID} {cimArea.InterlockMessage}]", true, "Interlock");
 
+                        LogManager.GetLogger("InterlockMsg").Info($"{cimArea.InterlockID} , {cimArea.InterlockMessage}");
                         // CONFIRM INTERLOCK RELEASE
                         ExecuteScenario(CIMScenario.InterlockRelease,
                             new CIMScenarioContext
@@ -146,12 +159,11 @@ namespace SDV_MoldingInjection.Defines.CIM
                             short[] buf = new short[] { (short)'7' };
                             EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).Write(buf);
                             EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).SetPLCBitOn();
-                            EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).WaitForCIMBitOn();
+                            EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).WaitForCIMBitOff();
                             EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).SetPLCBitOff();
 
                             return;
                         }
-
                         else
                         {
                             short[] buf = new short[] { (short)'0' };
@@ -179,9 +191,10 @@ namespace SDV_MoldingInjection.Defines.CIM
                 case CIMCommand.FormattedProcessProgramRequest:
                     {
                         var fpprArea = CIMCommandHelpers.GetParameterRequestInfor();
+
                         string recipeName = fpprArea.ReqPPID;
                         ParameterWordArea parameterWordArea = new ParameterWordArea();
-                        parameterWordArea.Parameters = _recipeSelector.GetParameters();
+                        parameterWordArea.Parameters = _recipeSelector.GetParameters(fpprArea.ReqPPID);
                         parameterWordArea.PPIDName = recipeName;
                         parameterWordArea.PPIDMode = 0;
 
@@ -213,7 +226,7 @@ namespace SDV_MoldingInjection.Defines.CIM
 
                         if (int.TryParse(receiveArea.EquipCmdEFID, out int efid) == false) return;
 
-                        if (efid >= 6)
+                        if (efid >= 6 && efid != 14)
                         {
                             EquipEventDetail.Create(EquipEvent.EquipFunctionChangeCMDHcack).Write(new short[] { (short)'5' });
 
@@ -262,6 +275,10 @@ namespace SDV_MoldingInjection.Defines.CIM
                 {
                     EquipEventHelpers.EquipStateReport(_machineStatus.EquipState);
 
+                    CIMAddressMap.WriteWordSingle("D30", (short)'2');
+                    CIMAddressMap.WriteWordSingle("D31", (short)'2');
+                    CIMAddressMap.WriteWordSingle("D32", (short)'2');
+
                     foreach (var recipe in _recipeSelector.AllRecipe)
                     {
                         if (_recipeCatalog.TryGetRecipeId(recipe, out int recipeId))
@@ -271,8 +288,8 @@ namespace SDV_MoldingInjection.Defines.CIM
                     }
 
                     {
-                        short[] data = new short[20];
-                        PlcDataConverter.SetString(data, 0, 20, _recipeSelector.RecipeSetting.CurrentRecipe);
+                        //short[] data = new short[20];
+                        //PlcDataConverter.SetString(data, 0, 20, _recipeSelector.RecipeSetting.CurrentRecipe);
 
                         //CIMAddressMap.WriteWords(CIMAddressMap.GetWriteWordIndexFromDAddress("9226"), 20, data);
                     }
@@ -308,8 +325,6 @@ namespace SDV_MoldingInjection.Defines.CIM
             CIMScenarioDispatcher.ExecuteScenario(scenario, context);
         }
         #endregion
-
-        private readonly CIMCommandDetail cimCommandDetail;
 
         #region Privates Methods
         private async Task CIMCommandHandleAsync()
@@ -368,16 +383,25 @@ namespace SDV_MoldingInjection.Defines.CIM
             }
         }
 
+        public void PPIDListInquiryResponse(List<RecipeInfo> recipeInfos)
+        {
+            if (recipeInfos.Count() > 100)
+            {
+                throw new Exception("ppidList size must have exact 100 member");
+            }
+
+            for (int i = 0; i < recipeInfos.Count; i++)
+            {
+                EquipEventHelpers.PPIDListSinglePPIDWrite(recipeInfos[i].Name, recipeInfos[i].Id.ToString());
+            }
+
+            EquipEventDetail.Create(EquipEvent.CurrentEquipPPIDListResponse).SetPLCBitOn();
+            EquipEventDetail.Create(EquipEvent.CurrentEquipPPIDListResponse).WaitForCIMBitOff();
+            EquipEventDetail.Create(EquipEvent.CurrentEquipPPIDListResponse).SetPLCBitOff();
+        }
         #endregion
 
         #region Privates
-        private bool lastCIMAliveBitStatus = false;
-        private bool LastCIMAliveBitStatus
-        {
-            get => lastCIMAliveBitStatus;
-            set => lastCIMAliveBitStatus = value;
-        }
-
         private static CIMAliveTask _cimAliveTask;
         private static Task _cimTrasmitTask;
         private static Task _cimStatusUpdateTask;
@@ -389,6 +413,8 @@ namespace SDV_MoldingInjection.Defines.CIM
         private Dictionary<CIMCommand, bool> _commandHandling = new Dictionary<CIMCommand, bool>();
         private readonly MachineStatus _machineStatus;
         private object _locker = new object();
+
+        private readonly CIMCommandDetail cimCommandDetail;
         #endregion
     }
 }
