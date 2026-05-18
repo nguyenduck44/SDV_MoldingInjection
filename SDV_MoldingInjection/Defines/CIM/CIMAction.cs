@@ -179,7 +179,18 @@ namespace SDV_MoldingInjection.Defines.CIM
                 case CIMCommand.FormattedProcessProgramRequest:
                     {
                         var fpprArea = CIMCommandHelpers.GetParameterRequestInfor();
-                        EquipEventHelpers.ParameterRequestResponse(fpprArea, "1D34");
+                        string recipeName = fpprArea.ReqPPID;
+                        ParameterWordArea parameterWordArea = new ParameterWordArea();
+                        parameterWordArea.Parameters = _recipeSelector.GetParameters();
+                        parameterWordArea.PPIDName = recipeName;
+                        parameterWordArea.PPIDMode = 0;
+
+                        CIMCommandDetail.Create(CIMCommand.FormattedProcessProgramRequest).PLCWrite(parameterWordArea.ToCIMData());
+                        CIMCommandDetail.Create(CIMCommand.FormattedProcessProgramRequest).SetPLCBitOn();
+                        CIMCommandDetail.Create(CIMCommand.FormattedProcessProgramRequest).WaitForCIMBitOff();
+                        CIMCommandDetail.Create(CIMCommand.FormattedProcessProgramRequest).SetPLCBitOff();
+
+                        //EquipEventHelpers.ParameterRequestResponse(fpprArea, "1D34");
                     }
                     break;
                 case CIMCommand.CurrentEquipPPIDListRequest:

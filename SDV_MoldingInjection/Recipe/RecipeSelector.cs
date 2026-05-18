@@ -519,6 +519,71 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        public int[] GetParameters()
+        {
+            int[] data = new int[ParameterWordArea.PARAM_MAX_INT_COUNT];
+
+            var recipeObjects = CurrentRecipe.GetType()
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => typeof(RecipeBase).IsAssignableFrom(p.PropertyType))
+                .Select(p => p.GetValue(CurrentRecipe))
+                .OfType<RecipeBase>()
+                .ToList();
+
+            foreach (var recipeObject in recipeObjects)
+            {
+                PropertyInfo[] properties = recipeObject.GetType().GetProperties();
+
+                foreach (var property in properties)
+                {
+                    foreach (var att in property.GetCustomAttributes())
+                    {
+                        if (att is ParameterDescriptionAttribute parameterDescriptionAttribute)
+                        {
+                            int parameterIndex = parameterDescriptionAttribute.Index - 1;
+                            if (recipeObject is SPDHeadRecipe sPDHeadRecipe)
+                            {
+                                if (sPDHeadRecipe.Name == "SPDHead2_Recipe")
+                                {
+                                    parameterIndex += 40;
+                                }
+                                else if (sPDHeadRecipe.Name == "SPDHead3_Recipe")
+                                {
+                                    parameterIndex += 80;
+                                }
+                                else if (sPDHeadRecipe.Name == "SPDHead4_Recipe")
+                                {
+                                    parameterIndex += 120;
+                                }
+                            }
+
+                            object newValue = property.GetValue(recipeObject);
+
+                            if (newValue.GetType() == typeof(double) ||
+                                newValue.GetType() == typeof(float))
+                            {
+                                data[parameterIndex - 1] = (int)(Convert.ToDouble(newValue) * 1000);
+                            }
+                            else if (newValue.GetType() == typeof(int))
+                            {
+                                data[parameterIndex - 1] = Convert.ToInt32(newValue);
+                            }
+                            else if (newValue.GetType() == typeof(bool))
+                            {
+                                data[parameterIndex - 1] = Convert.ToBoolean(newValue) ? 1 : 0;
+                            }
+                            else
+                            {
+                                throw new Exception($"Typeof '{property}' ('{property.PropertyType}') is not supported.");
+                            }
+                        }
+                    }
+                }
+            }
+            return data;
+
+        }
+
         #endregion
 
         #region Private Methods
