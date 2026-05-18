@@ -519,69 +519,87 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        public int[] GetParameters()
+        public int[] GetParameters(string ppidName)
         {
             int[] data = new int[ParameterWordArea.PARAM_MAX_INT_COUNT];
 
-            var recipeObjects = CurrentRecipe.GetType()
-                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p => typeof(RecipeBase).IsAssignableFrom(p.PropertyType))
-                .Select(p => p.GetValue(CurrentRecipe))
-                .OfType<RecipeBase>()
-                .ToList();
+            string currentRecipeFolder = GetRecipeFolderPath(ppidName);
+            string currentRecipeFile = Path.Combine(currentRecipeFolder, "Recipe.json");
 
-            foreach (var recipeObject in recipeObjects)
+            var settings = new JsonSerializerSettings
             {
-                PropertyInfo[] properties = recipeObject.GetType().GetProperties();
+                TypeNameHandling = TypeNameHandling.Auto
+            };
 
-                foreach (var property in properties)
+            try
+            {
+                RecipeList? backupRecipe = JsonConvert.DeserializeObject<RecipeList>(File.ReadAllText(currentRecipeFile), settings);
+
+                if (backupRecipe == null) return data;
+
+                var recipeObjects = backupRecipe.GetType()
+                    .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                    .Where(p => typeof(RecipeBase).IsAssignableFrom(p.PropertyType))
+                    .Select(p => p.GetValue(CurrentRecipe))
+                    .OfType<RecipeBase>()
+                    .ToList();
+
+                foreach (var recipeObject in recipeObjects)
                 {
-                    foreach (var att in property.GetCustomAttributes())
+                    PropertyInfo[] properties = recipeObject.GetType().GetProperties();
+
+                    foreach (var property in properties)
                     {
-                        if (att is ParameterDescriptionAttribute parameterDescriptionAttribute)
+                        foreach (var att in property.GetCustomAttributes())
                         {
-                            int parameterIndex = parameterDescriptionAttribute.Index - 1;
-                            if (recipeObject is SPDHeadRecipe sPDHeadRecipe)
+                            if (att is ParameterDescriptionAttribute parameterDescriptionAttribute)
                             {
-                                if (sPDHeadRecipe.Name == "SPDHead2_Recipe")
+                                int parameterIndex = parameterDescriptionAttribute.Index - 1;
+                                if (recipeObject is SPDHeadRecipe sPDHeadRecipe)
                                 {
-                                    parameterIndex += 40;
+                                    if (sPDHeadRecipe.Name == "SPDHead2_Recipe")
+                                    {
+                                        parameterIndex += 40;
+                                    }
+                                    else if (sPDHeadRecipe.Name == "SPDHead3_Recipe")
+                                    {
+                                        parameterIndex += 80;
+                                    }
+                                    else if (sPDHeadRecipe.Name == "SPDHead4_Recipe")
+                                    {
+                                        parameterIndex += 120;
+                                    }
                                 }
-                                else if (sPDHeadRecipe.Name == "SPDHead3_Recipe")
-                                {
-                                    parameterIndex += 80;
-                                }
-                                else if (sPDHeadRecipe.Name == "SPDHead4_Recipe")
-                                {
-                                    parameterIndex += 120;
-                                }
-                            }
 
-                            object newValue = property.GetValue(recipeObject);
+                                object newValue = property.GetValue(recipeObject);
 
-                            if (newValue.GetType() == typeof(double) ||
-                                newValue.GetType() == typeof(float))
-                            {
-                                data[parameterIndex - 1] = (int)(Convert.ToDouble(newValue) * 1000);
-                            }
-                            else if (newValue.GetType() == typeof(int))
-                            {
-                                data[parameterIndex - 1] = Convert.ToInt32(newValue);
-                            }
-                            else if (newValue.GetType() == typeof(bool))
-                            {
-                                data[parameterIndex - 1] = Convert.ToBoolean(newValue) ? 1 : 0;
-                            }
-                            else
-                            {
-                                throw new Exception($"Typeof '{property}' ('{property.PropertyType}') is not supported.");
+                                if (newValue.GetType() == typeof(double) ||
+                                    newValue.GetType() == typeof(float))
+                                {
+                                    data[parameterIndex - 1] = (int)(Convert.ToDouble(newValue) * 1000);
+                                }
+                                else if (newValue.GetType() == typeof(int))
+                                {
+                                    data[parameterIndex - 1] = Convert.ToInt32(newValue);
+                                }
+                                else if (newValue.GetType() == typeof(bool))
+                                {
+                                    data[parameterIndex - 1] = Convert.ToBoolean(newValue) ? 1 : 0;
+                                }
+                                else
+                                {
+                                    throw new Exception($"Typeof '{property}' ('{property.PropertyType}') is not supported.");
+                                }
                             }
                         }
                     }
                 }
+                return data;
             }
-            return data;
-
+            catch
+            {
+                return data;
+            }
         }
 
         #endregion
