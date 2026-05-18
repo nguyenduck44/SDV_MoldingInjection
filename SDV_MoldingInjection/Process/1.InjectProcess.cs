@@ -6,6 +6,7 @@ using EQX.Core.Motion;
 using EQX.Core.Sequence;
 using EQX.InOut;
 using EQX.UI.Controls;
+using OpenTK.Compute.OpenCL;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.Defines.Productions;
@@ -65,14 +66,16 @@ namespace SDV_MoldingInjection.Process
         private double Z3AxisAssembleDisassemblePos => _positionList.SPDHead3MaintenanceTeachingPosition.ZAxisAssembleDisassemblePos.TargetPos;
         private double Z4AxisAssembleDisassemblePos => _positionList.SPDHead4MaintenanceTeachingPosition.ZAxisAssembleDisassemblePos.TargetPos;
 
-        private bool CellId1SendOn => CIMAddressMap.ReadPLCBit("B2107") == 1;
-        private bool CellId2SendOn => CIMAddressMap.ReadPLCBit("B2108") == 1;
+        private bool CellId1SendOn => CIMAddressMap.ReadCIMBit("B2107") == 1;
+        private bool CellId2SendOn => CIMAddressMap.ReadCIMBit("B2108") == 1;
 
         private bool CellId1Reply
         {
             set
             {
-                CIMAddressMap.WritePLCBit("B2007", (short)(value ? 1 : 0));
+                int length = 1;
+                int data = value ? 1 : 0;
+                MCCLinkIE.mdsendex(151, 0, 255, 23, 0x2007, ref length, ref data);
             }
         }
 
@@ -80,7 +83,9 @@ namespace SDV_MoldingInjection.Process
         {
             set
             {
-                CIMAddressMap.WritePLCBit("B2008", (short)(value ? 1 : 0));
+                int length = 1;
+                int data = value ? 1 : 0;
+                MCCLinkIE.mdsendex(151, 0, 255, 23, 0x2008, ref length, ref data);
             }
         }
 
@@ -92,8 +97,8 @@ namespace SDV_MoldingInjection.Process
         public MaterialAssemblyPlcToCimArea MaterialAssemblyArea_Right_1 { get; set; }
         public MaterialAssemblyPlcToCimArea MaterialAssemblyArea_Right_2 { get; set; }
 
-        private string LeftJigID { get; set; } = "LEFT_123456789";
-        private string RightJigID { get; set; } = "RIGHT_987654321";
+        public string LeftJigID { get; set; } = "LEFT_123456789";
+        public string RightJigID { get; set; } = "RIGHT_987654321";
         #endregion
 
         #region Motions
@@ -1023,9 +1028,9 @@ namespace SDV_MoldingInjection.Process
                         }
 
                         string portShortageWarning = string.Empty;
-                        foreach(var materialPort in _cIMCollection.MaterialPorts)
+                        foreach (var materialPort in _cIMCollection.MaterialPorts)
                         {
-                            if(materialPort.RemainQty <= _recipeSelector.CurrentRecipe.CommonRecipe.MaterialWarningCount)
+                            if (materialPort.RemainQty <= _recipeSelector.CurrentRecipe.CommonRecipe.MaterialWarningCount)
                             {
                                 portShortageWarning += materialPort.Name + ",";
                                 EquipEventHelpers.MaterialWarning(materialPort);
@@ -1033,7 +1038,7 @@ namespace SDV_MoldingInjection.Process
                             }
                         }
 
-                        if(_cIMCollection.MaterialPorts.Any(mp => mp.RemainQty <= _recipeSelector.CurrentRecipe.CommonRecipe.MaterialWarningCount))
+                        if (_cIMCollection.MaterialPorts.Any(mp => mp.RemainQty <= _recipeSelector.CurrentRecipe.CommonRecipe.MaterialWarningCount))
                         {
                             MessageBoxEx.Show(portShortageWarning + "SHORTAGE WARNING");
                         }
@@ -1339,7 +1344,7 @@ namespace SDV_MoldingInjection.Process
                             //    break;
                             //}
                             //Step.RunStep++;
-
+                            //break;
                             Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request;
                             break;
                         }
@@ -1361,7 +1366,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.GetCellId1:
-                    GetCellId(true);
+                    LeftJigID = GetCellId(true);
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Set_Cell1ReplyBitOn:
@@ -1395,7 +1400,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.GetCellId2:
-                    GetCellId(false);
+                    RightJigID = GetCellId(false);
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Set_Cell2ReplyBitOn:
@@ -2811,15 +2816,26 @@ namespace SDV_MoldingInjection.Process
 
         private string GetCellId(bool isJigLeft)
         {
+            int[] iReciveData = new int[20 / 2];
+            int iiReciveDataLength = 20 * 2;
+
+            MCCLinkIE.mdreceiveex(151, 0, 255, 24, isJigLeft ? 0xCCC8 : 0xCD34, ref iiReciveDataLength, ref iReciveData[0]);
+
             short[] buffer = new short[20];
-            if (isJigLeft)
+            for (int i = 0; i < iReciveData.Length; i++)
             {
-                CIMAddressMap.ReadWords(0xCCC8, 20, buffer);
-                return PlcDataConverter.GetString(buffer, 0, 20).Trim();
+                string sHex = Convert.ToString(iReciveData[i], 16).ToUpper().PadLeft(8, '0');
+                buffer[0 + (2 * i)] = (short)Convert.ToInt32(sHex.Substring(4, 4), 16);
+                buffer[1 + (2 * i)] = (short)Convert.ToInt32(sHex.Substring(0, 4), 16);
             }
 
-            CIMAddressMap.ReadWords(0xCD34, 20, buffer);
-            return PlcDataConverter.GetString(buffer, 0, 20).Trim();
+            string message = "";
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                if (buffer[i] == 0) continue;
+                message += System.Text.Encoding.ASCII.GetString(BitConverter.GetBytes(buffer[i]));
+            }
+            return message.Trim();
         }
         #endregion
 

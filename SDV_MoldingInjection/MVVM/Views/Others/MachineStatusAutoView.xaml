@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
              mc:Ignorable="d"
+             xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
+             d:DataContext="{d:DesignInstance Type={x:Type vm:MachineStatusAutoViewModel}}"
              d:DesignHeight="403"
              d:DesignWidth="557">
     <UserControl.Resources>
@@ -518,6 +520,14 @@
                         </MultiBinding>
                     </Image.Visibility>
                 </Image>
+                <TextBlock Text="{Binding LeftJigID}"
+                           Background="White"
+                         Canvas.Left="280"
+                         Canvas.Top="160"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Center"
+                         Width="100"
+                         Height="28" />
             </Canvas>
             <Canvas>
                 <Image  Source="/SDV_MoldingInjection;component/Resource/Images/BONDINGJIG.png"
@@ -535,6 +545,14 @@
                         </MultiBinding>
                     </Image.Visibility>
                 </Image>
+                <TextBlock Text="{Binding RightJigID}"
+                           Background="White"
+                        Canvas.Left="400"
+                        Canvas.Top="160"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Width="100"
+                        Height="28" />
             </Canvas>
             <Canvas>
                 <Image  Source="/SDV_MoldingInjection;component/Resource/Images/HEAD_LEFT.png"

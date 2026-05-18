@@ -1,5 +1,7 @@
 using EQX.Core.Common;
+using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Defines;
+using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
@@ -13,11 +15,16 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private bool h4Working;
         private readonly NavigationStore _navigationStore;
         private readonly RecipeSelector _recipeSelector;
+        private readonly IServiceProvider _serviceProvider;
         private readonly NonOverlappingTimer statusUpdateTimer;
+        private Processes _processes => _serviceProvider.GetRequiredService<Processes>();
+        private InjectProcess InjectProcess => _processes.All.OfType<InjectProcess>().First();
         #endregion
 
         #region Properties
         public Devices Devices { get; }
+        public string LeftJigID => InjectProcess.LeftJigID;
+        public string RightJigID => InjectProcess.RightJigID;
         public double PanelTemperature => Devices.PanelIndicator.Temperature;
         public double PanelHumidity => Devices.PanelIndicator.Humidity;
         public bool IsLeakSensor_H1 => Devices.Inputs.DummyOverflowDetect1.Value == false;
@@ -72,13 +79,14 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public MachineStatusAutoViewModel(Devices devices,
             NavigationStore navigationStore,
             MachineStatus machineStatus,
-            RecipeSelector recipeSelector)
+            RecipeSelector recipeSelector,
+            IServiceProvider serviceProvider)
         {
             Devices = devices;
-           _navigationStore = navigationStore;
             MachineStatus = machineStatus;
+           _navigationStore = navigationStore;
             _recipeSelector = recipeSelector;
-
+            _serviceProvider = serviceProvider;
             statusUpdateTimer = new NonOverlappingTimer(100);
             statusUpdateTimer.Elapsed += StatusUpdateTimerHandler;
             statusUpdateTimer.Start();
@@ -132,6 +140,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             OnPropertyChanged(nameof(IsLeakSensor_H2));
             OnPropertyChanged(nameof(IsLeakSensor_H3));
             OnPropertyChanged(nameof(IsLeakSensor_H4));
+            OnPropertyChanged(nameof(LeftJigID));
+            OnPropertyChanged(nameof(RightJigID));
         }
         #endregion
     }
