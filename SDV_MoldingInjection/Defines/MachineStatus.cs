@@ -26,23 +26,12 @@ namespace SDV_MoldingInjection.Defines
         public static short[] AlarmTotalWords = new short[400];
         #endregion
         #region Contructors
-        public MachineStatus(Inputs inputs)
+        public MachineStatus()
         {
-            _inputs = inputs;
-
-            _inputs.Jig1Detect.ValueChanged += JigDetect_ValueChanged;
-            _inputs.Jig2Detect.ValueChanged += JigDetect_ValueChanged;
-            _inputs.Jig3Detect.ValueChanged += JigDetect_ValueChanged;
-            _inputs.Jig4Detect.ValueChanged += JigDetect_ValueChanged;
         }
         #endregion
 
         #region Private Methods
-        private void JigDetect_ValueChanged(object? sender, EventArgs e)
-        {
-            EquipState.IsCellInEquip = _inputs.Jig1Detect.Value || _inputs.Jig2Detect.Value ||
-                _inputs.Jig3Detect.Value || _inputs.Jig4Detect.Value;
-        }
         #endregion
 
         #region Properties
@@ -122,7 +111,6 @@ namespace SDV_MoldingInjection.Defines
             }
         }
 
-        
         public bool IsDoorPasswordVerified
         {
             get => _isDoorPasswordVerified;
@@ -134,7 +122,6 @@ namespace SDV_MoldingInjection.Defines
                 OnPropertyChanged(nameof(CanJogWithDoorOpen));
             }
         }
-
 
         public EMachineMode MachineMode
         {
@@ -165,7 +152,6 @@ namespace SDV_MoldingInjection.Defines
         private string message;
         private bool isDotWeightingTest;
         private bool _originDone;
-        private readonly Inputs _inputs;
 
         private bool isSkipHead1 = true;
         private bool isSkipHead2 = true;

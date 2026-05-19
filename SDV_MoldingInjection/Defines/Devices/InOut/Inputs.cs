@@ -20,17 +20,21 @@ namespace SDV_MoldingInjection.Defines
         private readonly IDInputDevice _dHead2InputDevice;
         private readonly IDInputDevice _dHead3InputDevice;
         private readonly IDInputDevice _dHead4InputDevice;
+        private readonly MachineStatus _machineStatus;
 
         private int SensorMapStartBit { get; }
 
         public Inputs(IEnumerable<IDInputDevice> dInputDevices,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            MachineStatus machineStatus)
         {
             _dMachineInputDevice = dInputDevices.First(device => device.Name == EInputDevice.MachineInput.ToString());
             _dHead1InputDevice = dInputDevices.First(device => device.Name == EInputDevice.Head1Input.ToString());
             _dHead2InputDevice = dInputDevices.First(device => device.Name == EInputDevice.Head2Input.ToString());
             _dHead3InputDevice = dInputDevices.First(device => device.Name == EInputDevice.Head3Input.ToString());
             _dHead4InputDevice = dInputDevices.First(device => device.Name == EInputDevice.Head4Input.ToString());
+
+            _machineStatus = machineStatus;
 
             try
             {
@@ -56,6 +60,8 @@ namespace SDV_MoldingInjection.Defines
                 (short)(Jig1Detect.Value && Jig2Detect.Value ? 1 : 0), false);
             CIMAddressMap.WritePLCBit(string.Format("{0:X}", SensorMapStartBit + ESensorMap.Dispensing_Chamber_Right_Detect_Sensor),
                (short)(Jig3Detect.Value && Jig4Detect.Value ? 1 : 0), false);
+
+            _machineStatus.EquipState.IsCellInEquip = (Jig1Detect.Value && Jig2Detect.Value) || (Jig3Detect.Value && Jig4Detect.Value);
         }
 
         public bool Initialize()
