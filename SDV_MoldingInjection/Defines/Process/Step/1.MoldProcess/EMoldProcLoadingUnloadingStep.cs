@@ -24,7 +24,16 @@
 
         Wait_InOutHandlerStart_Request,
 
-        Jig_Check,
+        CheckIf_LoadOrUnload,
+
+        Load_Jig_Check,
+
+        CIM_Validation,
+
+        Unload_Jig_Check,
+
+        CIM_TrackOut,
+        Unload_Wait,
 
         Update_Jig_Status,
 

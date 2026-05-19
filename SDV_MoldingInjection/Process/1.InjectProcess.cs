@@ -98,8 +98,10 @@ namespace SDV_MoldingInjection.Process
         public MaterialAssemblyPlcToCimArea MaterialAssemblyArea_Right_1 { get; set; }
         public MaterialAssemblyPlcToCimArea MaterialAssemblyArea_Right_2 { get; set; }
 
-        public string LeftJigID { get; set; } = "LEFT_123456789";
-        public string RightJigID { get; set; } = "RIGHT_987654321";
+        public string LeftJigID { get; set; } = "31A-005216-BME-PA-DTHB-NZPP102";
+        public string RightJigID { get; set; } = "31A-005216-BME-PA-DTHB-NZPP103";
+        public string LeftCellId { get; set; }
+        public string RightCellId { get; set; }
         #endregion
 
         #region Motions
@@ -888,7 +890,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"Write data input count: {outputCount}");
                     _productionService.WriteData(EProductionWriteType.Input, inputCount);
-                    Sequence = ESequence.ResinInject;
+                    Sequence = ESequence.Loading;
                     break;
                 case EMoldProcAutoRunStep.End:
                     Log.Debug("AutoRun end");
@@ -1009,22 +1011,20 @@ namespace SDV_MoldingInjection.Process
                     {
                         if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 == false)
                         {
-                            _cIMCollection.MaterialPorts[0].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, LeftJigID);
+                            _cIMCollection.MaterialPorts[0].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, LeftCellId);
                             Thread.Sleep(300);
-                            _cIMCollection.MaterialPorts[1].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, LeftJigID);
+                            _cIMCollection.MaterialPorts[1].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, LeftCellId);
 
                             MaterialAssemblyArea_Left_1 = _cIMCollection.MaterialPorts[0].MaterialAssemblyArea;
                             MaterialAssemblyArea_Left_2 = _cIMCollection.MaterialPorts[1].MaterialAssemblyArea;
                         }
 
-                       
-
                         if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34 == false)
                         {
                             Thread.Sleep(300);
-                            _cIMCollection.MaterialPorts[2].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, RightJigID);
+                            _cIMCollection.MaterialPorts[2].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, RightCellId);
                             Thread.Sleep(300);
-                            _cIMCollection.MaterialPorts[3].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, RightJigID);
+                            _cIMCollection.MaterialPorts[3].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, RightCellId);
 
                             MaterialAssemblyArea_Right_1 = _cIMCollection.MaterialPorts[2].MaterialAssemblyArea;
                             MaterialAssemblyArea_Right_2 = _cIMCollection.MaterialPorts[3].MaterialAssemblyArea;
@@ -1039,13 +1039,17 @@ namespace SDV_MoldingInjection.Process
                                 materialPort.MaterialCancel?.Execute(null);
                             }
                             //MaterialWarning
-                            if (materialPort.RemainQty == _recipeSelector.CurrentRecipe.CommonRecipe.MaterialWarningCount && _optionRecipe.UseCIM)
+                            if (materialPort.RemainQty == _recipeSelector.CurrentRecipe.CommonRecipe.MaterialWarningCount)
                             {
                                 portShortageWarning += materialPort.Name + ",";
-                                MessageBoxEx.Show(portShortageWarning + "MATERIAL SHORTAGE WARNING!!");
                                 EquipEventHelpers.MaterialWarning(materialPort);
                                 Thread.Sleep(300);
                             }
+                        }
+
+                        if (_cIMCollection.MaterialPorts.Any(mp => mp.RemainQty == _recipeSelector.CurrentRecipe.CommonRecipe.MaterialWarningCount))
+                        {
+                            MessageBoxEx.Show(portShortageWarning + "MATERIAL SHORTAGE WARNING!!");
                         }
                     }
 
@@ -1327,13 +1331,13 @@ namespace SDV_MoldingInjection.Process
                         if (isLoading && _machineStatus.ConfirmLoadingFinish)
                         {
                             Log.Debug("Loading manual done");
-                            Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Jig_Check;
+                            Step.RunStep = (int)EMoldProcLoadingUnloadingStep.CheckIf_LoadOrUnload;
                             break;
                         }
                         if (isLoading == false)
                         {
                             outputCount = 0;
-                            Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Jig_Check;
+                            Step.RunStep = (int)EMoldProcLoadingUnloadingStep.CheckIf_LoadOrUnload;
                             break;
                         }
                     }
@@ -1350,13 +1354,14 @@ namespace SDV_MoldingInjection.Process
                             //}
                             //Step.RunStep++;
                             //break;
+                            Log.Debug("Set next step Wait_InOutHandlerStart_Request");
                             Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request;
                             break;
                         }
 
                         //UNLOADING
                         _inOutHandler.Handler_Send_End(JigStatuses);
-                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Jig_Check;
+                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.CheckIf_LoadOrUnload;
                         break;
                     }
 
@@ -1436,152 +1441,203 @@ namespace SDV_MoldingInjection.Process
                     _machineStatus.InOutHandlerStartRequest = false;
                     Step.RunStep++;
                     break;
-                case EMoldProcLoadingUnloadingStep.Jig_Check:
+                case EMoldProcLoadingUnloadingStep.CheckIf_LoadOrUnload:
                     if (isLoading && _machineStatus.IsDryRunMode == false)
                     {
-                        Log.Debug("Jig check");
-                        inputCount = 0;
+                        Log.Info("EMoldProcLoadingUnloadingStep.Load_Jig_Check");
+                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Load_Jig_Check;
+                        break;
+                    }
+                    if (isLoading == false)
+                    {
+                        Log.Info("EMoldProcLoadingUnloadingStep.Unload_Jig_Check");
+                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Unload_Jig_Check;
+                        break;
+                    }
+
+                    Log.Info("EMoldProcLoadingUnloadingStep.Update_Jig_Status");
+                    Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Update_Jig_Status;
+                    break;
+                case EMoldProcLoadingUnloadingStep.Load_Jig_Check:
+                    Log.Debug("Jig check");
+                    inputCount = 0;
 #if SIMULATION
                         SimulationInputSetter.SetSimInput(In_Jig1Detect, true);
                         SimulationInputSetter.SetSimInput(In_Jig2Detect, true);
                         SimulationInputSetter.SetSimInput(In_Jig3Detect, true);
                         SimulationInputSetter.SetSimInput(In_Jig4Detect, true);
 #endif
-                        if (_optionRecipe.SkipHead12 == false && _machineStatus.DisableDetectJig == false)
-                        {
-                            if (LeftJigTiltState)
-                            {
-                                RaiseWarning(EWarning.SE_LEFFT_JIG_TILT_STATE);
-                                break;
-                            }
-                            if (LeftJigDetect == false)
-                            {
-                                RaiseWarning(EWarning.SE_LEFT_JIG_NOT_DETECT);
-                                break;
-                            }
-
-                            Log.Debug("Left Jig Loading Done");
-                            inputCount++;
-                        }
-
-                        if (_optionRecipe.SkipHead34 == false && _machineStatus.DisableDetectJig == false)
-                        {
-                            if (RightJigTiltState)
-                            {
-                                RaiseWarning(EWarning.SE_RIGHT_JIG_TILT_STATE);
-                                break;
-                            }
-                            if (RightJigDetect == false)
-                            {
-                                RaiseWarning(EWarning.SE_RIGHT_JIG_NOT_DETECT);
-                                break;
-                            }
-
-                            Log.Debug("Right Jig Loading Done");
-                            inputCount++;
-                        }
-
-                        if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
-                        {
-                            //Left
-                            if (EquipEventHelpers.CellTrackIn(1, LeftJigID, 9, 2) == false)
-                            {
-                                RaiseWarning(EWarning.CIM_CELL_TRACKING_FAIL);
-                                return;
-                            }
-
-                            Log.Info($"Jig '{LeftJigID}' tracking successed");
-
-                            CellJobProcessCimToPlcArea cellJobProcess = EquipEventHelpers.CellJobProcessConfirm(1, LeftJigID);
-
-                            if (cellJobProcess.CellJobProcessRCMD != $"{(int)ECellJobProcessRCMD.CellJobProcessStart}")
-                            {
-                                RaiseWarning(EWarning.CIM_CELL_JOB_PROCESS_START_FAIL);
-                                return;
-                            }
-
-                            CellJobProcessInfo_Left = cellJobProcess;
-
-                            Log.Info($"Jig '{LeftJigID}' Job Process Start successed");
-
-                            //Right
-                            if (EquipEventHelpers.CellTrackIn(2, RightJigID, 9, 2) == false)
-                            {
-                                RaiseWarning(EWarning.CIM_CELL_TRACKING_FAIL);
-                                return;
-                            }
-
-                            Log.Info($"Jig '{RightJigID}' tracking successed");
-
-                            CellJobProcessCimToPlcArea cellJobProcess1 = EquipEventHelpers.CellJobProcessConfirm(2, RightJigID);
-
-                            if (cellJobProcess.CellJobProcessRCMD != $"{(int)ECellJobProcessRCMD.CellJobProcessStart}")
-                            {
-                                RaiseWarning(EWarning.CIM_CELL_JOB_PROCESS_START_FAIL);
-                                return;
-                            }
-
-                            CellJobProcessInfo_Right = cellJobProcess1;
-
-                            Log.Info($"Jig '{RightJigID}' Job Process Start successed");
-                        }
-
-                        Log.Debug($"Write data input count: {inputCount}");
-                        _productionService.WriteData(EProductionWriteType.Input, inputCount);
-                    }
-
-                    if (isLoading == false)
+                    if (_optionRecipe.SkipHead12 == false && _machineStatus.DisableDetectJig == false)
                     {
-                        if (_optionRecipe.SkipHead12 == false &&
-                            In_Jig1Detect.Value == false &&
-                            In_Jig2Detect.Value == false &&
-                            JigStatuses[0] != EJigStatus.None)
+                        if (LeftJigTiltState)
                         {
-                            Log.Debug("Left Jig Unload Done");
-                            JigStatuses[0] = EJigStatus.None;
-                            outputCount++;
+                            RaiseWarning(EWarning.SE_LEFFT_JIG_TILT_STATE);
+                            break;
                         }
-                        if (_optionRecipe.SkipHead34 == false &&
-                            In_Jig3Detect.Value == false &&
-                            In_Jig4Detect.Value == false &&
-                            JigStatuses[1] != EJigStatus.None)
+                        if (LeftJigDetect == false)
                         {
-                            Log.Debug("Right Jig Unload Done");
-                            JigStatuses[1] = EJigStatus.None;
-                            outputCount++;
-                        }
-
-                        if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
-                        {
-                            if (EquipEventHelpers.CellTrackOut(1, CellJobProcessInfo_Left, false, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Left_1, MaterialAssemblyArea_Left_2 }) == false)
-                            {
-                                RaiseWarning(EWarning.CIM_CELL_TRACKOUT_FAIL);
-                                break;
-                            }
-                            if (EquipEventHelpers.CellTrackOut(2, CellJobProcessInfo_Right, false, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Right_1, MaterialAssemblyArea_Right_2 }) == false)
-                            {
-                                RaiseWarning(EWarning.CIM_CELL_TRACKOUT_FAIL);
-                                break;
-                            }
-                        }
-                        if ((_optionRecipe.SkipHead12 == false && JigStatuses[0] != EJigStatus.None) ||
-                            (_optionRecipe.SkipHead34 == false && JigStatuses[1] != EJigStatus.None))
-                        {
-                            Wait(20);
+                            RaiseWarning(EWarning.SE_LEFT_JIG_NOT_DETECT);
                             break;
                         }
 
-                        if (_machineStatus.IsDryRunMode == false)
+                        Log.Debug("Left Jig Loading Done");
+                        inputCount++;
+                    }
+
+                    if (_optionRecipe.SkipHead34 == false && _machineStatus.DisableDetectJig == false)
+                    {
+                        if (RightJigTiltState)
                         {
-                            Log.Debug($"Write data output count: {outputCount}");
-                            _productionService.WriteData(EProductionWriteType.Output, outputCount);
+                            RaiseWarning(EWarning.SE_RIGHT_JIG_TILT_STATE);
+                            break;
+                        }
+                        if (RightJigDetect == false)
+                        {
+                            RaiseWarning(EWarning.SE_RIGHT_JIG_NOT_DETECT);
+                            break;
                         }
 
-                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
-                        break;
+                        Log.Debug("Right Jig Loading Done");
+                        inputCount++;
                     }
 
                     Step.RunStep++;
+                    break;
+                case EMoldProcLoadingUnloadingStep.CIM_Validation:
+                    if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
+                    {
+                        //Left
+                        string outCellID = "";
+                        if (EquipEventHelpers.SpecificValidation(1, LeftJigID, ref outCellID) == false)
+                        {
+                            // TODO: ALARM RAISING (TIMEOUT? FAIL?)
+                            RaiseWarning(EWarning.CIM_CELL_VALIDATION_FAIL);
+                            break;
+                        }
+
+                        LeftCellId = outCellID;
+
+                        if (EquipEventHelpers.CellTrackIn(1, LeftCellId, 9, _cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON ? 2 : 3) == false)
+                        {
+                            RaiseWarning(EWarning.CIM_CELL_TRACKING_FAIL);
+                            break;
+                        }
+
+                        Log.Info($"Jig '{LeftCellId}' tracking successed");
+
+                        CellJobProcessCimToPlcArea cellJobProcess = EquipEventHelpers.CellJobProcessConfirm(1, LeftCellId, _cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON);
+
+                        CellJobProcessInfo_Left = cellJobProcess;
+
+                        if (_cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON && cellJobProcess.CellJobProcessRCMD != $"{(int)ECellJobProcessRCMD.CellJobProcessStart}")
+                        {
+                            CellJobProcessInfo_Left.UserDefine_TrackOutJudge = "O";
+                            CellJobProcessInfo_Left.UserDefine_TrackOutDescription = "VALIDATION FAIL";
+                            EquipEventHelpers.CellTrackOut(1, CellJobProcessInfo_Left, true, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Left_1, MaterialAssemblyArea_Left_2 });
+                            RaiseWarning(EWarning.CIM_CELL_JOB_PROCESS_START_FAIL);
+                            return;
+                        }
+
+                        Log.Info($"Jig '{LeftCellId}' Job Process Start successed");
+
+                        //Right
+                        outCellID = "";
+                        if (EquipEventHelpers.SpecificValidation(2, RightJigID, ref outCellID) == false)
+                        {
+                            // TODO: ALARM RAISING (TIMEOUT? FAIL?)
+                            RaiseWarning(EWarning.CIM_CELL_VALIDATION_FAIL);
+                            break;
+                        }
+
+                        RightCellId = outCellID;
+
+                        if (EquipEventHelpers.CellTrackIn(2, RightCellId, 9, _cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON ? 2 : 3) == false)
+                        {
+                            RaiseWarning(EWarning.CIM_CELL_TRACKING_FAIL);
+                            break;
+                        }
+
+                        Log.Info($"Jig '{RightCellId}' tracking successed");
+
+                        CellJobProcessCimToPlcArea cellJobProcess1 = EquipEventHelpers.CellJobProcessConfirm(2, RightCellId, _cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON);
+
+                        CellJobProcessInfo_Right = cellJobProcess1;
+
+                        if (_cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON && cellJobProcess.CellJobProcessRCMD != $"{(int)ECellJobProcessRCMD.CellJobProcessStart}")
+                        {
+                            CellJobProcessInfo_Right.UserDefine_TrackOutJudge = "O";
+                            CellJobProcessInfo_Right.UserDefine_TrackOutDescription = "VALIDATION FAIL";
+                            EquipEventHelpers.CellTrackOut(2, CellJobProcessInfo_Right, true, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Right_1, MaterialAssemblyArea_Right_2 });
+                            RaiseWarning(EWarning.CIM_CELL_JOB_PROCESS_START_FAIL);
+                            return;
+                        }
+
+                        Log.Info($"Jig '{RightCellId}' Job Process Start successed");
+                    }
+
+                    Log.Debug($"Write data input count: {inputCount}");
+                    _productionService.WriteData(EProductionWriteType.Input, inputCount);
+
+                    Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Update_Jig_Status;
+                    break;
+                case EMoldProcLoadingUnloadingStep.Unload_Jig_Check:
+                    
+                    Step.RunStep++;
+                    break;
+                case EMoldProcLoadingUnloadingStep.CIM_TrackOut:
+                    if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
+                    {
+                        if (EquipEventHelpers.CellTrackOut(1, CellJobProcessInfo_Left, false, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Left_1, MaterialAssemblyArea_Left_2 }) == false)
+                        {
+                            RaiseWarning(EWarning.CIM_CELL_TRACKOUT_FAIL);
+                            break;
+                        }
+                        if (EquipEventHelpers.CellTrackOut(2, CellJobProcessInfo_Right, false, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Right_1, MaterialAssemblyArea_Right_2 }) == false)
+                        {
+                            RaiseWarning(EWarning.CIM_CELL_TRACKOUT_FAIL);
+                            break;
+                        }
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case EMoldProcLoadingUnloadingStep.Unload_Wait:
+                    JigStatuses[0] = EJigStatus.Ready;
+                    JigStatuses[1] = EJigStatus.Ready;
+
+                    if (_optionRecipe.SkipHead12 == false &&
+                            In_Jig1Detect.Value == false &&
+                            In_Jig2Detect.Value == false &&
+                            JigStatuses[0] != EJigStatus.None)
+                    {
+                        Log.Debug("Left Jig Unload Done");
+                        JigStatuses[0] = EJigStatus.None;
+                        outputCount++;
+                    }
+                    if (_optionRecipe.SkipHead34 == false &&
+                        In_Jig3Detect.Value == false &&
+                        In_Jig4Detect.Value == false &&
+                        JigStatuses[1] != EJigStatus.None)
+                    {
+                        Log.Debug("Right Jig Unload Done");
+                        JigStatuses[1] = EJigStatus.None;
+                        outputCount++;
+                    }
+
+                    if ((_optionRecipe.SkipHead12 == false && JigStatuses[0] != EJigStatus.None) ||
+                        (_optionRecipe.SkipHead34 == false && JigStatuses[1] != EJigStatus.None))
+                    {
+                        Wait(20);
+                        break;
+                    }
+
+                    if (_machineStatus.IsDryRunMode == false)
+                    {
+                        Log.Debug($"Write data output count: {outputCount}");
+                        _productionService.WriteData(EProductionWriteType.Output, outputCount);
+                    }
+
+                    Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
                     break;
                 case EMoldProcLoadingUnloadingStep.Update_Jig_Status:
                     if (isLoading)

@@ -152,9 +152,10 @@ namespace SDV_MoldingInjection.Defines.CIM
                         {
                             if (recipeNumber <= 90 && parameterWordArea.PPIDName.StartsWith("TT")) isValid = false;
                             if (recipeNumber > 90 && parameterWordArea.PPIDName.StartsWith("TT") == false) isValid = false;
+                            if (_recipeCatalog.ContainsId(recipeNumber) == false) isValid = false;
                         }
 
-                        short[] buf = new short[] { isValid ? (short)'7' : (short)'0' };
+                        short[] buf = new short[] { isValid ? (short)'0' : (short)'7' };
 
                         EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).Write(buf);
                         CIMCommandDetail.Create(CIMCommand.FormattedProcessProgramSend2).SetPLCBitOn();
@@ -231,8 +232,8 @@ namespace SDV_MoldingInjection.Defines.CIM
                             return;
                         }
 
-                        EquipEventDetail.Create(EquipEvent.EquipFunctionChangeCMDHcack).Write(new short[] { (short)'0' });
-                        _cimFunctionVM.UpdateSingle(efid, receiveArea.EquipCmdEFST);
+                        bool res = _cimFunctionVM.UpdateSingle(efid, receiveArea.EquipCmdEFST);
+                        EquipEventDetail.Create(EquipEvent.EquipFunctionChangeCMDHcack).Write(new short[] { res ? (short)'0' : (short)'5' });
 
                         functionChangeCommand.SetLocalPLCBitOnFireAndForget();
                         functionChangeCommand.WaitForCIMBitOff();

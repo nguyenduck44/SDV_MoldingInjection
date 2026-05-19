@@ -528,6 +528,16 @@ namespace SDV_MoldingInjection.Process
                     _devices.Outputs.Lamp_Run();
 
                     // TODO: CIM
+
+                    if(_recipeList.OptionRecipe.UseCIM)
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            _machineStatus.CurrentAlarms.Clear();
+                            EquipEventHelpers.ClearAlarm();
+                        });
+                    }
+
                     if (Sequence == ESequence.AutoRun)
                     {
                         _machineStatus.EquipState.IsAvailable = true;

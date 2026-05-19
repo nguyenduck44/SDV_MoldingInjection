@@ -5,8 +5,9 @@ namespace SDV_MoldingInjection.Defines.CIM
     public class CIMCollection
     {
         public List<MaterialPort> MaterialPorts { get; }
+        public CIMFunctionViewModel CimFunction { get; }
 
-        public CIMCollection(IEnumerable<MaterialPort> materialPorts)
+        public CIMCollection(IEnumerable<MaterialPort> materialPorts, CIMFunctionViewModel cimFunction)
         {
             MaterialPorts = materialPorts.ToList();
 
@@ -17,6 +18,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                 MaterialPorts[i].Type = "RESIN";
             }
             MaterialPorts.First().IsCurrentActived = true;
+            CimFunction = cimFunction;
         }
     }
 }
