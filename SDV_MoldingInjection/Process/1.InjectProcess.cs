@@ -6,6 +6,7 @@ using EQX.Core.Motion;
 using EQX.Core.Sequence;
 using EQX.InOut;
 using EQX.UI.Controls;
+using EQX.UI.MVVM;
 using OpenTK.Compute.OpenCL;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.CIM;
@@ -1016,6 +1017,8 @@ namespace SDV_MoldingInjection.Process
                             MaterialAssemblyArea_Left_2 = _cIMCollection.MaterialPorts[1].MaterialAssemblyArea;
                         }
 
+                       
+
                         if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34 == false)
                         {
                             Thread.Sleep(300);
@@ -1030,17 +1033,19 @@ namespace SDV_MoldingInjection.Process
                         string portShortageWarning = string.Empty;
                         foreach (var materialPort in _cIMCollection.MaterialPorts)
                         {
-                            if (materialPort.RemainQty <= _recipeSelector.CurrentRecipe.CommonRecipe.MaterialWarningCount)
+                            //Auto Cancel Material
+                            if (materialPort.RemainQty == 0)
+                            {
+                                materialPort.MaterialCancel?.Execute(null);
+                            }
+                            //MaterialWarning
+                            if (materialPort.RemainQty == _recipeSelector.CurrentRecipe.CommonRecipe.MaterialWarningCount && _optionRecipe.UseCIM)
                             {
                                 portShortageWarning += materialPort.Name + ",";
+                                MessageBoxEx.Show(portShortageWarning + "MATERIAL SHORTAGE WARNING!!");
                                 EquipEventHelpers.MaterialWarning(materialPort);
                                 Thread.Sleep(300);
                             }
-                        }
-
-                        if (_cIMCollection.MaterialPorts.Any(mp => mp.RemainQty <= _recipeSelector.CurrentRecipe.CommonRecipe.MaterialWarningCount))
-                        {
-                            MessageBoxEx.Show(portShortageWarning + "SHORTAGE WARNING");
                         }
                     }
 
