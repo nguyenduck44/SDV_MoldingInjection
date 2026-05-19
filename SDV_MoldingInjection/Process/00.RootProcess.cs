@@ -86,6 +86,11 @@ namespace SDV_MoldingInjection.Process
         #region Override Methods
         public override bool PreProcess()
         {
+            if (_machineStatus.CurrentAlarms.Count == 0)
+            {
+                //EquipEventHelpers.ClearAlarm();
+            }
+
             // 1. CHECK ALARM STATUS (Utils, Motion, Safety...)
             CheckRealTimeAlarmStatus();
 
@@ -217,16 +222,21 @@ namespace SDV_MoldingInjection.Process
                 Log.Info("ToAlarm Done, Alarm");
                 AlertNotifyView.ShowDialog(_alarmService.GetById(raisedAlarmCode), true);
 
-                // TODO: CIM
-                CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmOccur, new CIMScenarioContext
+                if (_viewModelavigationStore.CurrentViewModel is IdlePurgeModeViewModel)
                 {
-                    CIMAlarmData = new CIMAlarmData
-                    {
-                        ALCD = 2, // HEAVY ALARM
-                        ALID = raisedWarningCode,
-                        AlarmDescription = ((EAlarm)raisedWarningCode).ToString(),
-                    }
-                });
+                    _navigationService.NavigateTo<AutoViewModel>();
+                }
+                
+                // TODO: CIM
+                //CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmRelease, new CIMScenarioContext
+                //{
+                //    CIMAlarmData = new CIMAlarmData
+                //    {
+                //        ALCD = 2, // LIGHT ALARM
+                //        ALID = raisedWarningCode,
+                //        AlarmDescription = ((EAlarm)raisedWarningCode).ToString(),
+                //    }
+                //});
 
                 raisedAlarmCode = 2;
             }
@@ -249,20 +259,24 @@ namespace SDV_MoldingInjection.Process
                 Log.Info("ToWarning Done, Warning");
                 AlertNotifyView.ShowDialog(_warningService.GetById(raisedWarningCode), true);
 
+                if (_viewModelavigationStore.CurrentViewModel is IdlePurgeModeViewModel)
+                {
+                    _navigationService.NavigateTo<AutoViewModel>();
+                }
                 _machineStatus.EquipState.IsAvailable = false;
 
                 _machineStatus.MachineIdleTick = Environment.TickCount;
 
                 // TODO: CIM
-                CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmOccur, new CIMScenarioContext
-                {
-                    CIMAlarmData = new CIMAlarmData
-                    {
-                        ALCD = 2, // HEAVY ALARM
-                        ALID = raisedWarningCode,
-                        AlarmDescription = ((EWarning)raisedWarningCode).ToString(),
-                    }
-                });
+                //CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmRelease, new CIMScenarioContext
+                //{
+                //    CIMAlarmData = new CIMAlarmData
+                //    {
+                //        ALCD = 1, // LIGHT ALARM
+                //        ALID = raisedWarningCode,
+                //        AlarmDescription = ((EWarning)raisedWarningCode).ToString(),
+                //    }
+                //});
 
                 raisedWarningCode = 2;
             }
@@ -921,15 +935,18 @@ namespace SDV_MoldingInjection.Process
                     _machineStatus.CurrentAlarms.Add(errorLogEntry);
                     if (isAlarm)
                     {
-                        CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmOccur, new CIMScenarioContext
-                        {
-                            CIMAlarmData = new CIMAlarmData
-                            {
-                                ALCD = 2, // LIGHT ALARM
-                                ALID = id,
-                                AlarmDescription = ((EAlarm)id).ToString(),
-                            }
-                        });
+                        //CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmOccur, new CIMScenarioContext
+                        //{
+                        //    CIMAlarmData = new CIMAlarmData
+                        //    {
+                        //        ALCD = 2, // LIGHT ALARM
+                        //        ALID = id,
+                        //        AlarmDescription = ((EAlarm)id).ToString(),
+                        //    }
+                        //});
+                        //EquipEventHelpers.RaiseAlarm(id);
+                        AddAlarm(id);
+                        EquipEventHelpers.RaiseAlarm(MachineStatus.AlarmTotalWords);
 
                         Log.Error($"[{(int)(EAlarm)id}] {(EAlarm)id}");
                         _machineStatus.Message = $"[{(int)(EAlarm)id}] {(EAlarm)id}";
@@ -938,15 +955,18 @@ namespace SDV_MoldingInjection.Process
                     }
                     else
                     {
-                        CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmOccur, new CIMScenarioContext
-                        {
-                            CIMAlarmData = new CIMAlarmData
-                            {
-                                ALCD = 2, // HEAVY ALARM
-                                ALID = id,
-                                AlarmDescription = ((EWarning)id).ToString(),
-                            }
-                        });
+                        //CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmOccur, new CIMScenarioContext
+                        //{
+                        //    CIMAlarmData = new CIMAlarmData
+                        //    {
+                        //        ALCD = 2, // LIGHT ALARM
+                        //        ALID = id,
+                        //        AlarmDescription = ((EWarning)id).ToString(),
+                        //    }
+                        //});
+                        //EquipEventHelpers.RaiseAlarm(id);
+                        AddAlarm(id);
+                        EquipEventHelpers.RaiseAlarm(MachineStatus.AlarmTotalWords);
 
                         Log.Warn($"[{(int)(EWarning)id}] {(EWarning)id}");
                         _machineStatus.Message = $"[{(int)(EWarning)id}] {(EWarning)id}";
@@ -955,6 +975,16 @@ namespace SDV_MoldingInjection.Process
                     }
                 }
             });
+        }
+
+        private void AddAlarm(int alarmId)
+        {
+            if (alarmId < 0) return;
+
+            int wordIndex = alarmId / 16;
+            int bitIndex = alarmId % 16;
+
+            MachineStatus.AlarmTotalWords[wordIndex] |= (short)(1 << bitIndex);
         }
 
         private bool IsAutoRunWaitingNoPanel()

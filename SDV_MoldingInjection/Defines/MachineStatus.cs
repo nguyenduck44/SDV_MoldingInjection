@@ -8,6 +8,7 @@ namespace SDV_MoldingInjection.Defines
 {
     public class MachineStatus : MachineStatusBase<ESemiSequence>
     {
+        #region Publics
         public bool[] MachineCalibration { get; set; } = new bool[4];
         public bool[] MachineCalibrationSkip { get; set; } = new bool[4];
         public MultiPointPosition MultiPointPosition { get; set; }
@@ -18,7 +19,13 @@ namespace SDV_MoldingInjection.Defines
         public bool ConfirmLoadingFinish { get; set; }
         public bool InOutHandlerStartRequest { get; set; }
         public int MachineIdleTick { get; set; } = Environment.TickCount;
-
+        public bool IsAutoMode => MachineMode == EMachineMode.Auto;
+        public bool IsTeachMode => MachineMode == EMachineMode.Teach;
+        public ObservableCollection<ErrorLogEntry> CurrentAlarms { get; set; } = new ObservableCollection<ErrorLogEntry>();
+        public bool CanJogWithDoorOpen => IsTeachMode && IsDoorPasswordVerified;
+        public static short[] AlarmTotalWords = new short[400];
+        #endregion
+        #region Contructors
         public MachineStatus(Inputs inputs)
         {
             _inputs = inputs;
@@ -28,13 +35,17 @@ namespace SDV_MoldingInjection.Defines
             _inputs.Jig3Detect.ValueChanged += JigDetect_ValueChanged;
             _inputs.Jig4Detect.ValueChanged += JigDetect_ValueChanged;
         }
+        #endregion
 
+        #region Private Methods
         private void JigDetect_ValueChanged(object? sender, EventArgs e)
         {
             EquipState.IsCellInEquip = _inputs.Jig1Detect.Value || _inputs.Jig2Detect.Value ||
                 _inputs.Jig3Detect.Value || _inputs.Jig4Detect.Value;
         }
+        #endregion
 
+        #region Properties
         public bool OriginDone
         {
             get { return _originDone; }
@@ -111,9 +122,7 @@ namespace SDV_MoldingInjection.Defines
             }
         }
 
-        public bool IsAutoMode => MachineMode == EMachineMode.Auto;
-        public bool IsTeachMode => MachineMode == EMachineMode.Teach;
-        public ObservableCollection<ErrorLogEntry> CurrentAlarms { get; set; } = new ObservableCollection<ErrorLogEntry>();
+        
         public bool IsDoorPasswordVerified
         {
             get => _isDoorPasswordVerified;
@@ -126,7 +135,6 @@ namespace SDV_MoldingInjection.Defines
             }
         }
 
-        public bool CanJogWithDoorOpen => IsTeachMode && IsDoorPasswordVerified;
 
         public EMachineMode MachineMode
         {
@@ -150,6 +158,7 @@ namespace SDV_MoldingInjection.Defines
             OPCommand = EOperationCommand.SemiAuto;
             SemiAutoSequence = ESemiSequence.MoveMultiPoint;
         }
+        #endregion
 
         #region Privates
         private double timeInject;

@@ -260,7 +260,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        public void Create(string newRecipe, string cimRecipeNumber = "")
+        public void Create(string newRecipe, int recipeNumber, string cimRecipeNumberWithText = "")
         {
             string currentRecipeName = ResolveRecipeName(RecipeSetting.CurrentRecipe);
             string currentRecipeFolder = GetRecipeFolderPath(currentRecipeName);
@@ -271,24 +271,19 @@ namespace SDV_MoldingInjection.Recipe
                 return;
             }
 
-            if (int.TryParse(cimRecipeNumber, out int recipeId) == false)
-            {
-                MessageBoxEx.Show($"Recipe Id for '{newRecipeName}' is not valid.");
-                return;
-            }
             if (_recipeCatalog.ContainsName(newRecipeName))
             {
                 MessageBoxEx.Show($"Recipe name '{newRecipeName}' already exists in RecipeInfo.");
                 return;
             }
-            if (recipeId < 0)
+            if (recipeNumber < 0)
             {
                 MessageBoxEx.Show($"Recipe Id for '{newRecipeName}' is not valid.");
                 return;
             }
-            if (recipeId > 0 && _recipeCatalog.ContainsId(recipeId))
+            if (recipeNumber > 0 && _recipeCatalog.ContainsId(recipeNumber))
             {
-                MessageBoxEx.Show($"Recipe Id '{recipeId}' already exists in RecipeInfo.");
+                MessageBoxEx.Show($"Recipe Id '{recipeNumber}' already exists in RecipeInfo.");
                 return;
             }
 
@@ -305,9 +300,9 @@ namespace SDV_MoldingInjection.Recipe
                 Directory.CreateDirectory(createRecipeFolder);
 
                 CopyDirectory(currentRecipeFolder, createRecipeFolder);
-                _recipeCatalog.WriteRecipeInfo(recipeFolderName, recipeId, newRecipeName);
+                _recipeCatalog.WriteRecipeInfo(recipeFolderName, recipeNumber, newRecipeName);
 
-                EquipEventHelpers.PPIDCreate(newRecipeName, cimRecipeNumber);
+                EquipEventHelpers.PPIDCreate(newRecipeName, recipeNumber, cimRecipeNumberWithText);
 
                 UpdateValidRecipes(); // Refresh the list to show the new copied recipe
 
@@ -319,7 +314,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        public void Delete(string selectedRecipe, string fromCIMRecipeNumber = "")
+        public void Delete(string selectedRecipe, int? recipeNumber = null, string fromCIMRecipeNumberWithText = "")
         {
             selectedRecipe = ResolveRecipeName(selectedRecipe);
             if (_recipeCatalog.TryGetRecipeInfo(selectedRecipe, out RecipeInfo? recipeInfo) == false || recipeInfo == null)
@@ -328,7 +323,7 @@ namespace SDV_MoldingInjection.Recipe
                 return;
             }
 
-            if (string.IsNullOrEmpty(fromCIMRecipeNumber))
+            if (string.IsNullOrEmpty(fromCIMRecipeNumberWithText) || recipeNumber == null)
             {
                 bool? confirm = MessageBoxEx.ShowDialog($"DO you realy want to DELETE RECIPE {selectedRecipe}");
 
@@ -349,7 +344,7 @@ namespace SDV_MoldingInjection.Recipe
                 UpdateValidRecipes();
 
                 EquipEventHelpers.PPIDListSinglePPIDWrite(selectedRecipe, recipeInfo.Id.ToString(), true);
-                EquipEventHelpers.PPIDDelete(selectedRecipe, fromCIMRecipeNumber);
+                EquipEventHelpers.PPIDDelete(selectedRecipe, fromCIMRecipeNumberWithText);
                 EquipEventHelpers.PPIDListSinglePPIDWrite(selectedRecipe, recipeInfo.Id.ToString(), true);
             }
         }
@@ -377,8 +372,8 @@ namespace SDV_MoldingInjection.Recipe
 
                 // TODO: WRITE PARAMETER DATA TO RMS AREA
                 EquipEventHelpers.ParameterWordSingleParameterUpdate(1, CurrentRecipe.CommonRecipe.LogSaveDay);
-
-                EquipEventHelpers.PPIDCreate(Path.GetFileName(destinationFolder));
+                // TODO : Temp disable
+                //EquipEventHelpers.PPIDCreate(Path.GetFileName(destinationFolder));
             }
             else
             {

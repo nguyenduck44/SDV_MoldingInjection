@@ -154,33 +154,25 @@ namespace SDV_MoldingInjection.Defines.CIM
                             if (recipeNumber > 90 && parameterWordArea.PPIDName.StartsWith("TT") == false) isValid = false;
                         }
 
+                        short[] buf = new short[] { isValid ? (short)'7' : (short)'0' };
+
+                        EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).Write(buf);
+                        CIMCommandDetail.Create(CIMCommand.FormattedProcessProgramSend2).SetPLCBitOn();
+                        CIMCommandDetail.Create(CIMCommand.FormattedProcessProgramSend2).WaitForCIMBitOn();
+                        CIMCommandDetail.Create(CIMCommand.FormattedProcessProgramSend2).SetPLCBitOff();
+
                         if (isValid == false)
                         {
-                            short[] buf = new short[] { (short)'7' };
-                            EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).Write(buf);
-                            EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).SetPLCBitOn();
-                            EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).WaitForCIMBitOff();
-                            EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).SetPLCBitOff();
-
                             return;
-                        }
-                        else
-                        {
-                            short[] buf = new short[] { (short)'0' };
-                            EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).Write(buf);
-                            //Thread.Sleep(500);
-                            EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).SetPLCBitOn();
-                            EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).WaitForCIMBitOff();
-                            EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).SetPLCBitOff();
                         }
 
                         if (fppsArea.CCode == "1") // CREATE NEW
                         {
-                            _recipeSelector.Create(parameterWordArea.PPIDName, recipeNumber.ToString());
+                            _recipeSelector.Create(parameterWordArea.PPIDName, recipeNumber, fppsArea.RecipeNumber);
                         }
                         else if (fppsArea.CCode == "2") // Delete PPID
                         {
-                            _recipeSelector.Delete(parameterWordArea.PPIDName, recipeNumber.ToString());
+                            _recipeSelector.Delete(parameterWordArea.PPIDName, recipeNumber, fppsArea.RecipeNumber);
                         }
                         else if (fppsArea.CCode == "3") // Parameter Update
                         {
@@ -190,18 +182,20 @@ namespace SDV_MoldingInjection.Defines.CIM
                     break;
                 case CIMCommand.FormattedProcessProgramRequest:
                     {
-                        var fpprArea = CIMCommandHelpers.GetParameterRequestInfor();
+                        FormattedProcessProgramRequestArea fpprArea = CIMCommandHelpers.GetParameterRequestInfor();
+                        EquipEventHelpers.ParameterRequestResponse(fpprArea, "0");
+                        //var fpprArea = CIMCommandHelpers.GetParameterRequestInfor();
 
-                        string recipeName = fpprArea.ReqPPID;
-                        ParameterWordArea parameterWordArea = new ParameterWordArea();
-                        parameterWordArea.Parameters = _recipeSelector.GetParameters(fpprArea.ReqPPID);
-                        parameterWordArea.PPIDName = recipeName;
-                        parameterWordArea.PPIDMode = 0;
+                        //string recipeName = fpprArea.ReqPPID;
+                        //ParameterWordArea parameterWordArea = new ParameterWordArea();
+                        //parameterWordArea.Parameters = _recipeSelector.GetParameters(fpprArea.ReqPPID);
+                        //parameterWordArea.PPIDName = recipeName;
+                        //parameterWordArea.PPIDMode = 0;
 
-                        CIMCommandDetail.Create(CIMCommand.FormattedProcessProgramRequest).PLCWrite(parameterWordArea.ToCIMData());
-                        CIMCommandDetail.Create(CIMCommand.FormattedProcessProgramRequest).SetPLCBitOn();
-                        CIMCommandDetail.Create(CIMCommand.FormattedProcessProgramRequest).WaitForCIMBitOff();
-                        CIMCommandDetail.Create(CIMCommand.FormattedProcessProgramRequest).SetPLCBitOff();
+                        //CIMCommandDetail.Create(CIMCommand.FormattedProcessProgramRequest).PLCWrite(parameterWordArea.ToCIMData());
+                        //CIMCommandDetail.Create(CIMCommand.FormattedProcessProgramRequest).SetPLCBitOn();
+                        //CIMCommandDetail.Create(CIMCommand.FormattedProcessProgramRequest).WaitForCIMBitOff();
+                        //CIMCommandDetail.Create(CIMCommand.FormattedProcessProgramRequest).SetPLCBitOff();
 
                         //EquipEventHelpers.ParameterRequestResponse(fpprArea, "1D34");
                     }
@@ -230,7 +224,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                         {
                             EquipEventDetail.Create(EquipEvent.EquipFunctionChangeCMDHcack).Write(new short[] { (short)'5' });
 
-                            functionChangeCommand.SetPLCBitOn();
+                            functionChangeCommand.SetLocalPLCBitOnFireAndForget();
                             functionChangeCommand.WaitForCIMBitOff();
                             functionChangeCommand.SetPLCBitOff();
 
@@ -240,10 +234,17 @@ namespace SDV_MoldingInjection.Defines.CIM
                         EquipEventDetail.Create(EquipEvent.EquipFunctionChangeCMDHcack).Write(new short[] { (short)'0' });
                         _cimFunctionVM.UpdateSingle(efid, receiveArea.EquipCmdEFST);
 
-                        functionChangeCommand.SetPLCBitOn();
+                        functionChangeCommand.SetLocalPLCBitOnFireAndForget();
                         functionChangeCommand.WaitForCIMBitOff();
                         functionChangeCommand.SetPLCBitOff();
 
+                        while (_machineStatus.EquipState.IsCellInEquip == true)
+                        {
+                            Thread.Sleep(100);
+                        }
+
+                        // Make sure Equip State (Run State) is now IDLE before calling cim Funciton Update
+                        Thread.Sleep(1000);
                         _cimFunctionVM.SaveCommand?.Execute("HOST");
                     }
                     break;
