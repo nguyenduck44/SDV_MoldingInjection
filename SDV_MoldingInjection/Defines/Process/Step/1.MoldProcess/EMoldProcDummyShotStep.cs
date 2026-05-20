@@ -4,6 +4,9 @@
     {
         Start,
 
+        Chamber_Close,
+        Chamber_Close_Wait,
+        
         XYAxis_DummyPos_Move,
         XYAxis_DummyPos_Wait,
 

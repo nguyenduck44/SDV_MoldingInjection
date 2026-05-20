@@ -4,6 +4,9 @@
     {
         Start,
 
+        Chamber_Close,
+        Chamber_Close_Wait,
+
         SPDHead_WorkCheck,
 
         SPDHead_DotWeighting_H13_Check,

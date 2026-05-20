@@ -283,30 +283,6 @@ namespace SDV_MoldingInjection.Process
                     procOutputs[EInjectProcOutput.ChamberReadyOut].Value = true;
                     Step.ToRunStep++;
                     break;
-                case EMoldProcToRunStep.ChamberClose:
-                    if (ChamberOpenClose.IsClose())
-                    {
-                        Log.Debug("Chamber is closed");
-                        Step.ToRunStep = (int)EMoldProcToRunStep.Bellow_Down;
-                        break;
-                    }
-
-                    Log.Debug($"{ChamberOpenClose} moving close");
-                    ChamberOpenClose.Close();
-                    Wait(_currentRecipe.CylinderDelayTimeRecipe.ChamberOpenCloseCylinderMoveDelay,
-                        () => ChamberOpenClose.IsClose());
-                    Step.ToRunStep++;
-                    break;
-                case EMoldProcToRunStep.ChamberClose_Wait:
-                    if (WaitTimeOutOccurred)
-                    {
-                        RaiseWarning(EWarning.CY_MOLD_CHAMBER_CLOSE_FAIL);
-                        break;
-                    }
-
-                    Log.Debug($"Move {ChamberOpenClose} close done");
-                    Step.ToRunStep++;
-                    break;
                 case EMoldProcToRunStep.Bellow_Down:
                     if (BellowCyl.IsDown())
                     {
@@ -833,14 +809,15 @@ namespace SDV_MoldingInjection.Process
             {
                 case EMoldProcAutoRunStep.Start:
                     Log.Debug("AutoRun start");
-                    if(LeftJigDetect == false)
+                    if (LeftJigDetect == false)
                     {
                         LeftJigID = string.Empty;
                     }
-                    if(RightJigDetect == false)
+                    if (RightJigDetect == false)
                     {
                         RightJigID = string.Empty;
                     }
+
                     _tactTimeList.Chamber.CycleTimeCounter = Environment.TickCount;
                     Step.RunStep++;
                     break;
@@ -877,19 +854,11 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcAutoRunStep.JigStatus_Check:
-                    if (JigStatuses[(int)EJig.JigLeft] == EJigStatus.InMolding)
+                    if (JigStatuses[(int)EJig.JigLeft] == EJigStatus.InMolding || 
+                        JigStatuses[(int)EJig.JigRight] == EJigStatus.InMolding ||
+                        JigStatuses.All(jig => jig == EJigStatus.MoldingFinish))
                     {
-                        RaiseWarning(EWarning.EF_CHAMBER_LEFT_JIG_INJECT_NOT_FINISHED);
-                        break;
-                    }
-                    if (JigStatuses[(int)EJig.JigRight] == EJigStatus.InMolding)
-                    {
-                        RaiseWarning(EWarning.EF_CHAMBER_RIGHT_JIG_INJECT_NOT_FINISHED);
-                        break;
-                    }
-                    if (JigStatuses.All(jig => jig == EJigStatus.MoldingFinish))
-                    {
-                        Log.Info($"Sequence set to {ESequence.Unloading}");
+                        Log.Info($"Detected Jig Finish or Not Finish -> Sequence set to {ESequence.Unloading}");
                         Sequence = ESequence.Unloading;
                         break;
                     }
@@ -908,7 +877,7 @@ namespace SDV_MoldingInjection.Process
                         inputCount++;
                     }
 
-                    Log.Debug($"Write data input count: {outputCount}");
+                    Log.Debug($"Write data input count: {inputCount}");
                     _productionService.WriteData(EProductionWriteType.Input, inputCount);
                     Sequence = ESequence.Loading;
                     break;
@@ -924,6 +893,30 @@ namespace SDV_MoldingInjection.Process
             {
                 case EMoldProcResinInjectStep.Start:
                     Log.Info("ResinInject start");
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectStep.Chamber_Close:
+                    if (ChamberOpenClose.IsClose())
+                    {
+                        Log.Debug("Chamber is closed");
+                        Step.RunStep = (int)EMoldProcResinInjectStep.InitQueue;
+                        break;
+                    }
+
+                    Log.Debug($"{ChamberOpenClose} moving close");
+                    ChamberOpenClose.Close();
+                    Wait(_currentRecipe.CylinderDelayTimeRecipe.ChamberOpenCloseCylinderMoveDelay,
+                        () => ChamberOpenClose.IsClose());
+                    Step.RunStep++;
+                    break;
+                case EMoldProcResinInjectStep.Chamber_Close_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseWarning(EWarning.CY_MOLD_CHAMBER_CLOSE_FAIL);
+                        break;
+                    }
+
+                    Log.Debug($"Move {ChamberOpenClose} close done");
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.InitQueue:
@@ -1289,8 +1282,8 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.Start:
                     if (isLoading)
                     {
-                        _tactTimeList.Chamber.CycleTimeCounter = Environment.TickCount;
                         Log.Info("Loading start");
+                        _tactTimeList.Chamber.CycleTimeCounter = Environment.TickCount;
                         _machineStatus.ConfirmLoadingFinish = false;
                     }
                     else
@@ -1351,15 +1344,15 @@ namespace SDV_MoldingInjection.Process
                         if (isLoading && _machineStatus.ConfirmLoadingFinish)
                         {
                             Log.Debug("Loading manual done");
-                            Step.RunStep = (int)EMoldProcLoadingUnloadingStep.CheckIf_LoadOrUnload;
-                            break;
                         }
                         if (isLoading == false)
                         {
+                            Log.Debug("Unload manual");
                             outputCount = 0;
-                            Step.RunStep = (int)EMoldProcLoadingUnloadingStep.CheckIf_LoadOrUnload;
-                            break;
                         }
+
+                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.CheckIf_LoadOrUnload;
+                        break;
                     }
 
                     if (_optionRecipe.InputTypeAuto)
@@ -1367,7 +1360,7 @@ namespace SDV_MoldingInjection.Process
                         if (isLoading)
                         {
                             //TODO: Wait InOut machine write program
-                            if(_optionRecipe.UseCIM)
+                            if (_optionRecipe.UseCIM)
                             {
                                 if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 || LeftJigDetect)
                                 {
@@ -1497,10 +1490,10 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Jig check");
                     inputCount = 0;
 #if SIMULATION
-                        SimulationInputSetter.SetSimInput(In_Jig1Detect, true);
-                        SimulationInputSetter.SetSimInput(In_Jig2Detect, true);
-                        SimulationInputSetter.SetSimInput(In_Jig3Detect, true);
-                        SimulationInputSetter.SetSimInput(In_Jig4Detect, true);
+                    SimulationInputSetter.SetSimInput(In_Jig1Detect, true);
+                    SimulationInputSetter.SetSimInput(In_Jig2Detect, true);
+                    SimulationInputSetter.SetSimInput(In_Jig3Detect, true);
+                    SimulationInputSetter.SetSimInput(In_Jig4Detect, true);
 #endif
                     if (_optionRecipe.SkipHead12 == false && _machineStatus.DisableDetectJig == false)
                     {
@@ -1541,8 +1534,9 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.CIM_Validation:
                     if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
                     {
-                        //Left
                         string outCellID = "";
+
+                        //Left
                         Log.Info($"Validationing JIG '{LeftJigID}'");
                         if (EquipEventHelpers.SpecificValidation(1, LeftJigID, ref outCellID) == false)
                         {
@@ -1626,7 +1620,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Update_Jig_Status;
                     break;
                 case EMoldProcLoadingUnloadingStep.Unload_Jig_Check:
-                    
+
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.CIM_TrackOut:
@@ -1756,6 +1750,30 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Info($"Move dummy position start");
+                    Step.RunStep++;
+                    break;
+                case EMoldProcDummyShotStep.Chamber_Close:
+                    if (ChamberOpenClose.IsClose())
+                    {
+                        Log.Debug("Chamber is closed");
+                        Step.RunStep = (int)EMoldProcDummyShotStep.XYAxis_DummyPos_Move;
+                        break;
+                    }
+
+                    Log.Debug($"{ChamberOpenClose} moving close");
+                    ChamberOpenClose.Close();
+                    Wait(_currentRecipe.CylinderDelayTimeRecipe.ChamberOpenCloseCylinderMoveDelay,
+                        () => ChamberOpenClose.IsClose());
+                    Step.RunStep++;
+                    break;
+                case EMoldProcDummyShotStep.Chamber_Close_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseWarning(EWarning.CY_MOLD_CHAMBER_CLOSE_FAIL);
+                        break;
+                    }
+
+                    Log.Debug($"Move {ChamberOpenClose} close done");
                     Step.RunStep++;
                     break;
                 case EMoldProcDummyShotStep.XYAxis_DummyPos_Move:
@@ -1963,10 +1981,35 @@ namespace SDV_MoldingInjection.Process
                         head == ESPDHead.SPDHead4 && _currentRecipe.OptionRecipe.SkipHead34 ||
                         _optionRecipe.SkipNeedleClean)
                     {
+                        Log.Info("HEAD SKIP CLEAN");
                         Step.RunStep = (int)EMoldProcNeedleCleaningStep.End;
                         break;
                     }
 
+                    Step.RunStep++;
+                    break;
+                case EMoldProcNeedleCleaningStep.Chamber_Close:
+                    if (ChamberOpenClose.IsClose())
+                    {
+                        Log.Debug("Chamber is closed");
+                        Step.RunStep = (int)EMoldProcNeedleCleaningStep.YAxis_CleanPos_Calculator;
+                        break;
+                    }
+
+                    Log.Debug($"{ChamberOpenClose} moving close");
+                    ChamberOpenClose.Close();
+                    Wait(_currentRecipe.CylinderDelayTimeRecipe.ChamberOpenCloseCylinderMoveDelay,
+                        () => ChamberOpenClose.IsClose());
+                    Step.RunStep++;
+                    break;
+                case EMoldProcNeedleCleaningStep.Chamber_Close_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseWarning(EWarning.CY_MOLD_CHAMBER_CLOSE_FAIL);
+                        break;
+                    }
+
+                    Log.Debug($"Move {ChamberOpenClose} close done");
                     Step.RunStep++;
                     break;
                 case EMoldProcNeedleCleaningStep.YAxis_CleanPos_Calculator:
@@ -2111,6 +2154,30 @@ namespace SDV_MoldingInjection.Process
             {
                 case EMoldProcDotWeightingStep.Start:
                     Log.Debug("DotWeighting start");
+                    Step.RunStep++;
+                    break;
+                case EMoldProcDotWeightingStep.Chamber_Close:
+                    if (ChamberOpenClose.IsClose())
+                    {
+                        Log.Debug("Chamber is closed");
+                        Step.RunStep = (int)EMoldProcDotWeightingStep.SPDHead_WorkCheck;
+                        break;
+                    }
+
+                    Log.Debug($"{ChamberOpenClose} moving close");
+                    ChamberOpenClose.Close();
+                    Wait(_currentRecipe.CylinderDelayTimeRecipe.ChamberOpenCloseCylinderMoveDelay,
+                        () => ChamberOpenClose.IsClose());
+                    Step.RunStep++;
+                    break;
+                case EMoldProcDotWeightingStep.Chamber_Close_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseWarning(EWarning.CY_MOLD_CHAMBER_CLOSE_FAIL);
+                        break;
+                    }
+
+                    Log.Debug($"Move {ChamberOpenClose} close done");
                     Step.RunStep++;
                     break;
                 case EMoldProcDotWeightingStep.SPDHead_WorkCheck:

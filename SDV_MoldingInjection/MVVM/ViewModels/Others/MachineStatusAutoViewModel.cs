@@ -31,7 +31,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public bool IsLeakSensor_H3 => Devices.Inputs.DummyOverflowDetect3.Value == false;
         public bool IsLeakSensor_H4 => Devices.Inputs.DummyOverflowDetect4.Value == false;
         public bool IsLeftJigDetected => Devices.Inputs.Jig1Detect.Value && Devices.Inputs.Jig2Detect.Value == true;
-        public bool IsRightJigDetected => Devices.Inputs.Jig1Detect.Value && Devices.Inputs.Jig2Detect.Value == true;
+        public bool IsRightJigDetected => Devices.Inputs.Jig3Detect.Value && Devices.Inputs.Jig4Detect.Value == true;
 
         public bool H1Working
         {
