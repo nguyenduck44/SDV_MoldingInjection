@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.MVVM.Models;
 using System.Windows.Input;
+using TOPENG_Device;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
@@ -68,6 +69,23 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 {
                     Random rnd = new Random();
                     _plotter.AddChamberPressureData(rnd.Next(0, 749));
+                });
+            }
+        }
+
+        public ICommand TestOnOffBitCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    int[] iReciveData = new int[1];
+                    int iiReciveDataLength = 1;
+                    MCCLinkIE.mdreceiveex(151, 0, 255, 23, 0x2008, ref iiReciveDataLength, ref iReciveData[0]);
+
+                    iReciveData[0] = 0x01 << 3 | iReciveData[0];
+
+                    int res = MCCLinkIE.mdsendex(151, 0, 255, 23, 0x2008, ref iiReciveDataLength, ref iReciveData[0]);
                 });
             }
         }

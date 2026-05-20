@@ -74,9 +74,13 @@ namespace SDV_MoldingInjection.Process
         {
             set
             {
-                int length = 1;
-                int data = value ? 1 : 0;
-                MCCLinkIE.mdsendex(151, 0, 255, 23, 0x2007, ref length, ref data);
+                int[] iReciveData = new int[1];
+                int iiReciveDataLength = 1;
+                MCCLinkIE.mdreceiveex(151, 0, 255, (int)MPLC.enumDeviceType.B, 0x2000, ref iiReciveDataLength, ref iReciveData[0]);
+
+                iReciveData[0] = 0x01 << 7 | iReciveData[0];
+
+                MCCLinkIE.mdsendex(151, 0, 255, (int)MPLC.enumDeviceType.B, 0x2000, ref iiReciveDataLength, ref iReciveData[0]);
             }
         }
 
@@ -84,9 +88,13 @@ namespace SDV_MoldingInjection.Process
         {
             set
             {
-                int length = 1;
-                int data = value ? 1 : 0;
-                MCCLinkIE.mdsendex(151, 0, 255, 23, 0x2008, ref length, ref data);
+                int[] iReciveData = new int[1];
+                int iiReciveDataLength = 1;
+                MCCLinkIE.mdreceiveex(151, 0, 255, (int)MPLC.enumDeviceType.B, 0x2008, ref iiReciveDataLength, ref iReciveData[0]);
+
+                iReciveData[0] = 0x01 << 0 | iReciveData[0];
+
+                MCCLinkIE.mdsendex(151, 0, 255, (int)MPLC.enumDeviceType.B, 0x2008, ref iiReciveDataLength, ref iReciveData[0]);
             }
         }
 

@@ -45,6 +45,9 @@
                 <Button Height="50"
                         Content="Test Pilot"
                         Command="{Binding TestButtonCommand}" />
+                <Button Height="50"
+                        Content="Test CCIE OnOffBit"
+                        Command="{Binding TestOnOffBitCommand}" />
             </UniformGrid>
             
         </StackPanel>
