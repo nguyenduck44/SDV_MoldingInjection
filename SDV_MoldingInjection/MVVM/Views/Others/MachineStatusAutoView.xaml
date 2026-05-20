@@ -502,8 +502,8 @@
             </Canvas>
         </Grid>
         <Canvas>
-            <Grid Canvas.Left="270"
-                  Canvas.Bottom="0">
+            <Grid Canvas.Left="265"
+                  Canvas.Top="165">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
@@ -520,30 +520,32 @@
                        FontSize="10"
                        FontWeight="Bold"/>
                 <Label Content="{Binding LeftJigID}"
-                        FontSize="10"
-                        BorderBrush="Black"
-                        BorderThickness="1"
-                        Background="WhiteSmoke"
-                        Grid.Column="1"
-                        HorizontalAlignment="Center"
-                        VerticalContentAlignment="Center" 
-                        FontWeight="Bold"/>
+                       FontSize="10"
+                       Width="200"
+                       BorderBrush="Black"
+                       BorderThickness="1"
+                       Background="WhiteSmoke"
+                       Grid.Column="1"
+                       HorizontalAlignment="Center"
+                       VerticalContentAlignment="Center" 
+                       FontWeight="Bold"/>
                 <Label Content="RIGHT"
                        Background="WhiteSmoke"
                        Grid.Row="1"
                        BorderBrush="Black"
                        BorderThickness="1"
                        FontSize="10"
-                        FontWeight="Bold"/>
+                       FontWeight="Bold"/>
                 <Label Content="{Binding RightJigID}"
-                        Background="WhiteSmoke"
-                        FontSize="10"
-                        BorderBrush="Black"
-                        BorderThickness="1"
-                        Grid.Column="1"
-                        Grid.Row="1"
-                        HorizontalAlignment="Center"
-                        VerticalContentAlignment="Center"
+                       Background="WhiteSmoke"
+                       Width="200"
+                       FontSize="10"
+                       BorderBrush="Black"
+                       BorderThickness="1"
+                       Grid.Column="1"
+                       Grid.Row="1"
+                       HorizontalAlignment="Center"
+                       VerticalContentAlignment="Center"
                        FontWeight="Bold"/>
 
             </Grid>
@@ -562,8 +564,7 @@
                         RenderTransformOrigin="1.222,0.506">
                     <Image.Visibility>
                         <MultiBinding Converter="{StaticResource BooleanOrToVisibilityConverter}">
-                            <Binding Path="Devices.Inputs.Jig1Detect.Value" />
-                            <Binding Path="Devices.Inputs.Jig2Detect.Value" />
+                            <Binding Path="IsLeftJigDetected" />
                         </MultiBinding>
                     </Image.Visibility>
                 </Image>
@@ -580,8 +581,7 @@
                         RenderTransformOrigin="1.222,0.506">
                     <Image.Visibility>
                         <MultiBinding Converter="{StaticResource BooleanOrToVisibilityConverter}">
-                            <Binding Path="Devices.Inputs.Jig3Detect.Value" />
-                            <Binding Path="Devices.Inputs.Jig4Detect.Value" />
+                            <Binding Path="IsRightJigDetected" />
                         </MultiBinding>
                     </Image.Visibility>
                 </Image>

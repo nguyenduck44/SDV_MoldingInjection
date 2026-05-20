@@ -223,6 +223,8 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcToRunStep.Start:
                     Log.Info("ToRun start");
                     Log.Debug($"{procOutputs.Name} ClearOutputs");
+                    CellId1Reply = false;
+                    CellId2Reply = false;
                     procOutputs.ClearOutputs();
                     Step.ToRunStep++;
                     break;
@@ -831,6 +833,14 @@ namespace SDV_MoldingInjection.Process
             {
                 case EMoldProcAutoRunStep.Start:
                     Log.Debug("AutoRun start");
+                    if(LeftJigDetect == false)
+                    {
+                        LeftJigID = string.Empty;
+                    }
+                    if(RightJigDetect == false)
+                    {
+                        RightJigID = string.Empty;
+                    }
                     _tactTimeList.Chamber.CycleTimeCounter = Environment.TickCount;
                     Step.RunStep++;
                     break;
@@ -1357,16 +1367,20 @@ namespace SDV_MoldingInjection.Process
                         if (isLoading)
                         {
                             //TODO: Wait InOut machine write program
-                            if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12)
+                            if(_optionRecipe.UseCIM)
                             {
-                                Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_Cell2SendBitOn;
+                                if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 || LeftJigDetect)
+                                {
+                                    Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_Cell2SendBitOn;
+                                    break;
+                                }
+                                Step.RunStep++;
                                 break;
                             }
-                            Step.RunStep++;
+
+                            Log.Debug("Set next step Wait_InOutHandlerStart_Request");
+                            Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request;
                             break;
-                            //Log.Debug("Set next step Wait_InOutHandlerStart_Request");
-                            //Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request;
-                            //break;
                         }
 
                         //UNLOADING
@@ -1383,14 +1397,17 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    Log.Debug("Cell 1 Send Bit (B2107) On");
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.GetCellId1:
                     LeftJigID = GetCellId(true);
+                    Log.Debug($"Get Left Jig ID '{LeftJigID}'");
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Set_Cell1ReplyBitOn:
                     CellId1Reply = true;
+                    Log.Debug("Cell 1 Reply Bit (B2007) On");
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Wait_Cell1SendBitOff:
@@ -1400,9 +1417,13 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    Log.Debug("Cell 1 Send Bit (B2107) Off");
+
                     CellId1Reply = false;
 
-                    if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34)
+                    Log.Debug("Cell 1 Reply Bit (B2007) Off");
+
+                    if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34 || RightJigDetect)
                     {
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request;
                         break;
@@ -1417,14 +1438,17 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    Log.Debug("Cell 2 Send Bit (B2108) On");
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.GetCellId2:
                     RightJigID = GetCellId(false);
+                    Log.Debug($"Get Right Jig ID '{RightJigID}'");
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Set_Cell2ReplyBitOn:
                     CellId2Reply = true;
+                    Log.Debug("Cell 2 Reply Bit (B2008) On");
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Wait_Cell2SendBitOff:
@@ -1434,8 +1458,9 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    Log.Debug("Cell 2 Send Bit (B2108) Off");
                     CellId2Reply = false;
-
+                    Log.Debug("Cell 2 Reply Bit (B2008) Off");
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request:

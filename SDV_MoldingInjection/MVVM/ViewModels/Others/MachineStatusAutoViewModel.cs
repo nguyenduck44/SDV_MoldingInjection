@@ -30,6 +30,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public bool IsLeakSensor_H2 => Devices.Inputs.DummyOverflowDetect2.Value == false;
         public bool IsLeakSensor_H3 => Devices.Inputs.DummyOverflowDetect3.Value == false;
         public bool IsLeakSensor_H4 => Devices.Inputs.DummyOverflowDetect4.Value == false;
+        public bool IsLeftJigDetected => Devices.Inputs.Jig1Detect.Value && Devices.Inputs.Jig2Detect.Value == true;
+        public bool IsRightJigDetected => Devices.Inputs.Jig1Detect.Value && Devices.Inputs.Jig2Detect.Value == true;
 
         public bool H1Working
         {
@@ -70,6 +72,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 OnPropertyChanged();
             }
         }
+
 
         public MachineStatus MachineStatus { get; }
         public RecipeSelector RecipeSelector { get; }
@@ -142,6 +145,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             OnPropertyChanged(nameof(IsLeakSensor_H4));
             OnPropertyChanged(nameof(LeftJigID));
             OnPropertyChanged(nameof(RightJigID));
+            OnPropertyChanged(nameof(IsLeftJigDetected));
+            OnPropertyChanged(nameof(IsRightJigDetected));
         }
         #endregion
     }
