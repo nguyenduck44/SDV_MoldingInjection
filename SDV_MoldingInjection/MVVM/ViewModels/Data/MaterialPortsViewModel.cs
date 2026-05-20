@@ -47,10 +47,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
             if (_cimCollection.CimFunction.MaterialTrackingState != OnOffNothing.ON)
             {
-                mp.Result = "AUTO_PASS";
-                mp.TotalQty = 0;
-                mp.UseQty = 0;
-                mp.UIUpdate();
+                MaterialInfoSend1Handle(null, true, mp);
             }
         }
 
@@ -60,21 +57,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
             if (_cimCollection.CimFunction.MaterialTrackingState != OnOffNothing.ON)
             {
-                mp.Result = "AUTO_PASS";
-                mp.TotalQty = 1031;
-                mp.UseQty = 0;
-                mp.UIUpdate();
-            }
-        }
-
-        private void AutoJudge(MaterialPort mp)
-        {
-            if (_cimCollection.CimFunction.MaterialTrackingState != OnOffNothing.ON)
-            {
-                mp.Result = "AUTO_PASS";
-                mp.TotalQty = 1031;
-                mp.UseQty = 0;
-                mp.UIUpdate();
+                MaterialInfoSend1Handle(null, true, mp);
             }
         }
 
@@ -85,64 +68,37 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             if (obj == null) return;
             if (obj.CIMCommand != CIMCommand.MaterialInfoSend1) return;
 
-            if (handlingAction) return;
-            handlingAction = true;
-
-            Log.Info($"[CIM] {obj.CIMCommand} From CIMCOMMAND");
-
-            MaterialInfoSendCimtoPLCArea cimArea = new MaterialInfoSendCimtoPLCArea();
-            cimArea.FromCIMData(obj.Buffer);
-
-            if (MaterialPorts.Any(mp => mp.Id.ToString() == cimArea.MaterialProtID) == false)
-            {
-                Log.Error($"[CIM] {obj.CIMCommand} send {cimArea.MaterialProtID} missmatch");
-                handlingAction = false;
-                return;
-            }
-
-            var mp = MaterialPorts.First(mp => mp.Id.ToString() == cimArea.MaterialProtID);
-
-            mp.Result = cimArea.MaterialReplyStatus;
-
-            if (mp.Result.ToUpper() != "PASS")
-            {
-                if (mp.LastKittingCEID == EMaterialKittingCEID.KITTING)
-                {
-                    MessageBoxEx.Show($"Kitting '{mp.BatchID}' Fail");
-                }
-                else
-                {
-                    MessageBoxEx.Show($"Cancel '{mp.BatchID}' Fail");
-                }
-                mp.UIUpdate();
-                handlingAction = false;
-
-                CIMCommandDetail.Create(CIMCommand.MaterialInfoSend1).SetPLCBitOn();
-                CIMCommandDetail.Create(CIMCommand.MaterialInfoSend1).WaitForCIMBitOff();
-                CIMCommandDetail.Create(CIMCommand.MaterialInfoSend1).SetPLCBitOff();
-
-                return;
-            }
-
-            mp.KittingFeedback(cimArea);
-
-            _syringAmountStatusList.SyringeAmounts[int.Parse(cimArea.MaterialProtID) - 1].IsAttached = mp.LastKittingCEID == EMaterialKittingCEID.KITTING;
-            _syringAmountStatusList.SyringeAmounts[int.Parse(cimArea.MaterialProtID) - 1].MaxVolume = mp.TotalQty;
-            _syringAmountStatusList.SyringeAmounts[int.Parse(cimArea.MaterialProtID) - 1].RemainVolume = mp.RemainQty;
-
-            Log.Info($"{cimArea.MaterialReplyText} {cimArea.MaterialTotalQTY} {cimArea.MaterialProtID}");
-            handlingAction = false;
+            MaterialInfoSend1Handle(obj);
         }
 
-        private void MaterialInfoSend1Handle(CIMCommandArgs obj)
+        private void MaterialInfoSend1Handle(CIMCommandArgs obj, bool isAutoPass = false, MaterialPort? autoPassMP = null)
         {
             if (handlingAction) return;
             handlingAction = true;
 
-            Log.Info($"[CIM] {obj.CIMCommand} From CIMCOMMAND");
+            if (isAutoPass & autoPassMP == null)
+            {
+                throw new ArgumentException("autoPassMP must not be null, while isAutoPass");
+            }
 
             MaterialInfoSendCimtoPLCArea cimArea = new MaterialInfoSendCimtoPLCArea();
-            cimArea.FromCIMData(obj.Buffer);
+            if (isAutoPass == false)
+            {
+                Log.Info($"[CIM] {obj.CIMCommand} From CIMCOMMAND");
+
+                cimArea.FromCIMData(obj.Buffer);
+            }
+            else
+            {
+                cimArea = new MaterialInfoSendCimtoPLCArea()
+                {
+                    MaterialProtID = autoPassMP!.Id.ToString(),
+                    MaterialReplyStatus = "AUTO_PASS",
+                    MaterialReplyText = "AUTO_PASS_REPLY",
+                    MaterialTotalQTY = autoPassMP.LastKittingCEID == EMaterialKittingCEID.KITTING ? 1031 : 0,
+                    MaterialUseQTY = 0,
+                };
+            }
 
             if (MaterialPorts.Any(mp => mp.Id.ToString() == cimArea.MaterialProtID) == false)
             {
@@ -155,7 +111,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
             mp.Result = cimArea.MaterialReplyStatus;
 
-            if (mp.Result.ToUpper() != "PASS")
+            if (mp.Result.Contains("PASS") == false)
             {
                 if (mp.LastKittingCEID == EMaterialKittingCEID.KITTING)
                 {
