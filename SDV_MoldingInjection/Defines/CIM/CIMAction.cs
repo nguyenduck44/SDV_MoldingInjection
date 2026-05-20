@@ -7,6 +7,7 @@ using EQX.UI.Controls;
 using EQX.UI.MVVM;
 using log4net;
 using log4net.Repository.Hierarchy;
+using Newtonsoft.Json.Linq;
 using SDV_MoldingInjection.Recipe;
 using System.Reflection;
 using TOPENG_Device;
@@ -152,14 +153,17 @@ namespace SDV_MoldingInjection.Defines.CIM
                         {
                             if (recipeNumber <= 90 && parameterWordArea.PPIDName.StartsWith("TT")) isValid = false;
                             if (recipeNumber > 90 && parameterWordArea.PPIDName.StartsWith("TT") == false) isValid = false;
-                            if (_recipeCatalog.ContainsId(recipeNumber) == false) isValid = false;
+                            // Create PPID that existed
+                            if (_recipeCatalog.ContainsId(recipeNumber) && fppsArea.CCode == "1") isValid = false;
+                            // Delete PPID that not exist
+                            if (_recipeCatalog.ContainsId(recipeNumber) == false && fppsArea.CCode == "2") isValid = false;
                         }
 
                         short[] buf = new short[] { isValid ? (short)'0' : (short)'7' };
 
                         EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).Write(buf);
                         CIMCommandDetail.Create(CIMCommand.FormattedProcessProgramSend2).SetPLCBitOn();
-                        CIMCommandDetail.Create(CIMCommand.FormattedProcessProgramSend2).WaitForCIMBitOn();
+                        CIMCommandDetail.Create(CIMCommand.FormattedProcessProgramSend2).WaitForCIMBitOff();
                         CIMCommandDetail.Create(CIMCommand.FormattedProcessProgramSend2).SetPLCBitOff();
 
                         if (isValid == false)
@@ -215,17 +219,21 @@ namespace SDV_MoldingInjection.Defines.CIM
                     {
                         var functionChangeCommand = CIMCommandDetail.Create(CIMCommand.EquipFunctionChangeCommand);
                         functionChangeCommand.ReadCIMWords();
-
+                        
                         EquipFunctionChangeCommandReceiveArea receiveArea = new EquipFunctionChangeCommandReceiveArea();
                         receiveArea.FromCIMData(functionChangeCommand.FromCIMDataBuffer);
 
                         if (int.TryParse(receiveArea.EquipCmdEFID, out int efid) == false) return;
 
-                        if (efid >= 6 && efid != 14)
+                        if (efid >= 6
+                            || _cimFunctionVM.IsUseAPC == false && efid == 14
+                            || efid == 3 && receiveArea.EquipCmdEFST.ToUpper() == "NOTHING"
+                            || efid == 4 && receiveArea.EquipCmdEFST.ToUpper() == "NOTHING"
+                            || efid == 5 && receiveArea.EquipCmdEFST.ToUpper() == "NOTHING")
                         {
                             EquipEventDetail.Create(EquipEvent.EquipFunctionChangeCMDHcack).Write(new short[] { (short)'5' });
 
-                            functionChangeCommand.SetLocalPLCBitOnFireAndForget();
+                            functionChangeCommand.SetPLCBitOn();
                             functionChangeCommand.WaitForCIMBitOff();
                             functionChangeCommand.SetPLCBitOff();
 
@@ -235,7 +243,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                         bool res = _cimFunctionVM.UpdateSingle(efid, receiveArea.EquipCmdEFST);
                         EquipEventDetail.Create(EquipEvent.EquipFunctionChangeCMDHcack).Write(new short[] { res ? (short)'0' : (short)'5' });
 
-                        functionChangeCommand.SetLocalPLCBitOnFireAndForget();
+                        functionChangeCommand.SetPLCBitOn();
                         functionChangeCommand.WaitForCIMBitOff();
                         functionChangeCommand.SetPLCBitOff();
 
@@ -245,7 +253,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                         }
 
                         // Make sure Equip State (Run State) is now IDLE before calling cim Funciton Update
-                        Thread.Sleep(1000);
+                        Thread.Sleep(100);
                         _cimFunctionVM.SaveCommand?.Execute("HOST");
                     }
                     break;

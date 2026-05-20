@@ -108,8 +108,8 @@ namespace SDV_MoldingInjection.Process
         public MaterialAssemblyPlcToCimArea MaterialAssemblyArea_Right_1 { get; set; }
         public MaterialAssemblyPlcToCimArea MaterialAssemblyArea_Right_2 { get; set; }
 
-        public string LeftJigID { get; set; } = "31A-005216-BME-PA-DTHB-NZPP102";
-        public string RightJigID { get; set; } = "31A-005216-BME-PA-DTHB-NZPP103";
+        public string LeftJigID { get; set; } = "31A-005216-BME-PA-DTHB-NZPP111";
+        public string RightJigID { get; set; } = "31A-005216-BME-PA-DTHB-NZPP211";
         public string LeftCellId { get; set; }
         public string RightCellId { get; set; }
         #endregion
@@ -1518,6 +1518,7 @@ namespace SDV_MoldingInjection.Process
                     {
                         //Left
                         string outCellID = "";
+                        Log.Info($"Validationing JIG '{LeftJigID}'");
                         if (EquipEventHelpers.SpecificValidation(1, LeftJigID, ref outCellID) == false)
                         {
                             // TODO: ALARM RAISING (TIMEOUT? FAIL?)
@@ -1538,6 +1539,10 @@ namespace SDV_MoldingInjection.Process
                         CellJobProcessCimToPlcArea cellJobProcess = EquipEventHelpers.CellJobProcessConfirm(1, LeftCellId, _cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON);
 
                         CellJobProcessInfo_Left = cellJobProcess;
+                        if (_cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON)
+                        {
+                            CellJobProcessInfo_Left.CellJobProcessCellID = LeftCellId;
+                        }
 
                         if (_cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON && cellJobProcess.CellJobProcessRCMD != $"{(int)ECellJobProcessRCMD.CellJobProcessStart}")
                         {
@@ -1552,6 +1557,7 @@ namespace SDV_MoldingInjection.Process
 
                         //Right
                         outCellID = "";
+                        Log.Info($"Validationing JIG '{RightJigID}'");
                         if (EquipEventHelpers.SpecificValidation(2, RightJigID, ref outCellID) == false)
                         {
                             // TODO: ALARM RAISING (TIMEOUT? FAIL?)
@@ -1572,6 +1578,10 @@ namespace SDV_MoldingInjection.Process
                         CellJobProcessCimToPlcArea cellJobProcess1 = EquipEventHelpers.CellJobProcessConfirm(2, RightCellId, _cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON);
 
                         CellJobProcessInfo_Right = cellJobProcess1;
+                        if (_cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON)
+                        {
+                            CellJobProcessInfo_Right.CellJobProcessCellID = RightCellId;
+                        }
 
                         if (_cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON && cellJobProcess.CellJobProcessRCMD != $"{(int)ECellJobProcessRCMD.CellJobProcessStart}")
                         {
@@ -1597,11 +1607,13 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.CIM_TrackOut:
                     if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
                     {
+                        Log.Info($"Tracking Out Cell '{CellJobProcessInfo_Left.CellJobProcessCellID}'");
                         if (EquipEventHelpers.CellTrackOut(1, CellJobProcessInfo_Left, false, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Left_1, MaterialAssemblyArea_Left_2 }) == false)
                         {
                             RaiseWarning(EWarning.CIM_CELL_TRACKOUT_FAIL);
                             break;
                         }
+                        Log.Info($"Tracking Out Cell '{CellJobProcessInfo_Right.CellJobProcessCellID}'");
                         if (EquipEventHelpers.CellTrackOut(2, CellJobProcessInfo_Right, false, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Right_1, MaterialAssemblyArea_Right_2 }) == false)
                         {
                             RaiseWarning(EWarning.CIM_CELL_TRACKOUT_FAIL);
