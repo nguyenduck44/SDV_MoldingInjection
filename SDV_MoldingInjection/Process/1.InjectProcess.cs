@@ -879,7 +879,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"Write data input count: {inputCount}");
                     _productionService.WriteData(EProductionWriteType.Input, inputCount);
-                    Sequence = ESequence.Loading;
+                    Sequence = ESequence.ResinInject;
                     break;
                 case EMoldProcAutoRunStep.End:
                     Log.Debug("AutoRun end");
@@ -1344,14 +1344,17 @@ namespace SDV_MoldingInjection.Process
                         if (isLoading && _machineStatus.ConfirmLoadingFinish)
                         {
                             Log.Debug("Loading manual done");
+                            Step.RunStep = (int)EMoldProcLoadingUnloadingStep.CheckIf_LoadOrUnload;
+                            break;
                         }
                         if (isLoading == false)
                         {
                             Log.Debug("Unload manual");
                             outputCount = 0;
+                            Step.RunStep = (int)EMoldProcLoadingUnloadingStep.CheckIf_LoadOrUnload;
+                            break;
                         }
 
-                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.CheckIf_LoadOrUnload;
                         break;
                     }
 
@@ -1643,9 +1646,6 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Unload_Wait:
-                    JigStatuses[0] = EJigStatus.Ready;
-                    JigStatuses[1] = EJigStatus.Ready;
-
                     if (_optionRecipe.SkipHead12 == false &&
                             In_Jig1Detect.Value == false &&
                             In_Jig2Detect.Value == false &&
