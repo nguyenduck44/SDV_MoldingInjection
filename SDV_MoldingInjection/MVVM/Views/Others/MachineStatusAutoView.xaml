@@ -152,7 +152,7 @@
                                                              To="0.0"
                                                              Duration="0:0:0.5"
                                                              AutoReverse="True"
-                                                             RepeatBehavior="Forever" />            
+                                                             RepeatBehavior="Forever" />
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </DataTrigger.EnterActions>
@@ -252,7 +252,7 @@
                 </Border.Style>
             </Border>
         </Canvas>
-        
+
         <!-- DoorLock View -->
         <Grid Grid.Row="0"
               Grid.Column="1"
@@ -501,6 +501,53 @@
                 </Image>
             </Canvas>
         </Grid>
+        <Canvas>
+            <Grid Canvas.Left="270"
+                  Canvas.Bottom="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                
+                <Label Content="LEFT"
+                       BorderBrush="Black"
+                       BorderThickness="1"
+                       Background="WhiteSmoke"
+                       FontSize="10"
+                       FontWeight="Bold"/>
+                <Label Content="{Binding LeftJigID}"
+                        FontSize="10"
+                        BorderBrush="Black"
+                        BorderThickness="1"
+                        Background="WhiteSmoke"
+                        Grid.Column="1"
+                        HorizontalAlignment="Center"
+                        VerticalContentAlignment="Center" 
+                        FontWeight="Bold"/>
+                <Label Content="RIGHT"
+                       Background="WhiteSmoke"
+                       Grid.Row="1"
+                       BorderBrush="Black"
+                       BorderThickness="1"
+                       FontSize="10"
+                        FontWeight="Bold"/>
+                <Label Content="{Binding RightJigID}"
+                        Background="WhiteSmoke"
+                        FontSize="10"
+                        BorderBrush="Black"
+                        BorderThickness="1"
+                        Grid.Column="1"
+                        Grid.Row="1"
+                        HorizontalAlignment="Center"
+                        VerticalContentAlignment="Center"
+                       FontWeight="Bold"/>
+
+            </Grid>
+        </Canvas>
         <Grid Grid.Row="0"
               Grid.Column="1"
               Grid.RowSpan="2">
@@ -520,14 +567,7 @@
                         </MultiBinding>
                     </Image.Visibility>
                 </Image>
-                <TextBlock Text="{Binding LeftJigID}"
-                           Background="White"
-                         Canvas.Left="280"
-                         Canvas.Top="160"
-                         HorizontalAlignment="Left"
-                         VerticalAlignment="Center"
-                         Width="100"
-                         Height="28" />
+
             </Canvas>
             <Canvas>
                 <Image  Source="/SDV_MoldingInjection;component/Resource/Images/BONDINGJIG.png"
@@ -545,14 +585,7 @@
                         </MultiBinding>
                     </Image.Visibility>
                 </Image>
-                <TextBlock Text="{Binding RightJigID}"
-                           Background="White"
-                        Canvas.Left="400"
-                        Canvas.Top="160"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Width="100"
-                        Height="28" />
+
             </Canvas>
             <Canvas>
                 <Image  Source="/SDV_MoldingInjection;component/Resource/Images/HEAD_LEFT.png"

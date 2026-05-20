@@ -14,7 +14,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private bool h3Working;
         private bool h4Working;
         private readonly NavigationStore _navigationStore;
-        private readonly RecipeSelector _recipeSelector;
         private readonly IServiceProvider _serviceProvider;
         private readonly NonOverlappingTimer statusUpdateTimer;
         private Processes _processes => _serviceProvider.GetRequiredService<Processes>();
@@ -73,6 +72,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         }
 
         public MachineStatus MachineStatus { get; }
+        public RecipeSelector RecipeSelector { get; }
         #endregion
 
         #region Contructors
@@ -84,8 +84,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         {
             Devices = devices;
             MachineStatus = machineStatus;
-           _navigationStore = navigationStore;
-            _recipeSelector = recipeSelector;
+            RecipeSelector = recipeSelector;
+            _navigationStore = navigationStore;
             _serviceProvider = serviceProvider;
             statusUpdateTimer = new NonOverlappingTimer(100);
             statusUpdateTimer.Elapsed += StatusUpdateTimerHandler;

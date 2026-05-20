@@ -79,13 +79,18 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
+                    MCCLinkIE.mddevset(151, 255, 23, 0x2007);
+
+                    MCCLinkIE.mddevrst(151, 255, 23, 0x2006);
+                    return;
+
                     int[] iReciveData = new int[1];
                     int iiReciveDataLength = 1;
-                    MCCLinkIE.mdreceiveex(151, 0, 255, 23, 0x2008, ref iiReciveDataLength, ref iReciveData[0]);
+                    MCCLinkIE.mdreceiveex(151, 0, 255, 23, 0x2000, ref iiReciveDataLength, ref iReciveData[0]);
 
-                    iReciveData[0] = 0x01 << 3 | iReciveData[0];
+                    iReciveData[0] = 0xFE << 7 & iReciveData[0];
 
-                    int res = MCCLinkIE.mdsendex(151, 0, 255, 23, 0x2008, ref iiReciveDataLength, ref iReciveData[0]);
+                    int res = MCCLinkIE.mdsendex(151, 0, 255, 23, 0x2000, ref iiReciveDataLength, ref iReciveData[0]);
                 });
             }
         }

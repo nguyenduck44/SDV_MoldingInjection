@@ -74,13 +74,14 @@ namespace SDV_MoldingInjection.Process
         {
             set
             {
-                int[] iReciveData = new int[1];
-                int iiReciveDataLength = 1;
-                MCCLinkIE.mdreceiveex(151, 0, 255, (int)MPLC.enumDeviceType.B, 0x2000, ref iiReciveDataLength, ref iReciveData[0]);
-
-                iReciveData[0] = 0x01 << 7 | iReciveData[0];
-
-                MCCLinkIE.mdsendex(151, 0, 255, (int)MPLC.enumDeviceType.B, 0x2000, ref iiReciveDataLength, ref iReciveData[0]);
+                if (value)
+                {
+                    MCCLinkIE.mddevset(151, 255, 23, 0x2007);
+                }
+                else
+                {
+                    MCCLinkIE.mddevrst(151, 255, 23, 0x2007);
+                }
             }
         }
 
@@ -88,13 +89,14 @@ namespace SDV_MoldingInjection.Process
         {
             set
             {
-                int[] iReciveData = new int[1];
-                int iiReciveDataLength = 1;
-                MCCLinkIE.mdreceiveex(151, 0, 255, (int)MPLC.enumDeviceType.B, 0x2008, ref iiReciveDataLength, ref iReciveData[0]);
-
-                iReciveData[0] = 0x01 << 0 | iReciveData[0];
-
-                MCCLinkIE.mdsendex(151, 0, 255, (int)MPLC.enumDeviceType.B, 0x2008, ref iiReciveDataLength, ref iReciveData[0]);
+                if (value)
+                {
+                    MCCLinkIE.mddevset(151, 255, 23, 0x2008);
+                }
+                else
+                {
+                    MCCLinkIE.mddevrst(151, 255, 23, 0x2008);
+                }
             }
         }
 
@@ -1355,16 +1357,16 @@ namespace SDV_MoldingInjection.Process
                         if (isLoading)
                         {
                             //TODO: Wait InOut machine write program
-                            //if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12)
-                            //{
-                            //    Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_Cell2SendBitOn;
-                            //    break;
-                            //}
-                            //Step.RunStep++;
-                            //break;
-                            Log.Debug("Set next step Wait_InOutHandlerStart_Request");
-                            Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request;
+                            if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12)
+                            {
+                                Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_Cell2SendBitOn;
+                                break;
+                            }
+                            Step.RunStep++;
                             break;
+                            //Log.Debug("Set next step Wait_InOutHandlerStart_Request");
+                            //Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request;
+                            //break;
                         }
 
                         //UNLOADING
