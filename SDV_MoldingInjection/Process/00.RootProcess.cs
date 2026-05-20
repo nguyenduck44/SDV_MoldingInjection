@@ -33,6 +33,7 @@ namespace SDV_MoldingInjection.Process
         private readonly RecipeSelector _recipeSelector;
         private readonly RecipeList _recipeList;
         private readonly ProcessIO _processIO;
+        private readonly InOutHandler _inOutHandler;
         private int raisedAlarmCode = 2;
         private int raisedWarningCode = 2;
         private readonly IAlertService _alarmService;
@@ -51,6 +52,7 @@ namespace SDV_MoldingInjection.Process
             RecipeSelector recipeSelector,
             RecipeList recipeList,
             ProcessIO processIO,
+            InOutHandler inOutHandler,
             [FromKeyedServices("AlarmService")] IAlertService alarmService,
             [FromKeyedServices("WarningService")] IAlertService warningService)
         {
@@ -61,6 +63,7 @@ namespace SDV_MoldingInjection.Process
             _recipeSelector = recipeSelector;
             _recipeList = recipeList;
             _processIO = processIO;
+            _inOutHandler = inOutHandler;
             _alarmService = alarmService;
             _warningService = warningService;
 
@@ -958,6 +961,7 @@ namespace SDV_MoldingInjection.Process
                         AddAlarm(id);
                         EquipEventHelpers.RaiseAlarm(MachineStatus.AlarmTotalWords);
 
+                        _inOutHandler.Handler_SendError(id);
                         Log.Error($"[{(int)(EAlarm)id}] {(EAlarm)id}");
                         _machineStatus.Message = $"[{(int)(EAlarm)id}] {(EAlarm)id}";
                         raisedAlarmCode = id;
@@ -978,6 +982,7 @@ namespace SDV_MoldingInjection.Process
                         AddAlarm(id);
                         EquipEventHelpers.RaiseAlarm(MachineStatus.AlarmTotalWords);
 
+                        _inOutHandler.Handler_SendError(id);
                         Log.Warn($"[{(int)(EWarning)id}] {(EWarning)id}");
                         _machineStatus.Message = $"[{(int)(EWarning)id}] {(EWarning)id}";
                         raisedWarningCode = id;
