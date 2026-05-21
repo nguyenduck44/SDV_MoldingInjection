@@ -9,9 +9,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 {
     public class CurrentAlarmViewModel : ViewModelBase
     {
-        public CurrentAlarmViewModel(MachineStatus machineStatus)
+        private readonly InOutHandler _inOutHandler;
+
+        public CurrentAlarmViewModel(MachineStatus machineStatus, 
+            InOutHandler inOutHandler)
         {
             MachineStatus = machineStatus;
+            _inOutHandler = inOutHandler;
         }
 
         public MachineStatus MachineStatus { get; }
@@ -47,7 +51,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
                     MachineStatus.CurrentAlarms.Clear();
                     MachineStatus.Message = string.Empty;
-
+                    _inOutHandler.Handler_SendError(0);
                     EquipEventHelpers.ClearAlarm();
                 });
             }

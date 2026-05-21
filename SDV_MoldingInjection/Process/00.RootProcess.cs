@@ -230,7 +230,7 @@ namespace SDV_MoldingInjection.Process
                 {
                     _navigationService.NavigateTo<AutoViewModel>();
                 }
-                
+
                 // TODO: CIM
                 //CIMScenarioDispatcher.ExecuteScenario(CIMScenario.AlarmRelease, new CIMScenarioContext
                 //{
@@ -533,15 +533,14 @@ namespace SDV_MoldingInjection.Process
                     _devices.Outputs.Lamp_Run();
 
                     // TODO: CIM
-
-                    if(_recipeList.OptionRecipe.UseCIM)
+                    if (_recipeList.OptionRecipe.UseCIM)
                     {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            _machineStatus.CurrentAlarms.Clear();
-                            EquipEventHelpers.ClearAlarm();
-                        });
+                        EquipEventHelpers.ClearAlarm();
                     }
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        _machineStatus.CurrentAlarms.Clear();
+                    });
 
                     if (Sequence == ESequence.AutoRun)
                     {
@@ -550,6 +549,7 @@ namespace SDV_MoldingInjection.Process
                         _machineStatus.EquipState.IsRunning = true;
                     }
 
+                    
                     _inOutHandler.Handler_SendError(0); //Clear Error
                     _machineStatus.Message = string.Empty;
                     ProcessMode = EProcessMode.Run;
@@ -966,7 +966,7 @@ namespace SDV_MoldingInjection.Process
                         AddAlarm(id);
                         EquipEventHelpers.RaiseAlarm(MachineStatus.AlarmTotalWords);
 
-                        
+
                         Log.Error($"[{(int)(EAlarm)id}] {(EAlarm)id}");
                         _machineStatus.Message = $"[{(int)(EAlarm)id}] {(EAlarm)id}";
                         raisedAlarmCode = id;
