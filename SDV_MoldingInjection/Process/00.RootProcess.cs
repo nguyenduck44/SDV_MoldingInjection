@@ -831,6 +831,8 @@ namespace SDV_MoldingInjection.Process
                     _machineStatus.SemiAutoSequence = ESemiSequence.None;
                     break;
                 case EOperationCommand.Stop:
+                    EquipEventDetail.Create(EquipEvent.TPMLossReady).SetPLCBitOn();
+
                     _machineStatus.MachineReadyDone = false;
 
                     ProcessMode = EProcessMode.ToStop;

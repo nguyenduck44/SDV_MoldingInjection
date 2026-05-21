@@ -160,6 +160,10 @@ namespace SDV_MoldingInjection.Defines.CIM
                         }
 
                         short[] buf = new short[] { isValid ? (short)'0' : (short)'7' };
+                        if (_recipeCatalog.ContainsId(recipeNumber) && fppsArea.CCode == "1")
+                        {
+                            buf = new short[] { (short)'8' };
+                        }
 
                         EquipEventDetail.Create(EquipEvent.FormattedProcessProgramSend).Write(buf);
                         CIMCommandDetail.Create(CIMCommand.FormattedProcessProgramSend2).SetPLCBitOn();
