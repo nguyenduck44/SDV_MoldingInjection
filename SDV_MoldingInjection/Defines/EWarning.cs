@@ -36,6 +36,8 @@ namespace SDV_MoldingInjection.Defines
         CIM_CELL_TRACKING_FAIL,
         CIM_CELL_JOB_PROCESS_START_FAIL,
         CIM_CELL_TRACKOUT_FAIL,
+        CIM_LEFT_CELL_LOST_INFORMATION,
+        CIM_RIGHT_CELL_LOST_INFORMATION,
 
         //--------- 1200 -> 1999 : Mold ---------
         CY_MOLD_CHAMBER_OPEN_WARNING = 1200,

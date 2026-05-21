@@ -1569,7 +1569,7 @@ namespace SDV_MoldingInjection.Process
                         if (_cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON && cellJobProcess.CellJobProcessRCMD != $"{(int)ECellJobProcessRCMD.CellJobProcessStart}")
                         {
                             CellJobProcessInfo_Left.UserDefine_TrackOutJudge = "O";
-                            CellJobProcessInfo_Left.UserDefine_TrackOutDescription = "VALIDATION FAIL";
+                            CellJobProcessInfo_Left.UserDefine_TrackOutDescription = "VALIDATION_FAIL";
                             EquipEventHelpers.CellTrackOut(1, CellJobProcessInfo_Left, true, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Left_1, MaterialAssemblyArea_Left_2 });
                             RaiseWarning(EWarning.CIM_CELL_JOB_PROCESS_START_FAIL);
                             return;
@@ -1627,19 +1627,37 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.CIM_TrackOut:
+
                     if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
                     {
-                        Log.Info($"Tracking Out Cell '{CellJobProcessInfo_Left.CellJobProcessCellID}'");
-                        if (EquipEventHelpers.CellTrackOut(1, CellJobProcessInfo_Left, false, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Left_1, MaterialAssemblyArea_Left_2 }) == false)
+                        if (LeftJigDetect)
                         {
-                            RaiseWarning(EWarning.CIM_CELL_TRACKOUT_FAIL);
-                            break;
+                            if (CellJobProcessInfo_Left == null)
+                            {
+                                RaiseWarning(EWarning.CIM_LEFT_CELL_LOST_INFORMATION);
+                                break;
+                            }
+                            Log.Info($"Tracking Out Cell '{CellJobProcessInfo_Left.CellJobProcessCellID}'");
+                            if (EquipEventHelpers.CellTrackOut(1, CellJobProcessInfo_Left, false, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Left_1, MaterialAssemblyArea_Left_2 }) == false)
+                            {
+                                RaiseWarning(EWarning.CIM_CELL_TRACKOUT_FAIL);
+                                break;
+                            }
                         }
-                        Log.Info($"Tracking Out Cell '{CellJobProcessInfo_Right.CellJobProcessCellID}'");
-                        if (EquipEventHelpers.CellTrackOut(2, CellJobProcessInfo_Right, false, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Right_1, MaterialAssemblyArea_Right_2 }) == false)
+                        
+                        if (RightJigDetect)
                         {
-                            RaiseWarning(EWarning.CIM_CELL_TRACKOUT_FAIL);
-                            break;
+                            if (CellJobProcessInfo_Right == null)
+                            {
+                                RaiseWarning(EWarning.CIM_RIGHT_CELL_LOST_INFORMATION);
+                                break;
+                            }
+                            Log.Info($"Tracking Out Cell '{CellJobProcessInfo_Right.CellJobProcessCellID}'");
+                            if (EquipEventHelpers.CellTrackOut(2, CellJobProcessInfo_Right, false, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Right_1, MaterialAssemblyArea_Right_2 }) == false)
+                            {
+                                RaiseWarning(EWarning.CIM_CELL_TRACKOUT_FAIL);
+                                break;
+                            }
                         }
                     }
 
