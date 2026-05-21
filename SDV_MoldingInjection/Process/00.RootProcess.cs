@@ -222,6 +222,7 @@ namespace SDV_MoldingInjection.Process
                 _devices.Outputs.Lamp_Alarm(true);
 
                 ProcessMode = EProcessMode.Alarm;
+                _inOutHandler.Handler_SendError(raisedAlarmCode);
                 Log.Info("ToAlarm Done, Alarm");
                 AlertNotifyView.ShowDialog(_alarmService.GetById(raisedAlarmCode), true);
 
@@ -259,6 +260,7 @@ namespace SDV_MoldingInjection.Process
 
                 _devices.Outputs.Lamp_Alarm(true);
                 ProcessMode = EProcessMode.Warning;
+                _inOutHandler.Handler_SendError(raisedWarningCode);
                 Log.Info("ToWarning Done, Warning");
                 AlertNotifyView.ShowDialog(_warningService.GetById(raisedWarningCode), true);
 
@@ -548,6 +550,7 @@ namespace SDV_MoldingInjection.Process
                         _machineStatus.EquipState.IsRunning = true;
                     }
 
+                    _inOutHandler.Handler_SendError(0); //Clear Error
                     _machineStatus.Message = string.Empty;
                     ProcessMode = EProcessMode.Run;
                     Log.Info("ToRun Done, Running");
@@ -961,7 +964,7 @@ namespace SDV_MoldingInjection.Process
                         AddAlarm(id);
                         EquipEventHelpers.RaiseAlarm(MachineStatus.AlarmTotalWords);
 
-                        _inOutHandler.Handler_SendError(id);
+                        
                         Log.Error($"[{(int)(EAlarm)id}] {(EAlarm)id}");
                         _machineStatus.Message = $"[{(int)(EAlarm)id}] {(EAlarm)id}";
                         raisedAlarmCode = id;
@@ -982,7 +985,6 @@ namespace SDV_MoldingInjection.Process
                         AddAlarm(id);
                         EquipEventHelpers.RaiseAlarm(MachineStatus.AlarmTotalWords);
 
-                        _inOutHandler.Handler_SendError(id);
                         Log.Warn($"[{(int)(EWarning)id}] {(EWarning)id}");
                         _machineStatus.Message = $"[{(int)(EWarning)id}] {(EWarning)id}";
                         raisedWarningCode = id;

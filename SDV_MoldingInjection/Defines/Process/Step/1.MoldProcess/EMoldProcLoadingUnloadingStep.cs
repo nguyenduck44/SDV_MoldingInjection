@@ -37,9 +37,6 @@
 
         Update_Jig_Status,
 
-
-        MCR_Read,
-
         Chamber_CoverClose,
         Chamber_CoverCloseWait,
 

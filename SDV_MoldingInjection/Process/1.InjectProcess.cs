@@ -1624,7 +1624,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcLoadingUnloadingStep.Unload_Jig_Check:
 
-                    Step.RunStep++;
+                    Step.RunStep++; 
                     break;
                 case EMoldProcLoadingUnloadingStep.CIM_TrackOut:
                     if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
@@ -1685,15 +1685,6 @@ namespace SDV_MoldingInjection.Process
                     {
                         Log.Debug($"Update Jig Status: {EJigStatus.Ready}");
                         UpdateBothJigStatus(EJigStatus.Ready);
-                    }
-
-                    Step.RunStep++;
-                    break;
-                case EMoldProcLoadingUnloadingStep.MCR_Read:
-                    if (isLoading)
-                    {
-                        //TODO : MCR read for loading
-                        Log.Debug($"MCR_Read");
                     }
 
                     Step.RunStep++;
