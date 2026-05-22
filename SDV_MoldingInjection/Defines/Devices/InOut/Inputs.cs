@@ -56,6 +56,11 @@ namespace SDV_MoldingInjection.Defines
 
         private void Timer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
+            int buff = 0;
+            int size = 2;
+            MCCLinkIE.mdreceive(151, 255, 23, 0x2110, ref size, ref buff);
+            MCCLinkIE.mdsendex(151, 0, 255, 23, SensorMapStartBit, ref size, ref buff);
+
             CIMAddressMap.WritePLCBit(string.Format("{0:X}", SensorMapStartBit + ESensorMap.Dispensing_Chamber_Left_Detect_Sensor),
                 (short)(Jig1Detect.Value && Jig2Detect.Value ? 1 : 0), false);
             CIMAddressMap.WritePLCBit(string.Format("{0:X}", SensorMapStartBit + ESensorMap.Dispensing_Chamber_Right_Detect_Sensor),

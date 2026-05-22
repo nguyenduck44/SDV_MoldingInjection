@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
              xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
              xmlns:uiControls="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
-             IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type vm:DryPumpMaintenanceViewModel}}"
              d:DesignHeight="450"
@@ -62,6 +61,7 @@
                 <!-- POSITION TABLE -->
                 <GroupBox Grid.ColumnSpan="2"
                           Header="{Binding SelectedGroupedPosition.Name}"
+                          IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
                           Style="{x:Null}"
                           FontWeight="Bold">
                     <uiControls:PositionPointGridView ItemsSource="{Binding SelectedGroupedPosition.Points}" />
@@ -118,7 +118,8 @@
                         <UniformGrid Columns="2"
                                      Margin="0 0 0 0"
                                      Height="40"
-                                     VerticalAlignment="Top">
+                                     VerticalAlignment="Top"
+                                     IsEnabled="{Binding MachineStatus.IsStandByProcessMode}">
                             <Button Command="{Binding MoveToTarget}"
                                     Content="Move to Target"
                                     Margin="2 1" />
@@ -138,7 +139,8 @@
 
                         <UniformGrid Grid.Row="3"
                                      Columns="2"
-                                     Margin="0 5 0 0">
+                                     Margin="0 5 0 0"
+                                     IsEnabled="{Binding MachineStatus.IsStandByProcessMode}">
                             <Button Background="LightBlue"
                                     Command="{Binding TeachPositionSaveCommand}"
                                     Content="Save"
@@ -156,7 +158,8 @@
                           Style="{x:Null}"
                           FontWeight="Bold"
                           Grid.ColumnSpan="2"
-                          Header="Cylinders">
+                          Header="Cylinders"
+                          IsEnabled="{Binding MachineStatus.IsStandByProcessMode}">
                     <ItemsControl ItemsSource="{Binding Cylinders}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
