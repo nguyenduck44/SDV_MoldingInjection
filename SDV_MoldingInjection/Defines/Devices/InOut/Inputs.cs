@@ -56,10 +56,11 @@ namespace SDV_MoldingInjection.Defines
 
         private void Timer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
-            int buff = 0;
-            int size = 2;
-            MCCLinkIE.mdreceive(151, 255, 23, 0x2110, ref size, ref buff);
-            MCCLinkIE.mdsendex(151, 0, 255, 23, SensorMapStartBit, ref size, ref buff);
+            for (int i = 0; i <= (int)ESensorMap.Dispensing_Transfer_Detect_Sensor; i++)
+            {
+                CIMAddressMap.WritePLCBit(string.Format("{0:X}", SensorMapStartBit + i),
+                (short)(GetCCIEBitValue(0x2110 + i) ? 1 : 0), false);
+            }
 
             CIMAddressMap.WritePLCBit(string.Format("{0:X}", SensorMapStartBit + ESensorMap.Dispensing_Chamber_Left_Detect_Sensor),
                 (short)(Jig1Detect.Value && Jig2Detect.Value ? 1 : 0), false);
@@ -245,5 +246,16 @@ namespace SDV_MoldingInjection.Defines
             DoorReleaseRearRight.Value == false &&
             DoorReleaseLeft.Value == false &&
             DoorReleaseRight.Value == false;
+
+        private bool GetCCIEBitValue(int address)
+        {
+            int buff = 0;
+            int size = 1;
+            int startAddress = address - address % 8;
+            MCCLinkIE.mdreceive(151, 255, 23, startAddress, ref size, ref buff);
+            bool value = (buff & (0x01 << (address % 8))) > 0;
+
+            return value;
+        }
     }
 }
