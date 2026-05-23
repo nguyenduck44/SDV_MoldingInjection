@@ -510,7 +510,7 @@ namespace SDV_MoldingInjection.Defines
             {
                 return true;
             }
-            return true;
+            return false;
         }
 
         private static byte[] ToBytes(string message)
