@@ -503,19 +503,13 @@ namespace SDV_MoldingInjection.Defines
 
         private bool MachineReadyCheck()
         {
-            if (RootProcess.ProcessMode != EQX.Core.Sequence.EProcessMode.Run ||
-                RootProcess.Sequence != ESequence.AutoRun)
+            bool isMachineRun = RootProcess.ProcessMode == EQX.Core.Sequence.EProcessMode.Run;
+            bool isMachineError = RootProcess.ProcessMode == EQX.Core.Sequence.EProcessMode.Alarm || RootProcess.ProcessMode == EQX.Core.Sequence.EProcessMode.ToAlarm ||
+                                  RootProcess.ProcessMode == EQX.Core.Sequence.EProcessMode.Warning || RootProcess.ProcessMode == EQX.Core.Sequence.EProcessMode.ToWarning;
+            if (isMachineRun && isMachineError == false)
             {
-                return false;
+                return true;
             }
-
-            if (InjectProcess.Sequence != ESequence.Loading ||
-               InjectProcess.Step.RunStep < (int)EMoldProcLoadingUnloadingStep.Wait_Cell1SendBitOn ||
-               InjectProcess.Step.RunStep > (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request)
-            {
-                return false;
-            }
-
             return true;
         }
 
