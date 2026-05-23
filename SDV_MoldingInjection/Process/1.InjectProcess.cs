@@ -1463,6 +1463,17 @@ namespace SDV_MoldingInjection.Process
                     if (_machineStatus.InOutHandlerStartRequest == false ||
                        (_optionRecipe.SkipHead12 && _optionRecipe.SkipHead34))
                     {
+                        if (LeftJigTiltState && _optionRecipe.SkipHead12 == false)
+                        {
+                            RaiseWarning(EWarning.SE_LEFFT_JIG_TILT_STATE);
+                            break;
+                        }
+                        if (RightJigTiltState && _optionRecipe.SkipHead34 == false)
+                        {
+                            RaiseWarning(EWarning.SE_RIGHT_JIG_TILT_STATE);
+                            break;
+                        }
+
                         _machineStatus.InOutHandlerStartRequest = false;
                         Wait(20);
                         break;
