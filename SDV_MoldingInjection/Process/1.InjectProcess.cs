@@ -879,7 +879,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"Write data input count: {inputCount}");
                     _productionService.WriteData(EProductionWriteType.Input, inputCount);
-                    Sequence = ESequence.Loading;
+                    Sequence = ESequence.ResinInject;
                     break;
                 case EMoldProcAutoRunStep.End:
                     Log.Debug("AutoRun end");

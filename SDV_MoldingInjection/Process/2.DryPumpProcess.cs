@@ -88,6 +88,7 @@ namespace SDV_MoldingInjection.Process
 
             if (EnablePressureHold && _machineStatus.IsDryRunMode == false)
             {
+                IsCanStop = false;
                 if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec
                     && AngleValve.IsOpenOutput() == false)
                 {
@@ -112,6 +113,7 @@ namespace SDV_MoldingInjection.Process
         public override bool ProcessToWarning()
         {
             EnableWritePressureLog = false;
+            EnablePressureHold = false;
             EnableTimerDelay = false;
             return base.ProcessToWarning();
         }
@@ -119,6 +121,7 @@ namespace SDV_MoldingInjection.Process
         public override bool ProcessToAlarm()
         {
             EnableTimerDelay = false;
+            EnablePressureHold = false;
             EnableWritePressureLog = false;
             return base.ProcessToAlarm();
         }
@@ -513,7 +516,7 @@ namespace SDV_MoldingInjection.Process
                     PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.VentComplete);
                     procOutputs[EDryPumpProcOutput.VentComplete].Value = true;
                     Out_ChamberPurgeOn.Value = false;
-
+                    IsCanStop = true;
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.Inject_PurgeRequest_Wait:
@@ -538,6 +541,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug("Purge end");
                     Out_ChamberPurgeOn.Value = false;
+                    IsCanStop = true; //Skip Vent
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.SetFlag_PurgeFinish:
