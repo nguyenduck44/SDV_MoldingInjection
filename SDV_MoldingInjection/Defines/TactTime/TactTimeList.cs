@@ -38,10 +38,10 @@ namespace SDV_MoldingInjection.Defines
                 double currentTact;
                 currentTact = (Environment.TickCount - TactCounter) / 1000.0 / 2.0;
 
-                TactTimeListViewModel.TactTimes.Add(currentTact);
+                TactTimeListViewModel.TactTimes.Insert(0, currentTact);
 
                 if (TactTimeListViewModel.TactTimes.Count > 30)
-                    TactTimeListViewModel.TactTimes.RemoveAt(0);
+                    TactTimeListViewModel.TactTimes.RemoveAt(TactTimeListViewModel.TactTimes.Count - 1);
             });
         }
 
