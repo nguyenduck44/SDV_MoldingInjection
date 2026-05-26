@@ -8,6 +8,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 {
     public class MonitorViewModel : ViewModelBase
     {
+        public bool IsSuperUserPermission => _userStore.Permission == EPermission.SuperUser;
+
         #region Commands
         public ICommand ProductionInforNavigateCommand
         {
@@ -175,12 +177,14 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public MonitorViewModel(INavigationService navigationService,
             IViewModelFactory viewModelFactory,
             Inputs inputs,
-            Outputs outputs)
+            Outputs outputs,
+            IUserStore userStore)
         {
             _navigationService = navigationService;
             _viewModelFactory = viewModelFactory;
             _inputs = inputs;
             _outputs = outputs;
+            _userStore = userStore;
         }
 
         #region Privates
@@ -188,6 +192,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly IViewModelFactory _viewModelFactory;
         private readonly Inputs _inputs;
         private readonly Outputs _outputs;
+        private readonly IUserStore _userStore;
         #endregion
     }
 }

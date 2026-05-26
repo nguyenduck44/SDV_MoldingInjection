@@ -6,7 +6,7 @@ namespace SDV_MoldingInjection.Recipe
 {
     public class InjectTimeRecipe : RecipeBase
     {
-        [SingleRecipeDescription(Description = "Inject First Time", Detail = "Inject time before Open Angle Valve", Unit = Unit.Second)]
+        //[SingleRecipeDescription(Description = "Inject First Time", Detail = "Inject time before Open Angle Valve", Unit = Unit.Second)]
         [ParameterDescription(210)]
         public double DelayAfterOpenAngleValve
         {
@@ -46,12 +46,20 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _ventTime, value);
         }
 
-        [SingleRecipeDescription(Description = "Delay after inject finish", Unit = Unit.Second)]
+        //[SingleRecipeDescription(Description = "Delay after inject finish", Unit = Unit.Second)]
         [ParameterDescription(215)]
         public double DelayAfterInjectFinish
         {
             get => _delayAfterInjectFinish;
             set => SetRecipe(ref _delayAfterInjectFinish, value);
+        }
+
+        [SingleRecipeDescription(Description = "DummyShot Before Inject", DescriptionKey ="DummyShot After Wait No Product", Unit = Unit.Second)]
+        [ParameterDescription(216)]
+        public double DummyShotBeforeInject
+        {
+            get => _dummyShotBeforeInject;
+            set => SetRecipe(ref _dummyShotBeforeInject, value);
         }
 
         public List<InjectPath> H1H3InjectPaths => new List<InjectPath>
@@ -131,6 +139,7 @@ namespace SDV_MoldingInjection.Recipe
         private double _ventTime;
         private double _delayAfterInjectFinish;
         private double _delayAfterOpenAngleValve;
+        private double _dummyShotBeforeInject;
         private InjectPath _h1H3InjectPaths_No1 = new InjectPath();
         private InjectPath _h1H3InjectPaths_No2 = new InjectPath();
         private InjectPath _h1H3InjectPaths_No3 = new InjectPath();

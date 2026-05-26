@@ -854,7 +854,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcAutoRunStep.JigStatus_Check:
-                    if (JigStatuses[(int)EJig.JigLeft] == EJigStatus.InMolding || 
+                    if (JigStatuses[(int)EJig.JigLeft] == EJigStatus.InMolding ||
                         JigStatuses[(int)EJig.JigRight] == EJigStatus.InMolding ||
                         JigStatuses.All(jig => jig == EJigStatus.MoldingFinish))
                     {
@@ -1624,7 +1624,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcLoadingUnloadingStep.Unload_Jig_Check:
 
-                    Step.RunStep++; 
+                    Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.CIM_TrackOut:
 
@@ -1644,7 +1644,7 @@ namespace SDV_MoldingInjection.Process
                                 break;
                             }
                         }
-                        
+
                         if (RightJigDetect)
                         {
                             if (CellJobProcessInfo_Right == null)
@@ -1735,6 +1735,14 @@ namespace SDV_MoldingInjection.Process
                     if (isLoading)
                     {
                         Log.Info("Loading end");
+                        if ((Environment.TickCount - _waitTimeNoProduct) >= _currentRecipe.InjectTimeRecipe.DummyShotBeforeInject * 60000)
+                        {
+                            Log.Info("Set next sequence to DummyShot");
+                            Sequence = ESequence.DummyShot;
+                            break;
+                        }
+
+                        Log.Info("Set next sequence to Resin Inject");
                         Sequence = ESequence.ResinInject;
                         break;
                     }
@@ -1959,6 +1967,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcDummyShotStep.End:
                     Log.Info($"{sequence} for {head} end");
                     _machineStatus.MachineIdleTick = Environment.TickCount;
+                    _waitTimeNoProduct = Environment.TickCount;
                     if (Parent?.Sequence != ESequence.AutoRun && sequence != ESequence.IdlePurge)
                     {
                         MessageBoxEx.Show($"{sequence} Finish!", false);
@@ -3169,6 +3178,7 @@ namespace SDV_MoldingInjection.Process
         private int _needleCleanCount = 0;
         private int _nzlCleanCount = 0;
         private double _yAxisCleaningTargetMm;
+        private double _waitTimeNoProduct;
         private ESPDHead _failHead;
         private EDotWeightingHead currentDotWeightingHead;
         private Queue<EMoldProcResinInjectStep> MoldResinInjectSteps = new Queue<EMoldProcResinInjectStep>();
