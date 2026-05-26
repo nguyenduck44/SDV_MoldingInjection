@@ -24,7 +24,9 @@ namespace SDV_MoldingInjection.Defines
         public ObservableCollection<ErrorLogEntry> CurrentAlarms { get; set; } = new ObservableCollection<ErrorLogEntry>();
         public bool CanJogWithDoorOpen => IsTeachMode && IsDoorPasswordVerified;
         public static short[] AlarmTotalWords = new short[400];
+        public bool SetDummyShotBeforeInject { get; set; }
         #endregion
+
         #region Contructors
         public MachineStatus()
         {

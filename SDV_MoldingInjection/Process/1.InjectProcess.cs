@@ -226,6 +226,7 @@ namespace SDV_MoldingInjection.Process
                     CellId1Reply = false;
                     CellId2Reply = false;
                     procOutputs.ClearOutputs();
+                    _machineStatus.SetDummyShotBeforeInject = false;
                     Step.ToRunStep++;
                     break;
                 case EMoldProcToRunStep.Head_Use_Check:
@@ -730,6 +731,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcOriginStep.End:
                     Log.Debug("Origin end");
+                    _waitTimeNoProduct = Environment.TickCount;
                     Step.OriginStep++;
                     base.ProcessOrigin();
                     break;
@@ -812,10 +814,12 @@ namespace SDV_MoldingInjection.Process
                     if (LeftJigDetect == false)
                     {
                         LeftJigID = string.Empty;
+                        JigStatuses[(int)EJig.JigLeft] = EJigStatus.None;
                     }
                     if (RightJigDetect == false)
                     {
                         RightJigID = string.Empty;
+                        JigStatuses[(int)EJig.JigRight] = EJigStatus.None;
                     }
 
                     _tactTimeList.Chamber.CycleTimeCounter = Environment.TickCount;
@@ -893,6 +897,7 @@ namespace SDV_MoldingInjection.Process
             {
                 case EMoldProcResinInjectStep.Start:
                     Log.Info("ResinInject start");
+                    _machineStatus.SetDummyShotBeforeInject = false;
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.Chamber_Close:
@@ -1738,6 +1743,7 @@ namespace SDV_MoldingInjection.Process
                         if ((Environment.TickCount - _waitTimeNoProduct) >= _currentRecipe.InjectTimeRecipe.DummyShotBeforeInject * 60000)
                         {
                             Log.Info("Set next sequence to DummyShot");
+                            _machineStatus.SetDummyShotBeforeInject = true;
                             Sequence = ESequence.DummyShot;
                             break;
                         }
@@ -2157,6 +2163,13 @@ namespace SDV_MoldingInjection.Process
                     {
                         MessageBoxEx.Show($"{head} Needle Clean Finish!", false);
                         Sequence = ESequence.Stop;
+                        break;
+                    }
+
+                    if (_machineStatus.SetDummyShotBeforeInject)
+                    {
+                        Log.Info("Set next sequence to Resin Inject");
+                        Sequence = ESequence.ResinInject;
                         break;
                     }
 

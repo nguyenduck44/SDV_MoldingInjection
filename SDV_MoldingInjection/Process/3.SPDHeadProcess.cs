@@ -158,6 +158,7 @@ namespace SDV_MoldingInjection.Process
             {
                 case ESPDHeadProcToRunStep.Start:
                     Log.Debug("ToRun start");
+                    dummyShotBeforeInject = false;
                     Step.ToRunStep++;
                     break;
                 case ESPDHeadProcToRunStep.SyringeAmountCheck:
@@ -968,7 +969,7 @@ namespace SDV_MoldingInjection.Process
             switch ((ESPDHeadProcCommonStep)Step.RunStep)
             {
                 case ESPDHeadProcCommonStep.Start:
-                    Log.Debug($"{sequence} start");
+                    Log.Info($"{sequence} start");
                     _bubbleRemoveCount = 1;
                     Step.RunStep++;
                     break;
@@ -1210,6 +1211,18 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.WorkRequest_Wait:
+                    //Wait time no product -> DummyShot before Inject
+                    if (_machineStatus.SetDummyShotBeforeInject && 
+                        sequence == ESequence.ResinInject &&
+                        dummyShotBeforeInject == false &&
+                        Parent?.Sequence == ESequence.AutoRun)
+                    {
+                        Log.Info($"Set next sequence to DummyShot");
+                        dummyShotBeforeInject = true;
+                        Sequence = ESequence.DummyShot;
+                        break;
+                    }
+
                     if (procInputs[ESPDHeadProcInput.WorkRequest].Value == false || 
                        ((CurrentHeadSkip && MachineStatusHeadSkip && sequence != ESequence.IdlePurge)))
                     {
@@ -1361,6 +1374,7 @@ namespace SDV_MoldingInjection.Process
                     if (sequence == ESequence.ResinInject && _currentRecipe.AdditionalMolding_Recipe.UseAddTail)
                     {
                         Log.Info($"Set next sequence SPDHeadAddTail");
+                        dummyShotBeforeInject = false;
                         Sequence = ESequence.ResinInjectAddTail;
                         break;
                     }
@@ -1374,6 +1388,7 @@ namespace SDV_MoldingInjection.Process
                     if (sequence == ESequence.ResinInject && OptionRecipe.SkipDummyShot == false)
                     {
                         Log.Info($"Set next sequence to DummyShot");
+                        dummyShotBeforeInject = false;
                         Sequence = ESequence.DummyShot;
                         break;
                     }
@@ -2102,6 +2117,7 @@ namespace SDV_MoldingInjection.Process
         private bool EnableTimerInject;
         private bool InjectAddTail;
         private bool AssembleActive;
+        private bool dummyShotBeforeInject;
         #endregion
     }
 }

@@ -54,7 +54,7 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _delayAfterInjectFinish, value);
         }
 
-        [SingleRecipeDescription(Description = "DummyShot Before Inject", DescriptionKey ="DummyShot After Wait No Product", Unit = Unit.Second)]
+        [SingleRecipeDescription(Description = "DummyShot Before Inject", Detail = "DummyShot After Wait No Product", Unit = Unit.Minute)]
         [ParameterDescription(216)]
         public double DummyShotBeforeInject
         {
