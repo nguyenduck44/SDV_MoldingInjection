@@ -28,7 +28,7 @@
                           Tag="Check to Enable Dot Weighting Test Mode" />
                 <CheckBox IsChecked="{Binding IsDisableInterLock}"
                           Content="Disable Interlock"
-                          Visibility="Collapsed"
+                          Visibility="Visible"
                           Tag="Check to Disable Interlock" />
                 <CheckBox IsChecked="{Binding MachineStatus.DisableSyringeCheck}"
                           Content="Disable Syringe Check"

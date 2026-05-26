@@ -163,7 +163,10 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESPDHeadProcToRunStep.SyringeAmountCheck:
                     Log.Debug("Syringe Amount Check");
-                    if (SyringeAmountIsTimeOver && In_SyringeCheck.Value == true && CurrentHeadSkip == false)
+                    if (SyringeAmountIsTimeOver && 
+                        In_SyringeCheck.Value == true && 
+                        CurrentHeadSkip == false &&
+                        Parent?.Sequence != ESequence.IdlePurge)
                     {
                         RaiseHeadWarning(EWarning.VA_SPD_H01_SYRING_AMOUNT_TIMEOVER);
                     }
@@ -173,7 +176,10 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcToRunStep.SyringeAirCheck:
                     Log.Debug("Syringe Air Check");
 #if !SIMULATION
-                    if (In_SyringeAir.Value == false && In_SyringeCheck.Value && CurrentHeadSkip == false)
+                    if (In_SyringeAir.Value == false && 
+                        In_SyringeCheck.Value && 
+                        _machineStatus.DisableSyringeCheck == false &&
+                        CurrentHeadSkip == false)
                     {
                         RaiseHeadWarning(EWarning.SE_SPD_H01_SYRING_AIR_NOT_DETECT);
                     }
@@ -894,7 +900,8 @@ namespace SDV_MoldingInjection.Process
                         CurrentHeadSkip == false &&
                         _machineStatus.DisableSyringeCheck == false &&
                         (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run) &&
-                        IsSequenceAssembleOrDisassemble(Parent!.Sequence) == false)
+                        IsSequenceAssembleOrDisassemble(Parent!.Sequence) == false &&
+                        Parent?.Sequence != ESequence.IdlePurge)
                     {
                         RaiseHeadWarning(EWarning.SE_SPD_H01_SYRING_NOT_DETECT);
                     }
