@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using EQX.Core.Communication.CIM.Custom.WordArea;
 using EQX.UI.Controls;
 using System.Windows;
+using TOPENG_Device;
 
 namespace SDV_MoldingInjection.Defines
 {
@@ -43,8 +45,25 @@ namespace SDV_MoldingInjection.Defines
                 if (TactTimeListViewModel.TactTimes.Count > 30)
                     TactTimeListViewModel.TactTimes.RemoveAt(TactTimeListViewModel.TactTimes.Count - 1);
             });
+
+            WriteTactTimeToCIM();
         }
 
         public TactTimeListViewModel TactTimeListViewModel { get; }
+
+        private void WriteTactTimeToCIM()
+        {
+            int wordLength = TactTimeListViewModel.TactTimes.Count * 2;
+            short[] data = new short[wordLength];
+            int offset = 0;
+
+            for (int i = 0; i < TactTimeListViewModel.TactTimes.Count; i++)
+            {
+                PlcDataConverter.SetInt32(data, offset, (int)(TactTimeListViewModel.TactTimes[i] * 1000));
+                offset += 2;
+            }
+
+            CIMAddressMap.WriteWords(0xB500, wordLength, data);
+        }
     }
 }

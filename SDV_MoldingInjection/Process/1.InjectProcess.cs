@@ -7,7 +7,6 @@ using EQX.Core.Sequence;
 using EQX.InOut;
 using EQX.UI.Controls;
 using EQX.UI.MVVM;
-using OpenTK.Compute.OpenCL;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.Defines.Productions;
