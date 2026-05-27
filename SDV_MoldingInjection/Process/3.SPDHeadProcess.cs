@@ -998,8 +998,8 @@ namespace SDV_MoldingInjection.Process
                         CurrentTactTimeList.TactTimeCounter = (int)Environment.TickCount64;
                     }
 
-                    if (_machineStatus.IsDryRunMode || 
-                       (OptionRecipe.SkipDispensing && sequence == ESequence.ResinInject))
+                    if ((_machineStatus.IsDryRunMode || 
+                       (OptionRecipe.SkipDispensing && sequence == ESequence.ResinInject)) && sequence != ESequence.IdlePurge)
                     {
                         Log.Debug("Skip Dispensing");
                         CarrierJigStatus.InjectTime = 0;
