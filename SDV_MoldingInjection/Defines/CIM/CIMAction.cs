@@ -1,4 +1,5 @@
-﻿using EQX.Core.Communication.CIM;
+﻿using EQX.Core.Common;
+using EQX.Core.Communication.CIM;
 using EQX.Core.Communication.CIM.Custom;
 using EQX.Core.Communication.CIM.Custom.WordArea;
 using EQX.Core.Recipe;
@@ -8,6 +9,7 @@ using EQX.UI.MVVM;
 using log4net;
 using log4net.Repository.Hierarchy;
 using Newtonsoft.Json.Linq;
+using SDV_MoldingInjection.MVVM.ViewModels;
 using SDV_MoldingInjection.Recipe;
 using System.Reflection;
 using TOPENG_Device;
@@ -25,12 +27,14 @@ namespace SDV_MoldingInjection.Defines.CIM
                          ICIMMapHelper mapHelper,
                          RecipeSelector recipeSelector,
                          CIMFunctionViewModel cimFunctionVM,
-                         RecipeCatalog recipeCatalog)
+                         RecipeCatalog recipeCatalog,
+                         IViewModelFactory viewModelFactory)
         {
             _mapHelper = mapHelper;
             _recipeSelector = recipeSelector;
             _cimFunctionVM = cimFunctionVM;
             _recipeCatalog = recipeCatalog;
+            _viewModelFactory = viewModelFactory;
             _machineStatus = machineStatus;
             cimCommandDetail = new CIMCommandDetail(_mapHelper);
 
@@ -317,6 +321,20 @@ namespace SDV_MoldingInjection.Defines.CIM
                     await Task.Delay(100);
                 }
             }, token);
+
+            _ = Task.Factory.StartNew(async () =>
+            {
+                while (true)
+                {
+                    if (CCLinkIEHelper.ReadCCIEBit(0x12DF))
+                    {
+                        while (CCLinkIEHelper.ReadCCIEBit(0x12DF)) ;
+
+                        _viewModelFactory.Create<CurrentAlarmViewModel>().AlarmResetCommand.Execute(null);
+
+                    }
+                }
+            }, token);
         }
 
         public static int[] ECMValues = new int[]
@@ -424,6 +442,7 @@ namespace SDV_MoldingInjection.Defines.CIM
         private readonly RecipeSelector _recipeSelector;
         private readonly CIMFunctionViewModel _cimFunctionVM;
         private readonly RecipeCatalog _recipeCatalog;
+        private readonly IViewModelFactory _viewModelFactory;
         private Dictionary<CIMCommand, bool> _commandHandling = new Dictionary<CIMCommand, bool>();
         private readonly MachineStatus _machineStatus;
         private object _locker = new object();
