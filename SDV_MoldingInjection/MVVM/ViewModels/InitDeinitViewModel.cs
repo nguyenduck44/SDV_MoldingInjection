@@ -99,11 +99,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             CIMAction cimAction,
             ProductionService productionService,
             MachineStatus machineStatus,
-            InOutHandler inOutHandler)
+            InOutHandler inOutHandler,
+            TactTimeList tactTimeList)
         {
             _devices = devices;
             _machineStatus = machineStatus;
             _inOutHandler = inOutHandler;
+            _tactTimeList = tactTimeList;
             _processes = processes;
             _navigationService = navigationService;
             _authenticationService = authenticationService;
@@ -307,7 +309,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         _authenticationService.ValidatePermission(EPermission.SuperUser, "3141");
 
                         _machineStatus.MachineIdleTick = Environment.TickCount;
-
+                        _tactTimeList.TactCounterStart();
                         _navigationService.NavigateTo<AutoViewModel>();
                         _step++;
                         break;
@@ -608,6 +610,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly Devices _devices;
         private readonly MachineStatus _machineStatus;
         private readonly InOutHandler _inOutHandler;
+        private readonly TactTimeList _tactTimeList;
         private readonly Processes _processes;
 
         private string _messageText = "";

@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using EQX.Core.Common;
 using EQX.Core.Communication.CIM.Custom.WordArea;
 using EQX.UI.Controls;
 using System.Windows;
@@ -12,6 +13,7 @@ namespace SDV_MoldingInjection.Defines
         private bool IsTactStarted { get; set; } = false;
 
         private int TactCounter { get; set; }
+        private NonOverlappingTimer Timer;
         #endregion
         public TactTimeList(TactTimeListViewModel tactTimeListViewModel)
         {
@@ -22,6 +24,15 @@ namespace SDV_MoldingInjection.Defines
             SPDHead3 = new TactTime("SPDHead3");
             SPDHead4 = new TactTime("SPDHead4");
             TactTimeListViewModel = tactTimeListViewModel;
+
+            Timer = new NonOverlappingTimer(200);
+            Timer.Elapsed += Timer_Elapsed;
+            Timer.Start();
+        }
+
+        private void Timer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
+        {
+            WriteCurrentTactTimeToCIM();
         }
 
         public TactTime Chamber { get; }
@@ -39,17 +50,20 @@ namespace SDV_MoldingInjection.Defines
             IsTactStarted = true;
         }
 
-        public void TactCounterEnd()
+        public void TactCounterEnd(int jigOutputCount)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
                 double currentTact;
-                currentTact = (Environment.TickCount - TactCounter) / 1000.0 / 2.0;
+                currentTact = (Environment.TickCount - TactCounter) / 1000.0;
 
-                TactTimeListViewModel.TactTimes.Insert(0, currentTact);
+                for (int i = 0; i < jigOutputCount; i++)
+                {
+                    TactTimeListViewModel.TactTimes.Insert(0, currentTact);
 
-                if (TactTimeListViewModel.TactTimes.Count > 30)
-                    TactTimeListViewModel.TactTimes.RemoveAt(TactTimeListViewModel.TactTimes.Count - 1);
+                    if (TactTimeListViewModel.TactTimes.Count > 30)
+                        TactTimeListViewModel.TactTimes.RemoveAt(TactTimeListViewModel.TactTimes.Count - 1);
+                }
             });
 
             TactCounter = Environment.TickCount;
@@ -72,6 +86,16 @@ namespace SDV_MoldingInjection.Defines
             }
 
             CIMAddressMap.WriteWords(0xB500, wordLength, data);
+        }
+
+        private void WriteCurrentTactTimeToCIM()
+        {
+            short[] data = new short[2];
+            double currentTact = (Environment.TickCount - TactCounter) / 1000.0;
+
+            PlcDataConverter.SetInt32(data, 0, (int)(currentTact * 1000));
+
+            CIMAddressMap.WriteWords(0xB53C, 2, data);
         }
     }
 }

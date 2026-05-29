@@ -810,7 +810,6 @@ namespace SDV_MoldingInjection.Process
             {
                 case EMoldProcAutoRunStep.Start:
                     Log.Debug("AutoRun start");
-                    _tactTimeList.TactCounterStart();
                     if (LeftJigDetect == false)
                     {
                         LeftJigID = string.Empty;
@@ -1288,6 +1287,9 @@ namespace SDV_MoldingInjection.Process
                     if (isLoading)
                     {
                         Log.Info("Loading start");
+
+                        outputCount = 0;
+
                         _tactTimeList.Chamber.CycleTimeCounter = Environment.TickCount;
                         _machineStatus.ConfirmLoadingFinish = false;
                     }
@@ -1337,7 +1339,6 @@ namespace SDV_MoldingInjection.Process
                     if (isLoading == false)
                     {
                         _tactTimeList.Chamber.SetTactTime();
-                        _tactTimeList.TactCounterEnd();
                     }
 
                     Log.Debug($"{ChamberOpenClose} Open finish");
@@ -1355,7 +1356,6 @@ namespace SDV_MoldingInjection.Process
                         if (isLoading == false)
                         {
                             Log.Debug("Unload manual");
-                            outputCount = 0;
                             Step.RunStep = (int)EMoldProcLoadingUnloadingStep.CheckIf_LoadOrUnload;
                             break;
                         }
@@ -1751,6 +1751,8 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.ResinInject;
                         break;
                     }
+
+                    _tactTimeList.TactCounterEnd(outputCount);
 
                     Log.Info("Unloading end");
                     _tactTimeList.Chamber.SetCycleTime();
@@ -3194,7 +3196,6 @@ namespace SDV_MoldingInjection.Process
         private ESPDHead _failHead;
         private EDotWeightingHead currentDotWeightingHead;
         private Queue<EMoldProcResinInjectStep> MoldResinInjectSteps = new Queue<EMoldProcResinInjectStep>();
-
         #endregion
     }
 }
