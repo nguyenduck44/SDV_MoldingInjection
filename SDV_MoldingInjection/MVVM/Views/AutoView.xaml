@@ -275,7 +275,7 @@
                                      BorderThickness="0"
                                      Background="Transparent"
                                      HorizontalContentAlignment="Right"
-                                     Text="{Binding TactTimeList.TactTimeListViewModel.TactTimes[29],Mode=OneWay,StringFormat={}{0:F2}}" />
+                                     Text="{Binding TactTimeList.TactTimeListViewModel.TactTimes[0],Mode=OneWay,StringFormat={}{0:F2}}" />
                         </Border>
 
                         <Border Grid.Row="1"

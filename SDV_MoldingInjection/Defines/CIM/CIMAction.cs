@@ -328,11 +328,12 @@ namespace SDV_MoldingInjection.Defines.CIM
                 {
                     if (CCLinkIEHelper.ReadCCIEBit(0x12DF))
                     {
-                        while (CCLinkIEHelper.ReadCCIEBit(0x12DF)) ;
-
                         _viewModelFactory.Create<CurrentAlarmViewModel>().AlarmResetCommand.Execute(null);
 
+                        while (CCLinkIEHelper.ReadCCIEBit(0x12DF)) ;
                     }
+
+                    await Task.Delay(100);
                 }
             }, token);
         }
