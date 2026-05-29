@@ -1287,9 +1287,6 @@ namespace SDV_MoldingInjection.Process
                     if (isLoading)
                     {
                         Log.Info("Loading start");
-
-                        outputCount = 0;
-
                         _tactTimeList.Chamber.CycleTimeCounter = Environment.TickCount;
                         _machineStatus.ConfirmLoadingFinish = false;
                     }
@@ -1695,12 +1692,6 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    if (_machineStatus.IsDryRunMode == false)
-                    {
-                        Log.Debug($"Write data output count: {outputCount}");
-                        _productionService.WriteData(EProductionWriteType.Output, outputCount);
-                    }
-
                     Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
                     break;
                 case EMoldProcLoadingUnloadingStep.Update_Jig_Status:
@@ -1752,7 +1743,12 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    Log.Debug($"Write data output count: {outputCount}");
+                    _productionService.WriteData(EProductionWriteType.Output, outputCount);
+
                     _tactTimeList.TactCounterEnd(outputCount);
+
+                    outputCount = 0;
 
                     Log.Info("Unloading end");
                     _tactTimeList.Chamber.SetCycleTime();
