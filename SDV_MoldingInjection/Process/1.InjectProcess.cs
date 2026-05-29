@@ -810,6 +810,7 @@ namespace SDV_MoldingInjection.Process
             {
                 case EMoldProcAutoRunStep.Start:
                     Log.Debug("AutoRun start");
+                    _tactTimeList.TactCounterStart();
                     if (LeftJigDetect == false)
                     {
                         LeftJigID = string.Empty;
@@ -1713,7 +1714,6 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcLoadingUnloadingStep.Chamber_CoverClose:
                     _tactTimeList.Chamber.TactTimeCounter = Environment.TickCount;
-                    _tactTimeList.TactCounterStart();
                     Log.Debug($"Close {ChamberOpenClose} cylinder");
                     ChamberOpenClose.Close();
                     Wait(_currentRecipe.CylinderDelayTimeRecipe.ChamberOpenCloseCylinderMoveDelay,

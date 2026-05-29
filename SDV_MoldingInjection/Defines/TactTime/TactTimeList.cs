@@ -9,6 +9,8 @@ namespace SDV_MoldingInjection.Defines
     public class TactTimeList : ObservableObject
     {
         #region Privates 
+        private bool IsTactStarted { get; set; } = false;
+
         private int TactCounter { get; set; }
         #endregion
         public TactTimeList(TactTimeListViewModel tactTimeListViewModel)
@@ -30,7 +32,11 @@ namespace SDV_MoldingInjection.Defines
         public TactTime SPDHead4 { get; }
         public void TactCounterStart()
         {
+            if (IsTactStarted) return;
+
             TactCounter = Environment.TickCount;
+
+            IsTactStarted = true;
         }
 
         public void TactCounterEnd()
@@ -45,6 +51,8 @@ namespace SDV_MoldingInjection.Defines
                 if (TactTimeListViewModel.TactTimes.Count > 30)
                     TactTimeListViewModel.TactTimes.RemoveAt(TactTimeListViewModel.TactTimes.Count - 1);
             });
+
+            TactCounter = Environment.TickCount;
 
             WriteTactTimeToCIM();
         }
