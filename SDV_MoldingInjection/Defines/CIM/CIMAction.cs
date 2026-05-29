@@ -28,12 +28,14 @@ namespace SDV_MoldingInjection.Defines.CIM
                          RecipeSelector recipeSelector,
                          CIMFunctionViewModel cimFunctionVM,
                          RecipeCatalog recipeCatalog,
+                         CIMCollection cIMCollection,
                          IViewModelFactory viewModelFactory)
         {
             _mapHelper = mapHelper;
             _recipeSelector = recipeSelector;
             _cimFunctionVM = cimFunctionVM;
             _recipeCatalog = recipeCatalog;
+            _cIMCollection = cIMCollection;
             _viewModelFactory = viewModelFactory;
             _machineStatus = machineStatus;
             cimCommandDetail = new CIMCommandDetail(_mapHelper);
@@ -227,7 +229,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                     {
                         var functionChangeCommand = CIMCommandDetail.Create(CIMCommand.EquipFunctionChangeCommand);
                         functionChangeCommand.ReadCIMWords();
-                        
+
                         EquipFunctionChangeCommandReceiveArea receiveArea = new EquipFunctionChangeCommandReceiveArea();
                         receiveArea.FromCIMData(functionChangeCommand.FromCIMDataBuffer);
 
@@ -336,14 +338,19 @@ namespace SDV_MoldingInjection.Defines.CIM
                     await Task.Delay(100);
                 }
             }, token);
+
+            if (_cIMCollection.WriteMCCFromToMap() == false)
+            {
+                LogManager.GetLogger("CIM").Error("Load MCC Map Fail");
+            }
         }
 
         public static int[] ECMValues = new int[]
         {
-            1234,
-            4567,
-            1357,
-            10000
+        1234,
+        4567,
+        1357,
+        10000
         };
 
         bool isFirstTime = true;
@@ -443,6 +450,7 @@ namespace SDV_MoldingInjection.Defines.CIM
         private readonly RecipeSelector _recipeSelector;
         private readonly CIMFunctionViewModel _cimFunctionVM;
         private readonly RecipeCatalog _recipeCatalog;
+        private readonly CIMCollection _cIMCollection;
         private readonly IViewModelFactory _viewModelFactory;
         private Dictionary<CIMCommand, bool> _commandHandling = new Dictionary<CIMCommand, bool>();
         private readonly MachineStatus _machineStatus;

@@ -4,6 +4,7 @@ using EQX.Core.Sequence;
 using EQX.InOut;
 using Microsoft.Extensions.Configuration;
 using SDV_MoldingInjection.Defines;
+using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.MVVM.Models;
 using SDV_MoldingInjection.Recipe;
 using System.IO;
@@ -53,7 +54,8 @@ namespace SDV_MoldingInjection.Process
             CarrierJigStatusList carrierJigStatusList,
             IConfiguration configuration,
             TactTimeList tactTimeList,
-            Plotter plotter)
+            Plotter plotter,
+            CIMCollection cIMCollection)
         {
             _devices = devices;
             _recipeSelector = recipeSelector;
@@ -62,6 +64,7 @@ namespace SDV_MoldingInjection.Process
             _configuration = configuration;
             _tactTimeList = tactTimeList;
             _plotter = plotter;
+            _cIMCollection = cIMCollection;
             procInputs = processIO.DryPumpProcInput;
             procOutputs = processIO.DryPumpProcOutput;
         }
@@ -246,10 +249,12 @@ namespace SDV_MoldingInjection.Process
             switch ((EDryPumpProcOriginStep)Step.OriginStep)
             {
                 case EDryPumpProcOriginStep.Start:
+                    _cIMCollection.WriteMCC_OnlyStart(EMCCAction.PU01_INIT_PU01);
                     Step.OriginStep++;
                     break;
                 case EDryPumpProcOriginStep.End:
                     Step.OriginStep++;
+                    _cIMCollection.WriteMCC_OnlyEnd(EMCCAction.PU01_INIT_PU01);
                     base.ProcessOrigin();
                     break;
             }
@@ -641,6 +646,7 @@ namespace SDV_MoldingInjection.Process
         private readonly IConfiguration _configuration;
         private readonly TactTimeList _tactTimeList;
         private readonly Plotter _plotter;
+        private readonly CIMCollection _cIMCollection;
 
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
         private InjectTimeRecipe InjectTimeRecipe => _recipeSelector.CurrentRecipe.InjectTimeRecipe;

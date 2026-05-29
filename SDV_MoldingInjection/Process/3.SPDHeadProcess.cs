@@ -7,6 +7,7 @@ using EQX.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using ScottPlot.Plottables;
 using SDV_MoldingInjection.Defines;
+using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.MVVM.Models;
 using SDV_MoldingInjection.Recipe;
 using System.Threading.Tasks;
@@ -138,7 +139,8 @@ namespace SDV_MoldingInjection.Process
             SyringAmountStatusList syringeAmountStatusList,
             MachineStatus machineStatus,
             CarrierJigStatusList carrierJigStatusList,
-            TactTimeList tactTimeList)
+            TactTimeList tactTimeList,
+            CIMCollection cIMCollection)
         {
             _devices = devices;
             _recipeSelector = recipeSelector;
@@ -149,6 +151,7 @@ namespace SDV_MoldingInjection.Process
             _machineStatus = machineStatus;
             _carrierJigStatusList = carrierJigStatusList;
             _tactTimeList = tactTimeList;
+            _cIMCollection = cIMCollection;
         }
 
         #region Process Methods
@@ -163,8 +166,8 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESPDHeadProcToRunStep.SyringeAmountCheck:
                     Log.Debug("Syringe Amount Check");
-                    if (SyringeAmountIsTimeOver && 
-                        In_SyringeCheck.Value == true && 
+                    if (SyringeAmountIsTimeOver &&
+                        In_SyringeCheck.Value == true &&
                         CurrentHeadSkip == false &&
                         Parent?.Sequence != ESequence.IdlePurge)
                     {
@@ -176,8 +179,8 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcToRunStep.SyringeAirCheck:
                     Log.Debug("Syringe Air Check");
 #if !SIMULATION
-                    if (In_SyringeAir.Value == false && 
-                        In_SyringeCheck.Value && 
+                    if (In_SyringeAir.Value == false &&
+                        In_SyringeCheck.Value &&
                         _machineStatus.DisableSyringeCheck == false &&
                         CurrentHeadSkip == false)
                     {
@@ -259,6 +262,10 @@ namespace SDV_MoldingInjection.Process
             {
                 case ESPDHeadProcOriginStep.Start:
                     Log.Debug("Origin start");
+                    _cIMCollection.WriteMCC_OnlyStart(head == ESPDHead.SPDHead1 ? EMCCAction.SP01_INIT_SP01 :
+                                                      head == ESPDHead.SPDHead2 ? EMCCAction.SP02_INIT_SP02 :
+                                                      head == ESPDHead.SPDHead3 ? EMCCAction.SP03_INIT_SP03 :
+                                                      EMCCAction.SP04_INIT_SP04);
                     Step.OriginStep++;
                     break;
                 case ESPDHeadProcOriginStep.GAxis_Origin:
@@ -412,6 +419,10 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESPDHeadProcOriginStep.End:
                     Log.Debug("Origin end");
+                    _cIMCollection.WriteMCC_OnlyEnd(head == ESPDHead.SPDHead1 ? EMCCAction.SP01_INIT_SP01 :
+                                                    head == ESPDHead.SPDHead2 ? EMCCAction.SP02_INIT_SP02 :
+                                                    head == ESPDHead.SPDHead3 ? EMCCAction.SP03_INIT_SP03 :
+                                                    EMCCAction.SP04_INIT_SP04);
                     Step.OriginStep++;
                     base.ProcessOrigin();
                     break;
@@ -981,7 +992,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.Wait_HeadUse:
-                    if (CurrentHeadSkip == false || 
+                    if (CurrentHeadSkip == false ||
                         MachineStatusHeadSkip == false ||
                         sequence == ESequence.IdlePurge)
                     {
@@ -998,7 +1009,7 @@ namespace SDV_MoldingInjection.Process
                         CurrentTactTimeList.TactTimeCounter = (int)Environment.TickCount64;
                     }
 
-                    if ((_machineStatus.IsDryRunMode || 
+                    if ((_machineStatus.IsDryRunMode ||
                        (OptionRecipe.SkipDispensing && sequence == ESequence.ResinInject)) && sequence != ESequence.IdlePurge)
                     {
                         Log.Debug("Skip Dispensing");
@@ -1219,7 +1230,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESPDHeadProcCommonStep.WorkRequest_Wait:
                     //Wait time no product -> DummyShot before Inject
-                    if (_machineStatus.SetDummyShotBeforeInject && 
+                    if (_machineStatus.SetDummyShotBeforeInject &&
                         sequence == ESequence.ResinInject &&
                         dummyShotBeforeInject == false &&
                         Parent?.Sequence == ESequence.AutoRun)
@@ -1230,7 +1241,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    if (procInputs[ESPDHeadProcInput.WorkRequest].Value == false || 
+                    if (procInputs[ESPDHeadProcInput.WorkRequest].Value == false ||
                        ((CurrentHeadSkip && MachineStatusHeadSkip && sequence != ESequence.IdlePurge)))
                     {
                         Wait(50);
@@ -1978,6 +1989,7 @@ namespace SDV_MoldingInjection.Process
         private readonly MachineStatus _machineStatus;
         private readonly CarrierJigStatusList _carrierJigStatusList;
         private readonly TactTimeList _tactTimeList;
+        private readonly CIMCollection _cIMCollection;
 
         public double PAxisInjectVelocity => _pAxisInject_Vel;
 

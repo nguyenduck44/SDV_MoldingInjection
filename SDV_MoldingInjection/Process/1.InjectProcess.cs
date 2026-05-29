@@ -533,6 +533,7 @@ namespace SDV_MoldingInjection.Process
             {
                 case EMoldProcOriginStep.Start:
                     Log.Debug("Origin start");
+                    _cIMCollection.WriteMCC_OnlyStart(EMCCAction.IJ01_INIT_IJ01);
                     Step.OriginStep++;
                     break;
                 case EMoldProcOriginStep.CheckIfChamberOpen:
@@ -730,6 +731,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcOriginStep.End:
                     Log.Debug("Origin end");
+                    _cIMCollection.WriteMCC_OnlyEnd(EMCCAction.IJ01_INIT_IJ01);
                     _waitTimeNoProduct = Environment.TickCount;
                     Step.OriginStep++;
                     base.ProcessOrigin();
