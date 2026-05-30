@@ -988,6 +988,15 @@ namespace SDV_MoldingInjection.Process
             {
                 case ESPDHeadProcCommonStep.Start:
                     Log.Info($"{sequence} start");
+
+                    if (sequence == ESequence.ResinInject)
+                    {
+                        _cIMCollection.WriteMCC_OnlyStart(head == ESPDHead.SPDHead1 ? EMCCAction.SP01_ACT_WAIT_INJECT :
+                                                          head == ESPDHead.SPDHead2 ? EMCCAction.SP02_ACT_WAIT_INJECT :
+                                                          head == ESPDHead.SPDHead3 ? EMCCAction.SP03_ACT_WAIT_INJECT :
+                                                          EMCCAction.SP04_ACT_WAIT_INJECT );
+                    }
+
                     _bubbleRemoveCount = 1;
                     Step.RunStep++;
                     break;
@@ -1042,6 +1051,15 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.Gate_Close:
+                    if (sequence == ESequence.ResinInject)
+                    {
+                        WriteHeadMCC(EMCCAction.SP01_ACT_WAIT_INJECT, EMCCAction.SP01_MOVE_T_TO_INJECT_GATE_CLOSE_POS);
+                    }
+                    else if (sequence == ESequence.DummyShot)
+                    {   
+                        WriteHeadMCC(EMCCAction.SP01_ACT_WAIT_DUMMY_SHOT, EMCCAction.SP01_MOVE_T_TO_DUMMY_GATE_CLOSE_POS);
+                    }
+
                     if (IsGateOnClosePos)
                     {
                         Step.RunStep = (int)ESPDHeadProcCommonStep.Charge_PosVel_Calculte;
@@ -1065,6 +1083,15 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.Charge_PosVel_Calculte:
+                    if (sequence == ESequence.ResinInject)
+                    {
+                        WriteHeadMCC(EMCCAction.SP01_MOVE_T_TO_INJECT_GATE_CLOSE_POS, EMCCAction.SP01_CALCULATE_CHARGE_INJECT);
+                    }
+                    else if (sequence == ESequence.DummyShot)
+                    {
+                        WriteHeadMCC(EMCCAction.SP01_MOVE_T_TO_DUMMY_GATE_CLOSE_POS, EMCCAction.SP01_CALCULATE_DUMMY_CHARGE_POS);
+                    }
+
                     switch (sequence)
                     {
                         case ESequence.ResinInject:
@@ -1098,6 +1125,15 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.PAxis_ChargePos_Move:
+                    if (sequence == ESequence.ResinInject)
+                    {
+                        WriteHeadMCC(EMCCAction.SP01_CALCULATE_CHARGE_INJECT, EMCCAction.SP01_MOVE_Z_TO_INJECT_CHARGE_POS);
+                    }
+                    else if (sequence == ESequence.DummyShot)
+                    {
+                        WriteHeadMCC(EMCCAction.SP01_CALCULATE_DUMMY_CHARGE_POS, EMCCAction.SP01_MOVE_Z_TO_DUMMY_CHARGE_POS);
+                    }
+
                     Log.Debug($"{PAxis.Name} moving to ChargePos [{_pAxisCharge_Pos}mm]");
                     PAxis.MoveAbs(_pAxisCharge_Pos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
@@ -1116,6 +1152,15 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.Base_PosVel_Calculte:
+                    if (sequence == ESequence.ResinInject)
+                    {
+                        WriteHeadMCC(EMCCAction.SP01_MOVE_Z_TO_INJECT_CHARGE_POS, EMCCAction.SP01_CALCULATE_INJECT_BASE_POS);
+                    }
+                    else if (sequence == ESequence.DummyShot)
+                    {
+                        WriteHeadMCC(EMCCAction.SP01_MOVE_Z_TO_DUMMY_CHARGE_POS, EMCCAction.SP01_CALCULATE_BASE_DUMMY);
+                    }
+
                     Log.Debug("Calculate InjectPos and Velocity");
                     _pAxisInject_Pos = _pAxisBase_Pos;
                     switch (sequence)
@@ -1212,6 +1257,15 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.Gate_Open:
+                    if (sequence == ESequence.ResinInject)
+                    {
+                        WriteHeadMCC(EMCCAction.SP01_CALCULATE_INJECT_BASE_POS, EMCCAction.SP01_MOVE_T_TO_GATE_INJECT_OPEN_POS);
+                    }
+                    else if (sequence == ESequence.DummyShot)
+                    {
+                        WriteHeadMCC(EMCCAction.SP01_CALCULATE_BASE_DUMMY, EMCCAction.SP01_MOVE_T_TO_DUMMY_GATE_OPEN_POS);
+                    }
+
                     Log.Debug($"{GAxis.Name} moving to OpenPos [{_currentSPDHeadRecipe.GateOpenPos}°]");
                     GAxis.MoveAbs(_currentSPDHeadRecipe.GateOpenPos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
@@ -1226,6 +1280,17 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"{GAxis.Name} moving to OpenPos done");
+                    
+                    if (sequence == ESequence.ResinInject)
+                    {
+                        WriteHeadMCC(EMCCAction.SP01_MOVE_T_TO_GATE_INJECT_OPEN_POS, EMCCAction.SP01_WAIT_REQUEST_INJECT);
+                    }
+                    else if (sequence == ESequence.DummyShot)
+                    {
+                        WriteHeadMCC(EMCCAction.SP01_MOVE_T_TO_DUMMY_GATE_OPEN_POS, EMCCAction.SP01_OUT_WAIT_TIME);
+                        WriteHeadMCC(EMCCAction.SP01_OUT_WAIT_TIME, EMCCAction.SP01_WAIT_REQUEST_DUMMY);
+                    }
+
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.WorkRequest_Wait:
@@ -1263,6 +1328,15 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.PAxis_InjectPos_Move:
+                    if (sequence == ESequence.ResinInject)
+                    {
+                        WriteHeadMCC(EMCCAction.SP01_WAIT_REQUEST_INJECT, EMCCAction.SP01_MOVE_Z_TO_BASE_INJECT_POS);
+                    }
+                    else if (sequence == ESequence.DummyShot)
+                    {
+                        WriteHeadMCC(EMCCAction.SP01_WAIT_REQUEST_DUMMY, EMCCAction.SP01_MOVE_Z_TO_BASE_DUMMY_POS);
+                    }
+
                     if (sequence == ESequence.ResinInject)
                     {
                         if (Parent?.Sequence == ESequence.AutoRun)
@@ -1371,6 +1445,16 @@ namespace SDV_MoldingInjection.Process
 
                     // Consume syringe amount
                     _syringeAmountStatusList.ConsumeSyringeAmount(head, _pAxisBase_Pos - _pAxisCharge_Pos);
+
+                    if (sequence == ESequence.ResinInject)
+                    {
+                        WriteHeadMCC(EMCCAction.SP01_MOVE_Z_TO_BASE_INJECT_POS, EMCCAction.SP01_ACT_WAIT_DUMMY_SHOT);
+                    }
+                    else if (sequence == ESequence.DummyShot)
+                    {
+                        WriteHeadMCC(EMCCAction.SP01_MOVE_Z_TO_BASE_DUMMY_POS, EMCCAction.SP01_IN_WAIT_TIME);
+                    }
+
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.WorkDone_Send:
@@ -1976,6 +2060,12 @@ namespace SDV_MoldingInjection.Process
         private void RaiseHeadAlarm(EAlarm alarm)
         {
             RaiseAlarm(alarm + ((int)(EAlarm.MO_SPD_H02_G2_AXIS_OPEN_POS_TIMEOUT - EAlarm.MO_SPD_H01_G1_AXIS_OPEN_POS_TIMEOUT)) * ((int)head - 1));
+        }
+
+        private void WriteHeadMCC(EMCCAction actionEnd, EMCCAction actionStart)
+        {
+            _cIMCollection.WriteMCC (actionEnd + ((int)(EMCCAction.SP02_INIT_SP02 - EMCCAction.SP01_INIT_SP01)) * ((int)head - 1),
+                                    (actionStart + ((int)(EMCCAction.SP02_INIT_SP02 - EMCCAction.SP01_INIT_SP01)) * ((int)head - 1)));
         }
         #endregion
 
