@@ -95,7 +95,7 @@ namespace SDV_MoldingInjection.Defines
 
             PlcDataConverter.SetInt32(data, 0, (int)(currentTact * 1000));
 
-            CIMAddressMap.WriteWords(0xB53C, 2, data);
+            CIMAddressMap.WriteWords(0xB53C, 2, data , false);
         }
     }
 }
