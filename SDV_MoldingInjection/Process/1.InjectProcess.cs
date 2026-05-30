@@ -107,8 +107,8 @@ namespace SDV_MoldingInjection.Process
         public MaterialAssemblyPlcToCimArea MaterialAssemblyArea_Right_1 { get; set; }
         public MaterialAssemblyPlcToCimArea MaterialAssemblyArea_Right_2 { get; set; }
 
-        public string LeftJigID { get; set; } = "31A-005216-BME-PA-DTHB-NZPP111";
-        public string RightJigID { get; set; } = "31A-005216-BME-PA-DTHB-NZPP211";
+        public string LeftJigID { get; set; } = "";
+        public string RightJigID { get; set; } = "";
         public string LeftCellId { get; set; }
         public string RightCellId { get; set; }
         #endregion

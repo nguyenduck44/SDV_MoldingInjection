@@ -286,6 +286,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         break;
                     case EHandleStep.End:
                         _devices.Outputs.Lamp_Stop();
+                        _machineStatus.MachineMode = _devices.Inputs.AutoSW.Value ? EMachineMode.Auto : EMachineMode.Teach;
+                        _devices.Outputs.SWKeyLock.Value = false;
                         Thread.Sleep(50);
                         _step++;
                         break;
