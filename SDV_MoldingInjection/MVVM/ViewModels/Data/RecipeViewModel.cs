@@ -150,10 +150,20 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    string CopyRecipe = (string)Application.Current.Resources["str_CopyRecipe"];
-                    if (MessageBoxEx.ShowDialog($"{CopyRecipe} {SelectedModel} ? ") == true)
+                    CreateNewRecipeWindow createNewRecipeWindow = new CreateNewRecipeWindow()
                     {
-                        RecipeSelector.Copy(SelectedModel);
+                        Width = 500,
+                        Height = 200
+                    };
+                    if (createNewRecipeWindow.ShowDialog() == true)
+                    {
+                        RecipeInfo recipeInfo = new RecipeInfo()
+                        {
+                            Id = createNewRecipeWindow.RecipeId,
+                            Name = createNewRecipeWindow.RecipeName,
+                            FolderName = createNewRecipeWindow.RecipeName
+                        };
+                        RecipeSelector.Copy(SelectedModel, recipeInfo);
                         RecipeSelector.UpdateValidRecipes();
                         LoadRecipeEvent?.Invoke();
                     }

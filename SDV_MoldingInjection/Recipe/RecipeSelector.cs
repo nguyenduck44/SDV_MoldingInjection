@@ -349,29 +349,65 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        public void Copy(string selectedRecipe)
+        public void Copy(string selectedRecipe, RecipeInfo recipeInfo)
         {
+            string newRecipeName = recipeInfo.Name;
+            if (string.IsNullOrWhiteSpace(newRecipeName))
+            {
+                MessageBoxEx.Show("Recipe name is empty.");
+                return;
+            }
+
+            if (_recipeCatalog.ContainsName(newRecipeName))
+            {
+                MessageBoxEx.Show($"Recipe name '{newRecipeName}' already exists in RecipeInfo.");
+                return;
+            }
+            if (recipeInfo.Id <= 90)
+            {
+                MessageBoxEx.Show($"Recipe Id for '{newRecipeName}' is not valid.");
+                return;
+            }
+            if (_recipeCatalog.ContainsId(recipeInfo.Id))
+            {
+                MessageBoxEx.Show($"Recipe Id '{recipeInfo.Id}' already exists in RecipeInfo.");
+                return;
+            }
+
+            if (recipeInfo.Name.StartsWith("TT") == false)
+            {
+                MessageBoxEx.Show($"Recipe Name for '{newRecipeName}' is not valid.");
+                return;
+            }
+
             selectedRecipe = ResolveRecipeName(selectedRecipe);
             string currentRecipeFolder = GetRecipeFolderPath(selectedRecipe);
-            string currentRecipeFile = Path.Combine(currentRecipeFolder, "Recipe.json");
+
             if (Directory.Exists(currentRecipeFolder) == false)
                 MessageBox.Show($" Recipe folder \"{currentRecipeFolder}\" not found");
+
+            string destinationFolder = Path.Combine(recipeFolder, recipeInfo.FolderName);
+
             var settings = new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.Auto
             };
 
-            string destinationFolder = "D:\\MoldInjection\\Recipe\\TT_094_MODEL094";
             if (Directory.Exists(destinationFolder) == false)
             {
                 Directory.CreateDirectory(destinationFolder);
 
                 CopyDirectory(currentRecipeFolder, destinationFolder);
 
+                string RecipeInfoFilePath = Path.Combine(destinationFolder, "RecipeInfo.json");
+
+                File.WriteAllText(RecipeInfoFilePath, JsonConvert.SerializeObject(recipeInfo, Formatting.Indented, settings));
+
                 UpdateValidRecipes(); // Refresh the list to show the new copied recipe
 
                 // TODO: WRITE PARAMETER DATA TO RMS AREA
                 EquipEventHelpers.ParameterWordSingleParameterUpdate(1, CurrentRecipe.CommonRecipe.LogSaveDay);
+
                 // TODO : Temp disable
                 //EquipEventHelpers.PPIDCreate(Path.GetFileName(destinationFolder));
             }
