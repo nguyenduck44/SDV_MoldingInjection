@@ -99,6 +99,20 @@ namespace SDV_MoldingInjection.Process
             }
         }
 
+        private bool CellIdTrackInStatus
+        {
+            set
+            {
+                if (value)
+                {
+                    MCCLinkIE.mddevset(151, 255, 23, 0x2009);
+                }
+                else
+                {
+                    MCCLinkIE.mddevrst(151, 255, 23, 0x2009);
+                }
+            }
+        }
         private CellJobProcessCimToPlcArea CellJobProcessInfo_Left { get; set; }
         private CellJobProcessCimToPlcArea CellJobProcessInfo_Right { get; set; }
 
@@ -1310,7 +1324,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcLoadingUnloadingStep.YAxis_ReadyPos_Move:
                     _cIMCollection.WriteMCC(isLoading ? EMCCAction.IJ01_COMPONENT_IN : EMCCAction.IJ01_MOVE_Z_TO_SAFETY_POS_AFTER_CLEAN,
-                                            isLoading ? EMCCAction.IJ01_GET_MOVE_Y_TO_READY_POS : EMCCAction.IJ01_MOVE_Y_TO_READY_POS); 
+                                            isLoading ? EMCCAction.IJ01_GET_MOVE_Y_TO_READY_POS : EMCCAction.IJ01_MOVE_Y_TO_READY_POS);
 
                     if (YAxis.IsOnPosition(YAxisReadyPos))
                     {
@@ -1388,18 +1402,6 @@ namespace SDV_MoldingInjection.Process
                             _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_CHAMBER_COVER_OPEN, EMCCAction.IJ01_GET_REQUEST_LD);
                             _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_REQUEST_LD, EMCCAction.IJ01_GET_WAIT_LD);
 
-                            //TODO: Wait InOut machine write program
-                            if (_optionRecipe.UseCIM)
-                            {
-                                if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 || LeftJigDetect)
-                                {
-                                    Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_Cell2SendBitOn;
-                                    break;
-                                }
-                                Step.RunStep++;
-                                break;
-                            }
-
                             Log.Debug("Set next step Wait_InOutHandlerStart_Request");
                             Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request;
                             break;
@@ -1412,17 +1414,37 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     break;
-                case EMoldProcLoadingUnloadingStep.Wait_Cell1SendBitOn:
-                    _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_WAIT_LD, EMCCAction.IJ01_GET_WAIT_CELL1_SEND_BIT_ON);
 
-                    if (CellId1SendOn == false)
+                case EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request:
+                    if (CellId1SendOn)
                     {
+                        _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_WAIT_LD, EMCCAction.IJ01_GET_WAIT_CELL1_SEND_BIT_ON);
+                        Log.Debug("Cell ID 1 (B2107) Bit On -> Get Cell ID 1");
+                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.GetCellId1;
+                        break;
+                    }
+
+                    if (CellId2SendOn)
+                    {
+                        _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_WAIT_LD, EMCCAction.IJ01_GET_WAIT_CELL2_SEND_BIT_ON);
+
+                        Log.Debug("Cell ID 2 Bit (B2108) On -> Get Cell ID 2");
+                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.GetCellId2;
+                        break;
+                    }
+
+                    if (_machineStatus.InOutHandlerStartRequest == false ||
+                       (_optionRecipe.SkipHead12 && _optionRecipe.SkipHead34))
+                    {
+                        _machineStatus.InOutHandlerStartRequest = false;
                         Wait(20);
                         break;
                     }
 
-                    Log.Debug("Cell 1 Send Bit (B2107) On");
-                    Step.RunStep++;
+                    _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_WAIT_LD, EMCCAction.IJ01_GET_WAIT_INOUT_HANDLE_REQUEST_START);
+                    Log.Debug("Received Start Request");
+                    _machineStatus.InOutHandlerStartRequest = false;
+                    Step.RunStep = (int)EMoldProcLoadingUnloadingStep.CheckIf_LoadOrUnload;
                     break;
                 case EMoldProcLoadingUnloadingStep.GetCellId1:
                     _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_WAIT_CELL1_SEND_BIT_ON, EMCCAction.IJ01_GET_CELL_ID_1);
@@ -1433,6 +1455,8 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcLoadingUnloadingStep.Set_Cell1ReplyBitOn:
                     _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_CELL_ID_1, EMCCAction.IJ01_GET_WAIT_CELL1_REPLY_BIT_ON);
+
+                    CellIdTrackInStatus = (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM == false) || CIMValidation(true);
 
                     CellId1Reply = true;
                     Log.Debug("Cell 1 Reply Bit (B2007) On");
@@ -1445,33 +1469,17 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    Log.Debug("Cell 1 Send Bit (B2107) Off");   
+                    Log.Debug("Cell 1 Send Bit (B2107) Off");
 
                     CellId1Reply = false;
-
                     Log.Debug("Cell 1 Reply Bit (B2007) Off");
+
+                    CellIdTrackInStatus = false;
+                    Log.Debug("Cell TrackIn Status Bit (B2009) Off");
 
                     _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_WAIT_CELL1_REPLY_BIT_ON, EMCCAction.IJ01_GET_WAIT_CELL1_SEND_BIT_OFF);
 
-                    if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34 || RightJigDetect)
-                    {
-                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request;
-                        break;
-                    }
-
-                    Step.RunStep++;
-                    break;
-                case EMoldProcLoadingUnloadingStep.Wait_Cell2SendBitOn:
-                    _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_WAIT_LD, EMCCAction.IJ01_GET_WAIT_CELL2_SEND_BIT_ON);
-
-                    if (CellId2SendOn == false)
-                    {
-                        Wait(20);
-                        break;
-                    }
-
-                    Log.Debug("Cell 2 Send Bit (B2108) On");
-                    Step.RunStep++;
+                    Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request;
                     break;
                 case EMoldProcLoadingUnloadingStep.GetCellId2:
                     _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_WAIT_CELL2_SEND_BIT_ON, EMCCAction.IJ01_GET_CELL_ID_2);
@@ -1481,6 +1489,8 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Set_Cell2ReplyBitOn:
+                    CellIdTrackInStatus = (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM == false) || CIMValidation(false);
+
                     CellId2Reply = true;
                     Log.Debug("Cell 2 Reply Bit (B2008) On");
 
@@ -1490,7 +1500,6 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcLoadingUnloadingStep.Wait_Cell2SendBitOff:
                     _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_WAIT_CELL2_REPLY_BIT_ON, EMCCAction.IJ01_GET_WAIT_CELL2_SEND_BIT_OFF);
-
                     if (CellId2SendOn)
                     {
                         Wait(20);
@@ -1498,24 +1507,14 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug("Cell 2 Send Bit (B2108) Off");
+
                     CellId2Reply = false;
                     Log.Debug("Cell 2 Reply Bit (B2008) Off");
-                    Step.RunStep++;
-                    break;
-                case EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request:
-                    _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_WAIT_LD, EMCCAction.IJ01_GET_WAIT_INOUT_HANDLE_REQUEST_START);
 
-                    if (_machineStatus.InOutHandlerStartRequest == false ||
-                       (_optionRecipe.SkipHead12 && _optionRecipe.SkipHead34))
-                    {
-                        _machineStatus.InOutHandlerStartRequest = false;
-                        Wait(20);
-                        break;
-                    }
+                    CellIdTrackInStatus = false;
+                    Log.Debug("Cell TrackIn Status Bit (B2009) Off");
 
-                    Log.Debug("Received Start Request");
-                    _machineStatus.InOutHandlerStartRequest = false;
-                    Step.RunStep++;
+                    Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request;
                     break;
                 case EMoldProcLoadingUnloadingStep.CheckIf_LoadOrUnload:
                     if (isLoading && _machineStatus.IsDryRunMode == false)
@@ -1584,87 +1583,87 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.CIM_Validation:
                     _cIMCollection.WriteMCC(EMCCAction.IJ01_LD_JIG_CHECK, EMCCAction.IJ01_CIM_VALIDATION);
 
-                    if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
-                    {
-                        string outCellID = "";
+                    //if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
+                    //{
+                    //    string outCellID = "";
 
-                        //Left
-                        Log.Info($"Validationing JIG '{LeftJigID}'");
-                        if (EquipEventHelpers.SpecificValidation(1, LeftJigID, ref outCellID) == false)
-                        {
-                            // TODO: ALARM RAISING (TIMEOUT? FAIL?)
-                            RaiseWarning(EWarning.CIM_CELL_VALIDATION_FAIL);
-                            break;
-                        }
+                    //    //Left
+                    //    Log.Info($"Validationing JIG '{LeftJigID}'");
+                    //    if (EquipEventHelpers.SpecificValidation(1, LeftJigID, ref outCellID) == false)
+                    //    {
+                    //        // TODO: ALARM RAISING (TIMEOUT? FAIL?)
+                    //        RaiseWarning(EWarning.CIM_CELL_VALIDATION_FAIL);
+                    //        break;
+                    //    }
 
-                        LeftCellId = outCellID;
+                    //    LeftCellId = outCellID;
 
-                        if (EquipEventHelpers.CellTrackIn(1, LeftCellId, 9, _cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON ? 2 : 3) == false)
-                        {
-                            RaiseWarning(EWarning.CIM_CELL_TRACKING_FAIL);
-                            break;
-                        }
+                    //    if (EquipEventHelpers.CellTrackIn(1, LeftCellId, 9, _cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON ? 2 : 3) == false)
+                    //    {
+                    //        RaiseWarning(EWarning.CIM_CELL_TRACKING_FAIL);
+                    //        break;
+                    //    }
 
-                        Log.Info($"Jig '{LeftCellId}' tracking successed");
+                    //    Log.Info($"Jig '{LeftCellId}' tracking successed");
 
-                        CellJobProcessCimToPlcArea cellJobProcess = EquipEventHelpers.CellJobProcessConfirm(1, LeftCellId, _cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON);
+                    //    CellJobProcessCimToPlcArea cellJobProcess = EquipEventHelpers.CellJobProcessConfirm(1, LeftCellId, _cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON);
 
-                        CellJobProcessInfo_Left = cellJobProcess;
-                        if (_cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON)
-                        {
-                            CellJobProcessInfo_Left.CellJobProcessCellID = LeftCellId;
-                        }
+                    //    CellJobProcessInfo_Left = cellJobProcess;
+                    //    if (_cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON)
+                    //    {
+                    //        CellJobProcessInfo_Left.CellJobProcessCellID = LeftCellId;
+                    //    }
 
-                        if (_cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON && cellJobProcess.CellJobProcessRCMD != $"{(int)ECellJobProcessRCMD.CellJobProcessStart}")
-                        {
-                            CellJobProcessInfo_Left.UserDefine_TrackOutJudge = "O";
-                            CellJobProcessInfo_Left.UserDefine_TrackOutDescription = "VALIDATION_FAIL";
-                            EquipEventHelpers.CellTrackOut(1, CellJobProcessInfo_Left, true, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Left_1, MaterialAssemblyArea_Left_2 });
-                            RaiseWarning(EWarning.CIM_CELL_JOB_PROCESS_START_FAIL);
-                            return;
-                        }
+                    //    if (_cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON && cellJobProcess.CellJobProcessRCMD != $"{(int)ECellJobProcessRCMD.CellJobProcessStart}")
+                    //    {
+                    //        CellJobProcessInfo_Left.UserDefine_TrackOutJudge = "O";
+                    //        CellJobProcessInfo_Left.UserDefine_TrackOutDescription = "VALIDATION_FAIL";
+                    //        EquipEventHelpers.CellTrackOut(1, CellJobProcessInfo_Left, true, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Left_1, MaterialAssemblyArea_Left_2 });
+                    //        RaiseWarning(EWarning.CIM_CELL_JOB_PROCESS_START_FAIL);
+                    //        return;
+                    //    }
 
-                        Log.Info($"Jig '{LeftCellId}' Job Process Start successed");
+                    //    Log.Info($"Jig '{LeftCellId}' Job Process Start successed");
 
-                        //Right
-                        outCellID = "";
-                        Log.Info($"Validationing JIG '{RightJigID}'");
-                        if (EquipEventHelpers.SpecificValidation(2, RightJigID, ref outCellID) == false)
-                        {
-                            // TODO: ALARM RAISING (TIMEOUT? FAIL?)
-                            RaiseWarning(EWarning.CIM_CELL_VALIDATION_FAIL);
-                            break;
-                        }
+                    //    //Right
+                    //    outCellID = "";
+                    //    Log.Info($"Validationing JIG '{RightJigID}'");
+                    //    if (EquipEventHelpers.SpecificValidation(2, RightJigID, ref outCellID) == false)
+                    //    {
+                    //        // TODO: ALARM RAISING (TIMEOUT? FAIL?)
+                    //        RaiseWarning(EWarning.CIM_CELL_VALIDATION_FAIL);
+                    //        break;
+                    //    }
 
-                        RightCellId = outCellID;
+                    //    RightCellId = outCellID;
 
-                        if (EquipEventHelpers.CellTrackIn(2, RightCellId, 9, _cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON ? 2 : 3) == false)
-                        {
-                            RaiseWarning(EWarning.CIM_CELL_TRACKING_FAIL);
-                            break;
-                        }
+                    //    if (EquipEventHelpers.CellTrackIn(2, RightCellId, 9, _cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON ? 2 : 3) == false)
+                    //    {
+                    //        RaiseWarning(EWarning.CIM_CELL_TRACKING_FAIL);
+                    //        break;
+                    //    }
 
-                        Log.Info($"Jig '{RightCellId}' tracking successed");
+                    //    Log.Info($"Jig '{RightCellId}' tracking successed");
 
-                        CellJobProcessCimToPlcArea cellJobProcess1 = EquipEventHelpers.CellJobProcessConfirm(2, RightCellId, _cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON);
+                    //    CellJobProcessCimToPlcArea cellJobProcess1 = EquipEventHelpers.CellJobProcessConfirm(2, RightCellId, _cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON);
 
-                        CellJobProcessInfo_Right = cellJobProcess1;
-                        if (_cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON)
-                        {
-                            CellJobProcessInfo_Right.CellJobProcessCellID = RightCellId;
-                        }
+                    //    CellJobProcessInfo_Right = cellJobProcess1;
+                    //    if (_cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON)
+                    //    {
+                    //        CellJobProcessInfo_Right.CellJobProcessCellID = RightCellId;
+                    //    }
 
-                        if (_cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON && cellJobProcess.CellJobProcessRCMD != $"{(int)ECellJobProcessRCMD.CellJobProcessStart}")
-                        {
-                            CellJobProcessInfo_Right.UserDefine_TrackOutJudge = "O";
-                            CellJobProcessInfo_Right.UserDefine_TrackOutDescription = "VALIDATION FAIL";
-                            EquipEventHelpers.CellTrackOut(2, CellJobProcessInfo_Right, true, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Right_1, MaterialAssemblyArea_Right_2 });
-                            RaiseWarning(EWarning.CIM_CELL_JOB_PROCESS_START_FAIL);
-                            return;
-                        }
+                    //    if (_cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON && cellJobProcess.CellJobProcessRCMD != $"{(int)ECellJobProcessRCMD.CellJobProcessStart}")
+                    //    {
+                    //        CellJobProcessInfo_Right.UserDefine_TrackOutJudge = "O";
+                    //        CellJobProcessInfo_Right.UserDefine_TrackOutDescription = "VALIDATION FAIL";
+                    //        EquipEventHelpers.CellTrackOut(2, CellJobProcessInfo_Right, true, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Right_1, MaterialAssemblyArea_Right_2 });
+                    //        RaiseWarning(EWarning.CIM_CELL_JOB_PROCESS_START_FAIL);
+                    //        return;
+                    //    }
 
-                        Log.Info($"Jig '{RightCellId}' Job Process Start successed");
-                    }
+                    //    Log.Info($"Jig '{RightCellId}' Job Process Start successed");
+                    //}
 
                     Log.Debug($"Write data input count: {inputCount}");
                     _productionService.WriteData(EProductionWriteType.Input, inputCount);
@@ -1672,7 +1671,6 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Update_Jig_Status;
                     break;
                 case EMoldProcLoadingUnloadingStep.Unload_Jig_Check:
-
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.CIM_TrackOut:
@@ -3114,6 +3112,83 @@ namespace SDV_MoldingInjection.Process
                 message += System.Text.Encoding.ASCII.GetString(BitConverter.GetBytes(buffer[i]));
             }
             return message.Trim();
+        }
+
+        private bool CIMValidation(bool isJigLeft)
+        {
+            if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM == false) return true;
+
+            string outCellID = "";
+
+            string jigID = isJigLeft ? LeftJigID : RightJigID;
+
+            Log.Info($"Validationing JIG '{jigID}'");
+            if (EquipEventHelpers.SpecificValidation(1, jigID, ref outCellID) == false)
+            {
+                return false;
+            }
+
+            if (isJigLeft)
+            {
+                LeftCellId = outCellID;
+            }
+            else
+            {
+                RightCellId = outCellID;
+            }
+
+            if (EquipEventHelpers.CellTrackIn(1, isJigLeft ? LeftCellId : RightCellId, 9, _cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON ? 2 : 3) == false)
+            {
+                return false;
+            }
+
+            string cellId = isJigLeft ? LeftCellId : RightCellId;
+
+            Log.Info($"Jig '{cellId}' tracking successed");
+
+            CellJobProcessCimToPlcArea cellJobProcess = EquipEventHelpers.CellJobProcessConfirm(1, cellId, _cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON);
+
+            if (isJigLeft)
+            {
+                CellJobProcessInfo_Left = cellJobProcess;
+            }
+            else
+            {
+                CellJobProcessInfo_Right = cellJobProcess;
+            }
+
+            if (_cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON)
+            {
+                if (isJigLeft)
+                {
+                    CellJobProcessInfo_Left.CellJobProcessCellID = LeftCellId;
+                }
+                else
+                {
+                    CellJobProcessInfo_Right.CellJobProcessCellID = RightCellId;
+                }
+            }
+
+            if (_cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON && cellJobProcess.CellJobProcessRCMD != $"{(int)ECellJobProcessRCMD.CellJobProcessStart}")
+            {
+                if (isJigLeft)
+                {
+                    CellJobProcessInfo_Left.UserDefine_TrackOutJudge = "O";
+                    CellJobProcessInfo_Left.UserDefine_TrackOutDescription = "VALIDATION_FAIL";
+                    EquipEventHelpers.CellTrackOut(1, CellJobProcessInfo_Left, true, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Left_1, MaterialAssemblyArea_Left_2 });
+                }
+                else
+                {
+                    CellJobProcessInfo_Right.UserDefine_TrackOutJudge = "O";
+                    CellJobProcessInfo_Right.UserDefine_TrackOutDescription = "VALIDATION_FAIL";
+                    EquipEventHelpers.CellTrackOut(1, CellJobProcessInfo_Right, true, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Right_1, MaterialAssemblyArea_Right_2 });
+                }
+
+                return false;
+            }
+
+            Log.Info($"Jig '{cellId}' Job Process Start successed");
+            return true;
         }
         #endregion
 

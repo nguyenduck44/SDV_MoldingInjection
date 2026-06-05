@@ -12,17 +12,15 @@
 
         Transfer_Load_SendRequest,
 
-        Wait_Cell1SendBitOn,
+        Wait_InOutHandlerStart_Request,
+
         GetCellId1,
         Set_Cell1ReplyBitOn,
         Wait_Cell1SendBitOff,
 
-        Wait_Cell2SendBitOn,
         GetCellId2,
         Set_Cell2ReplyBitOn,
         Wait_Cell2SendBitOff,
-
-        Wait_InOutHandlerStart_Request,
 
         CheckIf_LoadOrUnload,
 
