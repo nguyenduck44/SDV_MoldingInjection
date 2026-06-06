@@ -158,7 +158,7 @@ namespace SDV_MoldingInjection.Recipe
         public bool ReadBarcode
         {
             get { return _readBarcode; }
-            set { _readBarcode = value; }
+            set => SetRecipe(ref _readBarcode, value);
         }
 
     }

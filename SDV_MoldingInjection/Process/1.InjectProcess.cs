@@ -238,6 +238,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"{procOutputs.Name} ClearOutputs");
                     CellId1Reply = false;
                     CellId2Reply = false;
+                    CellIdTrackInStatus = false;
                     _machineStatus.InOutHandlerStartRequest = false;
                     _machineStatus.SetDummyShotBeforeInject = false;
                     procOutputs.ClearOutputs();
@@ -1374,7 +1375,8 @@ namespace SDV_MoldingInjection.Process
                         //LOADING MANUAL
                         if (_optionRecipe.InputTypeManual)
                         {
-                            if (_machineStatus.ConfirmLoadingFinish == false)
+                            if (_machineStatus.ConfirmLoadingFinish == false &&
+                                _machineStatus.IsDryRunMode == false)
                             {
                                 Wait(20);
                                 break;
@@ -1420,13 +1422,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     //LOADING
-                    if (_machineStatus.IsDryRunMode)
-                    {
-                        Log.Debug("DryRun Mode Next Step -> Update_Jig_Status");
-                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Update_Jig_Status;
-                        break;
-                    }
-                    else if (_optionRecipe.InputTypeManual)
+                    if (_optionRecipe.InputTypeManual)
                     {
                         Log.Debug("Input Manual Next Step -> Load_Jig_Check");
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Load_Jig_Check;
@@ -1462,17 +1458,15 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Info("Received Start Request From InOut Machine");
-
                     _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_WAIT_LD, EMCCAction.IJ01_GET_WAIT_INOUT_HANDLE_REQUEST_START);
-
                     _machineStatus.InOutHandlerStartRequest = false;
                     Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Load_Jig_Check;
                     break;
                 case EMoldProcLoadingUnloadingStep.GetCellId1:
                     _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_WAIT_CELL1_SEND_BIT_ON, EMCCAction.IJ01_GET_CELL_ID_1);
 
-                    LeftJigID = GetCellId(true);
-                    Log.Debug($"Get Left Jig ID '{LeftJigID}'");
+                    LeftJigID = GetCellId(isJigLeft: true);
+                    Log.Info($"Get Left Jig ID '{LeftJigID}'");
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Set_Cell1ReplyBitOn:
@@ -1506,8 +1500,8 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.GetCellId2:
                     _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_WAIT_CELL2_SEND_BIT_ON, EMCCAction.IJ01_GET_CELL_ID_2);
 
-                    RightJigID = GetCellId(false);
-                    Log.Debug($"Get Right Jig ID '{RightJigID}'");
+                    RightJigID = GetCellId(isJigLeft: false);
+                    Log.Info($"Get Right Jig ID '{RightJigID}'");
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Set_Cell2ReplyBitOn:
@@ -1549,6 +1543,13 @@ namespace SDV_MoldingInjection.Process
                     SimulationInputSetter.SetSimInput(In_Jig3Detect, true);
                     SimulationInputSetter.SetSimInput(In_Jig4Detect, true);
 #endif
+                    if (_machineStatus.IsDryRunMode)
+                    {
+                        Log.Debug("DryRun Mode Next Step -> Update_Jig_Status");
+                        Step.RunStep++;
+                        break;
+                    }
+
                     if (_optionRecipe.SkipHead12 == false && _machineStatus.DisableDetectJig == false)
                     {
                         if (LeftJigTiltState)
@@ -1782,7 +1783,8 @@ namespace SDV_MoldingInjection.Process
                     if (isLoading)
                     {
                         Log.Info("Loading end");
-                        if ((Environment.TickCount - _waitTimeNoProduct) >= _currentRecipe.InjectTimeRecipe.DummyShotBeforeInject * 60000)
+                        if ((Environment.TickCount - _waitTimeNoProduct) >= _currentRecipe.InjectTimeRecipe.DummyShotBeforeInject * 60000 &&
+                            _machineStatus.IsDryRunMode == false)
                         {
                             Log.Info("Set next sequence to DummyShot");
                             _machineStatus.SetDummyShotBeforeInject = true;
