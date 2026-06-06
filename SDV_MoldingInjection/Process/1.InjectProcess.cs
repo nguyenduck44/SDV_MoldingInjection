@@ -1437,7 +1437,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request:
-                    if (CellId1SendOn)
+                    if (CellId1SendOn && _optionRecipe.ReadBarcode)
                     {
                         _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_WAIT_LD, EMCCAction.IJ01_GET_WAIT_CELL1_SEND_BIT_ON);
                         Log.Debug("Cell ID 1 (B2107) Bit On -> Get Cell ID 1");
@@ -1445,7 +1445,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    if (CellId2SendOn)
+                    if (CellId2SendOn && _optionRecipe.ReadBarcode)
                     {
                         _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_WAIT_LD, EMCCAction.IJ01_GET_WAIT_CELL2_SEND_BIT_ON);
 

@@ -20,6 +20,8 @@ namespace SDV_MoldingInjection.Recipe
         private bool _skipDummyShot;
         private bool _skipNeedleClean;
         private bool _skipDispensing;
+        private bool _useCIM;
+        private bool _readBarcode;
 
         #endregion
 
@@ -146,12 +148,17 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _skipDispensing, value);
         }
 
-        private bool useCIM;
-
+        [ParameterDescription(227)]
         public bool UseCIM
         {
-            get { return useCIM; }
-            set { useCIM = value; }
+            get { return _useCIM; }
+            set { _useCIM = value; }
+        }
+        [ParameterDescription(228)]
+        public bool ReadBarcode
+        {
+            get { return _readBarcode; }
+            set { _readBarcode = value; }
         }
 
     }
