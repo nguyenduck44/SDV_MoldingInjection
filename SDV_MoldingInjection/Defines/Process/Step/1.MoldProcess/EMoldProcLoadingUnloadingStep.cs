@@ -10,7 +10,9 @@
         Chamber_CoverOpen,
         Chamber_CoverOpenWait,
 
-        Transfer_Load_SendRequest,
+        Transfer_LoadUnload_SendRequest,
+
+        CheckIf_LoadOrUnload,
 
         Wait_InOutHandlerStart_Request,
 
@@ -22,21 +24,14 @@
         Set_Cell2ReplyBitOn,
         Wait_Cell2SendBitOff,
 
-        CheckIf_LoadOrUnload,
-
         Load_Jig_Check,
-
-        CIM_Validation,
-
-        Unload_Jig_Check,
-
-        CIM_TrackOut,
-        Unload_Wait,
-
         Update_Jig_Status,
 
         Chamber_CoverClose,
         Chamber_CoverCloseWait,
+
+        CIM_TrackOut,
+        Unload_Wait,
 
         End,
     }
