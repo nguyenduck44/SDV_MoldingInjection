@@ -1,19 +1,35 @@
-﻿using EQX.Core.Helpers;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using EQX.Core.Common;
+using EQX.Core.Helpers;
+using OpenCvSharp;
 using SDV_MoldingInjection.Recipe;
 
 namespace SDV_MoldingInjection.Defines
 {
-    public class CDAStatus
+    public class CDAStatus : ObservableObject
     {
         private readonly AnalogInputs _analogInputs;
         private readonly RecipeList _recipeList;
-
+        private readonly NonOverlappingTimer statusUpdateTimer;
         public CDAStatus(AnalogInputs analogInputs, RecipeList recipeList)
         {
             _analogInputs = analogInputs;
             _recipeList = recipeList;
+            statusUpdateTimer = new NonOverlappingTimer(1000);
+            statusUpdateTimer.Elapsed += StatusUpdateTimerHandler;
+            statusUpdateTimer.Start();
         }
-
+        private void StatusUpdateTimerHandler(object? sender, System.Timers.ElapsedEventArgs e)
+        {
+            OnPropertyChanged(nameof(PumpCDA));
+            OnPropertyChanged(nameof(MainAirCDA));
+            OnPropertyChanged(nameof(PumpVentCDA));
+            OnPropertyChanged(nameof(ChamberPressureCDA));
+            OnPropertyChanged(nameof(SyringeAirH1));
+            OnPropertyChanged(nameof(SyringeAirH2));
+            OnPropertyChanged(nameof(SyringeAirH3));
+            OnPropertyChanged(nameof(SyringeAirH4));
+        }
         public double PumpCDA => AnalogConvertHelper.Convert(_analogInputs.Pump.Volt, 0.0, 5.0, 0, 100);
         public double MainAirCDA => AnalogConvertHelper.Convert(_analogInputs.MainAir.Volt, 1.0, 5.0, 0.0, 1.0);
         public double PumpVentCDA => AnalogConvertHelper.Convert(_analogInputs.PumpVent.Volt, 0.0, 5.0, 0, 100);

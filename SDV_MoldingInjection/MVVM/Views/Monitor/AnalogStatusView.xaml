@@ -49,7 +49,7 @@
                    HorizontalAlignment="Center"
                    VerticalContentAlignment="Center"
                    FontWeight="Bold" />
-            <Label Content="{Binding CDA }"
+            <Label Content="{Binding CDAStatus.MainAirCDA }"
                    FontSize="10"
                    Width="200"
                    Height="50"
