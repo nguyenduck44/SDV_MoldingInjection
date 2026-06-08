@@ -1,10 +1,6 @@
-﻿using EQX.Core.InOut;
+﻿using EQX.Core.Helpers;
+using EQX.Core.InOut;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SDV_MoldingInjection.Defines
 {
@@ -13,6 +9,15 @@ namespace SDV_MoldingInjection.Defines
         #region Properties
         public IAInput FanSpeed => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.FAN_SPEED);
         public IAInput VacuumGauge => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.VACUUM_GAUGE);
+        public IAInput MainAir => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.MAIN_AIR_CDA);
+        public IAInput ChamberPressure => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.CHAMBER_PRESSURE_CDA);
+        public IAInput Pump => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.PUMP_CDA);
+        public IAInput PumpVent => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.PUMP_VENT_CDA);
+
+        public double PumpCDA => AnalogConvertHelper.Convert(Pump.Volt, 0.0, 5.0, 0, 5);
+        public double MainAirCDA => AnalogConvertHelper.Convert(MainAir.Volt, 0.0, 5.0, 0, 5);
+        public double PumpVentCDA => AnalogConvertHelper.Convert(PumpVent.Volt, 0.0, 5.0, 0, 5);
+        public double ChamberPressureCDA => AnalogConvertHelper.Convert(ChamberPressure.Volt, 0.0, 5.0, 0, 5);
 
         // mbar : 6.143
         // Torr : 6.304
@@ -58,6 +63,9 @@ namespace SDV_MoldingInjection.Defines
             return _aInputDevice.Disconnect();
         }
 
+        #region Methods
+        
+        #endregion
         #region Privates
         private readonly IAInputDevice _aInputDevice;
         #endregion
