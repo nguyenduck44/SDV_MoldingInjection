@@ -9,6 +9,10 @@ namespace SDV_MoldingInjection.Recipe
         private double chamberPressureThreshold;
         private double pumpCDAThreshold;
         private double pumpVentThreshold;
+        private double syringeAirH1Threshold;
+        private double syringeAirH2Threshold;
+        private double syringeAirH3Threshold;
+        private double syringeAirH4Threshold;
 
         [SingleRecipeDescription(Description = "Main Air Threshold", Unit = Unit.MilliPascal)]
         public double MainAirThreshold
@@ -54,5 +58,48 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        [SingleRecipeDescription(Description = "Syringe Air H1 Threshold", Unit = Unit.MilliPascal)]
+        public double SyringeAirH1Threshold
+        {
+            get { return syringeAirH1Threshold; }
+            set
+            {
+                if (syringeAirH1Threshold == value) return;
+                SetRecipe(ref syringeAirH1Threshold, value);
+            }
+        }
+
+        [SingleRecipeDescription(Description = "Syringe Air H2 Threshold", Unit = Unit.MilliPascal)]
+        public double SyringeAirH2Threshold
+        {
+            get { return syringeAirH2Threshold; }
+            set
+            {
+                if (syringeAirH2Threshold == value) return;
+                SetRecipe(ref syringeAirH2Threshold, value);
+            }
+        }
+
+        [SingleRecipeDescription(Description = "Syringe Air H3 Threshold", Unit = Unit.MilliPascal)]
+        public double SyringeAirH3Threshold
+        {
+            get { return syringeAirH3Threshold; }
+            set
+            {
+                if (syringeAirH3Threshold == value) return;
+                SetRecipe(ref syringeAirH3Threshold, value);
+            }
+        }
+
+        [SingleRecipeDescription(Description = "Syringe Air H4 Threshold", Unit = Unit.MilliPascal)]
+        public double SyringeAirH4Threshold
+        {
+            get { return syringeAirH4Threshold; }
+            set
+            {
+                if (syringeAirH4Threshold == value) return;
+                SetRecipe(ref syringeAirH4Threshold, value);
+            }
+        }
     }
 }

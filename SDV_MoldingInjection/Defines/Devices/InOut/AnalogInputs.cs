@@ -13,6 +13,11 @@ namespace SDV_MoldingInjection.Defines
         public IAInput ChamberPressure => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.CHAMBER_PRESSURE_CDA);
         public IAInput Pump => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.PUMP_CDA);
         public IAInput PumpVent => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.PUMP_VENT_CDA);
+        public IAInput SyringeAirH1 => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.SYRINGE_AIR_H1_CDA);
+        public IAInput SyringeAirH2 => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.SYRINGE_AIR_H2_CDA);
+        public IAInput SyringeAirH3 => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.SYRINGE_AIR_H3_CDA);
+        public IAInput SyringeAirH4 => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.SYRINGE_AIR_H4_CDA);
+
 
         // mbar : 6.143
         // Torr : 6.304

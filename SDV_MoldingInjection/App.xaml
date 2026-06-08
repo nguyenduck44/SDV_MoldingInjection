@@ -178,9 +178,6 @@
             <DataTemplate DataType="{x:Type vm:MonitorIOViewModel}">
                 <views:MonitorIOView />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:MonitorMotionViewModel}">
-                <views:MonitorMotionView />
-            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:InterfaceInOutViewModel}">
                 <views:InterfaceInOutView />
             </DataTemplate>
@@ -189,6 +186,9 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:TactTimeViewModel}">
                 <views:TactTimeView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:AnalogStatusViewModel}">
+                <views:AnalogStatusView />
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type vm:DevViewModel}">
