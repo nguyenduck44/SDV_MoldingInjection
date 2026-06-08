@@ -36,6 +36,8 @@
                         Command="{Binding IdlePurgeDataNavigateCommand}" />
                 <Button Content="Additional Molding"
                         Command="{Binding AdditionalMoldingDataNavigateCommand}" />
+                <Button Content="CDA Setting"
+                        Command="{Binding CDASettingNavigateCommand}" />
             </StackPanel>
         </GroupBox>
 

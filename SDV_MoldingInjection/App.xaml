@@ -109,6 +109,9 @@
             <DataTemplate DataType="{x:Type vm:CylinderDelayTimeViewModel}">
                 <views:CylinderDelayTimeView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:CDASettingViewModel}">
+                <views:CDASettingView />
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:MaterialPortsViewModel}">
                 <views:MaterialPortsView />
             </DataTemplate>

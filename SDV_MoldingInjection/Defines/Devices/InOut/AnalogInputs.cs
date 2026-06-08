@@ -14,11 +14,6 @@ namespace SDV_MoldingInjection.Defines
         public IAInput Pump => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.PUMP_CDA);
         public IAInput PumpVent => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.PUMP_VENT_CDA);
 
-        public double PumpCDA => AnalogConvertHelper.Convert(Pump.Volt, 0.0, 5.0, 0, 5);
-        public double MainAirCDA => AnalogConvertHelper.Convert(MainAir.Volt, 0.0, 5.0, 0, 5);
-        public double PumpVentCDA => AnalogConvertHelper.Convert(PumpVent.Volt, 0.0, 5.0, 0, 5);
-        public double ChamberPressureCDA => AnalogConvertHelper.Convert(ChamberPressure.Volt, 0.0, 5.0, 0, 5);
-
         // mbar : 6.143
         // Torr : 6.304
         // Pa = 3.572

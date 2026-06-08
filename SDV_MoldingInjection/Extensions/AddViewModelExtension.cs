@@ -45,6 +45,7 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddViewModel<OptionViewModel>();
                 services.AddViewModel<InjectTimeViewModel>();
                 services.AddViewModel<CylinderDelayTimeViewModel>();
+                services.AddViewModel<CDASettingViewModel>();
                 services.AddViewModel<MaterialPortsViewModel>();
                 services.AddViewModel<SecurityControlViewModel>();
 

@@ -116,6 +116,7 @@ namespace SDV_MoldingInjection.Recipe
             CurrentRecipe.InjectTimeRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
             CurrentRecipe.IdlePurgeRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
             CurrentRecipe.CylinderDelayTimeRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
+            CurrentRecipe.CDASettingRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
 
             ParameterWordArea = new ParameterWordArea();
         }
