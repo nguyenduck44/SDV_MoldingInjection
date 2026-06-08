@@ -34,6 +34,7 @@ namespace SDV_MoldingInjection.Process
         private readonly RecipeList _recipeList;
         private readonly ProcessIO _processIO;
         private readonly InOutHandler _inOutHandler;
+        private readonly CDAStatus _cDAStatus;
         private int raisedAlarmCode = 2;
         private int raisedWarningCode = 2;
         private readonly IAlertService _alarmService;
@@ -53,6 +54,7 @@ namespace SDV_MoldingInjection.Process
             RecipeList recipeList,
             ProcessIO processIO,
             InOutHandler inOutHandler,
+            CDAStatus cDAStatus,
             [FromKeyedServices("AlarmService")] IAlertService alarmService,
             [FromKeyedServices("WarningService")] IAlertService warningService)
         {
@@ -64,6 +66,7 @@ namespace SDV_MoldingInjection.Process
             _recipeList = recipeList;
             _processIO = processIO;
             _inOutHandler = inOutHandler;
+            _cDAStatus = cDAStatus;
             _alarmService = alarmService;
             _warningService = warningService;
 
@@ -694,7 +697,7 @@ namespace SDV_MoldingInjection.Process
                 RaiseAlarm((int)EAlarm.TE_MAIN_SENSOR_TEMP_OVER);
             }
 #if !SIMULATION
-            if (_devices.Inputs.MainCDACheck.Value == false)
+            if (_cDAStatus.IsMainAir == false)
             {
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
