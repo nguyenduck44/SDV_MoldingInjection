@@ -14,7 +14,7 @@ namespace SDV_MoldingInjection.Recipe
         private double syringeAirH3Threshold;
         private double syringeAirH4Threshold;
 
-        [SingleRecipeDescription(Description = "Main Air Threshold", Unit = Unit.MilliPascal)]
+        [SingleRecipeDescription(Description = "Main Air Threshold", Unit = Unit.MegaPascal)]
         public double MainAirThreshold
         {
             get { return mainAirThreshold; }
@@ -25,7 +25,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "Chamber Pressure Threshold", Unit = Unit.MilliPascal)]
+        [SingleRecipeDescription(Description = "Chamber Pressure Threshold", Unit = Unit.MegaPascal)]
         public double ChamberPressureThreshold
         {
             get { return chamberPressureThreshold; }
@@ -36,7 +36,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "Pump CDA Threshold", Unit = Unit.MilliPascal)]
+        [SingleRecipeDescription(Description = "Pump CDA Threshold", Unit = Unit.MegaPascal)]
         public double PumpCDAThreshold
         {
             get { return pumpCDAThreshold; }
@@ -47,7 +47,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "Pump Vent Threshold", Unit = Unit.MilliPascal)]
+        [SingleRecipeDescription(Description = "Pump Vent Threshold", Unit = Unit.MegaPascal)]
         public double PumpVentThreshold
         {
             get { return pumpVentThreshold; }
@@ -58,7 +58,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "Syringe Air H1 Threshold", Unit = Unit.MilliPascal)]
+        [SingleRecipeDescription(Description = "Syringe Air H1 Threshold", Unit = Unit.MegaPascal)]
         public double SyringeAirH1Threshold
         {
             get { return syringeAirH1Threshold; }
@@ -69,7 +69,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "Syringe Air H2 Threshold", Unit = Unit.MilliPascal)]
+        [SingleRecipeDescription(Description = "Syringe Air H2 Threshold", Unit = Unit.MegaPascal)]
         public double SyringeAirH2Threshold
         {
             get { return syringeAirH2Threshold; }
@@ -80,7 +80,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "Syringe Air H3 Threshold", Unit = Unit.MilliPascal)]
+        [SingleRecipeDescription(Description = "Syringe Air H3 Threshold", Unit = Unit.MegaPascal)]
         public double SyringeAirH3Threshold
         {
             get { return syringeAirH3Threshold; }
@@ -91,7 +91,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "Syringe Air H4 Threshold", Unit = Unit.MilliPascal)]
+        [SingleRecipeDescription(Description = "Syringe Air H4 Threshold", Unit = Unit.MegaPascal)]
         public double SyringeAirH4Threshold
         {
             get { return syringeAirH4Threshold; }
