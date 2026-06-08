@@ -15,7 +15,7 @@ namespace SDV_MoldingInjection.Defines
         }
 
         public double PumpCDA => AnalogConvertHelper.Convert(_analogInputs.Pump.Volt, 0.0, 5.0, 0, 100);
-        public double MainAirCDA => AnalogConvertHelper.Convert(_analogInputs.MainAir.Volt, 0.0, 5.0, 0, 100);
+        public double MainAirCDA => AnalogConvertHelper.Convert(_analogInputs.MainAir.Volt, 1.0, 5.0, 0.0, 1.0);
         public double PumpVentCDA => AnalogConvertHelper.Convert(_analogInputs.PumpVent.Volt, 0.0, 5.0, 0, 100);
         public double ChamberPressureCDA => AnalogConvertHelper.Convert(_analogInputs.ChamberPressure.Volt, 0.0, 5.0, 0, 100);
         public double SyringeAirH1 => AnalogConvertHelper.Convert(_analogInputs.SyringeAirH1.Volt, 0.0, 5.0, 0, 100);

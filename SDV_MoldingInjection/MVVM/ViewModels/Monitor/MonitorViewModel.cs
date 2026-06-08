@@ -151,6 +151,17 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
         }
 
+        public ICommand CDAStatusNavigateCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    _navigationService.NavigateTo<AnalogStatusViewModel>();
+                });
+            }
+        }
+
         public ICommand ProcessesStatusNavigateCommand
         {
             get

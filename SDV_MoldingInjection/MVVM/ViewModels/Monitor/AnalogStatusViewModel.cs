@@ -10,19 +10,18 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public AnalogStatusViewModel(CDAStatus cDAStatus)
         {
             CDAStatus = cDAStatus;
-            statusUpdateTimer = new NonOverlappingTimer(100);
+            statusUpdateTimer = new NonOverlappingTimer(1000);
             statusUpdateTimer.Elapsed += StatusUpdateTimerHandler;
             statusUpdateTimer.Start();
         }
 
         public CDAStatus CDAStatus { get; }
 
+        public double CDA => CDAStatus.MainAirCDA;
         #region Private Methods
         private void StatusUpdateTimerHandler(object? sender, System.Timers.ElapsedEventArgs e)
         {
-            OnPropertyChanged(nameof(CDAStatus));
-            OnPropertyChanged(nameof(CDAStatus.MainAirCDA));
-            OnPropertyChanged(nameof(CDAStatus.PumpCDA));
+            OnPropertyChanged(nameof(CDA));
         }
         #endregion
     }

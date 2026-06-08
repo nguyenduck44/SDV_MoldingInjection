@@ -59,6 +59,8 @@
             <StackPanel Margin="5 0">
                 <Button Content="Motions Status"
                         Command="{Binding MotionsStatusNavigateCommand}" />
+                <Button Content="CDA Status"
+         Command="{Binding CDAStatusNavigateCommand}" />
                 <Button Content="Processes Status"
                         Command="{Binding ProcessesStatusNavigateCommand}"
                         Visibility="{Binding IsSuperUserPermission,Converter={StaticResource BooleanToVisibilityConverter}}" />
