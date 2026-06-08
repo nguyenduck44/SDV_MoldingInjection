@@ -46,6 +46,13 @@ namespace SDV_MoldingInjection.Process
         private ICylinder BellowCyl => _devices.Cylinders.BellowCyl;
         #endregion
 
+        #region Properties
+        private EProcessMode SPDHead1ProcessMode => Parent!.Childs!.OfType<SPDHeadProcess>().First(p => p.Name == EProcess.SPDHead1.ToString()).ProcessMode;
+        private EProcessMode SPDHead2ProcessMode => Parent!.Childs!.OfType<SPDHeadProcess>().First(p => p.Name == EProcess.SPDHead2.ToString()).ProcessMode;
+        private EProcessMode SPDHead3ProcessMode => Parent!.Childs!.OfType<SPDHeadProcess>().First(p => p.Name == EProcess.SPDHead3.ToString()).ProcessMode;
+        private EProcessMode SPDHead4ProcessMode => Parent!.Childs!.OfType<SPDHeadProcess>().First(p => p.Name == EProcess.SPDHead4.ToString()).ProcessMode;
+        #endregion
+
         #region Constructors
         public DryPumpProcess(Devices devices, 
             RecipeSelector recipeSelector,
@@ -485,10 +492,10 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_WaitVentTime:
-                    if (((_carrierJigStatusList.CarrierJigStatusH1.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead12) ||
-                        ((_carrierJigStatusList.CarrierJigStatusH2.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead12) ||
-                        ((_carrierJigStatusList.CarrierJigStatusH3.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead34) ||
-                        ((_carrierJigStatusList.CarrierJigStatusH4.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead34))
+                    if (((_carrierJigStatusList.CarrierJigStatusH1.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead12 && SPDHead1ProcessMode == EProcessMode.Run) ||
+                        ((_carrierJigStatusList.CarrierJigStatusH2.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead12 && SPDHead2ProcessMode == EProcessMode.Run) ||
+                        ((_carrierJigStatusList.CarrierJigStatusH3.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead34 && SPDHead3ProcessMode == EProcessMode.Run) ||
+                        ((_carrierJigStatusList.CarrierJigStatusH4.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead34 && SPDHead4ProcessMode == EProcessMode.Run))
                     {
                         Wait(10);
                         break;
