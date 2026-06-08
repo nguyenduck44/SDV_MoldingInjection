@@ -10,25 +10,6 @@
              xmlns:controls="clr-namespace:SDV_MoldingInjection.Controls"
              d:DesignHeight="450"
              d:DesignWidth="800">
-    <UserControl.Resources>
-        <Style x:Key="FlatActionButtonStyle"
-               TargetType="Button">
-            <Setter Property="Background"
-                    Value="#f2f2f2" />
-            <Setter Property="BorderBrush"
-                    Value="#bfbfbf" />
-            <Setter Property="BorderThickness"
-                    Value="1" />
-            <Setter Property="Foreground"
-                    Value="#202020" />
-            <Setter Property="FontWeight"
-                    Value="SemiBold" />
-            <Setter Property="Height"
-                    Value="30" />
-            <Setter Property="Padding"
-                    Value="14,2" />
-        </Style>
-    </UserControl.Resources>
     <Grid>
         <DockPanel Grid.Row="0"
                    LastChildFill="False">
@@ -38,29 +19,50 @@
                        Foreground="#273c75"
                        HorizontalAlignment="Center"
                        DockPanel.Dock="Top" />
-            <Label Content="Main Air"
-                   FontSize="10"
-                   Width="100"
-                   Height="50"
-                   BorderBrush="Black"
-                   BorderThickness="1"
-                   Background="WhiteSmoke"
-                   Grid.Column="1"
-                   HorizontalAlignment="Center"
-                   VerticalContentAlignment="Center"
-                   FontWeight="Bold" />
-            <Label Content="{Binding CDAStatus.MainAirCDA }"
-                   FontSize="10"
-                   Width="200"
-                   Height="50"
-                   BorderBrush="Black"
-                   BorderThickness="1"
-                   Background="WhiteSmoke"
-                   Grid.Column="1"
-                   HorizontalAlignment="Center"
-                   VerticalContentAlignment="Center"
-                   FontWeight="Bold" />
-            
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Main Air"
+                           FontSize="10"
+                           Width="150"
+                           Height="50"
+                           BorderBrush="Black"
+                           BorderThickness="1"
+                           Background="WhiteSmoke"
+                           Grid.Column="1"
+                           HorizontalAlignment="Center"
+                           VerticalContentAlignment="Center"
+                           FontWeight="Bold" />
+                    <TextBlock Text="{Binding CDAStatus.MainAirCDA,StringFormat={}{0:F3} MPa }"
+                               FontSize="10"
+                               Width="200"
+                               Height="50"
+                               Background="WhiteSmoke"
+                               Grid.Column="1"
+                               FontWeight="Bold" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Clean Pressure CDA"
+                           FontSize="10"
+                           Width="150"
+                           Height="50"
+                           BorderBrush="Black"
+                           BorderThickness="1"
+                           Background="WhiteSmoke"
+                           Grid.Column="1"
+                           HorizontalAlignment="Center"
+                           VerticalContentAlignment="Center"
+                           FontWeight="Bold" />
+                    <TextBlock Text="{Binding CDAStatus.CleanPressureCDA,StringFormat={}{0:F3} MPa }"
+                               FontSize="10"
+                               Width="200"
+                               Height="50"
+                               HorizontalAlignment="Center"
+                               Background="WhiteSmoke"
+                               Grid.Column="1"
+                               FontWeight="Bold" />
+                </StackPanel>
+            </StackPanel>
         </DockPanel>
     </Grid>
 </UserControl>
