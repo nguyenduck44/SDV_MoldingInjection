@@ -134,8 +134,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 _devices.Inputs.DryPumpRun,
                 _devices.Inputs.DryPumpAlarm,
-                _devices.Inputs.PumpCDACheck,
-                _devices.Inputs.PumpVentCDACheck,
                 _devices.Inputs.PumpFanRun1,
                 _devices.Inputs.PumpFanRun2,
                 _devices.Inputs.ChamberClose,

@@ -10,7 +10,7 @@ namespace SDV_MoldingInjection.Defines
         public IAInput FanSpeed => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.FAN_SPEED);
         public IAInput VacuumGauge => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.VACUUM_GAUGE);
         public IAInput MainAir => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.MAIN_AIR_CDA);
-        public IAInput CleanPressureCDA => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.CLEAN_PRESSURE_CDA);
+        public IAInput SyringeMainAirCDA => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.SYRINGE_AIR_MAIN);
         public IAInput PumpPurge => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.PUMP_PURGE);
         public IAInput PumpValveVacuum => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.PUMP_VALVE_VACUUM);
         public IAInput SyringeAirH1 => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.SYRINGE_AIR_H1_CDA);

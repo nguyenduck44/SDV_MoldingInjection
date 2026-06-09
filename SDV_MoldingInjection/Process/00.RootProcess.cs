@@ -41,7 +41,6 @@ namespace SDV_MoldingInjection.Process
         private readonly IAlertService _warningService;
         private readonly object _lockAlarm = new object();
 
-        private bool IsMainAirSupplied => _devices.Inputs.MainCDACheck.Value;
         private bool IsServoOn => _devices.Inputs.ServoOn.Value;
         #endregion
 

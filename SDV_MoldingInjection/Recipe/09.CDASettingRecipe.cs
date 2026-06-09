@@ -6,9 +6,9 @@ namespace SDV_MoldingInjection.Recipe
     public class CDASettingRecipe : RecipeBase
     {
         private double mainAirThreshold;
-        private double chamberPressureThreshold;
-        private double pumpCDAThreshold;
-        private double pumpVentThreshold;
+        private double syringeAirMainThreshold;
+        private double pumpPurgeThreshold;
+        private double pumpValveVacuumThreshold;
         private double syringeAirH1Threshold;
         private double syringeAirH2Threshold;
         private double syringeAirH3Threshold;
@@ -25,36 +25,36 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "Chamber Pressure Threshold", Unit = Unit.MegaPascal)]
-        public double ChamberPressureThreshold
+        [SingleRecipeDescription(Description = "Syringe Air Main Threshold", Unit = Unit.MegaPascal)]
+        public double SyringeAirMainThreshold
         {
-            get { return chamberPressureThreshold; }
+            get { return syringeAirMainThreshold; }
             set
             {
-                if (chamberPressureThreshold == value) return;
-                SetRecipe(ref chamberPressureThreshold, value);
+                if (syringeAirMainThreshold == value) return;
+                SetRecipe(ref syringeAirMainThreshold, value);
             }
         }
 
-        [SingleRecipeDescription(Description = "Pump CDA Threshold", Unit = Unit.MegaPascal)]
-        public double PumpCDAThreshold
+        [SingleRecipeDescription(Description = "Pump Purge Threshold", Unit = Unit.MegaPascal)]
+        public double PumpPurgeThreshold
         {
-            get { return pumpCDAThreshold; }
+            get { return pumpPurgeThreshold; }
             set
             {
-                if (pumpCDAThreshold == value) return;
-                SetRecipe(ref pumpCDAThreshold, value);
+                if (pumpPurgeThreshold == value) return;
+                SetRecipe(ref pumpPurgeThreshold, value);
             }
         }
 
-        [SingleRecipeDescription(Description = "Pump Vent Threshold", Unit = Unit.MegaPascal)]
-        public double PumpVentThreshold
+        [SingleRecipeDescription(Description = "Pump Valve Vacuum Threshold", Unit = Unit.MegaPascal)]
+        public double PumpValveVacuumThreshold
         {
-            get { return pumpVentThreshold; }
+            get { return pumpValveVacuumThreshold; }
             set
             {
-                if (pumpVentThreshold == value) return;
-                SetRecipe(ref pumpVentThreshold, value);
+                if (pumpValveVacuumThreshold == value) return;
+                SetRecipe(ref pumpValveVacuumThreshold, value);
             }
         }
 

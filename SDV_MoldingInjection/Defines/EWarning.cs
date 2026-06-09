@@ -30,7 +30,6 @@ namespace SDV_MoldingInjection.Defines
         UT_INOUT_MACHINE_MC_OFF,
         [Description("IN73")]
         DO_INOUT_MACHINE_DOOR_OPEN,
-        [Description("IN15")]
         VC_MAIN_AIR_NOT_SUPPLIED,
         CIM_CELL_VALIDATION_FAIL,
         CIM_CELL_TRACKING_FAIL,

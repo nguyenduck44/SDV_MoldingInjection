@@ -15,7 +15,7 @@ namespace SDV_MoldingInjection.Defines
         SYRINGE_AIR_H2_CDA,
         SYRINGE_AIR_H3_CDA,
         SYRINGE_AIR_H4_CDA,
-        CLEAN_PRESSURE_CDA,
+        SYRINGE_AIR_MAIN,
         PUMP_PURGE,
         PUMP_VALVE_VACUUM,
     }

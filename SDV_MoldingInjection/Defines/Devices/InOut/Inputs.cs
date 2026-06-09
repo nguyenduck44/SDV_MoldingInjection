@@ -130,7 +130,6 @@ namespace SDV_MoldingInjection.Defines
 
         public IDInput ServoOn => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SERVO_ON);
         public IDInput MainBreakerTrip => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_BREAKER_TRIP);
-        public IDInput MainCDACheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_CDA_CHECK);
 
         public IDInput DoorOpenLeft => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_OPEN_LEFT);
         public IDInput DoorReleaseLeft => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_RELEASE_LEFT);
@@ -181,8 +180,6 @@ namespace SDV_MoldingInjection.Defines
         public IDInput LockKeyCheckSwitch => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.OP_KEY_SW_LOCK_KEY_CHECK);
 
         public IDInput SyringeCDACheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SYLINGE_HEAD_CDA_CHECK);
-        public IDInput PumpCDACheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_CDA_CHECK);
-        public IDInput PumpVentCDACheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_VENT_CDA_CHECK);
         public IDInput PumpFanRun1 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_FAN_RUN1);
         public IDInput PumpFanRun2 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_FAN_RUN2);
         public IDInput PumpFanRun3 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_FAN_RUN3);
@@ -252,7 +249,7 @@ namespace SDV_MoldingInjection.Defines
             int buff = 0;
             int size = 1;
             int startAddress = address - address % 8;
-            MCCLinkIE.mdreceive(151, 255, 23, startAddress, ref size, ref buff);
+            //MCCLinkIE.mdreceive(151, 255, 23, startAddress, ref size, ref buff);
             bool value = (buff & (0x01 << (address % 8))) > 0;
 
             return value;
