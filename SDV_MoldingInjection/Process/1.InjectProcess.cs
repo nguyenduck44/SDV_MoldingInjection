@@ -2192,7 +2192,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcNeedleCleaningStep.Z_Axis_Up_AfterClean:
-                    _cIMCollection.WriteMCC(EMCCAction.IJ01_WAIT_NOZZLE_CLEAN, EMCCAction.IJ01_MOVE_Z_TO_SAFETY_POS_AFTER_CLEAN);
+                    _cIMCollection.WriteMCC(EMCCAction.IJ01_WAIT_NOZZLE_CLEAN, EMCCAction.IJ01_MOVE_Z_TO_SAFETY_POS_FOR_UNLOAD);
 
                     Log.Debug("Z axis move up after clean");
                     ZAxisSafetyPosMove();
