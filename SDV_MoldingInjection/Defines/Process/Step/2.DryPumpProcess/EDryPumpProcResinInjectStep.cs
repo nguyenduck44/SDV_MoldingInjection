@@ -12,17 +12,23 @@
 
         DryPump_Vacuum_RequestWait,
 
+        WriteMCC_Open_AngleValve_1st,
+        WriteMCC_Open_AngleValve_2nd,
         AngleValve_Open,
         AngleValve_OpenWait,
 
+        WriteMCC_VacuumGauge_SpecIn_Wait_1torr,
         VacuumGauge_SpecIn_Wait_1torr,
 
+        WriteMCC_Close_AngleValve_1st,
+        WriteMCC_Close_AngleValve_2nd,
         AngleValve_Close,
         AngleValve_CloseWait,
 
         DryPump_Purge,
         DryPump_Purge_Wait,
 
+        WriteMCC_VacuumGauge_Target_Wait,
         VacuumGauge_Target_Wait,
 
         Delay_BeforeInject,
