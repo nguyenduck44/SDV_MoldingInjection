@@ -121,18 +121,6 @@
                 <TextBox Tag="Pump Valve Vaccum CDA"
                      Text="{Binding CDAStatus.PumpValveVacuum, Mode=OneWay,StringFormat={}{0:F3} MPa}"
                          IsReadOnly="True" />
-                <TextBox Tag="Syringe Air Head1"
-                     Text="{Binding CDAStatus.SyringeAirH1, Mode=OneWay,StringFormat={}{0:F3} MPa}"
-                         IsReadOnly="True" />
-                <TextBox Tag="Syringe Air Head2"
-                     Text="{Binding CDAStatus.SyringeAirH2, Mode=OneWay,StringFormat={}{0:F3} MPa}"
-                         IsReadOnly="True" />
-                <TextBox Tag="Syringe Air Head3"
-                     Text="{Binding CDAStatus.SyringeAirH3, Mode=OneWay,StringFormat={}{0:F3} MPa}"
-                         IsReadOnly="True" />
-                <TextBox Tag="Syringe Air Head4"
-                     Text="{Binding CDAStatus.SyringeAirH4, Mode=OneWay,StringFormat={}{0:F3} MPa}"
-                         IsReadOnly="True" />
             </StackPanel>
     </Grid>
 </UserControl>
