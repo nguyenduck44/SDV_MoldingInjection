@@ -1749,6 +1749,7 @@ namespace SDV_MoldingInjection.Process
                     {
                         Log.Debug("Left Jig Unload Done");
                         JigStatuses[0] = EJigStatus.None;
+                        LeftJigID = string.Empty;
                         outputCount++;
                     }
 
@@ -1756,8 +1757,9 @@ namespace SDV_MoldingInjection.Process
                         RightJigDetect == false &&
                         JigStatuses[1] != EJigStatus.None)
                     {
-                        Log.Debug("Right Jig Unload Done");
+                        Log.Debug("Right Jig Unload Done");  
                         JigStatuses[1] = EJigStatus.None;
+                        LeftJigID = string.Empty;
                         outputCount++;
                     }
 
