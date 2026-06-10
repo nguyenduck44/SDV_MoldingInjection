@@ -86,9 +86,11 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddSingleton<IInputSimulationViewModel>(new MMFInputSimulationViewModel<EMachineInput>(
                     new List<string>
                     {
+                        EMachineInput.OP_KEY_SW_AUTO.ToString(),
                     },
                     new List<string>
                     {
+                        EMachineInput.OP_KEY_SW_AUTO.ToString(),
                     }
                 ));
             });

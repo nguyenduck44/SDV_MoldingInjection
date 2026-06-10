@@ -249,7 +249,7 @@ namespace SDV_MoldingInjection.Defines
             int buff = 0;
             int size = 1;
             int startAddress = address - address % 8;
-            //MCCLinkIE.mdreceive(151, 255, 23, startAddress, ref size, ref buff);
+            MCCLinkIE.mdreceive(151, 255, 23, startAddress, ref size, ref buff);
             bool value = (buff & (0x01 << (address % 8))) > 0;
 
             return value;

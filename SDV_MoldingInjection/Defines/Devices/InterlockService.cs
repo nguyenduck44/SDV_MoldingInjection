@@ -4,6 +4,7 @@ using EQX.Core.Sequence;
 using EQX.InOut;
 using EQX.UI.Controls;
 using log4net;
+using Microsoft.Win32;
 using SDV_MoldingInjection.Recipe;
 using System.CodeDom;
 using System.Windows;
@@ -13,6 +14,10 @@ namespace SDV_MoldingInjection.Defines
     public class InterlockService : IDisposable
     {
         #region Properties
+        private double Z1_Axis_InjectPos_Interlock { get; }
+        private double Z2_Axis_InjectPos_Interlock { get; }
+        private double Z3_Axis_InjectPos_Interlock { get; }
+        private double Z4_Axis_InjectPos_Interlock { get; }
 
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
         #endregion
@@ -27,6 +32,26 @@ namespace SDV_MoldingInjection.Defines
             _machineStatus = machineStatus;
 
             InterlockMonitor.OnInterlockBlocked += HandleInterlockBlocked;
+
+            try
+            {
+                object? z1_Axis_InjectPos_Interlock = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Top Engineering", "Z1_Axis_InjectPos_Interlock", "");
+                Z1_Axis_InjectPos_Interlock = double.Parse(z1_Axis_InjectPos_Interlock.ToString());
+
+                object? z2_Axis_InjectPos_Interlock = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Top Engineering", "Z2_Axis_InjectPos_Interlock", "");
+                Z2_Axis_InjectPos_Interlock = double.Parse(z2_Axis_InjectPos_Interlock.ToString());
+
+                object? z3_Axis_InjectPos_Interlock = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Top Engineering", "Z3_Axis_InjectPos_Interlock", "");
+                Z3_Axis_InjectPos_Interlock = double.Parse(z3_Axis_InjectPos_Interlock.ToString());
+
+                object? z4_Axis_InjectPos_Interlock = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Top Engineering", "Z4_Axis_InjectPos_Interlock", "");
+                Z4_Axis_InjectPos_Interlock = double.Parse(z4_Axis_InjectPos_Interlock.ToString());
+            }
+            catch
+            {
+                LogManager.GetLogger("Interlock").Error("Get Interlock Z Axis InjectPos. Check Registry Z_Axis_InjectPos_Interlock Value");
+                MessageBoxEx.ShowDialog("Get Interlock Z Axis InjectPos. Check Registry Z_Axis_InjectPos_Interlock Value");
+            }
         }
         #endregion
 
@@ -150,13 +175,17 @@ namespace SDV_MoldingInjection.Defines
                     { "Door is not CLOSE", () => DoorCloseOrTeachJogAuthorized() },
                 };
             }
-        
+
             if (disable) _devices.Motions.Z1Axis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>();
             else
             {
                 _devices.Motions.Z1Axis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>
                 {
                     { "Door is not CLOSE", () => DoorCloseOrTeachJogAuthorized() },
+                };
+                _devices.Motions.Z1Axis.PositionAbsMoveInterlocks = new Dictionary<string, Func<double, bool>>
+                {
+                    { "Z1 Axis Inject Position OVER", pos => Z1Axis_InterlockAtInjectPosition(pos) },
                 };
             }
 
@@ -176,6 +205,10 @@ namespace SDV_MoldingInjection.Defines
                 {
                     { "Door is not CLOSE", () => DoorCloseOrTeachJogAuthorized() },
                 };
+                _devices.Motions.Z2Axis.PositionAbsMoveInterlocks = new Dictionary<string, Func<double, bool>>
+                {
+                    { "Z2 Axis Inject Position OVER", pos => Z2Axis_InterlockAtInjectPosition(pos) },
+                };
             }
 
             if (disable) _devices.Motions.Z3Axis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>();
@@ -186,7 +219,7 @@ namespace SDV_MoldingInjection.Defines
                     { "Door is not CLOSE", () => DoorCloseOrTeachJogAuthorized() },
                 };
             }
-           
+
             if (disable) _devices.Motions.Z3Axis.PositionDecreaseInterlocks = new Dictionary<string, Func<bool>>();
             else
             {
@@ -194,8 +227,12 @@ namespace SDV_MoldingInjection.Defines
                 {
                     { "Door is not CLOSE", () => DoorCloseOrTeachJogAuthorized() },
                 };
+                _devices.Motions.Z3Axis.PositionAbsMoveInterlocks = new Dictionary<string, Func<double, bool>>
+                {
+                    { "Z3 Axis Inject Position OVER", pos => Z3Axis_InterlockAtInjectPosition(pos) },
+                };
             }
-           
+
             if (disable) _devices.Motions.Z4Axis.PositionIncreaseInterlocks = new Dictionary<string, Func<bool>>();
             else
             {
@@ -212,6 +249,10 @@ namespace SDV_MoldingInjection.Defines
                 {
                     { "Door is not CLOSE", () => DoorCloseOrTeachJogAuthorized() },
                 };
+                _devices.Motions.Z4Axis.PositionAbsMoveInterlocks = new Dictionary<string, Func<double, bool>>
+                {
+                    { "Z4 Axis Inject Position OVER", pos => Z4Axis_InterlockAtInjectPosition(pos) },
+                };
             }
         }
 
@@ -222,6 +263,51 @@ namespace SDV_MoldingInjection.Defines
         #endregion
 
         #region Private Methods
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="position">Motion target position (berfore interlock checking position)</param>
+        /// <returns></returns>
+        private bool Z1Axis_InterlockAtInjectPosition(double position)
+        {
+            bool interlockBlockCondition =
+                _devices.Motions.XAxis.IsOnPosition(_recipeSelector.CurrentRecipe.InjectRecipe.XAxisInjectPos) &
+                _devices.Motions.StageYAxis.IsOnPosition(_recipeSelector.CurrentRecipe.InjectRecipe.YAxisInjectPos) &
+                position < Z1_Axis_InjectPos_Interlock;
+
+            return !interlockBlockCondition;
+        }
+
+        private bool Z2Axis_InterlockAtInjectPosition(double position)
+        {
+            bool interlockBlockCondition =
+                _devices.Motions.XAxis.IsOnPosition(_recipeSelector.CurrentRecipe.InjectRecipe.XAxisInjectPos) &
+                _devices.Motions.StageYAxis.IsOnPosition(_recipeSelector.CurrentRecipe.InjectRecipe.YAxisInjectPos) &
+                position < Z2_Axis_InjectPos_Interlock;
+
+            return !interlockBlockCondition;
+        }
+
+        private bool Z3Axis_InterlockAtInjectPosition(double position)
+        {
+            bool interlockBlockCondition =
+                _devices.Motions.XAxis.IsOnPosition(_recipeSelector.CurrentRecipe.InjectRecipe.XAxisInjectPos) &
+                _devices.Motions.StageYAxis.IsOnPosition(_recipeSelector.CurrentRecipe.InjectRecipe.YAxisInjectPos) &
+                position < Z3_Axis_InjectPos_Interlock;
+
+            return !interlockBlockCondition;
+        }
+
+        private bool Z4Axis_InterlockAtInjectPosition(double position)
+        {
+            bool interlockBlockCondition =
+                _devices.Motions.XAxis.IsOnPosition(_recipeSelector.CurrentRecipe.InjectRecipe.XAxisInjectPos) &
+                _devices.Motions.StageYAxis.IsOnPosition(_recipeSelector.CurrentRecipe.InjectRecipe.YAxisInjectPos) &
+                position < Z4_Axis_InjectPos_Interlock;
+
+            return !interlockBlockCondition;
+        }
+
         private bool DoorCloseOrTeachJogAuthorized()
         {
             return _devices.Inputs.DoorClose || _machineStatus.CanJogWithDoorOpen;
@@ -252,6 +338,7 @@ namespace SDV_MoldingInjection.Defines
 
             throw new Exception($"{zAxis.Name} is not supported ZAxis");
         }
+
         #endregion
 
         #region Privates
