@@ -148,13 +148,13 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _skipDispensing, value);
         }
 
-        [ParameterDescription(227)]
+        [ParameterDescription(210)]
         public bool UseCIM
         {
             get { return _useCIM; }
             set { _useCIM = value; }
         }
-        [ParameterDescription(228)]
+        [ParameterDescription(211)]
         public bool ReadBarcode
         {
             get { return _readBarcode; }
