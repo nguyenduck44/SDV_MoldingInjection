@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
              mc:Ignorable="d"
              xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
+             xmlns:localControls="clr-namespace:SDV_MoldingInjection.Controls"
              d:DataContext="{d:DesignInstance Type={x:Type vm:MachineStatusAutoViewModel}}"
              d:DesignHeight="403"
              d:DesignWidth="557">
@@ -230,11 +231,11 @@
                                     <BeginStoryboard Name="BlinkAnimation">
                                         <Storyboard>
                                             <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                             From="1.0"
-                                             To="0.0"
-                                             Duration="0:0:0.5"
-                                             AutoReverse="True"
-                                             RepeatBehavior="Forever" />
+                                                             From="1.0"
+                                                             To="0.0"
+                                                             Duration="0:0:0.5"
+                                                             AutoReverse="True"
+                                                             RepeatBehavior="Forever" />
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </DataTrigger.EnterActions>
@@ -505,20 +506,20 @@
             <Grid Canvas.Left="265"
                   Canvas.Top="165">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
+                    <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
-                
+
                 <Label Content="LEFT"
                        BorderBrush="Black"
                        BorderThickness="1"
                        Background="WhiteSmoke"
                        FontSize="10"
-                       FontWeight="Bold"/>
+                       FontWeight="Bold" />
                 <Label Content="{Binding LeftJigID}"
                        FontSize="10"
                        Width="200"
@@ -527,15 +528,15 @@
                        Background="WhiteSmoke"
                        Grid.Column="1"
                        HorizontalAlignment="Center"
-                       VerticalContentAlignment="Center" 
-                       FontWeight="Bold"/>
+                       VerticalContentAlignment="Center"
+                       FontWeight="Bold" />
                 <Label Content="RIGHT"
                        Background="WhiteSmoke"
                        Grid.Row="1"
                        BorderBrush="Black"
                        BorderThickness="1"
                        FontSize="10"
-                       FontWeight="Bold"/>
+                       FontWeight="Bold" />
                 <Label Content="{Binding RightJigID}"
                        Background="WhiteSmoke"
                        Width="200"
@@ -546,7 +547,7 @@
                        Grid.Row="1"
                        HorizontalAlignment="Center"
                        VerticalContentAlignment="Center"
-                       FontWeight="Bold"/>
+                       FontWeight="Bold" />
 
             </Grid>
         </Canvas>
@@ -675,6 +676,40 @@
                                  Converter="{StaticResource BooleanToVisibilityConverter}" />
                     </Image.Visibility>
                 </Image>
+            </Canvas>
+            <Canvas>
+                <localControls:CDAStatusUnitView Canvas.Left="240"
+                                                 Canvas.Top="100"
+                                                 Width="50"
+                                                 Height="40"
+                                                 FontSize="2"
+                                                 CDAName="MainAir"
+                                                 CDAValue="{Binding DataContext.CDAStatus.MainAirCDA,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"
+                                                 IsThreshold="{Binding DataContext.CDAStatus.IsMainAir,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}" />
+                <localControls:CDAStatusUnitView Canvas.Left="387"
+                                                 Canvas.Top="233"
+                                                 Width="50"
+                                                 Height="40"
+                                                 FontSize="2"
+                                                 CDAName="Syringe Air"
+                                                 CDAValue="{Binding DataContext.CDAStatus.SyringeMainAirCDA,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"
+                                                 IsThreshold="{Binding DataContext.CDAStatus.IsSyringeAirMain,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}" />
+                <localControls:CDAStatusUnitView Canvas.Left="412"
+                                                 Canvas.Top="290"
+                                                 Width="50"
+                                                 Height="40"
+                                                 FontSize="2"
+                                                 CDAName="PumpPurge"
+                                                 CDAValue="{Binding DataContext.CDAStatus.PumpPurge,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"
+                                                 IsThreshold="{Binding DataContext.CDAStatus.IsPumpPurge,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}" />
+                <localControls:CDAStatusUnitView Canvas.Left="467"
+                                                 Canvas.Top="290"
+                                                 Width="50"
+                                                 Height="40"
+                                                 FontSize="2"
+                                                 CDAName="Angle Valve"
+                                                 CDAValue="{Binding DataContext.CDAStatus.PumpValveVacuum,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"
+                                                 IsThreshold="{Binding DataContext.CDAStatus.IsPumpValveVacuum,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}" />
             </Canvas>
         </Grid>
     </Grid>

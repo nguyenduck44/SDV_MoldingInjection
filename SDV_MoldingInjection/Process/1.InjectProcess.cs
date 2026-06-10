@@ -1803,8 +1803,8 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"Write data output count: {outputCount}");
                     _productionService.WriteData(EProductionWriteType.Output, outputCount);
-                    outputCount = 0;
                     _tactTimeList.TactCounterEnd(outputCount);
+                    outputCount = 0;
 
 
                     Log.Info("Unloading end");

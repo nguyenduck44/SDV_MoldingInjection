@@ -9,10 +9,6 @@ namespace SDV_MoldingInjection.Recipe
         private double syringeAirMainThreshold;
         private double pumpPurgeThreshold;
         private double pumpValveVacuumThreshold;
-        private double syringeAirH1Threshold;
-        private double syringeAirH2Threshold;
-        private double syringeAirH3Threshold;
-        private double syringeAirH4Threshold;
 
         [SingleRecipeDescription(Description = "Main Air Threshold", Unit = Unit.MegaPascal)]
         [ParameterDescription(230)]
@@ -59,54 +55,6 @@ namespace SDV_MoldingInjection.Recipe
             {
                 if (pumpValveVacuumThreshold == value) return;
                 SetRecipe(ref pumpValveVacuumThreshold, value);
-            }
-        }
-
-        [SingleRecipeDescription(Description = "Syringe Air H1 Threshold", Unit = Unit.MegaPascal)]
-        [ParameterDescription(234)]
-        public double SyringeAirH1Threshold
-        {
-            get { return syringeAirH1Threshold; }
-            set
-            {
-                if (syringeAirH1Threshold == value) return;
-                SetRecipe(ref syringeAirH1Threshold, value);
-            }
-        }
-
-        [SingleRecipeDescription(Description = "Syringe Air H2 Threshold", Unit = Unit.MegaPascal)]
-        [ParameterDescription(235)]
-        public double SyringeAirH2Threshold
-        {
-            get { return syringeAirH2Threshold; }
-            set
-            {
-                if (syringeAirH2Threshold == value) return;
-                SetRecipe(ref syringeAirH2Threshold, value);
-            }
-        }
-
-        [SingleRecipeDescription(Description = "Syringe Air H3 Threshold", Unit = Unit.MegaPascal)]
-        [ParameterDescription(236)]
-        public double SyringeAirH3Threshold
-        {
-            get { return syringeAirH3Threshold; }
-            set
-            {
-                if (syringeAirH3Threshold == value) return;
-                SetRecipe(ref syringeAirH3Threshold, value);
-            }
-        }
-
-        [SingleRecipeDescription(Description = "Syringe Air H4 Threshold", Unit = Unit.MegaPascal)]\
-        [ParameterDescription(237)]
-        public double SyringeAirH4Threshold
-        {
-            get { return syringeAirH4Threshold; }
-            set
-            {
-                if (syringeAirH4Threshold == value) return;
-                SetRecipe(ref syringeAirH4Threshold, value);
             }
         }
     }

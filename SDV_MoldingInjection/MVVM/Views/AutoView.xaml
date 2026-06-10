@@ -264,7 +264,7 @@
                                 BorderThickness="1"
                                 Padding="6 2">
                             <TextBlock VerticalAlignment="Center"
-                                       Text="T/T" />
+                                       Text="T/T(s)" />
                         </Border>
                         <Border Grid.Row="0"
                                 Grid.Column="1"
@@ -284,7 +284,7 @@
                                 BorderThickness="1"
                                 Padding="6 2">
                             <TextBlock VerticalAlignment="Center"
-                                       Text="AVG" />
+                                       Text="AVG(s)" />
                         </Border>
                         <Border Grid.Row="1"
                                 Grid.Column="1"

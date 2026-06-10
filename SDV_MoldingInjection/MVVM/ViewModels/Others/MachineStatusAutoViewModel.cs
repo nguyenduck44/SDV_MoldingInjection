@@ -76,6 +76,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         public MachineStatus MachineStatus { get; }
         public RecipeSelector RecipeSelector { get; }
+        public CDAStatus CDAStatus { get; }
         #endregion
 
         #region Contructors
@@ -83,11 +84,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             NavigationStore navigationStore,
             MachineStatus machineStatus,
             RecipeSelector recipeSelector,
+            CDAStatus cDAStatus,
             IServiceProvider serviceProvider)
         {
             Devices = devices;
             MachineStatus = machineStatus;
             RecipeSelector = recipeSelector;
+            CDAStatus = cDAStatus;
             _navigationStore = navigationStore;
             _serviceProvider = serviceProvider;
             statusUpdateTimer = new NonOverlappingTimer(100);
