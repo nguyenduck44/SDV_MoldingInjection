@@ -964,6 +964,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)MoldResinInjectSteps.Dequeue();
                     break;
                 case EMoldProcResinInjectStep.XYAxis_InjectPos_Move:
+                    Log.Debug($"Move XY Axis to Inject Position X:[${Recipe.XAxisInjectPos},Y:[${Recipe.YAxisInjectPos}]");
                     _cIMCollection.WriteMCC(EMCCAction.IJ01_CHAMPER_COVER_CLOSE, EMCCAction.IJ01_MOVE_X_Y_TO_INJECT_POS);
 
                     XAxis.MoveAbs(XAxisInjectPos);
@@ -2564,18 +2565,22 @@ namespace SDV_MoldingInjection.Process
         {
             if (!_currentRecipe.OptionRecipe.SkipHead12)
             {
+                Log.Debug($"Z1 Axis Move Inject Position [{_currentRecipe.SPDHead1_Recipe.ZAxisInjectPos}]");
                 Z1Axis.MoveAbs(Z1AxisInjectPos);
             }
             if (!_currentRecipe.OptionRecipe.SkipHead12)
             {
+                Log.Debug($"Z2 Axis Move Inject Position [{_currentRecipe.SPDHead2_Recipe.ZAxisInjectPos}]");
                 Z2Axis.MoveAbs(Z2AxisInjectPos);
             }
             if (!_currentRecipe.OptionRecipe.SkipHead34)
             {
+                Log.Debug($"Z3 Axis Move Inject Position [{_currentRecipe.SPDHead3_Recipe.ZAxisInjectPos}]");
                 Z3Axis.MoveAbs(Z3AxisInjectPos);
             }
             if (!_currentRecipe.OptionRecipe.SkipHead34)
             {
+                Log.Debug($"Z4 Axis Move Inject Position [{_currentRecipe.SPDHead4_Recipe.ZAxisInjectPos}]");
                 Z4Axis.MoveAbs(Z4AxisInjectPos);
             }
         }

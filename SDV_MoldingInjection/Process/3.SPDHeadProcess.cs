@@ -367,20 +367,17 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"{GAxis.Name} moved to GateOpenPos [{_currentSPDHeadRecipe.GateOpenPos}°] done");
-                    Log.Debug("Wait All P Axis Origin Done");
+                    Log.Debug("Wait P Axis Stop");
                     Step.OriginStep++;
                     break;
                 case ESPDHeadProcOriginStep.Wait_All_PAxis_OriginDone:
-                    //if (_devices.Motions.P1Axis.Status.IsHomeDone == false ||
-                    //    _devices.Motions.P2Axis.Status.IsHomeDone == false ||
-                    //    _devices.Motions.P3Axis.Status.IsHomeDone == false ||
-                    //    _devices.Motions.P4Axis.Status.IsHomeDone == false)
-                    //{
-                    //    Wait(20);
-                    //    break;
-                    //}
+                    if (PAxis.Status.IsMotioning)
+                    {
+                        Wait(20);
+                        break;
+                    }
 
-                    Log.Debug("PAxis All Head Origin Done");
+                    Log.Debug("PAxis Stop Done");
                     Step.OriginStep++;
                     break;
                 case ESPDHeadProcOriginStep.PAxis_BasePosition_Move:
