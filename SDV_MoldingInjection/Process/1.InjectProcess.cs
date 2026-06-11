@@ -680,32 +680,36 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcOriginStep.ZAxis_DummyPos_Move:
                     Log.Debug("ZAxis move dummy position");
-                    Z1Axis.MoveAbs(Z1AxisDummyPos);
-                    Z2Axis.MoveAbs(Z2AxisDummyPos);
-                    Z3Axis.MoveAbs(Z3AxisDummyPos);
-                    Z4Axis.MoveAbs(Z4AxisDummyPos);
-                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => Z1Axis.IsOnPosition(Z1AxisDummyPos) &&
-                                                                              Z2Axis.IsOnPosition(Z2AxisDummyPos) &&
-                                                                              Z3Axis.IsOnPosition(Z3AxisDummyPos) &&
-                                                                              Z4Axis.IsOnPosition(Z4AxisDummyPos));
+                    if (SPDHead1OriginSelected)
+                        Z1Axis.MoveAbs(Z1AxisDummyPos);
+                    if (SPDHead2OriginSelected) 
+                        Z2Axis.MoveAbs(Z2AxisDummyPos);
+                    if (SPDHead3OriginSelected) 
+                        Z3Axis.MoveAbs(Z3AxisDummyPos);
+                    if (SPDHead4OriginSelected) 
+                        Z4Axis.MoveAbs(Z4AxisDummyPos);
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => (Z1Axis.IsOnPosition(Z1AxisDummyPos) || SPDHead1OriginSelected == false) &&
+                                                                              (Z2Axis.IsOnPosition(Z2AxisDummyPos) || SPDHead2OriginSelected == false) &&
+                                                                              (Z3Axis.IsOnPosition(Z3AxisDummyPos) || SPDHead3OriginSelected == false) &&
+                                                                              (Z4Axis.IsOnPosition(Z4AxisDummyPos) || SPDHead4OriginSelected == false));
                     Step.OriginStep++;
                     break;
                 case EMoldProcOriginStep.ZAxis_DummyPos_Wait:
                     if (WaitTimeOutOccurred)
                     {
-                        if (!Z1Axis.IsOnPosition(Z1AxisDummyPos))
+                        if (!Z1Axis.IsOnPosition(Z1AxisDummyPos) && SPDHead1OriginSelected)
                         {
                             RaiseWarning(EWarning.MO_SPD_H01_Z1_AXIS_DUMMY_POS_TIMEOUT);
                         }
-                        if (!Z2Axis.IsOnPosition(Z2AxisDummyPos))
+                        if (!Z2Axis.IsOnPosition(Z2AxisDummyPos) && SPDHead2OriginSelected)
                         {
                             RaiseWarning(EWarning.MO_SPD_H02_Z2_AXIS_DUMMY_POS_TIMEOUT);
                         }
-                        if (!Z3Axis.IsOnPosition(Z3AxisDummyPos))
+                        if (!Z3Axis.IsOnPosition(Z3AxisDummyPos) && SPDHead3OriginSelected)
                         {
                             RaiseWarning(EWarning.MO_SPD_H03_Z3_AXIS_DUMMY_POS_TIMEOUT);
                         }
-                        if (!Z4Axis.IsOnPosition(Z4AxisDummyPos))
+                        if (!Z4Axis.IsOnPosition(Z4AxisDummyPos) && SPDHead4OriginSelected)
                         {
                             RaiseWarning(EWarning.MO_SPD_H04_Z4_AXIS_DUMMY_POS_TIMEOUT);
                         }
