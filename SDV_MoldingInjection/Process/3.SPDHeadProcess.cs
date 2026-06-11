@@ -1050,6 +1050,16 @@ namespace SDV_MoldingInjection.Process
 
                     Step.RunStep++;
                     break;
+                case ESPDHeadProcCommonStep.DummyShotBeforeInject_Check:
+                    Log.Debug("Check sequence DummyShot before Inject");
+                    if (sequence == ESequence.DummyShot && dummyShotBeforeInject)
+                    {
+                        Step.RunStep = (int)ESPDHeadProcCommonStep.Base_PosVel_Calculte;
+                        break;
+                    }
+
+                    Step.RunStep++;
+                    break;
                 case ESPDHeadProcCommonStep.Gate_Close:
                     if (sequence == ESequence.ResinInject)
                     {

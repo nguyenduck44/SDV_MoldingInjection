@@ -10,6 +10,7 @@
 
         ResetInjectTime,
         BubbleRemoveResetCountRotate,
+        DummyShotBeforeInject_Check,
         // ----- CHARGING PHASE -----
         Gate_Close,
         Gate_CloseWait,
