@@ -371,14 +371,14 @@ namespace SDV_MoldingInjection.Process
                     Step.OriginStep++;
                     break;
                 case ESPDHeadProcOriginStep.Wait_All_PAxis_OriginDone:
-                    if (_devices.Motions.P1Axis.Status.IsHomeDone == false ||
-                        _devices.Motions.P2Axis.Status.IsHomeDone == false ||
-                        _devices.Motions.P3Axis.Status.IsHomeDone == false ||
-                        _devices.Motions.P4Axis.Status.IsHomeDone == false)
-                    {
-                        Wait(20);
-                        break;
-                    }
+                    //if (_devices.Motions.P1Axis.Status.IsHomeDone == false ||
+                    //    _devices.Motions.P2Axis.Status.IsHomeDone == false ||
+                    //    _devices.Motions.P3Axis.Status.IsHomeDone == false ||
+                    //    _devices.Motions.P4Axis.Status.IsHomeDone == false)
+                    //{
+                    //    Wait(20);
+                    //    break;
+                    //}
 
                     Log.Debug("PAxis All Head Origin Done");
                     Step.OriginStep++;

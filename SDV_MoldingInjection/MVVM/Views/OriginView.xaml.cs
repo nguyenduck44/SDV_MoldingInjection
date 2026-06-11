@@ -39,12 +39,21 @@ namespace SDV_MoldingInjection.MVVM.Views
 
             bool currentValue = process.IsOriginOrInitSelected;
             process.IsOriginOrInitSelected = !currentValue;
+
+            if (originVM.Processes.All.FirstOrDefault(p => p.Name == EProcess.SPDHead1.ToString()).IsOriginOrInitSelected ||
+                originVM.Processes.All.FirstOrDefault(p => p.Name == EProcess.SPDHead2.ToString()).IsOriginOrInitSelected ||
+                originVM.Processes.All.FirstOrDefault(p => p.Name == EProcess.SPDHead3.ToString()).IsOriginOrInitSelected ||
+                originVM.Processes.All.FirstOrDefault(p => p.Name == EProcess.SPDHead4.ToString()).IsOriginOrInitSelected)
+            {
+                originVM.Processes.All.FirstOrDefault(p => p.Name == EProcess.Inject.ToString()).IsOriginOrInitSelected = true;
+            }
         }
 
         private void root_Loaded(object sender, RoutedEventArgs e)
         {
             if (DataContext is OriginViewModel originVM == false) return;
             if (originVM.MachineStatus.IsStandByProcessMode == false) return;
+
             originVM.Processes.RootProcess.Childs!.ToList().ForEach(p => p.IsOriginOrInitSelected = false);
         }
     }

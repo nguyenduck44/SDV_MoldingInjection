@@ -125,6 +125,11 @@ namespace SDV_MoldingInjection.Process
         public string RightJigID { get; set; } = "";
         public string LeftCellId { get; set; }
         public string RightCellId { get; set; }
+
+        private bool SPDHead1OriginSelected => Parent!.Childs!.OfType<SPDHeadProcess>().First(p => p.Name == EProcess.SPDHead1.ToString()).IsOriginOrInitSelected;
+        private bool SPDHead2OriginSelected => Parent!.Childs!.OfType<SPDHeadProcess>().First(p => p.Name == EProcess.SPDHead2.ToString()).IsOriginOrInitSelected;
+        private bool SPDHead3OriginSelected => Parent!.Childs!.OfType<SPDHeadProcess>().First(p => p.Name == EProcess.SPDHead3.ToString()).IsOriginOrInitSelected;
+        private bool SPDHead4OriginSelected => Parent!.Childs!.OfType<SPDHeadProcess>().First(p => p.Name == EProcess.SPDHead4.ToString()).IsOriginOrInitSelected;
         #endregion
 
         #region Motions
@@ -716,10 +721,10 @@ namespace SDV_MoldingInjection.Process
                     Step.OriginStep++;
                     break;
                 case EMoldProcOriginStep.ClearFlag_MoveDummyPosDone:
-                    if (procInputs[EInjectProcInput.SPDHead1_OriginDone].Value == false ||
-                        procInputs[EInjectProcInput.SPDHead2_OriginDone].Value == false ||
-                        procInputs[EInjectProcInput.SPDHead3_OriginDone].Value == false ||
-                        procInputs[EInjectProcInput.SPDHead4_OriginDone].Value == false)
+                    if ((procInputs[EInjectProcInput.SPDHead1_OriginDone].Value == false && SPDHead1OriginSelected) ||
+                        (procInputs[EInjectProcInput.SPDHead2_OriginDone].Value == false && SPDHead2OriginSelected) ||
+                        (procInputs[EInjectProcInput.SPDHead3_OriginDone].Value == false && SPDHead3OriginSelected) ||
+                        (procInputs[EInjectProcInput.SPDHead4_OriginDone].Value == false && SPDHead4OriginSelected))
                     {
                         Wait(20);
                         break;
