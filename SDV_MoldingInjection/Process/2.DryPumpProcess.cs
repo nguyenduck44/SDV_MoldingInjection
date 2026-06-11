@@ -349,6 +349,7 @@ namespace SDV_MoldingInjection.Process
                         {
                             Log.Error("Dry Pump Run Fail, Start Retry Run");
                             Out_DryPumpRun.Value = false;
+                            Wait(100);
                             Step.RunStep = (int)EDryPumpProcResinInjectStep.DryPump_ResetAlarm;
                             break;
                         }
@@ -368,6 +369,7 @@ namespace SDV_MoldingInjection.Process
                     Task.Delay(1000).ContinueWith(t => Out_DryPumpResetAlarm.Value = false);
                     PumpRunRetryCount++;
                     Log.Debug($"Dry Pump Reset Alarm Count: {PumpRunRetryCount}");
+                    Wait(5000, () => _devices.Inputs.DryPumpAlarm.Value == false);
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.DryPump_Run;
                     break;
                 case EDryPumpProcResinInjectStep.InitQueue:
