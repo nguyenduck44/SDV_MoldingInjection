@@ -371,7 +371,7 @@ namespace SDV_MoldingInjection.Process
                     Step.OriginStep++;
                     break;
                 case ESPDHeadProcOriginStep.Wait_All_PAxis_OriginDone:
-                    if (PAxis.Status.IsMotioning)
+                    if (PAxis.IsOnPosition(0.0) == false || PAxis.Status.IsHomeDone == false)
                     {
                         Wait(20);
                         break;
