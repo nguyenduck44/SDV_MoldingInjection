@@ -674,16 +674,12 @@ namespace SDV_MoldingInjection.Process
 
             if (_devices.Inputs.SmokeDetectAlarm.Value == true)
             {
-                Childs!.ToList().ForEach(p => p.IsAlarm = true);
-                Childs!.ToList().ForEach(p => p.IsCanStop = true);
                 //Log.Error("Panel Smoke Detected");
                 RaiseAlarm((int)EAlarm.UT_MAIN_SMOKE_DETECT);
             }
 
             if (_devices.Inputs.TempHighWarning.Value == true)
             {
-                Childs!.ToList().ForEach(p => p.IsAlarm = true);
-                Childs!.ToList().ForEach(p => p.IsCanStop = true);
                 //Log.Error("OverTemperature Detected (>=35)");
                 RaiseWarning((int)EWarning.TE_MAIN_SENSOR_TEMP_OVER);
             }
@@ -698,8 +694,6 @@ namespace SDV_MoldingInjection.Process
 #if !SIMULATION
             if (_cDAStatus.IsMainAir == false)
             {
-                Childs!.ToList().ForEach(p => p.IsAlarm = true);
-                Childs!.ToList().ForEach(p => p.IsCanStop = true);
                 //Log.Error("Main Air Not Supplied");
                 RaiseWarning((int)EWarning.VC_MAIN_AIR_NOT_SUPPLIED);
             }
