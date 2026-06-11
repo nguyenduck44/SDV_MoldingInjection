@@ -6,6 +6,7 @@
 
         DryPump_Run,
         DryPump_RunWait,
+        DryPump_ResetAlarm,
 
         InitQueue,
         StepQueue_EmptyCheck,

@@ -22,6 +22,8 @@ namespace SDV_MoldingInjection.Process
         #region Outputs
         private IDOutput Out_DryPumpRun => _devices.Outputs.DryPumpRun;
         private IDOutput Out_ChamberPurgeOn => _devices.Outputs.ChamberPurgeOn;
+        private IDOutput Out_DryPumpResetAlarm => _devices.Outputs.DryPumpAlarmReset;
+
         #endregion
 
         #region AInputs
@@ -152,6 +154,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("ToRun start");
                     procOutputs.ClearOutputs();
                     EnableTimerDelay = false;
+                    PumpRunRetryCount = 0;
                     Step.ToRunStep++;
                     break;
                 case EDryPumpProcToRunStep.AngleValve_Close:
@@ -211,14 +214,14 @@ namespace SDV_MoldingInjection.Process
                     Step.ToRunStep++;
                     break;
                 case EDryPumpProcToRunStep.DryPump_Run:
-                    if (In_DryPumpRun.Value)
-                    {
-                        Step.ToRunStep = (int)EDryPumpProcToRunStep.ClearFlag_DryPump_PurgeDone;
-                        break;
-                    }
+                    //if (In_DryPumpRun.Value)
+                    //{
+                    //    Step.ToRunStep = (int)EDryPumpProcToRunStep.ClearFlag_DryPump_PurgeDone;
+                    //    break;
+                    //}
 
-                    Log.Debug($"{Out_DryPumpRun.Name} run");
-                    Out_DryPumpRun.Value = true;
+                    //Log.Debug($"{Out_DryPumpRun.Name} run");
+                    //Out_DryPumpRun.Value = true;
                     Step.ToRunStep++;
                     break;
                 case EDryPumpProcToRunStep.ClearFlag_DryPump_PurgeDone:
@@ -342,15 +345,30 @@ namespace SDV_MoldingInjection.Process
                 case EDryPumpProcResinInjectStep.DryPump_RunWait:
                     if (WaitTimeOutOccurred && _machineStatus.IsDryRunMode == false)
                     {
+                        if (PumpRunRetryCount < 1)
+                        {
+                            Log.Error("Dry Pump Run Fail, Start Retry Run");
+                            Out_DryPumpRun.Value = false;
+                            Step.RunStep = (int)EDryPumpProcResinInjectStep.DryPump_ResetAlarm;
+                            break;
+                        }
+
                         RaiseWarning(EWarning.MO_DRYPUMP_RUN_TIMEOUT);
                         break;
                     }
 
                     Log.Debug("Dry Pump Run Success!");
-
                     _cIMCollection.WriteMCC(EMCCAction.PU01_ACT_WAIT_PUMPING, EMCCAction.PU01_WAIT_REQUEST_DRYPUMP_VAC);
-
-                    Step.RunStep++;
+                    PumpRunRetryCount = 0;
+                    Step.RunStep = (int)EDryPumpProcResinInjectStep.InitQueue;
+                    break;
+                case EDryPumpProcResinInjectStep.DryPump_ResetAlarm:
+                    Log.Debug("DryPump Reset Alarm");
+                    Out_DryPumpResetAlarm.Value = true;
+                    Task.Delay(1000).ContinueWith(t => Out_DryPumpResetAlarm.Value = false);
+                    PumpRunRetryCount++;
+                    Log.Debug($"Dry Pump Reset Alarm Count: {PumpRunRetryCount}");
+                    Step.RunStep = (int)EDryPumpProcResinInjectStep.DryPump_Run;
                     break;
                 case EDryPumpProcResinInjectStep.InitQueue:
                     Log.Debug("Init queue");
@@ -710,6 +728,7 @@ namespace SDV_MoldingInjection.Process
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
         private InjectTimeRecipe InjectTimeRecipe => _recipeSelector.CurrentRecipe.InjectTimeRecipe;
         private string pressureLogFolder => _configuration.GetValue<string>("Folders:PressureLogFolder");
+        private int PumpRunRetryCount;
         private double _ventStartTick;
         private double _delayStartTick;
         private double _delayTime;
