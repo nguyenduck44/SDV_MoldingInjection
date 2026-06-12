@@ -7,6 +7,7 @@ using EQX.Core.Sequence;
 using EQX.InOut;
 using EQX.UI.Controls;
 using EQX.UI.MVVM;
+using ScottPlot.DataSources;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.Defines.Productions;
@@ -73,14 +74,7 @@ namespace SDV_MoldingInjection.Process
         {
             set
             {
-                if (value)
-                {
-                    MCCLinkIE.mddevset(151, 255, 23, 0x2007);
-                }
-                else
-                {
-                    MCCLinkIE.mddevrst(151, 255, 23, 0x2007);
-                }
+                CCLinkIEHelper.SetBit(0x2007, value);
             }
         }
 
@@ -88,14 +82,7 @@ namespace SDV_MoldingInjection.Process
         {
             set
             {
-                if (value)
-                {
-                    MCCLinkIE.mddevset(151, 255, 23, 0x2008);
-                }
-                else
-                {
-                    MCCLinkIE.mddevrst(151, 255, 23, 0x2008);
-                }
+                CCLinkIEHelper.SetBit(0x2008, value);
             }
         }
 
@@ -103,14 +90,7 @@ namespace SDV_MoldingInjection.Process
         {
             set
             {
-                if (value)
-                {
-                    MCCLinkIE.mddevset(151, 255, 23, 0x2009);
-                }
-                else
-                {
-                    MCCLinkIE.mddevrst(151, 255, 23, 0x2009);
-                }
+                CCLinkIEHelper.SetBit(0x2009, value);
             }
         }
         private CellJobProcessCimToPlcArea CellJobProcessInfo_Left { get; set; }
@@ -682,11 +662,11 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("ZAxis move dummy position");
                     if (SPDHead1OriginSelected)
                         Z1Axis.MoveAbs(Z1AxisDummyPos);
-                    if (SPDHead2OriginSelected) 
+                    if (SPDHead2OriginSelected)
                         Z2Axis.MoveAbs(Z2AxisDummyPos);
-                    if (SPDHead3OriginSelected) 
+                    if (SPDHead3OriginSelected)
                         Z3Axis.MoveAbs(Z3AxisDummyPos);
-                    if (SPDHead4OriginSelected) 
+                    if (SPDHead4OriginSelected)
                         Z4Axis.MoveAbs(Z4AxisDummyPos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout, () => (Z1Axis.IsOnPosition(Z1AxisDummyPos) || SPDHead1OriginSelected == false) &&
                                                                               (Z2Axis.IsOnPosition(Z2AxisDummyPos) || SPDHead2OriginSelected == false) &&
@@ -1312,7 +1292,7 @@ namespace SDV_MoldingInjection.Process
             {
                 case EMoldProcLoadingUnloadingStep.Start:
                     if (isLoading)
-                    {   
+                    {
                         Log.Info("Loading start");
                         _cIMCollection.WriteMCC_OnlyStart(EMCCAction.IJ01_COMPONENT_IN);
                         _tactTimeList.Chamber.CycleTimeCounter = Environment.TickCount;
@@ -1767,7 +1747,7 @@ namespace SDV_MoldingInjection.Process
                         RightJigDetect == false &&
                         JigStatuses[1] != EJigStatus.None)
                     {
-                        Log.Debug("Right Jig Unload Done");  
+                        Log.Debug("Right Jig Unload Done");
                         JigStatuses[1] = EJigStatus.None;
                         RightCellId = string.Empty;
                         outputCount++;

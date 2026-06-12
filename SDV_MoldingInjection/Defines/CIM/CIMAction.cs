@@ -320,6 +320,10 @@ namespace SDV_MoldingInjection.Defines.CIM
                     }
                     EquipEventHelpers.WriteFdcItem();
 
+                    short[] buffer = CCLinkIEHelper.ReadWords(0x17000, 200);
+
+                    CIMAddressMap.WriteWords(0xC617, 200, buffer , false);
+
                     await Task.Delay(100);
                 }
             }, token);
