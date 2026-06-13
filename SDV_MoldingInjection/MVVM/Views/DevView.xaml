@@ -36,6 +36,9 @@
                 <CheckBox IsChecked="{Binding MachineStatus.DisableDetectJig}"
                           Content="Disable Detect Jig"
                           Tag="Check to Disable Detect Jig" />
+                <CheckBox IsChecked="{Binding MachineStatus.IsSkipInject}"
+                          Content="Skip Inject"
+                          Tag="Check to Skip Inject" />
                 <Button Height="50"
                         Content="CIM Test View"
                         Command="{Binding CIMTetstViewNavigate}" />
@@ -49,7 +52,7 @@
                         Content="Test CCIE OnOffBit"
                         Command="{Binding TestOnOffBitCommand}" />
             </UniformGrid>
-            
+
         </StackPanel>
         <ui:LogDisplayer DockPanel.Dock="Right"
                          Width="600" />

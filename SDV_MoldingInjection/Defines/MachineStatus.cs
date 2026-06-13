@@ -138,6 +138,18 @@ namespace SDV_MoldingInjection.Defines
             }
         }
 
+        private bool isSkipInject;
+
+        public bool IsSkipInject
+        {
+            get { return isSkipInject; }
+            set 
+            {
+                isSkipInject = value;
+                OnPropertyChanged();
+            }
+        }
+
         public override void MoveMultiPointPositionSequence(MultiPointPosition multiPointPosition)
         {
             if (multiPointPosition == null || multiPointPosition.Points.Count <= 0) return;

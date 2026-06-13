@@ -991,7 +991,7 @@ namespace SDV_MoldingInjection.Process
                         _cIMCollection.WriteMCC_OnlyStart(head == ESPDHead.SPDHead1 ? EMCCAction.SP01_ACT_WAIT_INJECT :
                                                           head == ESPDHead.SPDHead2 ? EMCCAction.SP02_ACT_WAIT_INJECT :
                                                           head == ESPDHead.SPDHead3 ? EMCCAction.SP03_ACT_WAIT_INJECT :
-                                                          EMCCAction.SP04_ACT_WAIT_INJECT );
+                                                          EMCCAction.SP04_ACT_WAIT_INJECT);
                     }
 
                     _bubbleRemoveCount = 1;
@@ -1063,7 +1063,7 @@ namespace SDV_MoldingInjection.Process
                         WriteHeadMCC(EMCCAction.SP01_ACT_WAIT_INJECT, EMCCAction.SP01_MOVE_T_TO_INJECT_GATE_CLOSE_POS);
                     }
                     else if (sequence == ESequence.DummyShot)
-                    {   
+                    {
                         WriteHeadMCC(EMCCAction.SP01_ACT_WAIT_DUMMY_SHOT, EMCCAction.SP01_MOVE_T_TO_DUMMY_GATE_CLOSE_POS);
                     }
 
@@ -1287,7 +1287,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"{GAxis.Name} moving to OpenPos done");
-                    
+
                     if (sequence == ESequence.ResinInject)
                     {
                         WriteHeadMCC(EMCCAction.SP01_MOVE_T_TO_GATE_INJECT_OPEN_POS, EMCCAction.SP01_WAIT_REQUEST_INJECT);
@@ -1385,6 +1385,20 @@ namespace SDV_MoldingInjection.Process
                         }
                         else
                         {
+                            if (_machineStatus.IsSkipInject)
+                            {
+                                Log.Debug("Skip Inject => P Axis Not Move");
+
+                                Log.Debug("Start inject timer");
+                                CarrierJigStatus.InjectTime = 0;
+                                EnableTimerInject = true;
+                                _injectSequenceStartTick = Environment.TickCount64;
+
+                                Wait(InjectTimeRecipe.InjectTime);
+                                Step.RunStep++;
+                                break;
+                            }
+
                             Log.Debug($"{PAxis.Name} moving to InjectPos [{_pAxisInject_Pos}mm]");
                             PAxis.MoveAbs(_pAxisInject_Pos, _pAxisInject_Vel);
                             Log.Debug("Start inject timer");
@@ -1406,7 +1420,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.PAxis_InjectPos_MoveWait:
-                    if (WaitTimeOutOccurred)
+                    if (WaitTimeOutOccurred && _machineStatus.IsSkipInject == false)
                     {
                         RaiseHeadAlarm(EAlarm.MO_SPD_H01_P1_AXIS_INJECT_POS_TIMEOUT);
                         break;
@@ -2071,7 +2085,7 @@ namespace SDV_MoldingInjection.Process
 
         private void WriteHeadMCC(EMCCAction actionEnd, EMCCAction actionStart)
         {
-            _cIMCollection.WriteMCC (actionEnd + ((int)(EMCCAction.SP02_INIT_SP02 - EMCCAction.SP01_INIT_SP01)) * ((int)head - 1),
+            _cIMCollection.WriteMCC(actionEnd + ((int)(EMCCAction.SP02_INIT_SP02 - EMCCAction.SP01_INIT_SP01)) * ((int)head - 1),
                                     (actionStart + ((int)(EMCCAction.SP02_INIT_SP02 - EMCCAction.SP01_INIT_SP01)) * ((int)head - 1)));
         }
         #endregion
