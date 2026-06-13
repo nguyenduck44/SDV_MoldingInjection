@@ -1385,7 +1385,7 @@ namespace SDV_MoldingInjection.Process
                         }
                         else
                         {
-                            if (_machineStatus.IsSkipInject)
+                            if (_machineStatus.IsSkipInject && _recipeSelector.CurrentRecipe.OptionRecipe.InputTypeManual)
                             {
                                 Log.Debug("Skip Inject => P Axis Not Move");
 
@@ -1420,7 +1420,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.PAxis_InjectPos_MoveWait:
-                    if (WaitTimeOutOccurred && _machineStatus.IsSkipInject == false)
+                    if (WaitTimeOutOccurred && (_machineStatus.IsSkipInject && _recipeSelector.CurrentRecipe.OptionRecipe.InputTypeManual) == false)
                     {
                         RaiseHeadAlarm(EAlarm.MO_SPD_H01_P1_AXIS_INJECT_POS_TIMEOUT);
                         break;
