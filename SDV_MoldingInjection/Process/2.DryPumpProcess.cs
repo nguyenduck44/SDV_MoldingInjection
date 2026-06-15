@@ -328,7 +328,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_Run:
-                    if (In_DryPumpRun.Value)
+                    if (In_DryPumpRun.Value && Out_DryPumpRun.Value)
                     {
                         Step.RunStep = (int)EDryPumpProcResinInjectStep.InitQueue;
                         break;
