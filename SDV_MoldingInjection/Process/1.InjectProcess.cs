@@ -1749,7 +1749,7 @@ namespace SDV_MoldingInjection.Process
                     {
                         Log.Debug("Right Jig Unload Done");
                         JigStatuses[1] = EJigStatus.None;
-                        RightCellId = string.Empty;
+                        RightJigID = string.Empty;
                         outputCount++;
                     }
 
