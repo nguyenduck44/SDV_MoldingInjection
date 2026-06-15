@@ -3,6 +3,7 @@ using EQX.Core.Common;
 using EQX.Core.Communication;
 using EQX.Core.Communication.CIM;
 using EQX.Core.Communication.CIM.Custom;
+using EQX.Core.Helpers;
 using EQX.Core.Recipe;
 using EQX.Core.Sequence;
 using EQX.Process;
@@ -11,13 +12,13 @@ using EQX.UI.Language;
 using EQX.UI.MVVM;
 using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Defines;
+using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.Defines.ErrorLog;
 using SDV_MoldingInjection.MVVM.ViewModels;
 using SDV_MoldingInjection.MVVM.Views;
 using SDV_MoldingInjection.Recipe;
 using System.Windows;
 using TOPENG_Device;
-using EQX.Core.Helpers;
 
 namespace SDV_MoldingInjection.Process
 {
@@ -35,13 +36,14 @@ namespace SDV_MoldingInjection.Process
         private readonly ProcessIO _processIO;
         private readonly InOutHandler _inOutHandler;
         private readonly CDAStatus _cDAStatus;
+        private readonly CIMCollection _cIMCollection;
         private int raisedAlarmCode = 2;
         private int raisedWarningCode = 2;
         private readonly IAlertService _alarmService;
         private readonly IAlertService _warningService;
         private readonly object _lockAlarm = new object();
 
-        private bool IsServoOn => _devices.Inputs.ServoOn.Value;
+        private EMCCUnit CurrentAlarmUnit { get; set; }
         #endregion
 
         #region Constructor
@@ -54,6 +56,7 @@ namespace SDV_MoldingInjection.Process
             ProcessIO processIO,
             InOutHandler inOutHandler,
             CDAStatus cDAStatus,
+            CIMCollection cIMCollection,
             [FromKeyedServices("AlarmService")] IAlertService alarmService,
             [FromKeyedServices("WarningService")] IAlertService warningService)
         {
@@ -66,6 +69,7 @@ namespace SDV_MoldingInjection.Process
             _processIO = processIO;
             _inOutHandler = inOutHandler;
             _cDAStatus = cDAStatus;
+            _cIMCollection = cIMCollection;
             _alarmService = alarmService;
             _warningService = warningService;
 
@@ -213,6 +217,8 @@ namespace SDV_MoldingInjection.Process
         {
             if (Childs.All(child => child.ProcessStatus == EProcessStatus.ToAlarmDone))
             {
+                WriteMCC_ALARM_Start();
+
                 foreach (var motion in _devices.Motions.All!) { motion.Stop(); }
 
                 _machineStatus.OriginDone = false;
@@ -227,6 +233,8 @@ namespace SDV_MoldingInjection.Process
                 _inOutHandler.Handler_SendError(raisedAlarmCode);
                 Log.Info("ToAlarm Done, Alarm");
                 AlertNotifyView.ShowDialog(_alarmService.GetById(raisedAlarmCode), true);
+
+                WriteMCC_ALARM_End();
 
                 if (_viewModelavigationStore.CurrentViewModel is IdlePurgeModeViewModel)
                 {
@@ -258,6 +266,8 @@ namespace SDV_MoldingInjection.Process
         {
             if (Childs!.Count(child => child.ProcessStatus != EProcessStatus.ToWarningDone) == 0)
             {
+                WriteMCC_ALARM_Start();
+
                 foreach (var motion in _devices.Motions.All!) { motion.Stop(); }
 
                 _devices.Outputs.Lamp_Alarm(true);
@@ -265,6 +275,8 @@ namespace SDV_MoldingInjection.Process
                 _inOutHandler.Handler_SendError(raisedWarningCode);
                 Log.Info("ToWarning Done, Warning");
                 AlertNotifyView.ShowDialog(_warningService.GetById(raisedWarningCode), true);
+
+                WriteMCC_ALARM_End();
 
                 if (_viewModelavigationStore.CurrentViewModel is IdlePurgeModeViewModel)
                 {
@@ -554,6 +566,13 @@ namespace SDV_MoldingInjection.Process
                     
                     _inOutHandler.Handler_SendError(0); //Clear Error
                     _machineStatus.Message = string.Empty;
+
+                    if (Sequence == ESequence.AutoRun)
+                    {
+                        _cIMCollection.WriteMCC_PPID(_recipeSelector.RecipeSetting.CurrentRecipe);
+                        WriteMCC_ALARM_STOP_End();
+                    }
+
                     ProcessMode = EProcessMode.Run;
                     Log.Info("ToRun Done, Running");
                     break;
@@ -888,6 +907,9 @@ namespace SDV_MoldingInjection.Process
             lock (_lockAlarm)
             {
                 UpdateCurrentAlarm(alarmId, true);
+
+                CurrentAlarmUnit = GetMCCUnitFromName(alarmSource);
+
                 if (this.IsInAlarmMode()) return;
 
                 Log.Error($"[{(int)(EAlarm)alarmId}] {(EAlarm)alarmId}");
@@ -903,6 +925,9 @@ namespace SDV_MoldingInjection.Process
             lock (_lockAlarm)
             {
                 UpdateCurrentAlarm(warningId, false);
+
+                CurrentAlarmUnit = GetMCCUnitFromName(warningSource);
+
                 if (this.IsInWarningMode() || this.IsInAlarmMode()) return;
 
                 Log.Warn($"[{(int)(EWarning)warningId}] {(EWarning)warningId}");
@@ -929,7 +954,6 @@ namespace SDV_MoldingInjection.Process
                     {
                         AddAlarm(id);
                         EquipEventHelpers.RaiseAlarm(MachineStatus.AlarmTotalWords);
-
 
                         Log.Error($"[{(int)(EAlarm)id}] {(EAlarm)id}");
                         _machineStatus.Message = $"[{(int)(EAlarm)id}] {(EAlarm)id}";
@@ -958,6 +982,46 @@ namespace SDV_MoldingInjection.Process
             int bitIndex = alarmId % 16;
 
             MachineStatus.AlarmTotalWords[wordIndex] |= (short)(1 << bitIndex);
+        }
+
+        private EMCCUnit GetMCCUnitFromName(string processsName)
+        {
+            if (processsName == EProcess.Inject.ToString()) return EMCCUnit.IJ01;
+            if (processsName == EProcess.DryPump.ToString()) return EMCCUnit.PU01;
+            if (processsName == EProcess.SPDHead1.ToString()) return EMCCUnit.SP01;
+            if (processsName == EProcess.SPDHead2.ToString()) return EMCCUnit.SP02;
+            if (processsName == EProcess.SPDHead3.ToString()) return EMCCUnit.SP03;
+            return EMCCUnit.SP04;
+        }
+
+        private void WriteMCC_ALARM_Start()
+        {
+            if (CurrentAlarmUnit == EMCCUnit.IJ01) _cIMCollection.WriteMCC_OnlyStart(EMCCAction.IJ01_ALARM);
+            if (CurrentAlarmUnit == EMCCUnit.PU01) _cIMCollection.WriteMCC_OnlyStart(EMCCAction.PU01_ALARM);
+            if (CurrentAlarmUnit == EMCCUnit.SP01) _cIMCollection.WriteMCC_OnlyStart(EMCCAction.SP01_ALARM);
+            if (CurrentAlarmUnit == EMCCUnit.SP02) _cIMCollection.WriteMCC_OnlyStart(EMCCAction.SP02_ALARM);
+            if (CurrentAlarmUnit == EMCCUnit.SP03) _cIMCollection.WriteMCC_OnlyStart(EMCCAction.SP03_ALARM);
+            if (CurrentAlarmUnit == EMCCUnit.SP04) _cIMCollection.WriteMCC_OnlyStart(EMCCAction.SP04_ALARM);
+        }
+
+        private void WriteMCC_ALARM_End()
+        {
+            if (CurrentAlarmUnit == EMCCUnit.IJ01) _cIMCollection.WriteMCC(EMCCAction.IJ01_ALARM, EMCCAction.IJ01_ALARM_STOP);
+            if (CurrentAlarmUnit == EMCCUnit.PU01) _cIMCollection.WriteMCC(EMCCAction.PU01_ALARM, EMCCAction.PU01_ALARM_STOP);
+            if (CurrentAlarmUnit == EMCCUnit.SP01) _cIMCollection.WriteMCC(EMCCAction.SP01_ALARM, EMCCAction.SP01_ALARM_STOP);
+            if (CurrentAlarmUnit == EMCCUnit.SP02) _cIMCollection.WriteMCC(EMCCAction.SP02_ALARM, EMCCAction.SP02_ALARM_STOP);
+            if (CurrentAlarmUnit == EMCCUnit.SP03) _cIMCollection.WriteMCC(EMCCAction.SP03_ALARM, EMCCAction.SP03_ALARM_STOP);
+            if (CurrentAlarmUnit == EMCCUnit.SP04) _cIMCollection.WriteMCC(EMCCAction.SP04_ALARM, EMCCAction.SP04_ALARM_STOP);
+        }
+
+        private void WriteMCC_ALARM_STOP_End()
+        {
+            if (CurrentAlarmUnit == EMCCUnit.IJ01) _cIMCollection.WriteMCC_OnlyEnd(EMCCAction.IJ01_ALARM_STOP);
+            if (CurrentAlarmUnit == EMCCUnit.PU01) _cIMCollection.WriteMCC_OnlyEnd(EMCCAction.PU01_ALARM_STOP);
+            if (CurrentAlarmUnit == EMCCUnit.SP01) _cIMCollection.WriteMCC_OnlyEnd(EMCCAction.SP01_ALARM_STOP);
+            if (CurrentAlarmUnit == EMCCUnit.SP02) _cIMCollection.WriteMCC_OnlyEnd(EMCCAction.SP02_ALARM_STOP);
+            if (CurrentAlarmUnit == EMCCUnit.SP03) _cIMCollection.WriteMCC_OnlyEnd(EMCCAction.SP03_ALARM_STOP);
+            if (CurrentAlarmUnit == EMCCUnit.SP04) _cIMCollection.WriteMCC_OnlyEnd(EMCCAction.SP04_ALARM_STOP);
         }
 
         private bool IsAutoRunWaitingNoPanel()

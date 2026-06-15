@@ -1452,6 +1452,9 @@ namespace SDV_MoldingInjection.Process
 
                     LeftJigID = GetCellId(isJigLeft: true);
                     Log.Info($"Get Left Jig ID '{LeftJigID}'");
+
+                    _cIMCollection.WriteMCC_CellID(EMCCUnit.IJ01, LeftJigID);
+
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Set_Cell1ReplyBitOn:
@@ -1488,6 +1491,9 @@ namespace SDV_MoldingInjection.Process
 
                     RightJigID = GetCellId(isJigLeft: false);
                     Log.Info($"Get Right Jig ID '{RightJigID}'");
+
+                    _cIMCollection.WriteMCC_CellID(EMCCUnit.IJ01, RightJigID);
+
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Set_Cell2ReplyBitOn:
