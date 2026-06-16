@@ -4,7 +4,9 @@ using EQX.Core.Robot;
 using log4net;
 using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Defines;
+using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.MVVM.Models;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows.Input;
 using TOPENG_Device;
 
@@ -16,6 +18,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly INavigationService _navigationService;
         private readonly InterlockService _interlockService;
         private readonly Plotter _plotter;
+        private readonly CIMCollection _cIMCollection;
         private bool isDisableInterlock = false;
 
         #region Properties
@@ -94,6 +97,17 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 });
             }
         }
+
+        public ICommand TestMCCWriteJigIDCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    _cIMCollection.WriteMCC_CellID(EMCCUnit.IJ01, "31A-005216-BME-PA-DTHB-NZPL505");
+                });
+            }
+        }
         #endregion
 
         public MachineStatus MachineStatus { get; }
@@ -104,12 +118,14 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             MachineStatus machineStatus,
             INavigationService navigationService,
             Plotter plotter,
+            CIMCollection cIMCollection,
             InterlockService interlockService)
         {
             _devices = devices;
             MachineStatus = machineStatus;
             _navigationService = navigationService;
             _plotter = plotter;
+            _cIMCollection = cIMCollection;
             _interlockService = interlockService;
             Log = LogManager.GetLogger("DevVM");
         }

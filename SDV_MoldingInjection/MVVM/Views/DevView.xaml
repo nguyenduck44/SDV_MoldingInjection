@@ -51,6 +51,9 @@
                 <Button Height="50"
                         Content="Test CCIE OnOffBit"
                         Command="{Binding TestOnOffBitCommand}" />
+                <Button Height="50"
+                        Content="Test MCC Write JigID"
+                        Command="{Binding TestMCCWriteJigIDCommand}" />
             </UniformGrid>
 
         </StackPanel>
