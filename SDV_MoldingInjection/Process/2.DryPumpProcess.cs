@@ -321,7 +321,7 @@ namespace SDV_MoldingInjection.Process
                 case EDryPumpProcResinInjectStep.Start:
                     Log.Info("ResinInject start");
 
-                    _cIMCollection.WriteMCC_OnlyStart(EMCCAction.PU01_ACT_WAIT_PUMPING);
+                    _cIMCollection.WriteMCC(EMCCAction.PU01_IN_WAIT_TIME, EMCCAction.PU01_ACT_WAIT_PUMPING);
 
                     _tactTimeList.DryPump.CycleTimeCounter = Environment.TickCount;
                     _delayTime = 0;
@@ -359,7 +359,6 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug("Dry Pump Run Success!");
-                    _cIMCollection.WriteMCC(EMCCAction.PU01_ACT_WAIT_PUMPING, EMCCAction.PU01_WAIT_REQUEST_DRYPUMP_VAC);
                     PumpRunRetryCount = 0;
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.InitQueue;
                     break;
@@ -373,6 +372,8 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.DryPump_Run;
                     break;
                 case EDryPumpProcResinInjectStep.InitQueue:
+                    _cIMCollection.WriteMCC(EMCCAction.PU01_ACT_WAIT_PUMPING, EMCCAction.PU01_WAIT_REQUEST_DRYPUMP_VAC);
+
                     Log.Debug("Init queue");
                     if (_machineStatus.IsDryRunMode)
                     {
@@ -425,7 +426,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EDryPumpProcResinInjectStep.WriteMCC_Open_AngleValve_2nd:
                     Log.Debug("Write MCC Open Angle Valve 2nd");
-                    _cIMCollection.WriteMCC(EMCCAction.PU01_PURGE_AND_WAIT_1ST, EMCCAction.PU01_ANGLE_VALVE_OPEN_2ND);
+                    _cIMCollection.WriteMCC(_currentRecipe.OptionRecipe.OneTorrAndPurge ? EMCCAction.PU01_PURGE_AND_WAIT_1ST : EMCCAction.PU01_WAIT_REQUEST_DRYPUMP_VAC, EMCCAction.PU01_ANGLE_VALVE_OPEN_2ND);
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.AngleValve_Open:

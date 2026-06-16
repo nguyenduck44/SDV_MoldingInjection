@@ -376,6 +376,7 @@ namespace SDV_MoldingInjection.Defines
         {
             _machineStatus.OPCommand = EOperationCommand.Stop;
             _navigationService.NavigateTo<AutoViewModel>();
+            _machineStatus.OPCommand = EOperationCommand.Start;
             _machineStatus.MachineIdleTick = (int)Environment.TickCount64;
 
             byte[] buffer = new byte[] {

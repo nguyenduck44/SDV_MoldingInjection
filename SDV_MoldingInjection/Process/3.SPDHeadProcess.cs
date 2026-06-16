@@ -988,10 +988,7 @@ namespace SDV_MoldingInjection.Process
 
                     if (sequence == ESequence.ResinInject)
                     {
-                        _cIMCollection.WriteMCC_OnlyStart(head == ESPDHead.SPDHead1 ? EMCCAction.SP01_ACT_WAIT_INJECT :
-                                                          head == ESPDHead.SPDHead2 ? EMCCAction.SP02_ACT_WAIT_INJECT :
-                                                          head == ESPDHead.SPDHead3 ? EMCCAction.SP03_ACT_WAIT_INJECT :
-                                                          EMCCAction.SP04_ACT_WAIT_INJECT);
+                        WriteHeadMCC(EMCCAction.SP01_IN_WAIT_TIME, EMCCAction.SP01_ACT_WAIT_INJECT);
                     }
 
                     _bubbleRemoveCount = 1;

@@ -1294,7 +1294,7 @@ namespace SDV_MoldingInjection.Process
                     if (isLoading)
                     {
                         Log.Info("Loading start");
-                        _cIMCollection.WriteMCC_OnlyStart(EMCCAction.IJ01_COMPONENT_IN);
+                        _cIMCollection.WriteMCC(EMCCAction.IJ01_IN_WAIT_TIME, EMCCAction.IJ01_COMPONENT_IN);
                         _tactTimeList.Chamber.CycleTimeCounter = Environment.TickCount;
                         _machineStatus.ConfirmLoadingFinish = false;
                     }
@@ -2005,7 +2005,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcDummyShotStep.ZAxis_SafetyPos_Move:
-                    _cIMCollection.WriteMCC(EMCCAction.IJ01_WAIT_DUMMY_SHOT, EMCCAction.IJ01_MOVE_Z_TO_SAFETY_POS_FOR_CLEAN);
+                    _cIMCollection.WriteMCC(EMCCAction.IJ01_WAIT_DUMMY_SHOT, _optionRecipe.SkipNeedleClean ? EMCCAction.IJ01_MOVE_Z_TO_SAFETY_POS_FOR_UNLOAD : EMCCAction.IJ01_MOVE_Z_TO_SAFETY_POS_FOR_CLEAN);
 
                     if (IsSequenceAssembleOrDisassemble(sequence))
                     {
