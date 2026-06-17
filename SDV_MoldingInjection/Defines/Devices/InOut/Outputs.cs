@@ -141,12 +141,19 @@ namespace SDV_MoldingInjection.Defines
             Lamp_Clear();
 
             TowerLampRed.Value = true;
-
+            ResetSW_Blink = true;
             if (isUseBuzzer)
             {
                 Buzzer1On.Value = true;
             }
         }
+
+        public void ResetSW_Clear()
+        {
+            ResetSW_Blink = false;
+            ResetLamp.Value = false;
+        }
+
         private void Lamp_Clear()
         {
             TowerLampGreen.Value = false;
@@ -155,6 +162,8 @@ namespace SDV_MoldingInjection.Defines
 
             StartLamp.Value = false;
             StopLamp.Value = false;
+
+            ResetSW_Blink = false;
         }
 
         private void BuzzerOff()
@@ -163,6 +172,33 @@ namespace SDV_MoldingInjection.Defines
             Buzzer2On.Value = false;
             Buzzer3On.Value = false;
             Buzzer4On.Value = false;
+        }
+
+        private Timer ResetSW_BlinkTimer;
+        private bool ResetSW_Blink
+        {
+            set
+            {
+                if (value == true)
+                {
+                    if (ResetSW_BlinkTimer != null)
+                    {
+                        ResetSW_BlinkTimer.Dispose();
+                    }
+                    ResetSW_BlinkTimer = new Timer((sender) =>
+                    {
+                        ResetLamp.Value = !ResetLamp.Value;
+                    }, null, 0, 500);
+                }
+                else
+                {
+                    ResetLamp.Value = false;
+                    if (ResetSW_BlinkTimer != null)
+                    {
+                        ResetSW_BlinkTimer.Dispose();
+                    }
+                }
+            }
         }
     }
 }

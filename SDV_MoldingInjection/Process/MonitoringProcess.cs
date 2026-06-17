@@ -2,9 +2,11 @@ using EQX.Core.Common;
 using EQX.Core.Recipe;
 using EQX.Core.Sequence;
 using EQX.Process;
+using EQX.UI.Controls;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.MVVM.ViewModels;
 using SDV_MoldingInjection.Recipe;
+using System.Windows;
 
 namespace SDV_MoldingInjection.Process
 {
@@ -38,6 +40,27 @@ namespace SDV_MoldingInjection.Process
                     _machineStatus.IsSkipHead2 = true;
                     _machineStatus.IsSkipHead3 = true;
                     _machineStatus.IsSkipHead4 = true;
+                }
+            }
+
+            if (_devices.Inputs.OPButtonReset.Value)
+            {
+                if (_machineStatus.CurrentProcessMode == EProcessMode.ToWarning ||
+                    _machineStatus.CurrentProcessMode == EProcessMode.Warning ||
+                    _machineStatus.CurrentProcessMode == EProcessMode.ToAlarm ||
+                    _machineStatus.CurrentProcessMode == EProcessMode.Alarm)
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        bool isShown = Application.Current.Windows.OfType<AlertNotifyView>().Any();
+                        if (isShown) Application.Current.Windows.OfType<AlertNotifyView>().ToList().ForEach(anv => anv.Close());
+
+                        _devices.Outputs.Buzzer1On.Value = false;
+                        _devices.Outputs.Buzzer2On.Value = false;
+                        _devices.Outputs.Buzzer3On.Value = false;
+                        _devices.Outputs.Buzzer4On.Value = false;
+                        _devices.Outputs.ResetSW_Clear();
+                    });
                 }
             }
             return base.PreProcess();
