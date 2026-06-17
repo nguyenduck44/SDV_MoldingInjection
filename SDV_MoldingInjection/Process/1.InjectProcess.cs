@@ -1428,7 +1428,7 @@ namespace SDV_MoldingInjection.Process
 
                     if (CellId2SendOn && _optionRecipe.ReadBarcode)
                     {
-                        _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_WAIT_CELL1_SEND_BIT_OFF, EMCCAction.IJ01_GET_WAIT_CELL2_SEND_BIT_ON);
+                        _cIMCollection.WriteMCC(_optionRecipe.SkipHead12 ? EMCCAction.IJ01_GET_REQUEST_LOAD : EMCCAction.IJ01_GET_WAIT_CELL1_SEND_BIT_OFF, EMCCAction.IJ01_GET_WAIT_CELL2_SEND_BIT_ON);
 
                         Log.Debug("Cell ID 2 Bit (B2108) On -> Get Cell ID 2");
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.GetCellId2;
@@ -1443,7 +1443,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Info("Received Start Request From InOut Machine");
-                    _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_WAIT_CELL2_SEND_BIT_OFF, EMCCAction.IJ01_GET_LOAD_CELL_ID_FINISH);
+                    _cIMCollection.WriteMCC(_optionRecipe.SkipHead34 ? EMCCAction.IJ01_GET_WAIT_CELL1_SEND_BIT_OFF : EMCCAction.IJ01_GET_WAIT_CELL2_SEND_BIT_OFF, EMCCAction.IJ01_GET_LOAD_CELL_ID_FINISH);
                     _machineStatus.InOutHandlerStartRequest = false;
                     Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Load_Jig_Check;
                     break;
