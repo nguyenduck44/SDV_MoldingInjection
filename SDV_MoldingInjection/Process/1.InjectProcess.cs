@@ -1465,22 +1465,24 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Wait_Cell1SendBitOff:
-                    if (CellId1SendOn)
+                    Log.Debug("Wait InOutMachine OFF B2107");
+                    Wait(5000, () => CellId1SendOn == false);
+                    Step.RunStep++;
+                    break;
+                case EMoldProcLoadingUnloadingStep.Wait_Cell1SendBitOff_TimeOut:
+                    if (WaitTimeOutOccurred)
                     {
-                        Wait(20);
+                        RaiseWarning(EWarning.INOUT_MACHINE_REPLY_TIMEOUT);
                         break;
                     }
 
                     _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_WAIT_CELL1_REPLY_BIT_ON, EMCCAction.IJ01_GET_WAIT_CELL1_SEND_BIT_OFF);
 
                     Log.Debug("Cell 1 Send Bit (B2107) Off");
-
                     CellId1Reply = false;
                     Log.Debug("Cell 1 Reply Bit (B2007) Off");
-
                     CellIdTrackInStatus = false;
                     Log.Debug("Cell TrackIn Status Bit (B2009) Off");
-
 
                     Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request;
                     break;
@@ -1503,9 +1505,14 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Wait_Cell2SendBitOff:
-                    if (CellId2SendOn)
+                    Log.Debug("Wait InOutMachine OFF B2108");
+                    Wait(5000, () => CellId2SendOn == false);
+                    Step.RunStep++;
+                    break;
+                case EMoldProcLoadingUnloadingStep.Wait_Cell2SendBitOff_TimeOut:
+                    if (WaitTimeOutOccurred)
                     {
-                        Wait(20);
+                        RaiseWarning(EWarning.INOUT_MACHINE_REPLY_TIMEOUT);
                         break;
                     }
 

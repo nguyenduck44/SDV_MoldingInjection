@@ -110,17 +110,18 @@ namespace SDV_MoldingInjection.Defines
         EF_CHAMBER_RIGHT_JIG_INJECT_NOT_FINISHED,
         CY_NOZZLE_CLEAN_GRIP_FAIL,
         CY_NOZZLE_CLEAN_UNGRIP_FAIL,
-
-        //--------- 2000 -> 2199 : Dry ---------
-        CY_ANGLE_VALUE_CLOSE_FAIL = 2000,
-        CY_ANGLE_VALUE_OPEN_FAIL,
-        MO_DRYPUMP_RUN_TIMEOUT,
         VA_MACHINE_NEED_CALIBRATION,
         SE_JIG_DETECT_UNLOAD_FAIL,
         SE_LEFFT_JIG_TILT_STATE,
         SE_LEFT_JIG_NOT_DETECT,
         SE_RIGHT_JIG_TILT_STATE,
         SE_RIGHT_JIG_NOT_DETECT,
+        INOUT_MACHINE_REPLY_TIMEOUT,
+
+        //--------- 2000 -> 2199 : Dry ---------
+        CY_ANGLE_VALUE_CLOSE_FAIL = 2000,
+        CY_ANGLE_VALUE_OPEN_FAIL,
+        MO_DRYPUMP_RUN_TIMEOUT,
 
         //--------- 2200 -> 2399 : Head 1 ---------
         MO_SPD_H01_P1_AXIS_HOME_TIMEOUT = 2200,

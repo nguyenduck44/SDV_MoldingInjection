@@ -19,10 +19,12 @@
         GetCellId1,
         Set_Cell1ReplyBitOn,
         Wait_Cell1SendBitOff,
+        Wait_Cell1SendBitOff_TimeOut,
 
         GetCellId2,
         Set_Cell2ReplyBitOn,
         Wait_Cell2SendBitOff,
+        Wait_Cell2SendBitOff_TimeOut,
 
         Load_Jig_Check,
         Update_Jig_Status,
