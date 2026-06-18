@@ -679,7 +679,7 @@ namespace SDV_MoldingInjection.Process
             if (_devices.Inputs.InOutMachineEmo.Value == false)
             {
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
-                RaiseWarning(EWarning.EM_INOUT_MACHINE_EMO);
+                RaiseWarning(EWarning.EM_INOUT_MACHINE_EMS_ACTIVE);
             }
 
 #endif
@@ -688,7 +688,7 @@ namespace SDV_MoldingInjection.Process
                 Childs!.ToList().ForEach(p => p.IsAlarm = true);
                 Childs!.ToList().ForEach(p => p.IsCanStop = true);
                 //Log.Error("Emergency Stop Activated. MC OFF");
-                RaiseAlarm((int)EAlarm.EM_MAIN_CP_EMS_SERVO_OFF);
+                RaiseAlarm((int)EAlarm.EM_EMERGENCY_STOP_EMS_ACTIVED);
             }
 
             if (_devices.Inputs.SmokeDetectAlarm.Value == true)

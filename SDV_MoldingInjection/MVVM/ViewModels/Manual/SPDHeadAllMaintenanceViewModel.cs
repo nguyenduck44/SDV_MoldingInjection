@@ -54,10 +54,23 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    MachineStatus.IsSkipHead1 = false;
-                    MachineStatus.IsSkipHead2= false;
-                    MachineStatus.IsSkipHead3 = false;
-                    MachineStatus.IsSkipHead4 = false;
+                    if (MachineStatus.IsSkipHead1 == true ||
+                        MachineStatus.IsSkipHead2 == true ||
+                        MachineStatus.IsSkipHead3 == true ||
+                        MachineStatus.IsSkipHead4 == true)
+                    {
+                        MachineStatus.IsSkipHead1 = false;
+                        MachineStatus.IsSkipHead2 = false;
+                        MachineStatus.IsSkipHead3 = false;
+                        MachineStatus.IsSkipHead4 = false;
+                    }
+                    else
+                    {
+                        MachineStatus.IsSkipHead1 = true;
+                        MachineStatus.IsSkipHead2 = true;
+                        MachineStatus.IsSkipHead3 = true;
+                        MachineStatus.IsSkipHead4 = true;
+                    }
                 });
             }
         }
@@ -205,6 +218,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 MachineStatus.IsSkipHead2 = true;
                 MachineStatus.IsSkipHead3 = true;
                 MachineStatus.IsSkipHead4 = true;
+                MachineStatus.ActionCount = 1;
             }
                 
             base.Dispose(disposing);

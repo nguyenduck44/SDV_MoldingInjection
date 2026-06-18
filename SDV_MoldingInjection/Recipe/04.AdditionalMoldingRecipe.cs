@@ -10,7 +10,6 @@ namespace SDV_MoldingInjection.Recipe
         private double _addTailWeight;
         private double _zUpDistanceAddTail;
         private double _addTailSpeed;
-        private int _bubbleRemoveCount;
         #endregion
 
         [SingleRecipeDescription(Description = "USE Add Tail", Detail = "Check to Use Add Tail")]
@@ -44,16 +43,6 @@ namespace SDV_MoldingInjection.Recipe
         {
             get => _addTailSpeed;
             set => SetRecipe(ref _addTailSpeed, value);
-        }
-
-        [SingleRecipeDescription(Description = "Bubble remove count")]
-        [CIMParameterAddress((int)ECIMParamter.BubbleRemoveCount)]
-        [SingleRecipeMinMax(Min = 1, Max = 100)]
-        [ParameterDescription(196)]
-        public int BubbleRemoveCount
-        {
-            get => _bubbleRemoveCount;
-            set => SetRecipe(ref _bubbleRemoveCount, value);
         }
     }
 }

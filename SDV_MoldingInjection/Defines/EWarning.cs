@@ -25,7 +25,7 @@ namespace SDV_MoldingInjection.Defines
         [Description("IN04")]
         OP_MAIN_MACHINE_NOT_IN_AUTO_MODE,
         [Description("IN68")]
-        EM_INOUT_MACHINE_EMO,
+        EM_INOUT_MACHINE_EMS_ACTIVE,
         [Description("IN74")]
         UT_INOUT_MACHINE_MC_OFF,
         [Description("IN73")]

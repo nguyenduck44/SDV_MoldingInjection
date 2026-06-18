@@ -40,6 +40,7 @@ namespace SDV_MoldingInjection.Process
                     _machineStatus.IsSkipHead2 = true;
                     _machineStatus.IsSkipHead3 = true;
                     _machineStatus.IsSkipHead4 = true;
+                    _machineStatus.ActionCount = 1;
                 }
             }
 
