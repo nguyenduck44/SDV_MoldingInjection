@@ -991,7 +991,7 @@ namespace SDV_MoldingInjection.Process
                         WriteHeadMCC(EMCCAction.SP01_IN_WAIT_TIME, EMCCAction.SP01_ACT_WAIT_INJECT);
                     }
 
-                    _bubbleRemoveCount = 1;
+                    _actionCount = 0;
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.Wait_HeadUse:
@@ -1318,6 +1318,8 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"Input detect {ESPDHeadProcInput.WorkRequest}");
+
+                    //DryRun Mode or Skip Dispensing -> Wait time dispensing
                     if ((_machineStatus.IsDryRunMode ||
                        (OptionRecipe.SkipDispensing && sequence == ESequence.ResinInject)) &&
                        sequence != ESequence.IdlePurge)
@@ -1445,16 +1447,6 @@ namespace SDV_MoldingInjection.Process
                             Step.RunStep = (int)ESPDHeadProcCommonStep.Base_PosVel_Calculte;
                             break;
                         }
-                        else
-                        {
-                            _bubbleRemoveCount++;
-                            if (_bubbleRemoveCount <= _currentRecipe.AdditionalMolding_Recipe.BubbleRemoveCount)
-                            {
-                                _syringeAmountStatusList.ConsumeSyringeAmount(head, _pAxisBase_Pos - _pAxisCharge_Pos);
-                                Step.RunStep = (int)ESPDHeadProcCommonStep.BubbleRemoveResetCountRotate;
-                                break;
-                            }
-                        }
                     }
 
                     EnableTimerInject = false;
@@ -1471,6 +1463,21 @@ namespace SDV_MoldingInjection.Process
                     else if (sequence == ESequence.DummyShot)
                     {
                         WriteHeadMCC(EMCCAction.SP01_MOVE_Z_TO_BASE_DUMMY_POS, EMCCAction.SP01_IN_WAIT_TIME);
+                    }
+
+                    Step.RunStep++;
+                    break;
+                case ESPDHeadProcCommonStep.ActionCount_Check:
+                    if (Parent?.Sequence != ESequence.AutoRun && Parent?.Sequence != ESequence.IdlePurge)
+                    {
+                        Log.Debug("Action count check");
+                        _actionCount++;
+                        if (_actionCount < _machineStatus.ActionCount)
+                        {
+                            Log.Debug($"Action count: {_actionCount}");
+                            Step.RunStep = (int)ESPDHeadProcCommonStep.BubbleRemoveResetCountRotate;
+                            break;
+                        }
                     }
 
                     Step.RunStep++;
@@ -2233,7 +2240,7 @@ namespace SDV_MoldingInjection.Process
         private double rho_Resin = 1.136;
 
         public int _removeResinCount;
-        private int _bubbleRemoveCount;
+        private int _actionCount;
         private int _bubbleRemoveRotateCount;
         private int _bubbleRemoveTotalRotateCount = 2;
         private long _injectSequenceStartTick = -1;

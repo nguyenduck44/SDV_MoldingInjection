@@ -150,6 +150,13 @@ namespace SDV_MoldingInjection.Defines
             }
         }
 
+        public int ActionCount
+        {
+            get { return countAction; }
+            set { countAction = value; }
+        }
+
+
         public override void MoveMultiPointPositionSequence(MultiPointPosition multiPointPosition)
         {
             if (multiPointPosition == null || multiPointPosition.Points.Count <= 0) return;
@@ -163,6 +170,7 @@ namespace SDV_MoldingInjection.Defines
 
         #region Privates
         private double timeInject;
+        private int countAction = 1;
         private string message;
         private bool isDotWeightingTest;
         private bool _originDone;

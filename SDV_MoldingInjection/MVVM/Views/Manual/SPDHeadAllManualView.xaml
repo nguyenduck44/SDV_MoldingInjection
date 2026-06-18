@@ -90,7 +90,22 @@
                             Content="Select All"
                             Command="{Binding SelectAllCommand}"
                             Image="/EQX.UI;component/Resources/Images/Components/Common/select_selected.png" />
-
+            <UniformGrid Grid.Row="1"
+                         HorizontalAlignment="Right"
+                         Columns="2">
+                <TextBlock Text="Count"
+                           VerticalAlignment="Center"
+                           Margin="10 0"/>
+                <TextBox BorderBrush="LightGray"
+                         BorderThickness="1"
+                         Margin="2"
+                         VerticalContentAlignment="Center"
+                         HorizontalContentAlignment="Center"
+                         Text="{Binding MachineStatus.ActionCount, Mode=TwoWay}"
+                         PreviewMouseUp="TextBox_MouseUp"
+                         FontSize="20"
+                         FontWeight="SemiBold"/>
+            </UniformGrid>
             <GroupBox Grid.Row="2"
                       Style="{StaticResource TextBlockHeaderGroupBox}"
                       Header="Function">
