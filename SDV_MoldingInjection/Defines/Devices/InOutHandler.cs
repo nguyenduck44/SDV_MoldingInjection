@@ -335,14 +335,6 @@ namespace SDV_MoldingInjection.Defines
         private void Handler_Start_Received(string message)
         {
             _machineStatus.InOutHandlerStartRequest = true;
-
-            byte[] buffer = new byte[] {
-                0x02,
-                0x43, 0x54, 0x53, 0x54,
-                0x03
-            };
-
-            TransmitData(buffer);
         }
 
         private void Handler_Stop_Received(string message)
@@ -444,10 +436,21 @@ namespace SDV_MoldingInjection.Defines
         public void SendTransmitCTRN() => Handler_CheckRun_Received(string.Empty);
         public void SendTransmitCTCH() => Handler_ProductCheck_Received(string.Empty);
         public void SendTransmitCTPT() => Handler_PositionCheck_Received(string.Empty);
-        public void SendTransmitCTST() => Handler_Start_Received(string.Empty);
         public void SendTransmitCTSP() => Handler_Stop_Received(string.Empty);
         public void SendTransmitCTSI() => Handler_SetIdlePurgeMode_Received(string.Empty);
         public void SendTransmitCTCI() => Handler_ClearIdlePurgeMode_Received(string.Empty);
+        public void SendTransmitCTST()
+        {
+            _machineStatus.InOutHandlerStartRequest = false;
+
+            byte[] buffer = new byte[] {
+                0x02,
+                0x43, 0x54, 0x53, 0x54,
+                0x03
+            };
+
+            TransmitData(buffer);
+        }
         public void SendTransmitCTUSAndCTUE(int head, bool isUse)
         {
             if (head != 1 && head != 2)
