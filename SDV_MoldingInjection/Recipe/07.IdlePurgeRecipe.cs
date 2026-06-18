@@ -39,7 +39,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Idle Purge After Stop Time", Unit = Unit.Minute)]
-        [SingleRecipeMinMax(Max = 1800, Min = 5)]
+        [SingleRecipeMinMax(Max = 1800, Min = 0)]
         [ParameterDescription(221)]
         public double IdlePurgeAfterStopTime
         {

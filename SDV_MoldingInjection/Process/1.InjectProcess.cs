@@ -1418,7 +1418,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request:
-                    if (CellId1SendOn && _optionRecipe.ReadBarcode)
+                    if (CellId1SendOn)
                     {
                         _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_REQUEST_LOAD, EMCCAction.IJ01_GET_WAIT_CELL1_SEND_BIT_ON);
                         Log.Debug("Cell ID 1 (B2107) Bit On -> Get Cell ID 1");
@@ -1426,7 +1426,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    if (CellId2SendOn && _optionRecipe.ReadBarcode)
+                    if (CellId2SendOn)
                     {
                         _cIMCollection.WriteMCC(_optionRecipe.SkipHead12 ? EMCCAction.IJ01_GET_REQUEST_LOAD : EMCCAction.IJ01_GET_WAIT_CELL1_SEND_BIT_OFF, EMCCAction.IJ01_GET_WAIT_CELL2_SEND_BIT_ON);
 
@@ -1448,12 +1448,10 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Load_Jig_Check;
                     break;
                 case EMoldProcLoadingUnloadingStep.GetCellId1:
-                    _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_WAIT_CELL1_SEND_BIT_ON, EMCCAction.IJ01_GET_CELL_ID_1_AND_CHECKIN);
-
                     LeftJigID = GetCellId(isJigLeft: true);
                     Log.Info($"Get Left Jig ID '{LeftJigID}'");
 
-                    _cIMCollection.WriteMCC_CellID(EMCCUnit.IJ01, LeftJigID);
+                    _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_WAIT_CELL1_SEND_BIT_ON, EMCCAction.IJ01_GET_CELL_ID_1_AND_CHECKIN, EMCCUnit.IJ01, LeftJigID);
 
                     Step.RunStep++;
                     break;
@@ -1487,12 +1485,10 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandlerStart_Request;
                     break;
                 case EMoldProcLoadingUnloadingStep.GetCellId2:
-                    _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_WAIT_CELL2_SEND_BIT_ON, EMCCAction.IJ01_GET_CELL_ID_2_AND_CHECKIN);
-
                     RightJigID = GetCellId(isJigLeft: false);
                     Log.Info($"Get Right Jig ID '{RightJigID}'");
 
-                    _cIMCollection.WriteMCC_CellID(EMCCUnit.IJ01, RightJigID);
+                    _cIMCollection.WriteMCC(EMCCAction.IJ01_GET_WAIT_CELL2_SEND_BIT_ON, EMCCAction.IJ01_GET_CELL_ID_2_AND_CHECKIN, EMCCUnit.IJ01, RightJigID);
 
                     Step.RunStep++;
                     break;

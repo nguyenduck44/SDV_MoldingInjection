@@ -128,10 +128,6 @@
                                   Margin="5"
                                   IsChecked="{Binding RecipeList.OptionRecipe.UseCIM}"
                                   Tag="Check to Use CIM" />
-                        <CheckBox Content="Read Barcode"
-                                  Margin="5"
-                                  IsChecked="{Binding RecipeList.OptionRecipe.ReadBarcode}"
-                                  Tag="Check to Use Read Barcode" />
                     </UniformGrid>
                 </StackPanel>
             </GroupBox>

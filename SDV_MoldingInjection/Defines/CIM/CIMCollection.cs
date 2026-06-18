@@ -134,6 +134,12 @@ namespace SDV_MoldingInjection.Defines.CIM
             WriteMCC_OnlyStart(nextAction, dt);
         }
 
+        public void WriteMCC(EMCCAction lastAction, EMCCAction nextAction, EMCCUnit unit, string cellID)
+        {
+            WriteMCC_CellID(unit, cellID);
+            WriteMCC(lastAction, nextAction);
+        }
+
         public void WriteMCC_OnlyStart(EMCCAction mCCAction, DateTime? dt = null)
         {
             if ((int)mCCAction >= MCCActionMap.Count) return;

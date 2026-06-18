@@ -35,7 +35,11 @@ namespace SDV_MoldingInjection.Recipe
         public double VentTimeAfterInject
         {
             get => _ventTimeAfterInject;
-            set => SetRecipe(ref _ventTimeAfterInject, value);
+            set
+            {
+                if (value >= InjectTime - 1) return;
+                SetRecipe(ref _ventTimeAfterInject, value);
+            }
         }
 
         [SingleRecipeDescription(Description = "Vent Time", Unit = Unit.Second)]
