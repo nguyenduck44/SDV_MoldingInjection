@@ -2035,7 +2035,15 @@ namespace SDV_MoldingInjection.Process
                     Log.Info($"{sequence} for {head} end");
                     _machineStatus.MachineIdleTick = Environment.TickCount;
                     _waitTimeNoProduct = Environment.TickCount;
-                    if (Parent?.Sequence != ESequence.AutoRun && sequence != ESequence.IdlePurge)
+                    if (sequence == ESequence.IdlePurge)
+                    {
+                        Log.Debug("Wait next cycle IdlePurge");
+                        Wait(_currentRecipe.IdlePurgeRecipe.IdlePurgeAfterStopTime * 60);
+                        Step.RunStep = (int)EMoldProcDummyShotStep.Start;
+                        break;
+                    }
+
+                    if (Parent?.Sequence != ESequence.AutoRun)
                     {
                         MessageBoxEx.Show($"{sequence} Finish!", false);
                         Sequence = ESequence.Stop;

@@ -1499,6 +1499,12 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.End:
+                    if (sequence == ESequence.IdlePurge)
+                    {
+                        Sequence = ESequence.IdlePurge;
+                        break;
+                    }
+
                     if (sequence == ESequence.ResinInject && _currentRecipe.AdditionalMolding_Recipe.UseAddTail)
                     {
                         Log.Info($"Set next sequence SPDHeadAddTail");
