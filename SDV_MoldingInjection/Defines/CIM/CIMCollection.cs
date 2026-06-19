@@ -46,7 +46,7 @@ namespace SDV_MoldingInjection.Defines.CIM
         private int MCCPPIDStartWord { get; }
 
         private string MccFromToMapFile => _configuration["Files:MCCFromToMapFile"];
-
+        private MCCLinkIEWords mCCLinkIEWords;
         public CIMCollection(IEnumerable<MaterialPort> materialPorts,
             CIMFunctionViewModel cimFunction,
             IConfiguration configuration)
@@ -84,6 +84,8 @@ namespace SDV_MoldingInjection.Defines.CIM
                 LogManager.GetLogger("IO").Error("Get Value MCCPPIDStartWord Fail . Check Registry Value");
                 MessageBoxEx.ShowDialog("Get Value MCCPPIDStartWord Fail . Check Registry Value");
             }
+
+            mCCLinkIEWords = new MCCLinkIEWords(0x13000, 8192);
         }
 
         public bool WriteMCCFromToMap()
@@ -117,8 +119,8 @@ namespace SDV_MoldingInjection.Defines.CIM
 
             foreach (CIMMCCActionInfo cIMMCCActionInfo in MCCActionMap)
             {
-                CCLinkIEHelper.WriteWords(cIMMCCActionInfo.FromAddress, 2, CIMScenarioDispatcher.EncodeAsciiToWords(cIMMCCActionInfo.From));
-                CCLinkIEHelper.WriteWords(cIMMCCActionInfo.ToAddress, 2, CIMScenarioDispatcher.EncodeAsciiToWords(cIMMCCActionInfo.To));
+                mCCLinkIEWords.WriteWords(cIMMCCActionInfo.FromAddress, 2, CIMScenarioDispatcher.EncodeAsciiToWords(cIMMCCActionInfo.From));
+                mCCLinkIEWords.WriteWords(cIMMCCActionInfo.ToAddress, 2, CIMScenarioDispatcher.EncodeAsciiToWords(cIMMCCActionInfo.To));
             }
 
             return true;
@@ -153,7 +155,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                 (short)(dt == null ? DateTime.Now.Second : dt.Value.Second),
                 (short)(dt == null ? DateTime.Now.Millisecond : dt.Value.Millisecond),
             ];
-            CCLinkIEHelper.WriteWords(cIMMCCActionInfo.StartTimeAddress, 4, time);
+            mCCLinkIEWords.WriteWords(cIMMCCActionInfo.StartTimeAddress, 4, time);
         }
 
         public void WriteMCC_OnlyEnd(EMCCAction mCCAction, DateTime? dt = null)
@@ -169,17 +171,17 @@ namespace SDV_MoldingInjection.Defines.CIM
                 (short)(dt == null ? DateTime.Now.Second : dt.Value.Second),
                 (short)(dt == null ? DateTime.Now.Millisecond : dt.Value.Millisecond),
             ];
-            CCLinkIEHelper.WriteWords(cIMMCCActionInfo.EndTimeAddress, 4, time);
+            mCCLinkIEWords.WriteWords(cIMMCCActionInfo.EndTimeAddress, 4, time);
         }
 
         public void WriteMCC_CellID(EMCCUnit unit, string cellID)
         {
-            CCLinkIEHelper.WriteWords(MCCUnitStartWord + (int)unit * 46, 20, CIMScenarioDispatcher.EncodeAsciiToWords(cellID));
+            mCCLinkIEWords.WriteWords(MCCUnitStartWord + (int)unit * 46, 20, CIMScenarioDispatcher.EncodeAsciiToWords(cellID));
         }
 
         public void WriteMCC_PPID(string ppid)
         {
-            CCLinkIEHelper.WriteWords(MCCPPIDStartWord, 20, CIMScenarioDispatcher.EncodeAsciiToWords(ppid));
+            mCCLinkIEWords.WriteWords(MCCPPIDStartWord, 20, CIMScenarioDispatcher.EncodeAsciiToWords(ppid));
         }
     }
 }
