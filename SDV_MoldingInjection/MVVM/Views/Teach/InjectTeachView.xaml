@@ -153,22 +153,28 @@
                         </UniformGrid>
                     </Grid>
                 </GroupBox>
-
-                <GroupBox Grid.Row="1"
-                          Grid.Column="2"
-                          Style="{x:Null}"
-                          FontWeight="Bold"
-                          Grid.ColumnSpan="2"
-                          Header="Cylinders"
-                          IsEnabled="{Binding MachineStatus.IsStandByProcessMode}">
-                    <ItemsControl ItemsSource="{Binding Cylinders}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-                </GroupBox>
+                <StackPanel Grid.Row="1"
+                            Grid.Column="2"
+                            IsEnabled="{Binding MachineStatus.IsStandByProcessMode}">
+                    <GroupBox Style="{x:Null}"
+                              FontWeight="Bold"
+                              Header="Cylinders">
+                        <ItemsControl ItemsSource="{Binding Cylinders}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </GroupBox>
+                    <GroupBox Style="{x:Null}"
+                              FontWeight="Bold"
+                              Header="Mode"
+                              Height="75">
+                        <ContentControl Content="{Binding AutoTeachModeViewModel}" />
+                    </GroupBox>
+                </StackPanel>
+                
             </Grid>
         </GroupBox>
     </DockPanel>

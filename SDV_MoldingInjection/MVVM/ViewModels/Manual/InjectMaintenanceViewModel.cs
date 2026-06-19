@@ -15,19 +15,21 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
     public class InjectMaintenanceViewModel : AppMaintenanceViewModel
     {
         #region Properties
+        public AutoTeachModeViewModel AutoTeachModeViewModel { get; }
         public InjectMaintenanceTeachingPosition InjectMaintenanceTeachingPosition { get; }
-
         #endregion
 
         public InjectMaintenanceViewModel(NavigationStore navigationStore,
             Devices devices, 
             MachineStatus machineStatus, 
             RecipeSelector recipeSelector,
+            AutoTeachModeViewModel autoTeachModeViewModel,
             InjectMaintenanceTeachingPosition injectMaintenanceTeachingPosition)
             : base(navigationStore, machineStatus, recipeSelector, devices)
         {
             _devices = devices;
             _recipeSelector = recipeSelector;
+            AutoTeachModeViewModel = autoTeachModeViewModel;
             InjectMaintenanceTeachingPosition = injectMaintenanceTeachingPosition;
             if (GroupedPositions != null && GroupedPositions.Count > 0)
             {

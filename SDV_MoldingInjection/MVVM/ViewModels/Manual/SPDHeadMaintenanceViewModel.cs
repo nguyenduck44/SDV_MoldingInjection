@@ -19,6 +19,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
     public class SPDHeadMaintenanceViewModel : AppMaintenanceViewModel
     {
         #region Properties
+        public AutoTeachModeViewModel AutoTeachModeViewModel { get; }
         public SPDHeadMaintenanceTeachingPosition SPDHeadMaintenanceTeachingPosition =>
             _spdHeadMaintenanceTeachingPositions.First(p => p.Head == Head);
         #endregion
@@ -30,6 +31,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             Balances balances,
             MachineStatus machineStatus,
             RecipeSelector recipeSelector,
+            AutoTeachModeViewModel autoTeachModeViewModel,
             IEnumerable<SPDHeadMaintenanceTeachingPosition> sPDHeadMaintenanceTeachingPositions)
             : base(navigationStore, machineStatus, recipeSelector, devices)
         {
@@ -37,6 +39,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _balances = balances;
             _machineStatus = machineStatus;
             _recipeSelector = recipeSelector;
+            AutoTeachModeViewModel = autoTeachModeViewModel;
             _spdHeadMaintenanceTeachingPositions = sPDHeadMaintenanceTeachingPositions.ToList();
             Motions = new ObservableCollection<IMotion>();
             if (GroupedPositions != null && GroupedPositions.Count > 0)
@@ -314,6 +317,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             "SPDHead4" => _recipeSelector.CurrentRecipe.SPDHead4_Recipe,
             _ => throw new Exception($"Invalid process name: {Name}")
         };
+
 
         #endregion
     }

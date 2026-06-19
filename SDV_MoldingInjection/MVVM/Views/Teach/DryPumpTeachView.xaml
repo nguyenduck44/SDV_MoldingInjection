@@ -153,21 +153,29 @@
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Grid.Row="1"
-                          Grid.Column="2"
-                          Style="{x:Null}"
-                          FontWeight="Bold"
-                          Grid.ColumnSpan="2"
-                          Header="Cylinders"
-                          IsEnabled="{Binding MachineStatus.IsStandByProcessMode}">
-                    <ItemsControl ItemsSource="{Binding Cylinders}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-                </GroupBox>
+                <StackPanel Grid.Row="1"
+                             Grid.Column="2"
+                             IsEnabled="{Binding MachineStatus.IsStandByProcessMode}">
+                    <GroupBox Style="{x:Null}"
+                              FontWeight="Bold"
+                              Header="Cylinders">
+                        <ItemsControl ItemsSource="{Binding Cylinders}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </GroupBox>
+                    <GroupBox Style="{x:Null}"
+                              FontWeight="Bold"
+                              Grid.ColumnSpan="2"
+                              Header="Mode">
+                        <ContentControl Content="{Binding AutoTeachModeViewModel}"
+                                        Height="60"
+                                        VerticalAlignment="Top" />
+                    </GroupBox>
+                </StackPanel>
             </Grid>
         </GroupBox>
     </DockPanel>

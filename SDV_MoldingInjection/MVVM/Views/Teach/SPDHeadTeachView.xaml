@@ -193,21 +193,31 @@
                         </UniformGrid>
                     </UniformGrid>
                 </GroupBox>
-
-                <GroupBox Grid.Row="1"
-                          Grid.Column="2"
-                        Style="{x:Null}"
-                        FontWeight="Bold"
-                        Grid.ColumnSpan="2"
-                        Header="Cylinders">
-                    <ItemsControl ItemsSource="{Binding Cylinders}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-                </GroupBox>
+                <UniformGrid Grid.Row="1"
+                             Grid.Column="2"
+                             Rows="2"
+                             IsEnabled="{Binding MachineStatus.IsStandByProcessMode}">
+                    <GroupBox Style="{x:Null}"
+                              FontWeight="Bold"
+                              Grid.ColumnSpan="2"
+                              Header="Cylinders">
+                        <ItemsControl ItemsSource="{Binding Cylinders}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </GroupBox>
+                    <GroupBox Style="{x:Null}"
+                              FontWeight="Bold"
+                              Grid.ColumnSpan="2"
+                              Header="Mode">
+                        <ContentControl Content="{Binding AutoTeachModeViewModel}"
+                                        Height="60"
+                                        VerticalAlignment="Top"/>
+                    </GroupBox>
+                </UniformGrid>
             </Grid>
         </GroupBox>
     </DockPanel>
