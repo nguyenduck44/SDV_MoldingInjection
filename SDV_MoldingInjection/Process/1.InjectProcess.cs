@@ -25,7 +25,7 @@ namespace SDV_MoldingInjection.Process
         /// JigLeft / JigRight status
         /// </summary>
         public EJigStatus[] JigStatuses { get; }
-
+        public int IdlePurgeCount { get; private set; }
         private double XAxisReadyPos => _positionList.InjectMaintenanceTeachingPosition.XAxisReadyPos.TargetPos;
         private double XAxisInjectPos => _positionList.InjectMaintenanceTeachingPosition.XAxisInjectPos.TargetPos;
         private double YAxisReadyPos => _positionList.InjectMaintenanceTeachingPosition.YAxisReadyPos.TargetPos;
@@ -1821,6 +1821,7 @@ namespace SDV_MoldingInjection.Process
                     if (sequence == ESequence.IdlePurge)
                     {
                         Log.Debug("Idle Purge start");
+                        IdlePurgeCount = 0;
                         _devices.Outputs.DryPumpRun.Value = false;
                     }
 
@@ -2004,6 +2005,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"Detected SPDHead work done.");
+                    IdlePurgeCount++;
                     procOutputs[EInjectProcOutput.SPDHeadWorkRequest].Value = false;
                     Step.RunStep++;
                     break;
@@ -2039,7 +2041,7 @@ namespace SDV_MoldingInjection.Process
                     {
                         Log.Debug("Wait next cycle IdlePurge");
                         Wait(_currentRecipe.IdlePurgeRecipe.IdlePurgeAfterStopTime * 60);
-                        Step.RunStep = (int)EMoldProcDummyShotStep.Start;
+                        Step.RunStep = (int)EMoldProcDummyShotStep.Chamber_Close;
                         break;
                     }
 

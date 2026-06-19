@@ -1026,11 +1026,16 @@ namespace SDV_MoldingInjection.Process
 
         private bool IsAutoRunWaitingNoPanel()
         {
-            return _processIO.InjectProcOutput[EInjectProcOutput.SPDHeadWorkRequest].Value == false;
+            return _processIO.InjectProcOutput[EInjectProcOutput.SPDHeadWorkRequest].Value == false &&
+                   JigId1SendOn == false &&
+                   JigId2SendOn == false;
+            
         }
 
         private Queue<IGrouping<uint, PositionPoint>> MoveMultiPointQueueSteps = new Queue<IGrouping<uint, PositionPoint>>();
         private List<PositionPoint> currentPoints = new List<PositionPoint>();
+        private bool JigId1SendOn => CIMAddressMap.ReadCIMBit("B2107") == 1;
+        private bool JigId2SendOn => CIMAddressMap.ReadCIMBit("B2108") == 1;
         #endregion
     }
 }
