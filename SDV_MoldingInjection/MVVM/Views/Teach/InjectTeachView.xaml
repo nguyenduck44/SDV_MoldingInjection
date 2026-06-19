@@ -169,7 +169,7 @@
                     </GroupBox>
                     <GroupBox Style="{x:Null}"
                               FontWeight="Bold"
-                              Header="Mode"
+                              Header="Safety Mode"
                               Height="75">
                         <ContentControl Content="{Binding AutoTeachModeViewModel}" />
                     </GroupBox>

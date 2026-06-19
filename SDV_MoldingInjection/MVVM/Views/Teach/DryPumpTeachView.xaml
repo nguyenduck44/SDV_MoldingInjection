@@ -170,7 +170,7 @@
                     <GroupBox Style="{x:Null}"
                               FontWeight="Bold"
                               Grid.ColumnSpan="2"
-                              Header="Mode">
+                              Header="Safety Mode">
                         <ContentControl Content="{Binding AutoTeachModeViewModel}"
                                         Height="60"
                                         VerticalAlignment="Top" />

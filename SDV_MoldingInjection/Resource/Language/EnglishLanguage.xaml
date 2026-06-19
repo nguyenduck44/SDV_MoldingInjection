@@ -19,7 +19,7 @@
             <system:String x:Key="str_Initialize">Initialize</system:String>
             <system:String x:Key="str_Origin">Origin</system:String>
             <system:String x:Key="str_AutoMode">Auto Mode</system:String>
-            <system:String x:Key="str_ManualMode">Manual Mode</system:String>
+            <system:String x:Key="str_ManualMode">Teach Mode</system:String>
             <system:String x:Key="str_Start">Start</system:String>
             <system:String x:Key="str_Stop">Stop</system:String>
             <system:String x:Key="str_Pause">Pause</system:String>
