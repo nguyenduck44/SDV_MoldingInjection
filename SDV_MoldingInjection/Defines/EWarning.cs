@@ -117,6 +117,8 @@ namespace SDV_MoldingInjection.Defines
         SE_RIGHT_JIG_TILT_STATE,
         SE_RIGHT_JIG_NOT_DETECT,
         INOUT_MACHINE_REPLY_TIMEOUT,
+        INOUT_MACHINE_REQUEST_LOAD_JIG_RIGHT,
+        INOUT_MACHINE_REQUEST_LOAD_JIG_LEFT,
 
         //--------- 2000 -> 2199 : Dry ---------
         CY_ANGLE_VALUE_CLOSE_FAIL = 2000,
