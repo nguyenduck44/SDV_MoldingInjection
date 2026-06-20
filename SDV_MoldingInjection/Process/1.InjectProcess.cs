@@ -1395,13 +1395,20 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Set Next Step To Check Load or Unload");
                     Step.RunStep++;
                     break;
-                case EMoldProcLoadingUnloadingStep.CheckIf_LoadOrUnload:
+                case EMoldProcLoadingUnloadingStep.CheckInputType:
                     //LOADING
                     if (_optionRecipe.InputTypeManual)
                     {
-                        Log.Debug("Input Manual Next Step -> Load_Jig_Check");
-                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Load_Jig_Check;
-                        break;
+                        if (isLoading)
+                        {
+                            Log.Debug("Input Manual Next Step -> Load_Jig_Check");
+                            Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Load_Jig_Check;
+                            break;
+                        }
+                        else
+                        {
+                            //TOOD: Unloading Manual
+                        }
                     }
 
                     Log.Debug("Wait InOut Machine Working And Request Start");
@@ -1602,6 +1609,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandler_Working_RequestStart;
                     break;
                 case EMoldProcLoadingUnloadingStep.Load_Jig_Check:
+                    //TODO: Dry run
                     Log.Debug("Load Jig Check");
                     inputCount = 0;
 
@@ -1690,6 +1698,7 @@ namespace SDV_MoldingInjection.Process
 
                     Step.RunStep++;
                     break;
+                #region Comment CIM_Validation
                 //case EMoldProcLoadingUnloadingStep.CIM_Validation:
                 //_cIMCollection.WriteMCC(EMCCAction.IJ01_LD_JIG_CHECK, EMCCAction.IJ01_CIM_VALIDATION);
 
@@ -1777,25 +1786,32 @@ namespace SDV_MoldingInjection.Process
 
                 //Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Update_Jig_Status;
                 //break;
-
+                #endregion
                 case EMoldProcLoadingUnloadingStep.End:
                     if (Parent?.Sequence != ESequence.AutoRun)
                     {
                         Sequence = ESequence.Stop;
                         break;
                     }
+                    
+                    if (isLoading == false && _optionRecipe.InputTypeManual)
+                    {
+                        Log.Info("Set Next Sequence To Loading");
+                        Sequence = ESequence.Loading;
+                        break;
+                    }
 
-                    Log.Info("Loading end");
+                    Log.Info("Loading End");
                     if ((Environment.TickCount - _waitTimeNoProduct) >= _currentRecipe.InjectTimeRecipe.DummyShotBeforeInject * 60000 &&
                         _machineStatus.IsDryRunMode == false)
                     {
-                        Log.Info("Set next sequence to DummyShot");
+                        Log.Info("Set Next Sequence To DummyShot");
                         _machineStatus.SetDummyShotBeforeInject = true;
                         Sequence = ESequence.DummyShot;
                         break;
                     }
 
-                    Log.Info("Set next sequence to Resin Inject");
+                    Log.Info("Set Next Sequence To Resin Inject");
                     Sequence = ESequence.ResinInject;
                     break;
             }

@@ -12,7 +12,7 @@
 
         Transfer_LoadUnload_SendRequest,
 
-        CheckIf_LoadOrUnload,
+        CheckInputType,
 
         Wait_InOutHandler_Working_RequestStart,
 
