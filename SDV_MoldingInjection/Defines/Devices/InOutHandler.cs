@@ -394,7 +394,7 @@ namespace SDV_MoldingInjection.Defines
             bool JigDetect2 = _machineStatus.IsDryRunMode ? true : _devices.Inputs.Jig2Detect.Value;
             bool JigDetect3 = _machineStatus.IsDryRunMode ? true : _devices.Inputs.Jig3Detect.Value;
             bool JigDetect4 = _machineStatus.IsDryRunMode ? true : _devices.Inputs.Jig4Detect.Value;
-            EJigStatus eJigStatus2 = _machineStatus.IsDryRunMode ? EJigStatus.InMolding : inj.JigStatuses[1];
+            EJigStatus eJigStatus2 = /*_machineStatus.IsDryRunMode ? EJigStatus.InMolding : */inj.JigStatuses[1];
 
             byte jig1Status = MapJigPairToProtocolStatus(opt.SkipHead12,
             inj.JigStatuses[0],

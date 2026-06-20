@@ -995,9 +995,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"Set Output {EInjectProcOutput.SPDHeadWorkRequest}");
 
-                    UpdateBothJigStatus(EJigStatus.InMolding, isLeftJig: true);
-                    UpdateBothJigStatus(EJigStatus.InMolding, isLeftJig: false);
-                    
+                    UpdateAllJigStatus(EJigStatus.InMolding);
                     procOutputs[EInjectProcOutput.SPDHeadWorkRequest].Value = true;
                     Step.RunStep = (int)EMoldProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
@@ -1092,8 +1090,7 @@ namespace SDV_MoldingInjection.Process
                     if (_currentRecipe.AdditionalMolding_Recipe.UseAddTail == false)
                     {
                         Log.Debug($"Update both jig status: {EJigStatus.MoldingFinish}");
-                        UpdateBothJigStatus(EJigStatus.MoldingFinish, isLeftJig: true);
-                        UpdateBothJigStatus(EJigStatus.MoldingFinish, isLeftJig: false);
+                        UpdateAllJigStatus(EJigStatus.MoldingFinish);
 
                     }
                     if (_currentRecipe.OptionRecipe.SkipVentTime == false)
@@ -1251,9 +1248,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcResinInjectAddTailStep.Update_BothJigStatus:
                     Log.Debug($"Update both jig status: {EJigStatus.MoldingFinish}");
-                    UpdateBothJigStatus(EJigStatus.MoldingFinish, isLeftJig: true);
-                    UpdateBothJigStatus(EJigStatus.MoldingFinish, isLeftJig: false);
-
+                    UpdateAllJigStatus(EJigStatus.MoldingFinish);
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectAddTailStep.ZAxis_SafetyPos_Move:
@@ -1377,8 +1372,6 @@ namespace SDV_MoldingInjection.Process
                                 break;
                             }
                         }
-
-                        //LOADING AUTO 
                     }
 
                     //UNLOADING
@@ -1557,6 +1550,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandler_Working_RequestStart;
                     break;
                 case EMoldProcLoadingUnloadingStep.CIM_TrackOut_LeftJig:
+                    Log.Debug("Left Jig TrackOut");
                     _cIMCollection.WriteMCC(EMCCAction.IJ01_REQUEST_ULD, EMCCAction.IJ01_CIM_TRACKOUT);
 
                     if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
@@ -1574,6 +1568,7 @@ namespace SDV_MoldingInjection.Process
                         }
                     }
 
+                    Log.Debug($"Update Status Left Jig: {EJigStatus.None}");
                     Log.Debug("CIM TrackOut Left Jig Done. Wait InOut Working");
                     UpdateBothJigStatus(EJigStatus.None, isLeftJig: true);
 
@@ -1599,6 +1594,7 @@ namespace SDV_MoldingInjection.Process
                         }
                     }
 
+                    Log.Debug($"Update Status Right Jig: {EJigStatus.None}");
                     Log.Debug("CIM TrackOut Right Jig Done. Wait InOut Working");
                     UpdateBothJigStatus(EJigStatus.None, isLeftJig: false);
                     _cIMCollection.WriteMCC(EMCCAction.IJ01_CIM_TRACKOUT, EMCCAction.IJ01_OUT_WAIT_TIME);
@@ -3081,6 +3077,18 @@ namespace SDV_MoldingInjection.Process
         private void UpdateBothJigStatus(EJigStatus status, bool isLeftJig)
         {
             JigStatuses[isLeftJig ? (int)EJig.JigLeft : (int)EJig.JigRight] = status;
+        }
+
+        private void UpdateAllJigStatus(EJigStatus status)
+        {
+            if (_optionRecipe.SkipHead12 == false)
+            {
+                JigStatuses[(int)EJig.JigLeft] = status;
+            }
+            if (_optionRecipe.SkipHead34 == false)
+            {
+                JigStatuses[(int)EJig.JigRight] = status;
+            }
         }
 
         private void RaiseHeadWarning(EWarning warning, ESPDHead _failHead)

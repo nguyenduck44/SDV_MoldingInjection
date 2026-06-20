@@ -1320,13 +1320,17 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Input detect {ESPDHeadProcInput.WorkRequest}");
 
                     //DryRun Mode or Skip Dispensing -> Wait time dispensing
-                    if ((_machineStatus.IsDryRunMode ||
-                       (OptionRecipe.SkipDispensing && sequence == ESequence.ResinInject)) &&
-                       sequence != ESequence.IdlePurge)
+                    if (sequence != ESequence.IdlePurge &&
+                        Parent?.Sequence == ESequence.AutoRun &&
+                       (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing))
                     {
-                        EnableTimerInject = true;
-                        _injectSequenceStartTick = Environment.TickCount64;
-                        Wait(InjectTimeRecipe.InjectTime);
+                        if (sequence == ESequence.ResinInject)
+                        {
+                            EnableTimerInject = true;
+                            _injectSequenceStartTick = Environment.TickCount64;
+                            Wait(InjectTimeRecipe.InjectTime);
+                        }
+                        
                         Step.RunStep = (int)ESPDHeadProcCommonStep.WorkDone_Send;
                         break;
                     }
