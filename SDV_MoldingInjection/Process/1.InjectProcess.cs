@@ -1468,10 +1468,9 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    if ((_machineStatus.InOutHandlerStartRequest == false ||
-                       (_optionRecipe.SkipHead12 && _optionRecipe.SkipHead34)) &&
-                       _machineStatus.IsDryRunMode == false &&
-                       _machineStatus.RunWithoutInOut == false)
+                    if ((_machineStatus.InOutHandlerStartRequest == false &&
+                         _machineStatus.RunWithoutInOut == false) ||
+                        (_optionRecipe.SkipHead12 && _optionRecipe.SkipHead34))
                     {
                         Wait(20);
                         break;
@@ -1608,8 +1607,12 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"Update Status Left Jig: {EJigStatus.None}");
                     Log.Debug("CIM TrackOut Left Jig Done. Wait InOut Working");
-                    UpdateBothJigStatus(EJigStatus.None, isLeftJig: true);
-                    outputCount++;
+                    UpdateBothJigStatus(EJigStatus.None, isLeftJig: true); 
+                    if (_machineStatus.IsDryRunMode == false)
+                    {
+                        outputCount++;
+                    }
+
                     WriteMCC(LastAction, EMCCAction.IJ01_WAIT_INOUT_LD_UL_3RD);
                     Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Unloading_WriteData;
                     break;
@@ -1634,14 +1637,18 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Update Status Right Jig: {EJigStatus.None}");
                     Log.Debug("CIM TrackOut Right Jig Done. Wait InOut Working");
                     UpdateBothJigStatus(EJigStatus.None, isLeftJig: false);
-                    outputCount++;
+                    if (_machineStatus.IsDryRunMode == false)
+                    {
+                        outputCount++;
+                    }
+
                     WriteMCC(LastAction, EMCCAction.IJ01_WAIT_INOUT_LD_UL_4TH);
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Unloading_WriteData:
                     Log.Debug($"Write data output count: {outputCount}");
                     _productionService.WriteData(EProductionWriteType.Output, outputCount);
-                    _tactTimeList.TactCounterEnd(outputCount);
+                    _tactTimeList.TactCounterEnd(1);
                     outputCount = 0;
 
                     if (LeftJigDetect == false && RightJigDetect == false)
