@@ -1443,6 +1443,7 @@ namespace SDV_MoldingInjection.Process
                         Log.Debug("Unloading Left Jig");
                         WriteMCC(LastAction, EMCCAction.IJ01_COMPONENT_OUT_JIG_1);
                         WriteMCC(LastAction, EMCCAction.IJ01_OUT_WAIT_TIME_JIG_1);
+                        LeftJigID = string.Empty;
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.CIM_TrackOut_LeftJig;
                         break;
                     }
@@ -1454,6 +1455,7 @@ namespace SDV_MoldingInjection.Process
                         Log.Debug("Unloading Right Jig");
                         WriteMCC(LastAction, EMCCAction.IJ01_COMPONENT_OUT_JIG_2);
                         WriteMCC(LastAction, EMCCAction.IJ01_OUT_WAIT_TIME_JIG_2);
+                        RightJigID = string.Empty;
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.CIM_TrackOut_RightJig;
                         break;
                     }
@@ -1614,7 +1616,9 @@ namespace SDV_MoldingInjection.Process
                     SimulationInputSetter.SetSimInput(In_Jig3Detect, true);
                     SimulationInputSetter.SetSimInput(In_Jig4Detect, true);
 #endif
-                    if (_optionRecipe.SkipHead12 == false && _machineStatus.DisableDetectJig == false)
+                    if (_optionRecipe.SkipHead12 == false && 
+                        _machineStatus.DisableDetectJig == false &&
+                        _machineStatus.IsDryRunMode == false)
                     {
                         if (LeftJigTiltState)
                         {
@@ -1628,11 +1632,12 @@ namespace SDV_MoldingInjection.Process
                         }
 
                         Log.Debug("Left Jig Loading Done");
-                        UpdateBothJigStatus(EJigStatus.Ready, isLeftJig: true);
                         inputCount++;
                     }
 
-                    if (_optionRecipe.SkipHead34 == false && _machineStatus.DisableDetectJig == false)
+                    if (_optionRecipe.SkipHead34 == false && 
+                        _machineStatus.DisableDetectJig == false &&
+                         _machineStatus.IsDryRunMode == false)
                     {
                         if (RightJigTiltState)
                         {
@@ -1646,10 +1651,10 @@ namespace SDV_MoldingInjection.Process
                         }
 
                         Log.Debug("Right Jig Loading Done");
-                        UpdateBothJigStatus(EJigStatus.Ready, isLeftJig: false);
                         inputCount++;
                     }
 
+                    UpdateAllJigStatus(EJigStatus.Ready);
                     Log.Debug($"Write data input count: {inputCount}");
                     _productionService.WriteData(EProductionWriteType.Input, inputCount);
                     inputCount = 0;

@@ -1012,15 +1012,6 @@ namespace SDV_MoldingInjection.Process
                         CurrentTactTimeList.TactTimeCounter = (int)Environment.TickCount64;
                     }
 
-                    if ((_machineStatus.IsDryRunMode ||
-                       (OptionRecipe.SkipDispensing && sequence == ESequence.ResinInject)) && sequence != ESequence.IdlePurge)
-                    {
-                        Log.Debug("Skip Dispensing");
-                        CarrierJigStatus.InjectTime = 0;
-                        Step.RunStep = (int)ESPDHeadProcCommonStep.WorkRequest_Wait;
-                        break;
-                    }
-
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.ResetInjectTime:
@@ -1132,10 +1123,22 @@ namespace SDV_MoldingInjection.Process
                     if (sequence == ESequence.ResinInject)
                     {
                         WriteHeadMCC(EMCCAction.SP01_CALCULATE_CHARGE_INJECT, EMCCAction.SP01_MOVE_Z_TO_INJECT_CHARGE_POS);
+                        if (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing)
+                        {
+                            Log.Debug("DryRun Or SkipDispensing PAxis Not Move");
+                            Step.RunStep++;
+                            break;
+                        }
                     }
                     else if (sequence == ESequence.DummyShot)
                     {
                         WriteHeadMCC(EMCCAction.SP01_CALCULATE_DUMMY_CHARGE_POS, EMCCAction.SP01_MOVE_Z_TO_DUMMY_CHARGE_POS);
+                        if (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing)
+                        {
+                            Log.Debug("DryRun Or SkipDispensing PAxis Not Move");
+                            Step.RunStep++;
+                            break;
+                        }
                     }
 
                     Log.Debug($"{PAxis.Name} moving to ChargePos [{_pAxisCharge_Pos}mm]");
@@ -1145,7 +1148,9 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.PAxis_ChargePos_MoveWait:
-                    if (WaitTimeOutOccurred)
+                    if (WaitTimeOutOccurred && 
+                        _machineStatus.IsDryRunMode == false &&
+                        OptionRecipe.SkipDispensing == false)
                     {
                         RaiseHeadAlarm(EAlarm.MO_SPD_H01_P1_AXIS_CHARGE_POS_TIMEOUT);
                         break;
@@ -1318,33 +1323,31 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"Input detect {ESPDHeadProcInput.WorkRequest}");
-
-                    //DryRun Mode or Skip Dispensing -> Wait time dispensing
-                    if (sequence != ESequence.IdlePurge &&
-                        Parent?.Sequence == ESequence.AutoRun &&
-                       (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing))
-                    {
-                        if (sequence == ESequence.ResinInject)
-                        {
-                            EnableTimerInject = true;
-                            _injectSequenceStartTick = Environment.TickCount64;
-                            Wait(InjectTimeRecipe.InjectTime);
-                        }
-                        
-                        Step.RunStep = (int)ESPDHeadProcCommonStep.WorkDone_Send;
-                        break;
-                    }
-
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.PAxis_InjectPos_Move:
                     if (sequence == ESequence.ResinInject)
                     {
                         WriteHeadMCC(EMCCAction.SP01_WAIT_REQUEST_INJECT, EMCCAction.SP01_MOVE_Z_TO_BASE_INJECT_POS);
+                        if (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing)
+                        {
+                            Log.Debug("Dry Run Mode Or Skip Dispensing -> P Axis Not Move");
+                            CarrierJigStatus.InjectTime = 0;
+                            EnableTimerInject = true;
+                            Wait(InjectTimeRecipe.InjectTime);
+                            Step.RunStep++;
+                            break;
+                        }
                     }
                     else if (sequence == ESequence.DummyShot)
                     {
                         WriteHeadMCC(EMCCAction.SP01_WAIT_REQUEST_DUMMY, EMCCAction.SP01_MOVE_Z_TO_BASE_DUMMY_POS);
+                        if (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing)
+                        {
+                            Log.Debug("DryRun Mode Or SkipDispensing -> P Axis Not Move");
+                            Step.RunStep++;
+                            break;
+                        }
                     }
 
                     if (sequence == ESequence.ResinInject)
@@ -1378,7 +1381,7 @@ namespace SDV_MoldingInjection.Process
                             CarrierJigStatus.PAxisInjectVelocity = InjectPaths[injectPathIndexer].VelocityRate * 0.01 * _pAxisInject_Vel; // Display UI
                             Log.Debug($"{PAxis.Name} moving to InjectPos #{injectPathIndexer} [{InjectPathPositions[injectPathIndexer]}mm]");
                             PAxis.MoveAbs(InjectPathPositions[injectPathIndexer],
-                                InjectPaths[injectPathIndexer].VelocityRate * 0.01 * _pAxisInject_Vel);
+                            InjectPaths[injectPathIndexer].VelocityRate * 0.01 * _pAxisInject_Vel);
 
                             Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout + InjectPaths[injectPathIndexer].TimeInSecond,
                                 () => PAxis.IsOnPosition(InjectPathPositions[injectPathIndexer]));
@@ -1388,20 +1391,6 @@ namespace SDV_MoldingInjection.Process
                         }
                         else
                         {
-                            if (_machineStatus.IsSkipInject && _recipeSelector.CurrentRecipe.OptionRecipe.InputTypeManual)
-                            {
-                                Log.Debug("Skip Inject => P Axis Not Move");
-
-                                Log.Debug("Start inject timer");
-                                CarrierJigStatus.InjectTime = 0;
-                                EnableTimerInject = true;
-                                _injectSequenceStartTick = Environment.TickCount64;
-
-                                Wait(InjectTimeRecipe.InjectTime);
-                                Step.RunStep++;
-                                break;
-                            }
-
                             Log.Debug($"{PAxis.Name} moving to InjectPos [{_pAxisInject_Pos}mm]");
                             PAxis.MoveAbs(_pAxisInject_Pos, _pAxisInject_Vel);
                             Log.Debug("Start inject timer");
@@ -1423,7 +1412,9 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.PAxis_InjectPos_MoveWait:
-                    if (WaitTimeOutOccurred && (_machineStatus.IsSkipInject && _recipeSelector.CurrentRecipe.OptionRecipe.InputTypeManual) == false)
+                    if (WaitTimeOutOccurred &&
+                        _machineStatus.IsDryRunMode == false &&
+                        OptionRecipe.SkipDispensing == false)
                     {
                         RaiseHeadAlarm(EAlarm.MO_SPD_H01_P1_AXIS_INJECT_POS_TIMEOUT);
                         break;

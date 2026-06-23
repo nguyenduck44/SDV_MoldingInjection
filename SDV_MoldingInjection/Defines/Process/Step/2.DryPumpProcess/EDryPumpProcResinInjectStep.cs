@@ -13,16 +13,13 @@
 
         DryPump_Vacuum_RequestWait,
 
-        WriteMCC_Open_AngleValve_1st,
-        WriteMCC_Open_AngleValve_2nd,
+        WriteMCC_Open_AngleValve,
         AngleValve_Open,
         AngleValve_OpenWait,
 
-        WriteMCC_VacuumGauge_SpecIn_Wait_1torr,
         VacuumGauge_SpecIn_Wait_1torr,
 
-        WriteMCC_Close_AngleValve_1st,
-        WriteMCC_Close_AngleValve_2nd,
+        WriteMCC_Close_AngleValve,
         AngleValve_Close,
         AngleValve_CloseWait,
 

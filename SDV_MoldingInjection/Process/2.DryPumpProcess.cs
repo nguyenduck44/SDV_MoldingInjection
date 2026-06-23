@@ -375,11 +375,7 @@ namespace SDV_MoldingInjection.Process
                     _cIMCollection.WriteMCC(EMCCAction.PU01_ACT_WAIT_PUMPING, EMCCAction.PU01_WAIT_REQUEST_DRYPUMP_VAC);
 
                     Log.Debug("Init queue");
-                    if (_machineStatus.IsDryRunMode)
-                    {
-                        DryPumpResinInjectStep = new Queue<EDryPumpProcResinInjectStep>(ProcessesWorkSequence.DryPumpResinInjectSequence_DryRun);
-                    }
-                    else if (_currentRecipe.OptionRecipe.OneTorrAndPurge && _currentRecipe.OptionRecipe.SkipVentTime)
+                    if (_currentRecipe.OptionRecipe.OneTorrAndPurge && _currentRecipe.OptionRecipe.SkipVentTime)
                     {
                         DryPumpResinInjectStep = new Queue<EDryPumpProcResinInjectStep>(ProcessesWorkSequence.DryPumpResinInjectSequence_Use1Torr_SkipVent);
                     }
@@ -419,18 +415,19 @@ namespace SDV_MoldingInjection.Process
                     _plotter.ClearData();
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
-                case EDryPumpProcResinInjectStep.WriteMCC_Open_AngleValve_1st:
-                    Log.Debug("Write MCC Open Angle Valve 1st");
-                    _cIMCollection.WriteMCC(EMCCAction.PU01_WAIT_REQUEST_DRYPUMP_VAC, EMCCAction.PU01_ANGLE_VALVE_OPEN_1ST);
-                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
-                    break;
-                case EDryPumpProcResinInjectStep.WriteMCC_Open_AngleValve_2nd:
-                    Log.Debug("Write MCC Open Angle Valve 2nd");
-                    _cIMCollection.WriteMCC(_currentRecipe.OptionRecipe.OneTorrAndPurge ? EMCCAction.PU01_PURGE_AND_WAIT_1ST : EMCCAction.PU01_WAIT_REQUEST_DRYPUMP_VAC, EMCCAction.PU01_ANGLE_VALVE_OPEN_2ND);
+                case EDryPumpProcResinInjectStep.WriteMCC_Open_AngleValve:
+                    Log.Debug("Write MCC Open Angle Valve");
+                    _cIMCollection.WriteMCC(EMCCAction.PU01_WAIT_REQUEST_DRYPUMP_VAC, EMCCAction.PU01_ANGLE_VALVE_OPEN);
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.AngleValve_Open:
                     Log.Debug($"Opening {AngleValve.Name}");
+                    if (_machineStatus.IsDryRunMode)
+                    {
+                        Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
+                        break;
+                    }
+
                     PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.ValveOpen);
                     EnableWritePressureLog = true;
                     AngleValve.Open();
@@ -438,18 +435,13 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.AngleValve_OpenWait:
-                    if (WaitTimeOutOccurred)
+                    if (WaitTimeOutOccurred && _machineStatus.IsDryRunMode == false)
                     {
                         RaiseWarning(EWarning.CY_ANGLE_VALUE_OPEN_FAIL);
                         break;
                     }
 
                     Log.Debug($"{AngleValve.Name} Opened");
-                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
-                    break;
-                case EDryPumpProcResinInjectStep.WriteMCC_VacuumGauge_SpecIn_Wait_1torr:
-                    Log.Debug("WriteMCC_VacuumGauge_SpecIn_Wait_1torr ");
-                    _cIMCollection.WriteMCC(EMCCAction.PU01_ANGLE_VALVE_OPEN_1ST, EMCCAction.PU01_WAIT_VACCUM_GAUGE_IN_TARGET_1TORR);
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.VacuumGauge_SpecIn_Wait_1torr:
@@ -462,15 +454,10 @@ namespace SDV_MoldingInjection.Process
                     Log.Info($"DryPump vacuum 1st in-spec 1.0 Torr");
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
-                case EDryPumpProcResinInjectStep.WriteMCC_Close_AngleValve_1st:
-                    Log.Debug("Write MCC Close Angle Valve 1st");
-                    _cIMCollection.WriteMCC(EMCCAction.PU01_WAIT_VACCUM_GAUGE_IN_TARGET_1TORR, EMCCAction.PU01_ANGLE_VALVE_CLOSE_1ST);
-                    Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
-                    break;
-                case EDryPumpProcResinInjectStep.WriteMCC_Close_AngleValve_2nd:
-                    Log.Debug("Write MCC Close Angle Valve 2nd");
-                    _cIMCollection.WriteMCC(EMCCAction.PU01_WAIT_VACCUM_GAUGE_IN_TARGET, EMCCAction.PU01_ANGLE_VALVE_CLOSE_2ND);
-                    _cIMCollection.WriteMCC(EMCCAction.PU01_ANGLE_VALVE_CLOSE_2ND, EMCCAction.PU01_DELAY_BEFORE_INJECT);
+                case EDryPumpProcResinInjectStep.WriteMCC_Close_AngleValve:
+                    Log.Debug("Write MCC Close Angle Valve");
+                    _cIMCollection.WriteMCC(EMCCAction.PU01_WAIT_VACCUM_GAUGE_IN_TARGET, EMCCAction.PU01_ANGLE_VALVE_CLOSE);
+                    _cIMCollection.WriteMCC(EMCCAction.PU01_ANGLE_VALVE_CLOSE, EMCCAction.PU01_DELAY_BEFORE_INJECT);
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.AngleValve_Close:
@@ -493,7 +480,7 @@ namespace SDV_MoldingInjection.Process
                 case EDryPumpProcResinInjectStep.DryPump_Purge:
                     Log.Debug("DryPump purge start");
 
-                    _cIMCollection.WriteMCC(EMCCAction.PU01_ANGLE_VALVE_CLOSE_1ST, EMCCAction.PU01_PURGE_AND_WAIT_1ST);
+                    _cIMCollection.WriteMCC(EMCCAction.PU01_ANGLE_VALVE_CLOSE, EMCCAction.PU01_PURGE_AND_WAIT);
 
                     PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.PurgeStart);
                     Out_ChamberPurgeOn.Value = true;
@@ -514,7 +501,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EDryPumpProcResinInjectStep.WriteMCC_VacuumGauge_Target_Wait:
                     Log.Debug("WriteMCC_VacuumGauge_Target_Wait");
-                    _cIMCollection.WriteMCC(EMCCAction.PU01_ANGLE_VALVE_OPEN_2ND, EMCCAction.PU01_WAIT_VACCUM_GAUGE_IN_TARGET);
+                    _cIMCollection.WriteMCC(EMCCAction.PU01_ANGLE_VALVE_OPEN, EMCCAction.PU01_WAIT_VACCUM_GAUGE_IN_TARGET);
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.VacuumGauge_Target_Wait:
@@ -579,7 +566,7 @@ namespace SDV_MoldingInjection.Process
                     PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.VentStart);
                     Out_ChamberPurgeOn.Value = true;
 
-                    _cIMCollection.WriteMCC(EMCCAction.PU01_START_VENT, EMCCAction.PU01_PURGE_AND_WAIT_2ND);
+                    _cIMCollection.WriteMCC(EMCCAction.PU01_START_VENT, EMCCAction.PU01_PURGE_AND_WAIT);
 
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
@@ -639,7 +626,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    _cIMCollection.WriteMCC(EMCCAction.PU01_PURGE_AND_WAIT_2ND, EMCCAction.PU01_IN_WAIT_TIME);
+                    _cIMCollection.WriteMCC(EMCCAction.PU01_PURGE_AND_WAIT, EMCCAction.PU01_IN_WAIT_TIME);
 
                     Log.Info($"Clear output {EDryPumpProcOutput.ChamberVacuumSuccess}");
                     procOutputs[EDryPumpProcOutput.ChamberVacuumSuccess].Value = false;
