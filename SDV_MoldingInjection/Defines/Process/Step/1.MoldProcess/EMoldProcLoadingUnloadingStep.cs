@@ -29,13 +29,12 @@
         CIM_TrackOut_LeftJig,
 
         CIM_TrackOut_RightJig,
+        Unloading_WriteData,
 
         Load_Jig_Check,
 
         Chamber_CoverClose,
         Chamber_CoverCloseWait,
-
-        Unloading_WriteData,
 
         End,
     }
