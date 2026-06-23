@@ -59,10 +59,20 @@ namespace SDV_MoldingInjection.Defines
 
                 for (int i = 0; i < jigOutputCount; i++)
                 {
-                    TactTimeListViewModel.TactTimes.Insert(0, currentTact);
+                    if (TactTimeListViewModel.TactTimes.Any(v => v == 0) == false)
+                    {
+                        TactTimeListViewModel.TactTimes.Insert(TactTimeListViewModel.TactTimes.Count, currentTact);
 
-                    if (TactTimeListViewModel.TactTimes.Count > 30)
-                        TactTimeListViewModel.TactTimes.RemoveAt(TactTimeListViewModel.TactTimes.Count - 1);
+                        if (TactTimeListViewModel.TactTimes.Count > 30)
+                            TactTimeListViewModel.TactTimes.RemoveAt(0);
+                    }
+                    else
+                    {
+                        TactTimeListViewModel.TactTimes.Insert(TactTimeListViewModel.TactTimes.IndexOf(0), currentTact);
+
+                        if (TactTimeListViewModel.TactTimes.Count > 30)
+                            TactTimeListViewModel.TactTimes.RemoveAt(TactTimeListViewModel.TactTimes.Count - 1);
+                    }
                 }
             });
 
