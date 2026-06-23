@@ -1,10 +1,12 @@
 ﻿using EQX.Core.Communication.CIM;
+using EQX.ThirdParty.Helpers;
 using EQX.UI.Controls;
 using EQX.UI.MVVM;
 using log4net;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Win32;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using TOPENG_Device;
 
@@ -84,10 +86,12 @@ namespace SDV_MoldingInjection.Defines.CIM
                 LogManager.GetLogger("IO").Error("Get Value MCCPPIDStartWord Fail . Check Registry Value");
                 MessageBoxEx.ShowDialog("Get Value MCCPPIDStartWord Fail . Check Registry Value");
             }
-
-            mCCLinkIEWords = new MCCLinkIEWords(0x13000, 8192);
         }
 
+        public void Init()
+        {
+            mCCLinkIEWords = new MCCLinkIEWords(0x13000, 8192);
+        }
         public bool WriteMCCFromToMap()
         {
             if (File.Exists(MccFromToMapFile) == false)
@@ -176,12 +180,62 @@ namespace SDV_MoldingInjection.Defines.CIM
 
         public void WriteMCC_CellID(EMCCUnit unit, string cellID)
         {
+            mCCLinkIEWords.WriteWords(MCCUnitStartWord + (int)unit * 46, 20, new short[20]);
             mCCLinkIEWords.WriteWords(MCCUnitStartWord + (int)unit * 46, 20, CIMScenarioDispatcher.EncodeAsciiToWords(cellID));
+        }
+
+        public string ReadMCC_CellID(EMCCUnit unit)
+        {
+            var buffer = mCCLinkIEWords.ReadWords(MCCUnitStartWord + (int)unit * 46, 20);
+            string cellID = "";
+
+            byte[] data = new byte[0];
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                if (buffer[i] == 0) continue;
+                data = data.Concat(DataHelper.Uint16toByteArray(buffer[i])).ToArray();
+            }
+
+            if (data.Length == 0) return cellID;
+
+            if (data.Last() == 0)
+            {
+                data = data.SkipLast(1).ToArray();
+            }
+
+            cellID += Encoding.ASCII.GetString(data);
+
+            return cellID;
         }
 
         public void WriteMCC_PPID(string ppid)
         {
+            mCCLinkIEWords.WriteWords(MCCPPIDStartWord, 20, new short[20]);
             mCCLinkIEWords.WriteWords(MCCPPIDStartWord, 20, CIMScenarioDispatcher.EncodeAsciiToWords(ppid));
+        }
+
+        public string ReadMCC_PPID()
+        {
+            var buffer = mCCLinkIEWords.ReadWords(MCCPPIDStartWord, 20);
+            string ppid = "";
+
+            byte[] data = new byte[0];
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                if (buffer[i] == 0) continue;
+                data = data.Concat(DataHelper.Uint16toByteArray(buffer[i])).ToArray();
+            }
+
+            if (data.Length == 0) return ppid;
+
+            if (data.Last() == 0)
+            {
+                data = data.SkipLast(1).ToArray();
+            }
+
+            ppid += Encoding.ASCII.GetString(data);
+
+            return ppid;
         }
     }
 }

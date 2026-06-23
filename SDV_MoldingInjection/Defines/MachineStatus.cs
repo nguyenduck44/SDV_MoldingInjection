@@ -113,6 +113,17 @@ namespace SDV_MoldingInjection.Defines
             }
         }
 
+        public bool RunWithoutInOut
+        {
+            get { return runWithoutInOut; }
+            set
+            {
+                runWithoutInOut = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public bool IsDoorPasswordVerified
         {
             get => _isDoorPasswordVerified;
@@ -138,17 +149,6 @@ namespace SDV_MoldingInjection.Defines
             }
         }
 
-        private bool isSkipInject;
-
-        public bool IsSkipInject
-        {
-            get { return isSkipInject; }
-            set 
-            {
-                isSkipInject = value;
-                OnPropertyChanged();
-            }
-        }
 
         public int ActionCount
         {
@@ -179,6 +179,7 @@ namespace SDV_MoldingInjection.Defines
         private bool isSkipHead2 = true;
         private bool isSkipHead3 = true;
         private bool isSkipHead4 = true;
+        private bool runWithoutInOut;
         private EMachineMode machineMode;
         private bool _isDoorPasswordVerified;
         #endregion

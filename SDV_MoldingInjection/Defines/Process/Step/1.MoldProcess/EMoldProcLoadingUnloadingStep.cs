@@ -17,11 +17,15 @@
         Wait_InOutHandler_Working_RequestStart,
 
         GetCellId1,
+        Write_JigID_1,
+        Wait_Write_JigIID_1,
         Set_Cell1ReplyBitOn,
         Wait_Cell1SendBitOff,
         Wait_Cell1SendBitOff_TimeOut,
 
         GetCellId2,
+        Write_JigID_2,
+        Wait_Write_JigIID_2,
         Set_Cell2ReplyBitOn,
         Wait_Cell2SendBitOff,
         Wait_Cell2SendBitOff_TimeOut,

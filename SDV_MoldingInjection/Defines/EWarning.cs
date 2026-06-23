@@ -119,6 +119,8 @@ namespace SDV_MoldingInjection.Defines
         INOUT_MACHINE_REPLY_TIMEOUT,
         INOUT_MACHINE_REQUEST_LOAD_JIG_RIGHT,
         INOUT_MACHINE_REQUEST_LOAD_JIG_LEFT,
+        MCC_IJ01_WRITE_JIG_ID_TIMEOUT,
+
 
         //--------- 2000 -> 2199 : Dry ---------
         CY_ANGLE_VALUE_CLOSE_FAIL = 2000,

@@ -408,6 +408,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
+                    _cIMCollection.WriteMCC_PPID(_recipeSelector.RecipeSetting.CurrentRecipe);
                     Step.OriginStep++;
                     break;
                 case ERootProcToOriginStep.ChildsToOriginDone_Wait:
@@ -416,6 +417,8 @@ namespace SDV_MoldingInjection.Process
                         Wait(10);
                         break;
                     }
+
+                    Wait(300);
                     Step.OriginStep++;
                     break;
                 case ERootProcToOriginStep.End:
@@ -541,6 +544,9 @@ namespace SDV_MoldingInjection.Process
                         Wait(10);
                         break;
                     }
+
+                    _cIMCollection.WriteMCC_PPID(_recipeSelector.RecipeSetting.CurrentRecipe);
+                    Wait(300);
                     Step.ToRunStep++;
                     break;
                 case ERootProcToRunStep.End:
@@ -569,7 +575,6 @@ namespace SDV_MoldingInjection.Process
 
                     if (Sequence == ESequence.AutoRun)
                     {
-                        _cIMCollection.WriteMCC_PPID(_recipeSelector.RecipeSetting.CurrentRecipe);
                         WriteMCC_ALARM_STOP_End();
                     }
 

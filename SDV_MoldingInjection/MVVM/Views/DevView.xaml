@@ -36,9 +36,9 @@
                 <CheckBox IsChecked="{Binding MachineStatus.DisableDetectJig}"
                           Content="Disable Detect Jig"
                           Tag="Check to Disable Detect Jig" />
-                <CheckBox IsChecked="{Binding MachineStatus.IsSkipInject}"
-                          Content="Skip Inject"
-                          Tag="Check to Skip Inject" />
+                <CheckBox IsChecked="{Binding MachineStatus.RunWithoutInOut}"
+                          Content="DryRun Without InOut"
+                          Tag="DryRun Without InOut Machine" />
                 <Button Height="50"
                         Content="CIM Test View"
                         Command="{Binding CIMTetstViewNavigate}" />
