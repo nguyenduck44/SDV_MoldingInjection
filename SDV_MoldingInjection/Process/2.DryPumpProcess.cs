@@ -323,7 +323,7 @@ namespace SDV_MoldingInjection.Process
 
                     _cIMCollection.WriteMCC(EMCCAction.PU01_IN_WAIT_TIME, EMCCAction.PU01_ACT_WAIT_PUMPING);
 
-                    _tactTimeList.DryPump.CycleTimeCounter = Environment.TickCount;
+                    TactTime.CycleTimeCounter = Environment.TickCount;
                     _delayTime = 0;
                     Step.RunStep++;
                     break;
@@ -411,7 +411,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Info($"Input detect {EDryPumpProcInput.Vacuum_WorkRequest}");
-                    _tactTimeList.DryPump.TactTimeCounter = Environment.TickCount;
+                    TactTime.TactTimeCounter = Environment.TickCount;
                     _plotter.ClearData();
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
@@ -514,6 +514,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Info($"DryPump vacuum in-target {_devices.AnalogInputs.VacuumPressureInTorr} Torr");
                     Log.Debug($"Enable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
+                    TactTime.SetTactTime();
                     EnablePressureHold = true;
                     EnableTimerDelay = true;
                     _delayStartTick = Environment.TickCount;
@@ -644,8 +645,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    _tactTimeList.DryPump.SetCycleTime();
-                    _tactTimeList.DryPump.SetTactTime();
+                    TactTime.SetCycleTime();
                     Log.Info("ResinInject end, starting new cycle");
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.Start;
                     break;
@@ -715,6 +715,7 @@ namespace SDV_MoldingInjection.Process
         private readonly Plotter _plotter;
         private readonly CIMCollection _cIMCollection;
 
+        private TactTime TactTime => _tactTimeList.DryPump;
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
         private InjectTimeRecipe InjectTimeRecipe => _recipeSelector.CurrentRecipe.InjectTimeRecipe;
         private string pressureLogFolder => _configuration.GetValue<string>("Folders:PressureLogFolder");

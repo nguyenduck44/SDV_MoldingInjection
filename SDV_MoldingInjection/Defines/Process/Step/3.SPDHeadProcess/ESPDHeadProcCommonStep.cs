@@ -6,8 +6,6 @@
 
         Wait_HeadUse,
 
-        Start_Set_TactTime,
-
         ResetInjectTime,
         BubbleRemoveResetCountRotate,
         DummyShotBeforeInject_Check,

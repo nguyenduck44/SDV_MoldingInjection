@@ -992,6 +992,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     _actionCount = 0;
+                    TactTime.CycleTimeCounter = (int)Environment.TickCount64;
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.Wait_HeadUse:
@@ -1004,15 +1005,6 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Wait(50);
-                    break;
-                case ESPDHeadProcCommonStep.Start_Set_TactTime:
-                    if (sequence == ESequence.ResinInject)
-                    {
-                        CurrentTactTimeList.CycleTimeCounter = (int)Environment.TickCount64;
-                        CurrentTactTimeList.TactTimeCounter = (int)Environment.TickCount64;
-                    }
-
-                    Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.ResetInjectTime:
                     if (sequence == ESequence.ResinInject)
@@ -1148,7 +1140,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.PAxis_ChargePos_MoveWait:
-                    if (WaitTimeOutOccurred && 
+                    if (WaitTimeOutOccurred &&
                         _machineStatus.IsDryRunMode == false &&
                         OptionRecipe.SkipDispensing == false)
                     {
@@ -1377,6 +1369,7 @@ namespace SDV_MoldingInjection.Process
                             {
                                 EnableTimerInject = true;
                                 _injectSequenceStartTick = Environment.TickCount64;
+                                TactTime.TactTimeCounter = (int)Environment.TickCount64;
                             }
 
                             CarrierJigStatus.PAxisInjectVelocity = InjectPaths[injectPathIndexer].VelocityRate * 0.01 * _pAxisInject_Vel; // Display UI
@@ -1398,6 +1391,7 @@ namespace SDV_MoldingInjection.Process
                             CarrierJigStatus.InjectTime = 0;
                             EnableTimerInject = true;
                             _injectSequenceStartTick = Environment.TickCount64;
+                            TactTime.TactTimeCounter = (int)Environment.TickCount64;
                             Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout + InjectTimeRecipe.InjectTime,
                                 () => PAxis.IsOnPosition(_pAxisInject_Pos));
                         }
@@ -1454,6 +1448,7 @@ namespace SDV_MoldingInjection.Process
 
                     if (sequence == ESequence.ResinInject)
                     {
+                        TactTime.SetTactTime();
                         WriteHeadMCC(EMCCAction.SP01_MOVE_Z_TO_BASE_INJECT_POS, EMCCAction.SP01_ACT_WAIT_DUMMY_SHOT);
                     }
                     else if (sequence == ESequence.DummyShot)
@@ -1518,14 +1513,13 @@ namespace SDV_MoldingInjection.Process
                     if (sequence == ESequence.ResinInject && OptionRecipe.SkipDummyShot == false)
                     {
                         Log.Info($"Set next sequence to DummyShot");
+                        TactTime.SetCycleTime();
                         dummyShotBeforeInject = false;
                         Sequence = ESequence.DummyShot;
                         break;
                     }
                     else
                     {
-                        CurrentTactTimeList.SetCycleTime();
-                        CurrentTactTimeList.SetTactTime();
                         Sequence = ESequence.ResinInject;
                         break;
                     }
@@ -1670,8 +1664,8 @@ namespace SDV_MoldingInjection.Process
                     }
                     else
                     {
-                        CurrentTactTimeList.SetCycleTime();
-                        CurrentTactTimeList.SetTactTime();
+                        TactTime.SetCycleTime();
+                        TactTime.SetTactTime();
                         Sequence = ESequence.ResinInject;
                         break;
                     }
@@ -2159,7 +2153,7 @@ namespace SDV_MoldingInjection.Process
             _ => throw new Exception($"Invalid process name: {Name}")
         };
 
-        private TactTime CurrentTactTimeList => head switch
+        private TactTime TactTime => head switch
         {
             ESPDHead.SPDHead1 => _tactTimeList.SPDHead1,
             ESPDHead.SPDHead2 => _tactTimeList.SPDHead2,

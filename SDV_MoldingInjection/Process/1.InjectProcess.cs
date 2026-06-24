@@ -1293,7 +1293,6 @@ namespace SDV_MoldingInjection.Process
                     if (isLoading)
                     {
                         Log.Info("Loading start");
-                        _tactTimeList.Chamber.CycleTimeCounter = Environment.TickCount;
                         _machineStatus.ConfirmLoadingFinish = false;
                     }
                     else
@@ -1301,6 +1300,8 @@ namespace SDV_MoldingInjection.Process
                         Log.Info("Unloading start");
                     }
 
+                    TactTime.CycleTimeCounter = Environment.TickCount;
+                    TactTime.TactTimeCounter = Environment.TickCount;
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.YAxis_ReadyPos_Move:
@@ -1341,11 +1342,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    if (isLoading == false)
-                    {
-                        _tactTimeList.Chamber.SetTactTime();
-                    }
-
+                    TactTime.SetTactTime();
                     Log.Debug($"{ChamberOpenClose} Open finish");
                     Step.RunStep++;
                     break;
@@ -1607,14 +1604,14 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"Update Status Left Jig: {EJigStatus.None}");
                     Log.Debug("CIM TrackOut Left Jig Done. Wait InOut Working");
-                    UpdateBothJigStatus(EJigStatus.None, isLeftJig: true); 
+                    UpdateBothJigStatus(EJigStatus.None, isLeftJig: true);
                     if (_machineStatus.IsDryRunMode == false)
                     {
                         outputCount++;
                     }
 
                     WriteMCC(LastAction, EMCCAction.IJ01_WAIT_INOUT_LD_UL_3RD);
-                    Step.RunStep = _optionRecipe.SkipHead34 ? 
+                    Step.RunStep = _optionRecipe.SkipHead34 ?
                         (int)EMoldProcLoadingUnloadingStep.Unloading_WriteData :
                         (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandler_Working_RequestStart;
                     break;
@@ -1656,7 +1653,7 @@ namespace SDV_MoldingInjection.Process
                     if (LeftJigDetect == false && RightJigDetect == false)
                     {
                         Log.Info("Unloading end");
-                        _tactTimeList.Chamber.SetCycleTime();
+                        TactTime.SetCycleTime();
                     }
 
                     Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandler_Working_RequestStart;
@@ -1718,7 +1715,6 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcLoadingUnloadingStep.Chamber_CoverClose:
                     WriteMCC(LastAction, EMCCAction.IJ01_CHAMPER_COVER_CLOSE);
-                    _tactTimeList.Chamber.TactTimeCounter = Environment.TickCount;
                     Log.Debug($"Close {ChamberOpenClose} cylinder");
                     ChamberOpenClose.Close();
                     Wait(_currentRecipe.CylinderDelayTimeRecipe.ChamberOpenCloseCylinderMoveDelay,
@@ -3397,6 +3393,7 @@ namespace SDV_MoldingInjection.Process
         private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
         private OptionRecipe _optionRecipe => _currentRecipe.OptionRecipe;
         private InjectRecipe Recipe => _currentRecipe.InjectRecipe;
+        private TactTime TactTime => _tactTimeList.Chamber;
 
         private readonly Devices _devices;
         private readonly MachineStatus _machineStatus;
