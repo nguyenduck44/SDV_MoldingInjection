@@ -123,6 +123,15 @@ namespace SDV_MoldingInjection.Defines
             }
         }
 
+        public bool DryRunUseChamberPressure
+        {
+            get { return dryRunUseChamberPressure; }
+            set
+            {
+                dryRunUseChamberPressure = value;
+                OnPropertyChanged();
+            }
+        }
 
         public bool IsDoorPasswordVerified
         {
@@ -182,6 +191,7 @@ namespace SDV_MoldingInjection.Defines
         private bool runWithoutInOut;
         private EMachineMode machineMode;
         private bool _isDoorPasswordVerified;
+        private bool dryRunUseChamberPressure;
         #endregion
     }
 }

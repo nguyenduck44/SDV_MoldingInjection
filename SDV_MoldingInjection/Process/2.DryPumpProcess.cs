@@ -98,7 +98,8 @@ namespace SDV_MoldingInjection.Process
                 _carrierJigStatusList.CarrierJigStatusH4.DelayTime = _delayTime;
             }
 
-            if (EnablePressureHold && _machineStatus.IsDryRunMode == false)
+            if (EnablePressureHold && 
+               (_machineStatus.IsDryRunMode == false || _machineStatus.DryRunUseChamberPressure))
             {
                 IsCanStop = false;
                 if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec
@@ -422,7 +423,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EDryPumpProcResinInjectStep.AngleValve_Open:
                     Log.Debug($"Opening {AngleValve.Name}");
-                    if (_machineStatus.IsDryRunMode)
+                    if (_machineStatus.IsDryRunMode && _machineStatus.DryRunUseChamberPressure == false)
                     {
                         Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                         break;
@@ -435,7 +436,8 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.AngleValve_OpenWait:
-                    if (WaitTimeOutOccurred && _machineStatus.IsDryRunMode == false)
+                    if (WaitTimeOutOccurred && 
+                       (_machineStatus.DryRunUseChamberPressure || _machineStatus.IsDryRunMode == false))
                     {
                         RaiseWarning(EWarning.CY_ANGLE_VALUE_OPEN_FAIL);
                         break;
@@ -506,7 +508,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EDryPumpProcResinInjectStep.VacuumGauge_Target_Wait:
                     if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureSpec &&
-                        _machineStatus.IsDryRunMode == false)
+                       (_machineStatus.IsDryRunMode == false || _machineStatus.DryRunUseChamberPressure))
                     {
                         Wait(50);
                         break;

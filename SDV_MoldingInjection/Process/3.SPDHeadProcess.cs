@@ -1326,6 +1326,7 @@ namespace SDV_MoldingInjection.Process
                             Log.Debug("Dry Run Mode Or Skip Dispensing -> P Axis Not Move");
                             CarrierJigStatus.InjectTime = 0;
                             EnableTimerInject = true;
+                            TactTime.TactTimeCounter = (int)Environment.TickCount64;
                             _injectSequenceStartTick = Environment.TickCount64;
                             Wait(InjectTimeRecipe.InjectTime);
                             Step.RunStep++;

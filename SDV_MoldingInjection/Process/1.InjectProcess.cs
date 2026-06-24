@@ -70,6 +70,8 @@ namespace SDV_MoldingInjection.Process
 
         private bool CellId1SendOn => CIMAddressMap.ReadCIMBit("B2107") == 1;
         private bool CellId2SendOn => CIMAddressMap.ReadCIMBit("B2108") == 1;
+        private bool UnloadJig1SendOn => CIMAddressMap.ReadCIMBit("B2110") == 1;
+        private bool UnloadJig2SendOn => CIMAddressMap.ReadCIMBit("B2111") == 1;
 
         private bool CellId1Reply
         {
@@ -1408,7 +1410,8 @@ namespace SDV_MoldingInjection.Process
                        (_machineStatus.IsDryRunMode && isJigLeftLoaded == false && isLoadingDry && _machineStatus.RunWithoutInOut))
                     {
                         isJigLeftLoaded = true;
-                        if (LeftJigDetect || LeftJigTiltState)
+                        if ((LeftJigDetect || LeftJigTiltState) &&
+                            _machineStatus.RunWithoutInOut == false)
                         {
                             RaiseWarning(EWarning.INOUT_MACHINE_REQUEST_LOAD_JIG_LEFT);
                             break;
@@ -1425,7 +1428,8 @@ namespace SDV_MoldingInjection.Process
                        (_machineStatus.IsDryRunMode && isJigRightLoaded == false && isLoadingDry && _machineStatus.RunWithoutInOut))
                     {
                         isJigRightLoaded = true;
-                        if (RightJigDetect || RightJigTiltState)
+                        if ((RightJigDetect || RightJigTiltState) &&
+                            _machineStatus.RunWithoutInOut == false)
                         {
                             RaiseWarning(EWarning.INOUT_MACHINE_REQUEST_LOAD_JIG_RIGHT);
                             break;
@@ -1441,6 +1445,7 @@ namespace SDV_MoldingInjection.Process
                     //UNLOADING
                     if ((LeftJigDetect == false || _machineStatus.RunWithoutInOut) &&
                         _optionRecipe.SkipHead12 == false &&
+                        UnloadJig1SendOn &&
                         JigStatuses[(int)EJig.JigLeft] == EJigStatus.MoldingFinish)
                     {
                         WriteMCC(LastAction, EMCCAction.IJ01_COMPONENT_OUT_JIG_1);
@@ -1453,6 +1458,7 @@ namespace SDV_MoldingInjection.Process
 
                     if ((RightJigDetect == false || _machineStatus.RunWithoutInOut) &&
                         _optionRecipe.SkipHead34 == false &&
+                        UnloadJig2SendOn &&
                         JigStatuses[(int)EJig.JigRight] == EJigStatus.MoldingFinish)
                     {
                         WriteMCC(LastAction, EMCCAction.IJ01_COMPONENT_OUT_JIG_2);
@@ -1526,7 +1532,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Cell 1 Reply Bit (B2007) Off");
                     CellIdTrackInStatus = false;
                     Log.Debug("Cell TrackIn Status Bit (B2009) Off");
-
+                    UpdateBothJigStatus(EJigStatus.Ready, isLeftJig: true);
                     WriteMCC(LastAction, EMCCAction.IJ01_WAIT_INOUT_LD_UL_1ST);
                     Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandler_Working_RequestStart;
                     break;
@@ -1581,6 +1587,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Cell 2 Reply Bit (B2008) Off");
                     CellIdTrackInStatus = false;
                     Log.Debug("Cell TrackIn Status Bit (B2009) Off");
+                    UpdateBothJigStatus(EJigStatus.Ready, isLeftJig: false);
                     WriteMCC(LastAction, EMCCAction.IJ01_WAIT_INOUT_LD_UL_2ND);
                     Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandler_Working_RequestStart;
                     break;
@@ -1707,7 +1714,6 @@ namespace SDV_MoldingInjection.Process
                         inputCount++;
                     }
 
-                    UpdateAllJigStatus(EJigStatus.Ready);
                     Log.Debug($"Write data input count: {inputCount}");
                     _productionService.WriteData(EProductionWriteType.Input, inputCount);
                     inputCount = 0;

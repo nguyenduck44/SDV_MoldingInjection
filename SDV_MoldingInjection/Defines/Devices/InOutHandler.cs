@@ -478,11 +478,8 @@ namespace SDV_MoldingInjection.Defines
         private byte MapJigPairToProtocolStatus(bool skipPair, EJigStatus jigStatus, bool jigDet1, bool jigDet2)
         {
             if (skipPair) return 0x15;
-            if ((!jigDet1 && !jigDet2 && _machineStatus.IsDryRunMode == false) ||
-                (_machineStatus.IsDryRunMode && jigStatus == EJigStatus.None))
-            {
-                    return 0x14;
-            }
+            if (_machineStatus.IsDryRunMode && jigStatus == EJigStatus.None) return 0x14;
+            if (!jigDet1 && !jigDet2 && _machineStatus.IsDryRunMode == false) return 0x14;
 
             return jigStatus switch
             {
