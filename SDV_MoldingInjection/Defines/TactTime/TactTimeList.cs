@@ -55,7 +55,7 @@ namespace SDV_MoldingInjection.Defines
             Application.Current.Dispatcher.Invoke(() =>
             {
                 double currentTact;
-                currentTact = (Environment.TickCount - TactCounter) / 1000.0;
+                currentTact = (Environment.TickCount - TactCounter) / (1000.0 * jigOutputCount);
 
                 for (int i = 0; i < jigOutputCount; i++)
                 {

@@ -1075,8 +1075,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     if (_currentRecipe.OptionRecipe.SkipVentTime == false &&
-                        procInputs[EInjectProcInput.VentComplete].Value == false &&
-                        _machineStatus.IsDryRunMode == false)
+                        procInputs[EInjectProcInput.VentComplete].Value == false)
                     {
                         Wait(20);
                         break;
@@ -1443,7 +1442,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     //UNLOADING
-                    if (LeftJigDetect == false &&
+                    if ((LeftJigDetect == false || _machineStatus.RunWithoutInOut) &&
                         _optionRecipe.SkipHead12 == false &&
                         JigStatuses[(int)EJig.JigLeft] == EJigStatus.MoldingFinish)
                     {
@@ -1455,7 +1454,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    if (RightJigDetect == false &&
+                    if ((RightJigDetect == false || _machineStatus.RunWithoutInOut) &&
                         _optionRecipe.SkipHead34 == false &&
                         JigStatuses[(int)EJig.JigRight] == EJigStatus.MoldingFinish)
                     {
@@ -1485,7 +1484,8 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Load_Jig_Check;
                     break;
                 case EMoldProcLoadingUnloadingStep.GetCellId1:
-                    LeftJigID = _machineStatus.IsDryRunMode ? "LEFT123456789" : GetCellId(isJigLeft: true);
+                    string LeftJigIDDryRun = "LEFT" + random.Next(100, 1000).ToString();
+                    LeftJigID = _machineStatus.RunWithoutInOut ? LeftJigIDDryRun : GetCellId(isJigLeft: true);
                     WriteMCC(LastAction, EMCCAction.IJ01_GET_JIG_ID_1_AND_CHECKIN);
                     Log.Info($"Get Left Jig ID '{LeftJigID}'");
                     Step.RunStep++;
@@ -1534,7 +1534,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandler_Working_RequestStart;
                     break;
                 case EMoldProcLoadingUnloadingStep.GetCellId2:
-                    RightJigID = _machineStatus.IsDryRunMode ? "RIGHT123456789" : GetCellId(isJigLeft: false);
+                    RightJigID = _machineStatus.RunWithoutInOut ? "RIGHT" + random.Next(100, 1000).ToString() : GetCellId(isJigLeft: false);
                     Log.Info($"Get Right Jig ID '{RightJigID}'");
                     WriteMCC(LastAction, EMCCAction.IJ01_GET_JIG_ID_2_AND_CHECKIN);
                     if (_optionRecipe.SkipHead12 == false)
@@ -1614,7 +1614,9 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     WriteMCC(LastAction, EMCCAction.IJ01_WAIT_INOUT_LD_UL_3RD);
-                    Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Unloading_WriteData;
+                    Step.RunStep = _optionRecipe.SkipHead34 ? 
+                        (int)EMoldProcLoadingUnloadingStep.Unloading_WriteData :
+                        (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandler_Working_RequestStart;
                     break;
                 case EMoldProcLoadingUnloadingStep.CIM_TrackOut_RightJig:
                     WriteMCC(LastAction, EMCCAction.IJ01_PUT_UNLOAD_JIG_2);
@@ -1648,7 +1650,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.Unloading_WriteData:
                     Log.Debug($"Write data output count: {outputCount}");
                     _productionService.WriteData(EProductionWriteType.Output, outputCount);
-                    _tactTimeList.TactCounterEnd(1);
+                    _tactTimeList.TactCounterEnd(_machineStatus.IsDryRunMode ? 2 : outputCount);
                     outputCount = 0;
 
                     if (LeftJigDetect == false && RightJigDetect == false)
@@ -3407,6 +3409,7 @@ namespace SDV_MoldingInjection.Process
         private readonly CIMCollection _cIMCollection;
         private int inputCount;
         private int outputCount;
+        private int DryutputCount;
         private int _needleCleanCount = 0;
         private int _nzlCleanCount = 0;
         private double _yAxisCleaningTargetMm;
@@ -3418,6 +3421,7 @@ namespace SDV_MoldingInjection.Process
         private EMCCAction LastAction;
         private EDotWeightingHead currentDotWeightingHead;
         private Queue<EMoldProcResinInjectStep> MoldResinInjectSteps = new Queue<EMoldProcResinInjectStep>();
+        Random random = new Random();
         #endregion
     }
 }
