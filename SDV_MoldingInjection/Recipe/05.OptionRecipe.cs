@@ -7,6 +7,10 @@ namespace SDV_MoldingInjection.Recipe
         #region Privates
         public event Action<bool> Head12SkipChanged;
         public event Action<bool> Head34SkipChanged;
+        public event Action<bool> Head1SkipChanged;
+        public event Action<bool> Head2SkipChanged;
+        public event Action<bool> Head3SkipChanged;
+        public event Action<bool> Head4SkipChanged;
         private bool _skipHead12;
         private bool _skipHead34;
         private bool _inputTypeManual;
@@ -38,7 +42,12 @@ namespace SDV_MoldingInjection.Recipe
             {
                 if (!SetRecipe(ref _skipHead12, value))
                     return;
-                Head12SkipChanged?.Invoke(value);
+                _skipHead1 = value;
+                _skipHead2 = value;
+                Head1SkipChanged?.Invoke(value);
+                Head2SkipChanged?.Invoke(value);
+                OnPropertyChanged(nameof(SkipHead1));
+                OnPropertyChanged(nameof(SkipHead2));
             }
         }
 
@@ -51,7 +60,12 @@ namespace SDV_MoldingInjection.Recipe
             {
                 if (!SetRecipe(ref _skipHead34, value))
                     return;
-                Head34SkipChanged?.Invoke(value);
+                _skipHead3 = value;
+                _skipHead4 = value;
+                Head3SkipChanged?.Invoke(value);
+                Head4SkipChanged?.Invoke(value);
+                OnPropertyChanged(nameof(SkipHead3));
+                OnPropertyChanged(nameof(SkipHead4));
             }
         }
 
@@ -59,25 +73,61 @@ namespace SDV_MoldingInjection.Recipe
         public bool SkipHead1
         {
             get => _skipHead1;
-            set => SetRecipe(ref _skipHead1, value);
+            set
+            {
+                if (value == false)
+                {
+                    _skipHead12 = value;
+                    OnPropertyChanged(nameof(SkipHead12));
+                }
+                SetRecipe(ref _skipHead1, value);
+                Head1SkipChanged?.Invoke(value);
+            }
         }
         [SingleRecipeDescription(Description = "Skip Head 2", Detail = "Check to Skip Head 2")]
         public bool SkipHead2
         {
             get => _skipHead2;
-            set => SetRecipe(ref _skipHead2, value);
+            set
+            {
+                if (value == false)
+                {
+                    _skipHead12 = value;
+                    OnPropertyChanged(nameof(SkipHead12));
+                }
+                SetRecipe(ref _skipHead2, value);
+                Head2SkipChanged?.Invoke(value);
+            }
         }
         [SingleRecipeDescription(Description = "Skip Head 3", Detail = "Check to Skip Head 3")]
         public bool SkipHead3
         {
             get => _skipHead3;
-            set => SetRecipe(ref _skipHead3, value);
+            set
+            {
+                if (value == false)
+                {
+                    _skipHead34 = value;
+                    OnPropertyChanged(nameof(SkipHead34));
+                }
+                SetRecipe(ref _skipHead3, value);
+                Head3SkipChanged?.Invoke(value);
+            }
         }
         [SingleRecipeDescription(Description = "Skip Head 4", Detail = "Check to Skip Head 4")]
         public bool SkipHead4
         {
             get => _skipHead4;
-            set => SetRecipe(ref _skipHead4, value);
+            set
+            {
+                if (value == false)
+                {
+                    _skipHead34 = value;
+                    OnPropertyChanged(nameof(SkipHead34));
+                }
+                SetRecipe(ref _skipHead4, value);
+                Head4SkipChanged?.Invoke(value);
+            }
         }
 
         [ParameterDescription(199)]

@@ -70,8 +70,8 @@ namespace SDV_MoldingInjection.Process
 
         private bool CellId1SendOn => CIMAddressMap.ReadCIMBit("B2107") == 1;
         private bool CellId2SendOn => CIMAddressMap.ReadCIMBit("B2108") == 1;
-        private bool UnloadJig1SendOn => CIMAddressMap.ReadCIMBit("B2110") == 1;
-        private bool UnloadJig2SendOn => CIMAddressMap.ReadCIMBit("B2111") == 1;
+        private bool UnloadJig1SendOn => CIMAddressMap.ReadCIMBit("B210A") == 1;
+        private bool UnloadJig2SendOn => CIMAddressMap.ReadCIMBit("B210B") == 1;
 
         private bool CellId1Reply
         {
@@ -1445,7 +1445,6 @@ namespace SDV_MoldingInjection.Process
                     //UNLOADING
                     if ((LeftJigDetect == false || _machineStatus.RunWithoutInOut) &&
                         _optionRecipe.SkipHead12 == false &&
-                        UnloadJig1SendOn &&
                         JigStatuses[(int)EJig.JigLeft] == EJigStatus.MoldingFinish)
                     {
                         WriteMCC(LastAction, EMCCAction.IJ01_COMPONENT_OUT_JIG_1);
@@ -1458,7 +1457,6 @@ namespace SDV_MoldingInjection.Process
 
                     if ((RightJigDetect == false || _machineStatus.RunWithoutInOut) &&
                         _optionRecipe.SkipHead34 == false &&
-                        UnloadJig2SendOn &&
                         JigStatuses[(int)EJig.JigRight] == EJigStatus.MoldingFinish)
                     {
                         WriteMCC(LastAction, EMCCAction.IJ01_COMPONENT_OUT_JIG_2);

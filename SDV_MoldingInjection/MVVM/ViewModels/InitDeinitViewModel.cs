@@ -421,34 +421,41 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         }
         private void SubscribeSkipHeadChanged()
         {
-            _carrierJigStatusList.CarrierJigStatusH1.HeadSkipChanged += (isSkip) =>
-            {
-                _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 = isSkip;
-            };
-            _carrierJigStatusList.CarrierJigStatusH2.HeadSkipChanged += (isSkip) =>
-            {
-                _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 = isSkip;
-            };
-            _carrierJigStatusList.CarrierJigStatusH3.HeadSkipChanged += (isSkip) =>
-            {
-                _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34 = isSkip;
-            };
-            _carrierJigStatusList.CarrierJigStatusH4.HeadSkipChanged += (isSkip) =>
-            {
-                _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34 = isSkip;
-            };
+            //_carrierJigStatusList.CarrierJigStatusH1.HeadSkipChanged += (isSkip) =>
+            //{
+            //    _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 = isSkip;
+            //};
+            //_carrierJigStatusList.CarrierJigStatusH2.HeadSkipChanged += (isSkip) =>
+            //{
+            //    _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 = isSkip;
+            //};
+            //_carrierJigStatusList.CarrierJigStatusH3.HeadSkipChanged += (isSkip) =>
+            //{
+            //    _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34 = isSkip;
+            //};
+            //_carrierJigStatusList.CarrierJigStatusH4.HeadSkipChanged += (isSkip) =>
+            //{
+            //    _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34 = isSkip;
+            //};
 
-            _recipeSelector.CurrentRecipe.OptionRecipe.Head12SkipChanged += (isSkip) =>
+            _recipeSelector.CurrentRecipe.OptionRecipe.Head1SkipChanged += (isSkip) =>
             {
                 _carrierJigStatusList.CarrierJigStatusH1.HeadSkip = isSkip;
+            };
+            _recipeSelector.CurrentRecipe.OptionRecipe.Head2SkipChanged += (isSkip) =>
+            {
                 _carrierJigStatusList.CarrierJigStatusH2.HeadSkip = isSkip;
             };
-           
-            _recipeSelector.CurrentRecipe.OptionRecipe.Head34SkipChanged += (isSkip) =>
+            _recipeSelector.CurrentRecipe.OptionRecipe.Head3SkipChanged += (isSkip) =>
             {
                 _carrierJigStatusList.CarrierJigStatusH3.HeadSkip = isSkip;
+            };
+            _recipeSelector.CurrentRecipe.OptionRecipe.Head4SkipChanged += (isSkip) =>
+            {
                 _carrierJigStatusList.CarrierJigStatusH4.HeadSkip = isSkip;
             };
+
+
         }
 
         private void SubscibeResinWeightChanged()
