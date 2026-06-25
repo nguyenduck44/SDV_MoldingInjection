@@ -22,6 +22,10 @@ namespace SDV_MoldingInjection.Recipe
         private bool _skipDispensing;
         private bool _useCIM;
         private bool _readBarcode;
+        private bool _skipHead1;
+        private bool _skipHead2;
+        private bool _skipHead3;
+        private bool _skipHead4;
 
         #endregion
 
@@ -49,6 +53,31 @@ namespace SDV_MoldingInjection.Recipe
                     return;
                 Head34SkipChanged?.Invoke(value);
             }
+        }
+
+        [SingleRecipeDescription(Description = "Skip Head 1", Detail = "Check to Skip Head 1")]
+        public bool SkipHead1
+        {
+            get => _skipHead1;
+            set => SetRecipe(ref _skipHead1, value);
+        }
+        [SingleRecipeDescription(Description = "Skip Head 2", Detail = "Check to Skip Head 2")]
+        public bool SkipHead2
+        {
+            get => _skipHead2;
+            set => SetRecipe(ref _skipHead2, value);
+        }
+        [SingleRecipeDescription(Description = "Skip Head 3", Detail = "Check to Skip Head 3")]
+        public bool SkipHead3
+        {
+            get => _skipHead3;
+            set => SetRecipe(ref _skipHead3, value);
+        }
+        [SingleRecipeDescription(Description = "Skip Head 4", Detail = "Check to Skip Head 4")]
+        public bool SkipHead4
+        {
+            get => _skipHead4;
+            set => SetRecipe(ref _skipHead4, value);
         }
 
         [ParameterDescription(199)]

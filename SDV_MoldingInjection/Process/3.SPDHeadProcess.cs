@@ -2193,10 +2193,10 @@ namespace SDV_MoldingInjection.Process
 
         private bool CurrentHeadSkip => Name switch
         {
-            "SPDHead1" => OptionRecipe.SkipHead12,
-            "SPDHead2" => OptionRecipe.SkipHead12,
-            "SPDHead3" => OptionRecipe.SkipHead34,
-            "SPDHead4" => OptionRecipe.SkipHead34,
+            "SPDHead1" => OptionRecipe.SkipHead12 || OptionRecipe.SkipHead1,
+            "SPDHead2" => OptionRecipe.SkipHead12 || OptionRecipe.SkipHead2,
+            "SPDHead3" => OptionRecipe.SkipHead34 || OptionRecipe.SkipHead3,
+            "SPDHead4" => OptionRecipe.SkipHead34 || OptionRecipe.SkipHead4,
             _ => throw new Exception($"Invalid process name: {Name}")
         };
 

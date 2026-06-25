@@ -44,6 +44,7 @@
             </Grid.RowDefinitions>
             
             <GroupBox x:Name="RootStackPanel"
+                      Grid.RowSpan="2"
                       Header="Head Skip"
                       FontWeight="Bold"
                       Style="{x:Null}">
@@ -83,7 +84,8 @@
             <GroupBox Header="Inject"
                       FontWeight="Bold"
                       Style="{x:Null}"
-                      Grid.Row="1">
+                      Grid.Row="1"
+                      Grid.Column="1">
                 <StackPanel Orientation="Vertical">
                     <UniformGrid Columns="1">
                         <CheckBox Content="Skip Vent Time"
@@ -109,7 +111,7 @@
                       FontWeight="Bold"
                       Style="{x:Null}"
                       Grid.Row="1"
-                      Grid.Column="1">
+                      Grid.Column="2">
                 <StackPanel Orientation="Vertical">
                     <UniformGrid Columns="1">
                         <CheckBox Content="Skip Dispensing"

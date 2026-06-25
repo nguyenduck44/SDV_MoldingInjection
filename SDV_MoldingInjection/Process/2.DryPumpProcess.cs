@@ -547,10 +547,10 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_WaitVentTime:
-                    if (((_carrierJigStatusList.CarrierJigStatusH1.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead12 && SPDHead1ProcessMode == EProcessMode.Run) ||
-                        ((_carrierJigStatusList.CarrierJigStatusH2.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead12 && SPDHead2ProcessMode == EProcessMode.Run) ||
-                        ((_carrierJigStatusList.CarrierJigStatusH3.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead34 && SPDHead3ProcessMode == EProcessMode.Run) ||
-                        ((_carrierJigStatusList.CarrierJigStatusH4.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead34 && SPDHead4ProcessMode == EProcessMode.Run))
+                    if (((_carrierJigStatusList.CarrierJigStatusH1.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead12 && !_currentRecipe.OptionRecipe.SkipHead1 && SPDHead1ProcessMode == EProcessMode.Run) ||
+                        ((_carrierJigStatusList.CarrierJigStatusH2.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead12 && !_currentRecipe.OptionRecipe.SkipHead2 && SPDHead2ProcessMode == EProcessMode.Run) ||
+                        ((_carrierJigStatusList.CarrierJigStatusH3.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead34 && !_currentRecipe.OptionRecipe.SkipHead3 && SPDHead3ProcessMode == EProcessMode.Run) ||
+                        ((_carrierJigStatusList.CarrierJigStatusH4.InjectTime < InjectTimeRecipe.VentTimeAfterInject) && !_currentRecipe.OptionRecipe.SkipHead34 && !_currentRecipe.OptionRecipe.SkipHead4 && SPDHead4ProcessMode == EProcessMode.Run))
                     {
                         Wait(10);
                         break;
