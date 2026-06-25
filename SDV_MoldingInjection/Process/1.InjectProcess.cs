@@ -834,7 +834,7 @@ namespace SDV_MoldingInjection.Process
                         JigStatuses[(int)EJig.JigRight] = EJigStatus.None;
                     }
 
-                    _tactTimeList.Chamber.CycleTimeCounter = Environment.TickCount;
+                    TactTime.CycleTimeCounter = Environment.TickCount;
                     Step.RunStep++;
                     break;
                 case EMoldProcAutoRunStep.Wait_HeadUse:
@@ -1295,6 +1295,7 @@ namespace SDV_MoldingInjection.Process
                     if (isLoading)
                     {
                         Log.Info("Loading start");
+                        TactTime.CycleTimeCounter = Environment.TickCount;
                         _machineStatus.ConfirmLoadingFinish = false;
                     }
                     else
@@ -1302,7 +1303,6 @@ namespace SDV_MoldingInjection.Process
                         Log.Info("Unloading start");
                     }
 
-                    TactTime.CycleTimeCounter = Environment.TickCount;
                     TactTime.TactTimeCounter = Environment.TickCount;
                     Step.RunStep++;
                     break;
@@ -2935,13 +2935,13 @@ namespace SDV_MoldingInjection.Process
             }
             else
             {
-                if (_currentRecipe.OptionRecipe.SkipHead12 == false && _optionRecipe.SkipHead1 && (head == ESPDHead.SPDHead1 || head == ESPDHead.All))
+                if (_currentRecipe.OptionRecipe.SkipHead12 == false && _optionRecipe.SkipHead1 == false && (head == ESPDHead.SPDHead1 || head == ESPDHead.All))
                     NozzleClean_H1.Grip();
-                if (_currentRecipe.OptionRecipe.SkipHead12 == false && _optionRecipe.SkipHead2 && (head == ESPDHead.SPDHead2 || head == ESPDHead.All))
+                if (_currentRecipe.OptionRecipe.SkipHead12 == false && _optionRecipe.SkipHead2 == false && (head == ESPDHead.SPDHead2 || head == ESPDHead.All))
                     NozzleClean_H2.Grip();
-                if (_currentRecipe.OptionRecipe.SkipHead34 == false && _optionRecipe.SkipHead3 && (head == ESPDHead.SPDHead3 || head == ESPDHead.All))
+                if (_currentRecipe.OptionRecipe.SkipHead34 == false && _optionRecipe.SkipHead3 == false && (head == ESPDHead.SPDHead3 || head == ESPDHead.All))
                     NozzleClean_H3.Grip();
-                if (_currentRecipe.OptionRecipe.SkipHead34 == false && _optionRecipe.SkipHead4 && (head == ESPDHead.SPDHead4 || head == ESPDHead.All))
+                if (_currentRecipe.OptionRecipe.SkipHead34 == false && _optionRecipe.SkipHead4 == false && (head == ESPDHead.SPDHead4 || head == ESPDHead.All))
                     NozzleClean_H4.Grip();
             }
         }
