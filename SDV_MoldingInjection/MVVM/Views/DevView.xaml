@@ -42,6 +42,12 @@
                 <CheckBox IsChecked="{Binding MachineStatus.DryRunUseChamberPressure}"
                           Content="DryRun Use Vaccum Pressure"
                           Tag="DryRun Use Vacuum Pressure" />
+                <Border Background="{Binding IsBitOn, Converter={StaticResource BooleanToOnOffBrushConverter}}">
+                    <TextBlock Text="B2107"
+                               FontSize="20"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+                </Border>
                 <Button Height="50"
                         Content="CIM Test View"
                         Command="{Binding CIMTetstViewNavigate}" />
@@ -57,6 +63,7 @@
                 <Button Height="50"
                         Content="Test MCC Write JigID"
                         Command="{Binding TestMCCWriteJigIDCommand}" />
+                
             </UniformGrid>
 
         </StackPanel>

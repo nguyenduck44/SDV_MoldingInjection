@@ -1,12 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
-using EQX.Core.Robot;
 using log4net;
-using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.MVVM.Models;
-using System.Security.Cryptography.X509Certificates;
 using System.Windows.Input;
 using TOPENG_Device;
 
@@ -20,7 +17,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly Plotter _plotter;
         private readonly CIMCollection _cIMCollection;
         private bool isDisableInterlock = false;
-
         #region Properties
         public bool IsDisableInterLock
         {
@@ -31,6 +27,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 _interlockService.Config(value);
             }
         }
+
+        public bool IsBitOn => CIMAddressMap.ReadCIMBit("B2107") == 1;
         #endregion
 
         #region Commands
@@ -128,9 +126,16 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _cIMCollection = cIMCollection;
             _interlockService = interlockService;
             Log = LogManager.GetLogger("DevVM");
+            var statusUpdateTimer = new NonOverlappingTimer(10);
+            statusUpdateTimer.Elapsed += StatusUpdateTimerHandler;
+            statusUpdateTimer.Start();
         }
 
-        #region Privates
+        #region Private Methods
+        private void StatusUpdateTimerHandler(object? sender, System.Timers.ElapsedEventArgs e)
+        {
+            OnPropertyChanged(nameof(IsBitOn));
+        }
         #endregion
     }
 }
