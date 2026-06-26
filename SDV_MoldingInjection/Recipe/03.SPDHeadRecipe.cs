@@ -82,7 +82,7 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _zxisInjectUpDistance, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
-        [SingleRecipeDescription(Description = "Z-Axis Inject Slow Speed", Detail = "Z Axis Move Inject Position With Slow Speed", Unit = Unit.mm)]
+        [SingleRecipeDescription(Description = "Z-Axis Inject Slow Speed", Detail = "Z Axis Move Inject Position With Slow Speed", Unit = Unit.mmPerSecond)]
         [ParameterDescription(40)]
         public double ZAxisInjectSlowSpeed
         {
