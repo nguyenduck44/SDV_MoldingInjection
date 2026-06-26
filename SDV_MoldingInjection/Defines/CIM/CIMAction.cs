@@ -277,7 +277,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                 _cimAliveTask = new CIMAliveTask();
 
             _cimAliveTask.Start();
-            _cIMCollection.Init();
+            _cIMCollection.Start();
 
             CancellationToken token = ctsCIMTrasmitTask.Token;
 

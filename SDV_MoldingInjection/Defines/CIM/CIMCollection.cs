@@ -5,6 +5,7 @@ using EQX.UI.MVVM;
 using log4net;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Win32;
+using SDV_MoldingInjection.Recipe;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -40,18 +41,33 @@ namespace SDV_MoldingInjection.Defines.CIM
 
     public class CIMCollection
     {
+        #region Publics
         public List<MaterialPort> MaterialPorts { get; }
         public CIMFunctionViewModel CimFunction { get; }
+        #endregion
 
+        #region Privates
+        private RecipeList _currentRecipe => _recipeSelector.CurrentRecipe;
         private readonly IConfiguration _configuration;
+        private readonly CDAStatus _cDAStatus;
+        private readonly Devices _devices;
+        private readonly RecipeSelector _recipeSelector;
+        private static Task _cimFDCUpdateTask;
+        private CancellationTokenSource _cimFDCUpdatetokenSource;
         private int MCCUnitStartWord { get; }
         private int MCCPPIDStartWord { get; }
 
         private string MccFromToMapFile => _configuration["Files:MCCFromToMapFile"];
         private MCCLinkIEWords mCCLinkIEWords;
+        #endregion
+
+        #region Contructor(s)
         public CIMCollection(IEnumerable<MaterialPort> materialPorts,
             CIMFunctionViewModel cimFunction,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            CDAStatus cDAStatus,
+            Devices devices,
+            RecipeSelector recipeSelector)
         {
             MaterialPorts = materialPorts.ToList();
 
@@ -64,6 +80,9 @@ namespace SDV_MoldingInjection.Defines.CIM
             MaterialPorts.First().IsCurrentActived = true;
             CimFunction = cimFunction;
             _configuration = configuration;
+            _cDAStatus = cDAStatus;
+            _devices = devices;
+            _recipeSelector = recipeSelector;
 
             try
             {
@@ -87,10 +106,20 @@ namespace SDV_MoldingInjection.Defines.CIM
                 MessageBoxEx.ShowDialog("Get Value MCCPPIDStartWord Fail . Check Registry Value");
             }
         }
+        #endregion
 
-        public void Init()
+        public void Start()
         {
             mCCLinkIEWords = new MCCLinkIEWords(0x13000, 8192);
+            _cimFDCUpdatetokenSource = new CancellationTokenSource();
+            _cimFDCUpdateTask = Task.Factory.StartNew(async () =>
+            {
+                while (true)
+                {
+                    await CIMFDCUpdateAsync();
+                    await Task.Delay(10);
+                }
+            }, _cimFDCUpdatetokenSource.Token);
         }
         public bool WriteMCCFromToMap()
         {
@@ -236,6 +265,49 @@ namespace SDV_MoldingInjection.Defines.CIM
             ppid += Encoding.ASCII.GetString(data);
 
             return ppid;
+        }
+
+        private async Task CIMFDCUpdateAsync()
+        {
+            #region Inject
+            FDCHelper.WriteFDCValue(EFDCValue.CHAMBER_DISPENSING_PIRANI_CONTROL, (int)(_devices.AnalogInputs.VacuumPressureInTorr * 1000));
+            FDCHelper.WriteFDCValue(EFDCValue.HEAD_DISPENSING_PRESSURE, (int)(_cDAStatus.SyringeMainAirCDA * 1000));
+            #endregion
+
+            #region DryPump
+            FDCHelper.WriteFDCValue(EFDCValue.CDA_ANGLE_VALVE_PRESSURE, (int)(_cDAStatus.PumpValveVacuum * 1000));
+            #endregion
+
+            #region Utility
+            FDCHelper.WriteFDCValue(EFDCValue.MAIN_PANEL_TEMPRATURE, (int)(_devices.PanelIndicator.Temperature * 1000));
+            FDCHelper.WriteFDCValue(EFDCValue.MAIN_PANEL_HUMIDITY, (int)(_devices.PanelIndicator.Humidity * 1000));
+            FDCHelper.WriteFDCValue(EFDCValue.CDA_MAIN_AIR_PRESSURE, (int)(_cDAStatus.MainAirCDA * 1000));
+            #endregion
+
+            #region Function
+            FDCHelper.WriteFDCValue(EFDCValue.DISPENSING1_ONOFF, _currentRecipe.OptionRecipe.SkipHead1 ? 2 : 1);
+            FDCHelper.WriteFDCValue(EFDCValue.DISPENSING2_ONOFF, _currentRecipe.OptionRecipe.SkipHead2 ? 2 : 1);
+            FDCHelper.WriteFDCValue(EFDCValue.DISPENSING3_ONOFF, _currentRecipe.OptionRecipe.SkipHead3 ? 2 : 1);
+            FDCHelper.WriteFDCValue(EFDCValue.DISPENSING4_ONOFF, _currentRecipe.OptionRecipe.SkipHead4 ? 2 : 1);
+            FDCHelper.WriteFDCValue(EFDCValue.SKIP_VENT, _currentRecipe.OptionRecipe.SkipVentTime ? 2 : 1);
+            FDCHelper.WriteFDCValue(EFDCValue.SKIP_DUMMYSHOT, _currentRecipe.OptionRecipe.SkipDummyShot ? 1 : 1);
+            FDCHelper.WriteFDCValue(EFDCValue.SKIP_NEEDLECLEAN, _currentRecipe.OptionRecipe.SkipNeedleClean ? 2 : 1);
+            FDCHelper.WriteFDCValue(EFDCValue.SKIP_DISPENSING, _currentRecipe.OptionRecipe.SkipDispensing ? 2 : 1);
+            FDCHelper.WriteFDCValue(EFDCValue.USE_ADD_TAIL, _currentRecipe.AdditionalMolding_Recipe.UseAddTail ? 1 : 2);
+            FDCHelper.WriteFDCValue(EFDCValue.SKIP_HEAD12, _currentRecipe.OptionRecipe.SkipHead12 ? 2 : 1);
+            FDCHelper.WriteFDCValue(EFDCValue.SKIP_HEAD34, _currentRecipe.OptionRecipe.SkipHead34 ? 2 : 1);
+            FDCHelper.WriteFDCValue(EFDCValue.INPUT_TYPE_MANUAL, _currentRecipe.OptionRecipe.InputTypeManual ? 1 : 2);
+            FDCHelper.WriteFDCValue(EFDCValue.INPUT_TYPE_AUTO, _currentRecipe.OptionRecipe.InputTypeAuto ? 1 : 2);
+            FDCHelper.WriteFDCValue(EFDCValue.SAVE_PRESSURE_LOG, _currentRecipe.OptionRecipe.SavePressureLog ? 1 : 2);
+            FDCHelper.WriteFDCValue(EFDCValue.ONE_TORR_AND_PURGE, _currentRecipe.OptionRecipe.OneTorrAndPurge ? 1 : 2);
+            FDCHelper.WriteFDCValue(EFDCValue.DELAY_AFTER_INJECT_FINISH, _currentRecipe.OptionRecipe.DelayAfterInjectFinish ? 1 : 2);
+            FDCHelper.WriteFDCValue(EFDCValue.ENABLE_INJECTION_PATH, _currentRecipe.OptionRecipe.EnableInjectionPath ? 1 : 2);
+            FDCHelper.WriteFDCValue(EFDCValue.ENABLE_IDLEPURGE, _currentRecipe.IdlePurgeRecipe.EnableIdlePurge ? 1 : 2);
+            #endregion
+
+            #region ACCURA
+
+            #endregion
         }
     }
 }

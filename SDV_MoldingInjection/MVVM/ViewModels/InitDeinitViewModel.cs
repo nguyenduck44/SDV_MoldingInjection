@@ -183,6 +183,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     case EHandleStep.Start:
                         MessageText = "Init Start";
 
+                        if (_indicatorModbusCommunication.Connect() == false)
+                        {
+                            ErrorMessages.Add("Indicator Connect Fail");
+                        }
+
                         _cimAction.Start();
 
                         Thread.Sleep(50);
@@ -202,11 +207,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         if(_balanceLeft.IsConnected == false || _balanceRight.IsConnected == false)
                         {
                             ErrorMessages.Add("Balance Connection Failed.");
-                        }
-
-                        if (_indicatorModbusCommunication.Connect() == false)
-                        {
-                            ErrorMessages.Add("Indicator Connect Fail");
                         }
 
                         Thread.Sleep(50);
