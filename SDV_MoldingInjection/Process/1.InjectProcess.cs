@@ -48,6 +48,16 @@ namespace SDV_MoldingInjection.Process
         private double Z3AxisInjectPos => _positionList.SPDHead3MaintenanceTeachingPosition.ZAxisInjectPos.TargetPos;
         private double Z4AxisInjectPos => _positionList.SPDHead4MaintenanceTeachingPosition.ZAxisInjectPos.TargetPos;
 
+        private double Z1UpDistancePos => _currentRecipe.SPDHead1_Recipe.ZAxisInjectUpDistance;
+        private double Z2UpDistancePos => _currentRecipe.SPDHead2_Recipe.ZAxisInjectUpDistance;
+        private double Z3UpDistancePos => _currentRecipe.SPDHead3_Recipe.ZAxisInjectUpDistance;
+        private double Z4UpDistancePos => _currentRecipe.SPDHead4_Recipe.ZAxisInjectUpDistance;
+
+        private double Z1SlowSpeed => _currentRecipe.SPDHead1_Recipe.ZAxisInjectSlowSpeed;
+        private double Z2SlowSpeed => _currentRecipe.SPDHead2_Recipe.ZAxisInjectSlowSpeed;
+        private double Z3SlowSpeed => _currentRecipe.SPDHead3_Recipe.ZAxisInjectSlowSpeed;
+        private double Z4SlowSpeed => _currentRecipe.SPDHead4_Recipe.ZAxisInjectSlowSpeed;
+
         private double Z1AxisDummyPos => _positionList.SPDHead1MaintenanceTeachingPosition.ZAxisDummyPos.TargetPos;
         private double Z2AxisDummyPos => _positionList.SPDHead2MaintenanceTeachingPosition.ZAxisDummyPos.TargetPos;
         private double Z3AxisDummyPos => _positionList.SPDHead3MaintenanceTeachingPosition.ZAxisDummyPos.TargetPos;
@@ -972,26 +982,42 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"{XAxis.Name}|{YAxis.Name} move to inject pos done");
                     Step.RunStep = (int)EMoldProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
-                case EMoldProcResinInjectStep.ZAxisBellowCyl_InjectPos_Move:
+                case EMoldProcResinInjectStep.ZAxisBellowCyl_InjectPos_UpDistance_Move:
                     WriteMCC(LastAction, EMCCAction.IJ01_MOVE_Z_TO_INJECT_POS);
-                    ZAxisInjectPosMove();
+                    ZAxisInjectUpDistancePosMove();
                     BellowCyl.Up();
 
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
-                        () => AllZAxisInInjectPos(ref _failHead) && BellowCyl.IsUp());
+                        () => AllZAxisInInjectUpDistancePos(ref _failHead) && BellowCyl.IsUp());
                     Step.RunStep = (int)EMoldProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
-                case EMoldProcResinInjectStep.ZAxisBellowCyl_InjectPos_MoveWait:
+                case EMoldProcResinInjectStep.ZAxisBellowCyl_InjectPos_UpDistance_MoveWait:
                     if (WaitTimeOutOccurred)
                     {
                         if (!BellowCyl.IsUp())
                             RaiseWarning(EWarning.CY_BELLOW_UP_FAIL);
-                        RaiseHeadWarning(EWarning.MO_SPD_H01_Z1_AXIS_INJECT_POS_TIMEOUT, _failHead);
+                        RaiseHeadWarning(EWarning.MO_SPD_H01_Z1_AXIS_INJECT_UP_DISTANCE_POS_TIMEOUT, _failHead);
                         break;
                     }
 
                     Log.Debug($"{BellowCyl} cylinder move up done");
-                    Log.Debug($"ZAxis move to inject pos done");
+                    Log.Debug($"All ZAxis Move Inject Up Distance Position Done");
+                    Step.RunStep = (int)EMoldProcResinInjectStep.StepQueue_EmptyCheck;
+                    break;
+                case EMoldProcResinInjectStep.ZAxis_InjectPos_Move:
+                    ZAxisInjectPosMove();
+                    Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
+                        () => AllZAxisInInjectPos(ref _failHead));
+                    Step.RunStep = (int)EMoldProcResinInjectStep.StepQueue_EmptyCheck;
+                    break;
+                case EMoldProcResinInjectStep.ZAxis_InjectPos_MoveWait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseHeadWarning(EWarning.MO_SPD_H01_Z1_AXIS_INJECT_POS_TIMEOUT, _failHead);
+                        break;
+                    }
+
+                    Log.Debug($"All ZAxis Move Inject Position Done");
                     Step.RunStep = (int)EMoldProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EMoldProcResinInjectStep.SDPHead_Work_Request:
@@ -2601,27 +2627,75 @@ namespace SDV_MoldingInjection.Process
             return result;
         }
 
+        private void ZAxisInjectUpDistancePosMove()
+        {
+            if (!_currentRecipe.OptionRecipe.SkipHead12 && !_optionRecipe.SkipHead1)
+            {
+                Log.Debug($"Z1 Axis Move Inject Up Distance Position [{Z1AxisInjectPos + Z1UpDistancePos}]");
+                Z1Axis.MoveAbs(Z1AxisInjectPos + Z1UpDistancePos);
+            }
+            if (!_currentRecipe.OptionRecipe.SkipHead12 && !_optionRecipe.SkipHead2)
+            {
+                Log.Debug($"Z2 Axis Move Inject Up Distance Position [{Z2AxisInjectPos + Z2UpDistancePos}]");
+                Z2Axis.MoveAbs(Z2AxisInjectPos + Z2UpDistancePos);
+            }
+            if (!_currentRecipe.OptionRecipe.SkipHead34 && !_optionRecipe.SkipHead3)
+            {
+                Log.Debug($"Z3 Axis Move Inject Up Distance Position [{Z3AxisInjectPos + Z3UpDistancePos}]");
+                Z3Axis.MoveAbs(Z3AxisInjectPos + Z3UpDistancePos);
+            }
+            if (!_currentRecipe.OptionRecipe.SkipHead34 && !_optionRecipe.SkipHead4)
+            {
+                Log.Debug($"Z4 Axis Move Inject Up Distance Position [{Z4AxisInjectPos + Z4UpDistancePos}]");
+                Z4Axis.MoveAbs(Z4AxisInjectPos + Z4UpDistancePos);
+            }
+        }
+
+        private bool AllZAxisInInjectUpDistancePos(ref ESPDHead failHead)
+        {
+            bool result = true;
+            bool ret = false;
+
+            ret = _currentRecipe.OptionRecipe.SkipHead12 || _optionRecipe.SkipHead1 || Z1Axis.IsOnPosition(Z1AxisInjectPos + Z1UpDistancePos);
+            result &= ret;
+            if (!ret) failHead = ESPDHead.SPDHead1;
+
+            ret = _currentRecipe.OptionRecipe.SkipHead12 || _optionRecipe.SkipHead2 || Z2Axis.IsOnPosition(Z2AxisInjectPos + Z2UpDistancePos);
+            result &= ret;
+            if (!ret) failHead = ESPDHead.SPDHead2;
+
+            ret = _currentRecipe.OptionRecipe.SkipHead34 || _optionRecipe.SkipHead3 || Z3Axis.IsOnPosition(Z3AxisInjectPos + Z3UpDistancePos);
+            result &= ret;
+            if (!ret) failHead = ESPDHead.SPDHead3;
+
+            ret = _currentRecipe.OptionRecipe.SkipHead34 || _optionRecipe.SkipHead4 || Z4Axis.IsOnPosition(Z4AxisInjectPos + Z4UpDistancePos);
+            result &= ret;
+            if (!ret) failHead = ESPDHead.SPDHead4;
+
+            return result;
+        }
+
         private void ZAxisInjectPosMove()
         {
             if (!_currentRecipe.OptionRecipe.SkipHead12 && !_optionRecipe.SkipHead1)
             {
-                Log.Debug($"Z1 Axis Move Inject Position [{_currentRecipe.SPDHead1_Recipe.ZAxisInjectPos}]");
-                Z1Axis.MoveAbs(Z1AxisInjectPos);
+                Log.Debug($"Z1 Axis Move Inject Position [{_currentRecipe.SPDHead1_Recipe.ZAxisInjectPos}], Speed [{Z1SlowSpeed}]");
+                Z1Axis.MoveAbs(Z1AxisInjectPos, Z1SlowSpeed);
             }
             if (!_currentRecipe.OptionRecipe.SkipHead12 && !_optionRecipe.SkipHead2)
             {
-                Log.Debug($"Z2 Axis Move Inject Position [{_currentRecipe.SPDHead2_Recipe.ZAxisInjectPos}]");
-                Z2Axis.MoveAbs(Z2AxisInjectPos);
+                Log.Debug($"Z2 Axis Move Inject Position [{_currentRecipe.SPDHead2_Recipe.ZAxisInjectPos}], Speed [{Z2SlowSpeed}]");
+                Z2Axis.MoveAbs(Z2AxisInjectPos, Z2SlowSpeed);
             }
             if (!_currentRecipe.OptionRecipe.SkipHead34 && !_optionRecipe.SkipHead3)
             {
-                Log.Debug($"Z3 Axis Move Inject Position [{_currentRecipe.SPDHead3_Recipe.ZAxisInjectPos}]");
-                Z3Axis.MoveAbs(Z3AxisInjectPos);
+                Log.Debug($"Z3 Axis Move Inject Position [{_currentRecipe.SPDHead3_Recipe.ZAxisInjectPos}], Speed [{Z3SlowSpeed}]");
+                Z3Axis.MoveAbs(Z3AxisInjectPos, Z3SlowSpeed);
             }
             if (!_currentRecipe.OptionRecipe.SkipHead34 && !_optionRecipe.SkipHead4)
             {
-                Log.Debug($"Z4 Axis Move Inject Position [{_currentRecipe.SPDHead4_Recipe.ZAxisInjectPos}]");
-                Z4Axis.MoveAbs(Z4AxisInjectPos);
+                Log.Debug($"Z4 Axis Move Inject Position [{_currentRecipe.SPDHead4_Recipe.ZAxisInjectPos}], Speed [{Z4SlowSpeed}]");
+                Z4Axis.MoveAbs(Z4AxisInjectPos, Z4SlowSpeed);
             }
         }
 
