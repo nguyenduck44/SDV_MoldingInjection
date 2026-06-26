@@ -70,6 +70,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Material Warning Count")]
+        [ParameterDescription(7)]
         public double MaterialWarningCount
         {
             get { return materialWarningCount; }

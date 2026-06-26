@@ -6,7 +6,7 @@ namespace SDV_MoldingInjection.Recipe
     public class DryPumpRecipe : RecipeBase
     {
         [SingleRecipeDescription(Description = "Chamber Vacuum Pressure Spec", Unit = Unit.Torr)]
-        [ParameterDescription(29)]
+        [ParameterDescription(30)]
         public double VacuumPressureSpec
         {
             get => _vacuumPressureSpec;
@@ -15,7 +15,7 @@ namespace SDV_MoldingInjection.Recipe
 
         [SingleRecipeDescription(Description = "Pressure Hold Under Spec", 
             Detail = "Hold pressure under spec while inject", Unit = Unit.Torr)]
-        [ParameterDescription(30)]
+        [ParameterDescription(31)]
         public double VacuumPressureHoldUnderSpec
         {
             get => _vacuumPressureHoldUnderSpec;
@@ -23,7 +23,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Pressure Log Time Lapse", Unit = Unit.Second)]
-        [ParameterDescription(31)]
+        [ParameterDescription(32)]
         public double PressureLogTimelaps
         {
             get => _pressureLogTimelaps;

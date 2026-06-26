@@ -13,7 +13,7 @@ namespace SDV_MoldingInjection.Recipe
         #endregion
 
         [SingleRecipeDescription(Description = "USE Add Tail", Detail = "Check to Use Add Tail")]
-        [ParameterDescription(192)]
+        [ParameterDescription(193)]
         public bool UseAddTail
         {
             get => _useAddTail;
@@ -21,7 +21,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Z-UP Distance Add Tail", Unit = Unit.mm)]
-        [ParameterDescription(193)]
+        [ParameterDescription(194)]
         public double ZUpDistanceAddTail
         {
             get => _zUpDistanceAddTail;
@@ -30,7 +30,7 @@ namespace SDV_MoldingInjection.Recipe
 
         [SingleRecipeDescription(Description = "Add Tail Weight", Unit = Unit.mg)]
         [SingleRecipeMinMax(Max = 380, Min = 0)]
-        [ParameterDescription(194)]
+        [ParameterDescription(195)]
         public double AddTailWeight
         {
             get => _addTailWeight;
@@ -38,7 +38,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Add Tail Speed", Unit = Unit.mmPerSecond)]
-        [ParameterDescription(195)]
+        [ParameterDescription(196)]
         public double AddTailSpeed
         {
             get => _addTailSpeed;

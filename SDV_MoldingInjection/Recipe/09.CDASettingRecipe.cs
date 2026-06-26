@@ -11,7 +11,7 @@ namespace SDV_MoldingInjection.Recipe
         private double pumpValveVacuumThreshold;
 
         [SingleRecipeDescription(Description = "Main Air Threshold", Unit = Unit.MegaPascal)]
-        [ParameterDescription(230)]
+        [ParameterDescription(234)]
         public double MainAirThreshold
         {
             get { return mainAirThreshold; }
@@ -23,7 +23,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Syringe Air Main Threshold", Unit = Unit.MegaPascal)]
-        [ParameterDescription(231)]
+        [ParameterDescription(235)]
         public double SyringeAirMainThreshold
         {
             get { return syringeAirMainThreshold; }
@@ -35,7 +35,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Pump Purge Threshold", Unit = Unit.MegaPascal)]
-        [ParameterDescription(232)]
+        [ParameterDescription(236)]
         public double PumpPurgeThreshold
         {
             get { return pumpPurgeThreshold; }
@@ -47,7 +47,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Pump Valve Vacuum Threshold", Unit = Unit.MegaPascal)]
-        [ParameterDescription(233)]
+        [ParameterDescription(237)]
         public double PumpValveVacuumThreshold
         {
             get { return pumpValveVacuumThreshold; }
