@@ -311,7 +311,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         _authenticationService.ValidatePermission(EPermission.SuperUser, "3141");
 
                         _machineStatus.MachineIdleTick = Environment.TickCount;
-                        _tactTimeList.TactCounterStart();
+                        //_tactTimeList.TactCounterStart();
                         _navigationService.NavigateTo<AutoViewModel>();
                         _step++;
                         break;

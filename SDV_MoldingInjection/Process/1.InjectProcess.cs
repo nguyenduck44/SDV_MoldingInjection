@@ -1678,7 +1678,16 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.Unloading_WriteData:
                     Log.Debug($"Write data output count: {outputCount}");
                     _productionService.WriteData(EProductionWriteType.Output, outputCount);
-                    _tactTimeList.TactCounterEnd(_machineStatus.IsDryRunMode ? 2 : outputCount);
+                    if(IsFirstCycle)
+                    {
+                        IsFirstCycle = false;
+                        _tactTimeList.TactCounterStart();
+                    }
+                    else
+                    {
+                        _tactTimeList.TactCounterEnd(_machineStatus.IsDryRunMode ? 2 : outputCount);
+                    }
+
                     outputCount = 0;
 
                     if (LeftJigDetect == false && RightJigDetect == false)
@@ -3473,6 +3482,7 @@ namespace SDV_MoldingInjection.Process
         private InjectRecipe Recipe => _currentRecipe.InjectRecipe;
         private TactTime TactTime => _tactTimeList.Chamber;
 
+        private bool IsFirstCycle { get; set; } = true;
         private readonly Devices _devices;
         private readonly MachineStatus _machineStatus;
         private readonly RecipeSelector _recipeSelector;

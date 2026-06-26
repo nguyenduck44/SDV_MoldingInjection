@@ -43,7 +43,7 @@ namespace SDV_MoldingInjection.Defines
         public TactTime SPDHead4 { get; }
         public void TactCounterStart()
         {
-            if (IsTactStarted) return;
+            //if (IsTactStarted) return;
 
             TactCounter = Environment.TickCount;
 
