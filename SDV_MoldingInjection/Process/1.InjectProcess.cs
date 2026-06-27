@@ -1876,6 +1876,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Info("Loading End");
                     if ((Environment.TickCount - _waitTimeNoProduct) >= _currentRecipe.InjectTimeRecipe.DummyShotBeforeInject * 60000 &&
+                        _optionRecipe.DummyBeforeInject &&
                         _machineStatus.IsDryRunMode == false)
                     {
                         Log.Info("Set Next Sequence To DummyShot");

@@ -30,6 +30,7 @@ namespace SDV_MoldingInjection.Recipe
         private bool _skipHead2;
         private bool _skipHead3;
         private bool _skipHead4;
+        private bool _dummyBeforeInject;
 
         #endregion
 
@@ -242,6 +243,13 @@ namespace SDV_MoldingInjection.Recipe
         {
             get { return _readBarcode; }
             set => SetRecipe(ref _readBarcode, value);
+        }
+
+        [ParameterDescription(238)]
+        public bool DummyBeforeInject
+        {
+            get { return _dummyBeforeInject; }
+            set => SetRecipe(ref _dummyBeforeInject, value);
         }
 
     }
