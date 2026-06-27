@@ -1,10 +1,12 @@
 ﻿using EQX.Core.Communication.CIM;
+using EQX.Core.Sequence;
 using EQX.ThirdParty.Helpers;
 using EQX.UI.Controls;
 using EQX.UI.MVVM;
 using log4net;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Win32;
+using ScottPlot;
 using SDV_MoldingInjection.Recipe;
 using System.IO;
 using System.Text;
@@ -276,11 +278,12 @@ namespace SDV_MoldingInjection.Defines.CIM
 
             #region DryPump
             FDCHelper.WriteFDCValue(EFDCValue.CDA_ANGLE_VALVE_PRESSURE, (int)(_cDAStatus.PumpValveVacuum * 1000));
+            FDCHelper.WriteFDCValue(EFDCValue.CDA_VENT_PRESSURE, (int)(_cDAStatus.PumpPurge * 1000));
             #endregion
 
             #region Utility
-            FDCHelper.WriteFDCValue(EFDCValue.MAIN_PANEL_TEMPRATURE, (int)(_devices.PanelIndicator.Temperature * 1000));
-            FDCHelper.WriteFDCValue(EFDCValue.MAIN_PANEL_HUMIDITY, (int)(_devices.PanelIndicator.Humidity * 1000));
+            //FDCHelper.WriteFDCValue(EFDCValue.MAIN_PANEL_TEMPRATURE, (int)(_devices.PanelIndicator.Temperature * 1000));
+            //FDCHelper.WriteFDCValue(EFDCValue.MAIN_PANEL_HUMIDITY, (int)(_devices.PanelIndicator.Humidity * 1000));
             FDCHelper.WriteFDCValue(EFDCValue.CDA_MAIN_AIR_PRESSURE, (int)(_cDAStatus.MainAirCDA * 1000));
             #endregion
 
@@ -302,6 +305,9 @@ namespace SDV_MoldingInjection.Defines.CIM
             FDCHelper.WriteFDCValue(EFDCValue.ONE_TORR_AND_PURGE, _currentRecipe.OptionRecipe.OneTorrAndPurge ? 1 : 2);
             FDCHelper.WriteFDCValue(EFDCValue.DELAY_AFTER_INJECT_FINISH, _currentRecipe.OptionRecipe.DelayAfterInjectFinish ? 1 : 2);
             FDCHelper.WriteFDCValue(EFDCValue.ENABLE_INJECTION_PATH, _currentRecipe.OptionRecipe.EnableInjectionPath ? 1 : 2);
+            FDCHelper.WriteFDCValue(EFDCValue.INJECT_AFTER_OPEN_ANGLE_VALVE, _currentRecipe.OptionRecipe.InjectAfterOpenAngleValve ? 1 : 2);
+            FDCHelper.WriteFDCValue(EFDCValue.CIM_ONOFF, _currentRecipe.OptionRecipe.UseCIM ? 1 : 2);
+            FDCHelper.WriteFDCValue(EFDCValue.READ_BARCODE, _currentRecipe.OptionRecipe.ReadBarcode ? 1 : 2);
             FDCHelper.WriteFDCValue(EFDCValue.ENABLE_IDLEPURGE, _currentRecipe.IdlePurgeRecipe.EnableIdlePurge ? 1 : 2);
             #endregion
 

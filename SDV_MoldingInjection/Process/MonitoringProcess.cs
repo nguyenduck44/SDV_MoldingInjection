@@ -1,9 +1,12 @@
 using EQX.Core.Common;
+using EQX.Core.InOut;
 using EQX.Core.Recipe;
 using EQX.Core.Sequence;
+using EQX.InOut;
 using EQX.Process;
 using EQX.UI.Controls;
 using SDV_MoldingInjection.Defines;
+using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.MVVM.ViewModels;
 using SDV_MoldingInjection.Recipe;
 using System.Windows;
@@ -12,13 +15,17 @@ namespace SDV_MoldingInjection.Process
 {
     public class MonitoringProcess : ProcessBase<ESequence>
     {
+        #region Cylinders
+        private ICylinder ChamberOpenClose => _devices.Cylinders.ChamberOpenClose;
+        #endregion
+
         private readonly MachineStatus _machineStatus;
         private readonly RecipeSelector _recipeSelector;
         private readonly Devices _devices;
         private readonly NavigationStore _navigationStore;
         private Queue<IGrouping<uint, PositionPoint>> MoveMultiPointQueueSteps = new Queue<IGrouping<uint, PositionPoint>>();
         private List<PositionPoint> currentPoints = new List<PositionPoint>();
-
+        private Task FDCReportTask;
         public MonitoringProcess(MachineStatus machineStatus,
             RecipeSelector recipeSelector,
             Devices devices,
@@ -28,8 +35,19 @@ namespace SDV_MoldingInjection.Process
             _recipeSelector = recipeSelector;
             _devices = devices;
             _navigationStore = navigationStore;
+
+            CancellationToken token = new CancellationToken();
+            FDCReportTask = Task.Factory.StartNew(async () =>
+            {
+                while (true)
+                {
+                    await WriteFDC();
+                    await Task.Delay(10);
+                }
+            }, token);
         }
 
+        #region Process Methods
         public override bool PreProcess()
         {
             if (_navigationStore.CurrentViewModel is not SPDHeadAllMaintenanceViewModel)
@@ -80,7 +98,9 @@ namespace SDV_MoldingInjection.Process
 
             return true;
         }
+        #endregion
 
+        #region Sequence Methods
         private void Sequence_MoveMultiPoint()
         {
             switch ((EMonitoringProcessMoveMultiPointStep)Step.RunStep)
@@ -92,6 +112,30 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
                     Log.Debug("Move Target Position Start");
+                    Step.RunStep++;
+                    break;
+                case EMonitoringProcessMoveMultiPointStep.Close_Chamber:
+                    if (ChamberOpenClose.IsClose())
+                    {
+                        Log.Debug("Chamber Is Closed");
+                        Step.RunStep = (int)EMonitoringProcessMoveMultiPointStep.Init_QueuePosition;
+                        break;
+                    }
+
+                    Log.Debug($"{ChamberOpenClose} moving close");
+                    ChamberOpenClose.Close();
+                    Wait(_recipeSelector.CurrentRecipe.CylinderDelayTimeRecipe.ChamberOpenCloseCylinderMoveDelay,
+                        () => ChamberOpenClose.IsClose());
+                    Step.RunStep++;
+                    break;
+                case EMonitoringProcessMoveMultiPointStep.Close_Chamber_Wait:
+                    if (WaitTimeOutOccurred)
+                    {
+                        RaiseWarning(EWarning.CY_MOLD_CHAMBER_CLOSE_FAIL);
+                        break;
+                    }
+
+                    Log.Debug($"Move {ChamberOpenClose} close done");
                     Step.RunStep++;
                     break;
                 case EMonitoringProcessMoveMultiPointStep.Init_QueuePosition:
@@ -144,6 +188,25 @@ namespace SDV_MoldingInjection.Process
                     break;
             }
         }
+        #endregion
 
+        #region Private Methods
+        private async Task WriteFDC()
+        {
+            if (Parent?.ProcessMode == EProcessMode.Run && _machineStatus.EquipState.IsMasterAlive)
+            {
+                FDCHelper.WriteFDCValue(EFDCValue.FUNCTION_STEP_ID, 2);
+            }
+            else if (Parent?.ProcessMode != EProcessMode.Run && _machineStatus.EquipState.IsMasterAlive)
+            {
+                FDCHelper.WriteFDCValue(EFDCValue.FUNCTION_STEP_ID, 1);
+            }
+            else
+            {
+                FDCHelper.WriteFDCValue(EFDCValue.FUNCTION_STEP_ID, 0);
+            }
+
+        }
+        #endregion
     }
 }
