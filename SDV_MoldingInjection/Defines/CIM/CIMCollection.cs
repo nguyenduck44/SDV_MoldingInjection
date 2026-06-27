@@ -11,6 +11,7 @@ using SDV_MoldingInjection.Recipe;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows;
 using TOPENG_Device;
 
 namespace SDV_MoldingInjection.Defines.CIM
@@ -282,8 +283,11 @@ namespace SDV_MoldingInjection.Defines.CIM
             #endregion
 
             #region Utility
-            //FDCHelper.WriteFDCValue(EFDCValue.MAIN_PANEL_TEMPRATURE, (int)(_devices.PanelIndicator.Temperature * 1000));
-            //FDCHelper.WriteFDCValue(EFDCValue.MAIN_PANEL_HUMIDITY, (int)(_devices.PanelIndicator.Humidity * 1000));
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                FDCHelper.WriteFDCValue(EFDCValue.MAIN_PANEL_TEMPRATURE, (int)(_devices.PanelIndicator.Temperature * 1000));
+                FDCHelper.WriteFDCValue(EFDCValue.MAIN_PANEL_HUMIDITY, (int)(_devices.PanelIndicator.Humidity * 1000));
+            });
             FDCHelper.WriteFDCValue(EFDCValue.CDA_MAIN_AIR_PRESSURE, (int)(_cDAStatus.MainAirCDA * 1000));
             #endregion
 
