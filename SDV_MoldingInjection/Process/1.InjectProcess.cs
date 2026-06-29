@@ -1359,6 +1359,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.Chamber_CoverOpen:
                     Log.Debug($"Open {ChamberOpenClose} cylinder");
                     WriteMCC(LastAction, EMCCAction.IJ01_CHAMBER_COVER_OPEN);
+                    
                     ChamberOpenClose.Open();
                     Wait(_currentRecipe.CylinderDelayTimeRecipe.ChamberOpenCloseCylinderMoveDelay, ChamberOpenClose.IsOpen);
                     Step.RunStep++;
@@ -1368,6 +1369,12 @@ namespace SDV_MoldingInjection.Process
                     {
                         RaiseWarning(EWarning.CY_MOLD_CHAMBER_OPEN_FAIL);
                         break;
+                    }
+
+                    if (isLoading == false)
+                    {
+                        Log.Debug("Set TactTimeCounter End");
+                        _tactTimeList.TactCounterEnd(((LeftJigDetect && RightJigDetect) || _machineStatus.IsDryRunMode) ? 2 : 1);
                     }
 
                     TactTime.SetTactTime();
@@ -1678,15 +1685,15 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.Unloading_WriteData:
                     Log.Debug($"Write data output count: {outputCount}");
                     _productionService.WriteData(EProductionWriteType.Output, outputCount);
-                    if(IsFirstCycle)
-                    {
-                        IsFirstCycle = false;
-                        _tactTimeList.TactCounterStart();
-                    }
-                    else
-                    {
-                        _tactTimeList.TactCounterEnd(_machineStatus.IsDryRunMode ? 2 : outputCount);
-                    }
+                    //if(IsFirstCycle)
+                    //{
+                    //    IsFirstCycle = false;
+                    //    _tactTimeList.TactCounterStart();
+                    //}
+                    //else
+                    //{
+                    //    _tactTimeList.TactCounterEnd(_machineStatus.IsDryRunMode ? 2 : outputCount);
+                    //}
 
                     outputCount = 0;
 
@@ -1750,6 +1757,8 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Write data input count: {inputCount}");
                     _productionService.WriteData(EProductionWriteType.Input, inputCount);
                     inputCount = 0;
+                    Log.Debug("Set TactTimeCounter Start");
+                    _tactTimeList.TactCounterStart();
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Chamber_CoverClose:

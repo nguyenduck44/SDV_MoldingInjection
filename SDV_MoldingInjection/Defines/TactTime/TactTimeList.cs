@@ -46,6 +46,7 @@ namespace SDV_MoldingInjection.Defines
             //if (IsTactStarted) return;
 
             TactCounter = Environment.TickCount;
+            Timer.Start();
 
             IsTactStarted = true;
         }
