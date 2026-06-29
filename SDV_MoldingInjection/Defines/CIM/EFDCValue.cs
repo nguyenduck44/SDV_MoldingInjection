@@ -2,15 +2,13 @@
 {
     public enum EFDCValue 
     {
-        DISPENSING_CELL_ID_1,
-        DISPENSING_STEP_ID_1,
-        DISPENSING_CELL_ID_2,
-        DISPENSING_STEP_ID_2,
+        DISPENSING_STEP_ID,
         CHAMBER_DISPENSING_PIRANI_CONTROL,
         HEAD_DISPENSING_PRESSURE,
         PUMP_STEP_ID,
         CDA_ANGLE_VALVE_PRESSURE,
         CDA_VENT_PRESSURE,
+        RESERVED,
         MAIN_PANEL_TEMPRATURE,
         MAIN_PANEL_HUMIDITY,
         MAIN_POWER_PANEL_TEMPRATURE,
@@ -44,6 +42,5 @@
         N02_U_T_VOL,
         N02_U_R_CUR,
         N02_U_T_CUR,
-
     }
 }

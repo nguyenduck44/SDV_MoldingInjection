@@ -120,6 +120,12 @@ namespace SDV_MoldingInjection.Process
                 PressureLog(_devices.AnalogInputs.VacuumPressureInTorr);
             }
 
+            if (Environment.TickCount - _writeFDCStartTick >= 10000 && EnableWriteFDCDispensingStepID)
+            {
+                _writeFDCStartTick = Environment.TickCount;
+                FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, DateTime.Now.ToString("yyyyMMddHHmmss"));
+            }
+
             return base.PreProcess();
         }
 
@@ -128,6 +134,7 @@ namespace SDV_MoldingInjection.Process
             EnableWritePressureLog = false;
             EnablePressureHold = false;
             EnableTimerDelay = false;
+            EnableWriteFDCDispensingStepID = false;
             return base.ProcessToWarning();
         }
 
@@ -136,6 +143,7 @@ namespace SDV_MoldingInjection.Process
             EnableTimerDelay = false;
             EnablePressureHold = false;
             EnableWritePressureLog = false;
+            EnableWriteFDCDispensingStepID = false;
             return base.ProcessToAlarm();
         }
 
@@ -144,6 +152,7 @@ namespace SDV_MoldingInjection.Process
             EnableWritePressureLog = false;
             EnablePressureHold = false;
             EnableTimerDelay = false;
+            EnableWriteFDCDispensingStepID = false;
             return base.ProcessToStop();
         }
 
@@ -412,6 +421,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Info($"Input detect {EDryPumpProcInput.Vacuum_WorkRequest}");
+                    FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, DateTime.Now.ToString("yyyyMMddHHmmss"));
                     TactTime.TactTimeCounter = Environment.TickCount;
                     _plotter.ClearData();
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
@@ -516,6 +526,11 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Info($"DryPump vacuum in-target {_devices.AnalogInputs.VacuumPressureInTorr} Torr");
                     Log.Debug($"Enable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
+
+                    FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, DateTime.Now.ToString("yyyyMMddHHmmss"));
+                    _writeFDCStartTick = Environment.TickCount;
+                    EnableWriteFDCDispensingStepID = true;
+
                     TactTime.SetTactTime();
                     EnablePressureHold = true;
                     EnableTimerDelay = true;
@@ -586,6 +601,10 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Debug($"Vent Complete: {InjectTimeRecipe.VentTime}s");
+
+                    FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, DateTime.Now.ToString("yyyyMMddHHmmss"));
+                    EnableWriteFDCDispensingStepID = false;
+
                     PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.VentComplete);
                     procOutputs[EDryPumpProcOutput.VentComplete].Value = true;
                     Out_ChamberPurgeOn.Value = false;
@@ -733,6 +752,8 @@ namespace SDV_MoldingInjection.Process
         private Queue<EDryPumpProcResinInjectStep> DryPumpResinInjectStep = new Queue<EDryPumpProcResinInjectStep>();
 
         private DateTime pressureLogWatchTime = DateTime.Now;
+        private long _writeFDCStartTick;
+        private bool EnableWriteFDCDispensingStepID;
         #endregion
     }
 }

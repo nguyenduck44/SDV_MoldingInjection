@@ -93,6 +93,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             [FromKeyedServices("BalanceLeft")] MettlerToledoWKC204C balanceLeft,
             [FromKeyedServices("BalanceRight")] MettlerToledoWKC204C balanceRight,
             [FromKeyedServices("IndicatorModbusCommunication")] IModbusCommunication indicatorModbusCommunication,
+            [FromKeyedServices("Accura2550Communication")] IModbusCommunication accura2550Communication,
+            Config config,
             InterlockService interlockService,
             SyringAmountStatusList syringAmountStatusList,
             CarrierJigStatusList carrierJigStatusList,
@@ -115,6 +117,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _balanceLeft = balanceLeft;
             _balanceRight = balanceRight;
             _indicatorModbusCommunication = indicatorModbusCommunication;
+            _accura2550Communication = accura2550Communication;
+            _config = config;
             _interlockService = interlockService;
             _syringAmountStatusList = syringAmountStatusList;
             _carrierJigStatusList = carrierJigStatusList;
@@ -187,9 +191,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         {
                             ErrorMessages.Add("Indicator Connect Fail");
                         }
-
+                        
                         _cimAction.Start();
-
                         Thread.Sleep(50);
                         _step++;
                         break;
@@ -207,6 +210,14 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         if(_balanceLeft.IsConnected == false || _balanceRight.IsConnected == false)
                         {
                             ErrorMessages.Add("Balance Connection Failed.");
+                        }
+
+                        if (_config.IsConnectEBoxMainPower)
+                        {
+                            if (_accura2550Communication.Connect() == false)
+                            {
+                                ErrorMessages.Add("Accura 2500D Connection Failed.");
+                            }
                         }
 
                         Thread.Sleep(50);
@@ -609,6 +620,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly MettlerToledoWKC204C _balanceLeft;
         private readonly MettlerToledoWKC204C _balanceRight;
         private readonly IModbusCommunication _indicatorModbusCommunication;
+        private readonly IModbusCommunication _accura2550Communication;
+        private readonly Config _config;
         private readonly InterlockService _interlockService;
         private readonly SyringAmountStatusList _syringAmountStatusList;
         private readonly CarrierJigStatusList _carrierJigStatusList;

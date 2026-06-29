@@ -2616,10 +2616,10 @@ namespace SDV_MoldingInjection.Process
 
         private void ZAxisSafetyPosMove()
         {
-            Z1Axis.MoveAbs(Z1AxisSafetyPos);
-            Z2Axis.MoveAbs(Z2AxisSafetyPos);
-            Z3Axis.MoveAbs(Z3AxisSafetyPos);
-            Z4Axis.MoveAbs(Z4AxisSafetyPos);
+            Z1Axis.MoveAbs(Z1AxisSafetyPos, 200);
+            Z2Axis.MoveAbs(Z2AxisSafetyPos, 200);
+            Z3Axis.MoveAbs(Z3AxisSafetyPos, 200);
+            Z4Axis.MoveAbs(Z4AxisSafetyPos, 200);
         }
 
         private bool AllZAxisInSafetyPos(ref ESPDHead failHead)

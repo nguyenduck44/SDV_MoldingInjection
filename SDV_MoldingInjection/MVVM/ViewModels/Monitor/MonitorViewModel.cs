@@ -9,6 +9,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
     public class MonitorViewModel : ViewModelBase
     {
         public bool IsSuperUserPermission => _userStore.Permission == EPermission.SuperUser;
+        public bool IsConnectEBoxMainPower => _config.IsConnectEBoxMainPower;
 
         #region Commands
         public ICommand ProductionInforNavigateCommand
@@ -173,6 +174,17 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
         }
 
+        public ICommand Accura2550DNavigateCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    _navigationService.NavigateTo<EBoxMainPowerMonitoringViewModel>();
+                });
+            }
+        }
+
         public ICommand InterfaceInOutNavigateCommand
         {
             get
@@ -189,13 +201,17 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             IViewModelFactory viewModelFactory,
             Inputs inputs,
             Outputs outputs,
-            IUserStore userStore)
+            IUserStore userStore,
+            MachineStatus machineStatus,
+            Config config)
         {
             _navigationService = navigationService;
             _viewModelFactory = viewModelFactory;
             _inputs = inputs;
             _outputs = outputs;
             _userStore = userStore;
+            _machineStatus = machineStatus;
+            _config = config;
         }
 
         #region Privates
@@ -204,6 +220,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly Inputs _inputs;
         private readonly Outputs _outputs;
         private readonly IUserStore _userStore;
+        private readonly MachineStatus _machineStatus;
+        private readonly Config _config;
         #endregion
     }
 }

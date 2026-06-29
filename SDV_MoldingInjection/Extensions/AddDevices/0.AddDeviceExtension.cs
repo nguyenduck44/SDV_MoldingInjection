@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.TeachingPosition;
+using SDV_MoldingInjection.Extensions.AddDevices;
 using SDV_MoldingInjection.Recipe;
 
 namespace SDV_MoldingInjection.Extensions
@@ -16,6 +17,7 @@ namespace SDV_MoldingInjection.Extensions
             hostBuilder.AddCylinderDevices();
             hostBuilder.AddIndicatorDevices();
             hostBuilder.AddInOutHandler();
+            hostBuilder.AddAccura2550CMZ3PDevices();
 
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
