@@ -321,9 +321,17 @@ namespace SDV_MoldingInjection.Defines.CIM
                     }
                     EquipEventHelpers.WriteFdcItem();
 
+                    //Copy Alarm InOut -> CIM
                     short[] buffer = CCLinkIEHelper.ReadWords(0x17000, 200);
-
                     CIMAddressMap.WriteWords(0xC617, 200, buffer , false);
+
+                    //Copy RMS -> CIM
+                    short[] bufferRMS = CCLinkIEHelper.ReadWords(0x17100, 54);
+                    CIMAddressMap.WriteWords(0x94A0, 54, bufferRMS, false);
+
+                    //Copy ECM -> CIM
+                    short[] bufferECM = CCLinkIEHelper.ReadWords(0x17200, 54);
+                    CIMAddressMap.WriteWords(0xA28A, 54, bufferECM, false);
 
                     await Task.Delay(100);
                 }
