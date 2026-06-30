@@ -1,11 +1,9 @@
 ﻿using EQX.Core.Common;
-using EQX.Core.Sequence;
-using EQX.Device.Balance;
 using EQX.Device.Measurement;
 using Microsoft.Extensions.DependencyInjection;
-using ScottPlot;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.CIM;
+using System.Windows;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
@@ -53,12 +51,15 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         {
             if (_config.IsConnectEBoxMainPower)
             {
-                FDCHelper.WriteFDCValue(EFDCValue.N02_U_T_PW, EnergyReceived * 1000);
-                FDCHelper.WriteFDCValue(EFDCValue.N02_U_I_PW, (int)(MaxActivePowerTotal * 1000));
-                FDCHelper.WriteFDCValue(EFDCValue.N02_U_R_VOL, (int)(ABVoltage * 1000));
-                FDCHelper.WriteFDCValue(EFDCValue.N02_U_T_VOL, (int)(BCVoltage * 1000));
-                FDCHelper.WriteFDCValue(EFDCValue.N02_U_R_CUR, (int)(ACurrent * 1000));
-                FDCHelper.WriteFDCValue(EFDCValue.N02_U_T_CUR, (int)(BCurrent * 1000));
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    FDCHelper.WriteFDCValue(EFDCValue.N02_U_T_PW, EnergyReceived * 1000);
+                    FDCHelper.WriteFDCValue(EFDCValue.N02_U_I_PW, (int)(MaxActivePowerTotal * 1000));
+                    FDCHelper.WriteFDCValue(EFDCValue.N02_U_R_VOL, (int)(ABVoltage * 1000));
+                    FDCHelper.WriteFDCValue(EFDCValue.N02_U_T_VOL, (int)(BCVoltage * 1000));
+                    FDCHelper.WriteFDCValue(EFDCValue.N02_U_R_CUR, (int)(ACurrent * 1000));
+                    FDCHelper.WriteFDCValue(EFDCValue.N02_U_T_CUR, (int)(BCurrent * 1000));
+                });
             }
         }
 
