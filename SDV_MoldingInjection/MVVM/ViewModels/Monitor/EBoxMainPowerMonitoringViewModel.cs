@@ -51,7 +51,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         {
             if (_config.IsConnectEBoxMainPower)
             {
-                Application.Current.Dispatcher.Invoke(() =>
+                Application.Current?.Dispatcher.Invoke(() =>
                 {
                     FDCHelper.WriteFDCValue(EFDCValue.N02_U_T_PW, EnergyReceived * 1000);
                     FDCHelper.WriteFDCValue(EFDCValue.N02_U_I_PW, (int)(MaxActivePowerTotal * 1000));

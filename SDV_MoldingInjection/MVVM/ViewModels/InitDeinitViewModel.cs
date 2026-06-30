@@ -421,7 +421,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         // Set isHandling to false to stop the loop
 
                         Thread.Sleep(1000);
-                        Application.Current.Dispatcher.Invoke(() =>
+                        Application.Current?.Dispatcher.Invoke(() =>
                         {
                             Application.Current.Shutdown(100);
                         });

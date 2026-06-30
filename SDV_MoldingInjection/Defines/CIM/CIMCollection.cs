@@ -283,7 +283,7 @@ namespace SDV_MoldingInjection.Defines.CIM
             #endregion
 
             #region Utility
-            Application.Current.Dispatcher.Invoke(() =>
+            Application.Current?.Dispatcher.Invoke(() =>
             {
                 FDCHelper.WriteFDCValue(EFDCValue.MAIN_PANEL_TEMPRATURE, (int)(_devices.PanelIndicator.Temperature * 1000));
                 FDCHelper.WriteFDCValue(EFDCValue.MAIN_PANEL_HUMIDITY, (int)(_devices.PanelIndicator.Humidity * 1000));
