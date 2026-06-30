@@ -2126,7 +2126,7 @@ namespace SDV_MoldingInjection.Process
                     if (sequence == ESequence.IdlePurge)
                     {
                         Log.Debug("Wait next cycle IdlePurge");
-                        Wait(_currentRecipe.IdlePurgeRecipe.IdlePurgeAfterStopTime * 60);
+                        Wait(_currentRecipe.IdlePurgeRecipe.IdlePurgeCycleTime * 60);
                         Step.RunStep = (int)EMoldProcDummyShotStep.Chamber_Close;
                         break;
                     }
