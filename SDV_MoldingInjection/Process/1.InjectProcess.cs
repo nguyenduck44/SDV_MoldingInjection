@@ -3279,7 +3279,7 @@ namespace SDV_MoldingInjection.Process
             string jigID = isJigLeft ? LeftJigID : RightJigID;
 
             Log.Info($"Validationing JIG '{jigID}'");
-            if (EquipEventHelpers.SpecificValidation(1, jigID, ref outCellID) == false)
+            if (EquipEventHelpers.SpecificValidation(isJigLeft ? 1 : 2, jigID, ref outCellID) == false)
             {
                 return false;
             }
@@ -3293,7 +3293,7 @@ namespace SDV_MoldingInjection.Process
                 RightCellId = outCellID;
             }
 
-            if (EquipEventHelpers.CellTrackIn(1, isJigLeft ? LeftCellId : RightCellId, 9, _cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON ? 2 : 3) == false)
+            if (EquipEventHelpers.CellTrackIn(isJigLeft ? 1 : 2, isJigLeft ? LeftCellId : RightCellId, 9, _cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON ? 2 : 3) == false)
             {
                 return false;
             }
@@ -3302,7 +3302,7 @@ namespace SDV_MoldingInjection.Process
 
             Log.Info($"Jig '{cellId}' tracking successed");
 
-            CellJobProcessCimToPlcArea cellJobProcess = EquipEventHelpers.CellJobProcessConfirm(1, cellId, _cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON);
+            CellJobProcessCimToPlcArea cellJobProcess = EquipEventHelpers.CellJobProcessConfirm(isJigLeft ? 1 : 2, cellId, _cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON);
 
             if (isJigLeft)
             {
