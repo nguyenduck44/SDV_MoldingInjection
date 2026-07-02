@@ -3281,6 +3281,7 @@ namespace SDV_MoldingInjection.Process
             Log.Info($"Validationing JIG '{jigID}'");
             if (EquipEventHelpers.SpecificValidation(isJigLeft ? 1 : 2, jigID, ref outCellID) == false)
             {
+                Log.Error("CIM_CELL_VALIDATION_FAIL");
                 return false;
             }
 
@@ -3295,6 +3296,7 @@ namespace SDV_MoldingInjection.Process
 
             if (EquipEventHelpers.CellTrackIn(isJigLeft ? 1 : 2, isJigLeft ? LeftCellId : RightCellId, 9, _cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON ? 2 : 3) == false)
             {
+                Log.Error("CIM_CELL_TRACKING_FAIL");
                 return false;
             }
 
@@ -3337,9 +3339,10 @@ namespace SDV_MoldingInjection.Process
                 {
                     CellJobProcessInfo_Right.UserDefine_TrackOutJudge = "O";
                     CellJobProcessInfo_Right.UserDefine_TrackOutDescription = "VALIDATION_FAIL";
-                    EquipEventHelpers.CellTrackOut(1, CellJobProcessInfo_Right, true, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Right_1, MaterialAssemblyArea_Right_2 });
+                    EquipEventHelpers.CellTrackOut(2, CellJobProcessInfo_Right, true, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Right_1, MaterialAssemblyArea_Right_2 });
                 }
 
+                Log.Error("CIM_CELL_JOB_PROCESS_START_FAIL");
                 return false;
             }
 
