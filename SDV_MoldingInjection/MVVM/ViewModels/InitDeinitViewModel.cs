@@ -30,10 +30,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         CommunicationHandle,
 
+        RecipeHandle,
+
         MotionDeviceHandle,
         IODeviceHandle,
-
-        RecipeHandle,
 
         ProcessHandle,
 
@@ -223,6 +223,19 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         Thread.Sleep(50);
                         _step++;
                         break;
+                    case EHandleStep.RecipeHandle:
+                        SubscibeResinWeightChanged();
+                        SubscribeSkipHeadChanged();
+                        Log.Debug("Load Recipes");
+                        MessageText = "Load Recipes";
+                        if (_recipeSelector.Load() == false)
+                        {
+                            ErrorMessages.Add("Recipes Load Fail.");
+                            Log.Debug("Recipe Load Fail");
+                        }
+                        Thread.Sleep(500);
+                        _step++;
+                        break;
                     case EHandleStep.MotionDeviceHandle:
                         Log.Debug("Connect Motion Devices");
 
@@ -257,19 +270,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         Thread.Sleep(50);
                         _step++;
                         break;
-                    case EHandleStep.RecipeHandle:
-                        SubscibeResinWeightChanged();
-                        SubscribeSkipHeadChanged();
-                        Log.Debug("Load Recipes");
-                        MessageText = "Load Recipes";
-                        if (_recipeSelector.Load() == false)
-                        {
-                            ErrorMessages.Add("Recipes Load Fail.");
-                            Log.Debug("Recipe Load Fail");
-                        }
-                        Thread.Sleep(50);
-                        _step++;
-                        break;
                     case EHandleStep.ProcessHandle:
                         Log.Debug("Init processes");
 
@@ -292,14 +292,14 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         break;
                     case EHandleStep.WorkDataHandle:
                         StartLogCleanupScheduler();
-                        Thread.Sleep(50);
+                        Thread.Sleep(100);
                         _step++;
                         break;
                     case EHandleStep.End:
                         _devices.Outputs.Lamp_Stop();
                         _machineStatus.MachineMode = _devices.Inputs.AutoSW.Value ? EMachineMode.Auto : EMachineMode.Teach;
                         _devices.Outputs.SWKeyLock.Value = false;
-                        Thread.Sleep(50);
+                        Thread.Sleep(100);
                         _step++;
                         break;
                     case EHandleStep.Error:
@@ -307,12 +307,12 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         {
                             Log.Error("Error: " + string.Join(", ", ErrorMessages));
                             MessageText = "Error: " + string.Join(", ", ErrorMessages);
-                            Thread.Sleep(500);
                         }
                         else
                         {
                             MessageText = "Initialization completed successfully.";
                         }
+                        Thread.Sleep(100);
                         _step++;
                         break;
                     case EHandleStep.Navigate:

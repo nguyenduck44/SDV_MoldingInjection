@@ -169,6 +169,8 @@ namespace SDV_MoldingInjection.Recipe
                 });
             }
 
+            if (_navigationStore.CurrentViewModel.GetType() == typeof(InitDeinitViewModel)) return;
+
             LogManager.GetLogger("Data").Info($"{propertyName} value changed {oldValue} -> {newValue}");
         }
 

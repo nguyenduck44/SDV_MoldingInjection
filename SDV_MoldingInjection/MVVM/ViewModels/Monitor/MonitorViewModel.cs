@@ -130,6 +130,17 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
         }
 
+        public ICommand HistoryDataNavigateCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    _navigationService.NavigateTo<HistoryDataViewModel>();
+                });
+            }
+        }
+
         public ICommand TerminalMessageNavigateCommand
         {
             get

@@ -51,6 +51,8 @@
                         Command="{Binding OPCallMsgNavigateCommand}" />
                 <Button Content="Interlock Msg"
                         Command="{Binding InterlockMsgNavigateCommand}" />
+                <Button Content="History Data"
+                        Command="{Binding HistoryDataNavigateCommand}" />
             </StackPanel>
         </GroupBox>
 

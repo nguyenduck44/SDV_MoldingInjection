@@ -5,7 +5,7 @@ namespace SDV_MoldingInjection.Recipe
 {
     public class InjectRecipe : RecipeBase
     {
-        [SingleRecipeDescription(Description = "XAxis ready position", Unit = Unit.mm)]
+        [SingleRecipeDescription(Description = "X-Axis ready position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
         [ParameterDescription(8)]
         public double XAxisReadyPos
@@ -21,7 +21,7 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _xAxisReadyPosOffset, value);
         }
 
-        [SingleRecipeDescription(Description = "XAxis work (inject) position", Unit = Unit.mm)]
+        [SingleRecipeDescription(Description = "X-Axis work (inject) position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
         [ParameterDescription(10)]
         public double XAxisInjectPos
@@ -37,7 +37,7 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _xAxisInjectPosOffset, value);
         }
 
-        [SingleRecipeDescription(Description = "YAxis ready position", Unit = Unit.mm)]
+        [SingleRecipeDescription(Description = "Y-Axis ready position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "YAxis")]
         [ParameterDescription(12)]
         public double YAxisReadyPos
@@ -53,7 +53,7 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _yAxisReadyPosOffset, value);
         }
 
-        [SingleRecipeDescription(Description = "YAxis work position (inject, chamber vacuum...)", Unit = Unit.mm)]
+        [SingleRecipeDescription(Description = "Y-Axis work position (inject, chamber vacuum...)", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "YAxis")]
         [ParameterDescription(14)]
         public double YAxisInjectPos

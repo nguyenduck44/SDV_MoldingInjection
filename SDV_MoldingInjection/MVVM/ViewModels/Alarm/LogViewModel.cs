@@ -12,9 +12,9 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 {
     public class LogViewModel : ViewModelBase
     {
-        private readonly IConfiguration _configuration;
+        protected readonly IConfiguration _configuration;
         private string _selectedDay;
-        private string LogFolder => _configuration["Folders:LogFolder"] ?? "";
+        protected virtual string LogFolder => _configuration["Folders:LogFolder"] ?? "";
         public LogViewModel(IConfiguration configuration)
         {
             _configuration = configuration;
