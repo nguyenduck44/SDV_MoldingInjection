@@ -6,9 +6,6 @@ using EQX.Core.Communication.CIM.Custom;
 using EQX.UI.Controls;
 using EQX.UI.MVVM;
 using SDV_MoldingInjection.Defines;
-using SDV_MoldingInjection.Process;
-using SDV_MoldingInjection.Recipe;
-using System.ComponentModel;
 using System.Windows.Input;
 using TOPENG_Device;
 
@@ -27,7 +24,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         public ICommand AdditionalMoldingDataNavigateCommand => new RelayCommand(() =>
         {
-           _navigationService.NavigateTo<AdditionalMoldingViewModel>();
+            _navigationService.NavigateTo<AdditionalMoldingViewModel>();
         });
 
         public ICommand CDASettingNavigateCommand => new RelayCommand(() =>
@@ -37,12 +34,12 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         public ICommand IdlePurgeDataNavigateCommand => new RelayCommand(() =>
         {
-           _navigationService.NavigateTo<IdlePurgeViewModel>();
+            _navigationService.NavigateTo<IdlePurgeViewModel>();
         });
 
         public ICommand OptionNavigateCommand => new RelayCommand(() =>
         {
-           _navigationService.NavigateTo<OptionViewModel>();
+            _navigationService.NavigateTo<OptionViewModel>();
         });
 
         public ICommand MaterialPortsViewNavigateCommand => new RelayCommand(() =>
@@ -73,16 +70,14 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         public ICommand RunModeChangeCommand => new RelayCommand(() =>
         {
-            EMachineRunMode currentMode = MachineStatus.MachineRunMode;
-            EMachineRunMode newMode = currentMode == EMachineRunMode.Auto ? EMachineRunMode.DryRun : EMachineRunMode.Auto;
-
-            bool? result = MessageBoxEx.ShowDialog($"Do you want to change RunMode {currentMode} -> {newMode}");
-
-            if (result == true)
+            var result = RunModeDialog.ShowRunModeDialog<EQX.Core.Common.EMachineRunMode>(new List<EQX.Core.Common.EMachineRunMode>()
             {
-                MachineStatus.MachineRunMode = newMode;
-                OnPropertyChanged(nameof(RunModeButtonContent));
-            }
+                EQX.Core.Common.EMachineRunMode.Auto,
+                EQX.Core.Common.EMachineRunMode.DryRun,
+                EQX.Core.Common.EMachineRunMode.PassRun,
+            });
+
+            if (result != null) MachineStatus.MachineRunMode = (EQX.Core.Common.EMachineRunMode)result;
         });
 
         public ICommand InjectTimeNavigateCommand => new RelayCommand(() =>
