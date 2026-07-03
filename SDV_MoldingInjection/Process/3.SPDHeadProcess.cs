@@ -1089,7 +1089,7 @@ namespace SDV_MoldingInjection.Process
                             break;
                         case ESequence.IdlePurge:
                             double heightChargeIdlePurge = _currentRecipe.IdlePurgeRecipe.IdlePurgeWeight * ((_pAxisBase_Pos - _currentSPDHeadRecipe.PAxisInjectChargePos) / _currentSPDHeadRecipe.ResinWeight);
-                            _pAxisCharge_Pos = _pAxisBase_Pos - heightChargeIdlePurge;
+                            _pAxisCharge_Pos = Math.Round(_pAxisBase_Pos - heightChargeIdlePurge, 3);
                             break;
                         case ESequence.DummyShot:
                         case ESequence.DummyShot_H1:
@@ -1097,7 +1097,7 @@ namespace SDV_MoldingInjection.Process
                         case ESequence.DummyShot_H3:
                         case ESequence.DummyShot_H4:
                             double heightChargeDummyShot = _currentSPDHeadRecipe.DummyShotWeight * ((_pAxisBase_Pos - _currentSPDHeadRecipe.PAxisInjectChargePos) / _currentSPDHeadRecipe.ResinWeight);
-                            _pAxisCharge_Pos = _pAxisBase_Pos - heightChargeDummyShot;
+                            _pAxisCharge_Pos = Math.Round(_pAxisBase_Pos - heightChargeDummyShot, 3);
                             break;
                         case ESequence.BubbleRemove:
                         case ESequence.BubbleRemove_H1:
@@ -1105,7 +1105,7 @@ namespace SDV_MoldingInjection.Process
                         case ESequence.BubbleRemove_H3:
                         case ESequence.BubbleRemove_H4:
                             double heightChargeBubbleRemove = _currentSPDHeadRecipe.BubbleRemoveWeight * ((_pAxisBase_Pos - _currentSPDHeadRecipe.PAxisInjectChargePos) / _currentSPDHeadRecipe.ResinWeight);
-                            _pAxisCharge_Pos = _pAxisBase_Pos - heightChargeBubbleRemove;
+                            _pAxisCharge_Pos = Math.Round(_pAxisBase_Pos - heightChargeBubbleRemove, 3);
                             break;
                         default: throw new NotImplementedException();
                     }
@@ -1215,7 +1215,7 @@ namespace SDV_MoldingInjection.Process
                         case ESequence.BubbleRemove_H4:
                             if (_bubbleRemoveRotateCount != 2)
                             {
-                                _pAxisInject_Pos = _pAxisCharge_Pos + (_bubbleRemoveRotateCount * Math.Abs(_pAxisCharge_Pos - _pAxisBase_Pos) / _bubbleRemoveTotalRotateCount);
+                                _pAxisInject_Pos = Math.Round(_pAxisCharge_Pos + (_bubbleRemoveRotateCount * Math.Abs(_pAxisCharge_Pos - _pAxisBase_Pos) / _bubbleRemoveTotalRotateCount), 3);
                             }
 
                             _gAxisBubbleRemove_Pos = GAxis.Status.ActualPosition + 180;
