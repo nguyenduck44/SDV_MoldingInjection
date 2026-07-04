@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
 using EQX.Core.Motion;
 using EQX.Core.Sequence;
+using EQX.InOut;
 using EQX.UI.Controls;
 using log4net;
 using SDV_MoldingInjection.Defines;
@@ -64,6 +65,17 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         #endregion
 
         #region Command
+        public ICommand ChamberCloseCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    Devices.Cylinders.ChamberOpenClose.Close();
+                });
+            }
+        }
+
         public ICommand SelectAllCommand
         {
             get
