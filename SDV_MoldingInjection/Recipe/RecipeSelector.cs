@@ -121,7 +121,7 @@ namespace SDV_MoldingInjection.Recipe
             ParameterWordArea = new ParameterWordArea();
         }
 
-        private async void SingleRecipe_RecipeChanged(object? oldValue, object? newValue, string? propertyName = null, int parameterIndex = -1)
+        private async void SingleRecipe_RecipeChanged(object? oldValue, object? newValue, string? propertyName = null, int parameterIndex = -1,PropertyInfo? propertyInfo = null)
         {
             if (isChangingModel) return;
 
