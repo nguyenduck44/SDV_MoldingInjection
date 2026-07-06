@@ -59,6 +59,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     FDCHelper.WriteFDCValue(EFDCValue.N02_U_T_VOL, (int)(BCVoltage * 1000));
                     FDCHelper.WriteFDCValue(EFDCValue.N02_U_R_CUR, (int)(ACurrent * 1000));
                     FDCHelper.WriteFDCValue(EFDCValue.N02_U_T_CUR, (int)(BCurrent * 1000));
+
+                    if (_accura2550.IsConnected == false)
+                    {
+                        _accura2550.Connect();
+                    }
                 });
             }
         }
