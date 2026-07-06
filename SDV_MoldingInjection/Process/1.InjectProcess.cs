@@ -1204,7 +1204,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.End:
-                    _needleCleanCount++;
+                    NeedleCleanCount++;
                     if (_currentRecipe.AdditionalMolding_Recipe.UseAddTail)
                     {
                         Sequence = ESequence.ResinInjectAddTail;
@@ -1216,9 +1216,10 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.Stop;
                         break;
                     }
-                    if (_optionRecipe.SkipDummyShot)
+                    if (_optionRecipe.SkipDummyShot && NeedleCleanCount >= Recipe.NiddleCleanCycleCount)
                     {
-                        Log.Debug("Skip DummyShot");
+                        Log.Info("Skip DummyShot Next Sequence To NeddleClean");
+                        NeedleCleanCount = 0;
                         Sequence = ESequence.NeedleCleaning;
                         break;
                     }
@@ -1545,7 +1546,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.Set_Cell1ReplyBitOn:
                     CellIdTrackInStatus = CIMValidation(isJigLeft: true);
                     CellId1Reply = true;
-                    Log.Debug("Cell 1 Reply Bit (B2007) On");
+                    Log.Debug($"Cell 1 Reply Bit (B2007) On | B2109 {CIMValidation(isJigLeft: true)}");
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Wait_Cell1SendBitOff:
@@ -2154,9 +2155,12 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.Stop;
                     }
 
-                    if (sequence == ESequence.DummyShot && Parent!.Sequence == ESequence.AutoRun)
+                    if (sequence == ESequence.DummyShot && 
+                        Parent!.Sequence == ESequence.AutoRun &&
+                        NeedleCleanCount >= Recipe.NiddleCleanCycleCount)
                     {
-                        Log.Info("Set next sequence to needdle clean");
+                        Log.Info("Set Next Sequence To NeeddleClean");
+                        NeedleCleanCount = 0;
                         Sequence = ESequence.NeedleCleaning;
                     }
                     else
@@ -3526,7 +3530,7 @@ namespace SDV_MoldingInjection.Process
         private int inputCount;
         private int outputCount;
         private int DryutputCount;
-        private int _needleCleanCount = 0;
+        private int NeedleCleanCount = 0;
         private int _nzlCleanCount = 0;
         private double _yAxisCleaningTargetMm;
         private double _waitTimeNoProduct;
