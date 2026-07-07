@@ -142,8 +142,7 @@
                 BorderThickness="3 0">
                 <UniformGrid
                     Rows="2">
-                    <TextBlock
-                        Text="EQP ID : EQPID_01"
+                    <TextBlock Text="{Binding Information.EQPID, StringFormat='{}EQP ID : {0}'}"
                         Margin="10 0"
                         FontWeight="SemiBold"
                         FontSize="16"

@@ -10,6 +10,7 @@ namespace SDV_MoldingInjection.Recipe
         private double idlePurgeAfterStopTime;
         private double idlePurgeCycleTime;
         private double _idlePurgeWeight;
+        private double _idlePurgeCycleTime;
         #endregion
 
         [SingleRecipeDescription(Description = "IdlePurge Weight", Unit = Unit.mg)]
@@ -48,6 +49,19 @@ namespace SDV_MoldingInjection.Recipe
             {
                 if (idlePurgeAfterStopTime == value) return;
                 SetRecipe(ref idlePurgeAfterStopTime, value);
+            }
+        }
+
+        [SingleRecipeDescription(Description = "Idle Purge Cycle Time", Unit = Unit.Minute)]
+        [SingleRecipeMinMax(Max = 1800, Min = 0)]
+        [ParameterDescription(239)]
+        public double IdlePurgeCycleTime
+        {
+            get { return _idlePurgeCycleTime; }
+            set
+            {
+                if (_idlePurgeCycleTime == value) return;
+                SetRecipe(ref _idlePurgeCycleTime, value);
             }
         }
     }

@@ -64,6 +64,8 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddViewModel<OPCallMessageViewModel>();
                 services.AddViewModel<InterlockMessageViewModel>();
                 services.AddViewModel<TerminalMessageViewModel>();
+                services.AddViewModel<HistoryDataViewModel>();
+                services.AddViewModel<EBoxMainPowerMonitoringViewModel>();
                 services.AddSingleton<MotionsStatusViewModel>((s) =>
                 {
                     return new MotionsStatusViewModel()

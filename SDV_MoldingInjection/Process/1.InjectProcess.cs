@@ -1204,7 +1204,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcResinInjectStep.End:
-                    _needleCleanCount++;
+                    NeedleCleanCount++;
                     if (_currentRecipe.AdditionalMolding_Recipe.UseAddTail)
                     {
                         Sequence = ESequence.ResinInjectAddTail;
@@ -1216,9 +1216,10 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.Stop;
                         break;
                     }
-                    if (_optionRecipe.SkipDummyShot)
+                    if (_optionRecipe.SkipDummyShot && NeedleCleanCount >= Recipe.NiddleCleanCycleCount)
                     {
-                        Log.Debug("Skip DummyShot");
+                        Log.Info("Skip DummyShot Next Sequence To NeddleClean");
+                        NeedleCleanCount = 0;
                         Sequence = ESequence.NeedleCleaning;
                         break;
                     }
@@ -1359,6 +1360,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.Chamber_CoverOpen:
                     Log.Debug($"Open {ChamberOpenClose} cylinder");
                     WriteMCC(LastAction, EMCCAction.IJ01_CHAMBER_COVER_OPEN);
+
                     ChamberOpenClose.Open();
                     Wait(_currentRecipe.CylinderDelayTimeRecipe.ChamberOpenCloseCylinderMoveDelay, ChamberOpenClose.IsOpen);
                     Step.RunStep++;
@@ -1368,6 +1370,12 @@ namespace SDV_MoldingInjection.Process
                     {
                         RaiseWarning(EWarning.CY_MOLD_CHAMBER_OPEN_FAIL);
                         break;
+                    }
+
+                    if (isLoading == false)
+                    {
+                        Log.Debug("Set TactTimeCounter End");
+                        _tactTimeList.TactCounterEnd(((LeftJigDetect && RightJigDetect) || _machineStatus.IsDryRunMode) ? 2 : 1);
                     }
 
                     TactTime.SetTactTime();
@@ -1435,6 +1443,8 @@ namespace SDV_MoldingInjection.Process
                     if (CellId1SendOn ||
                        (_machineStatus.IsDryRunMode && isJigLeftLoaded == false && isLoadingDry && _machineStatus.RunWithoutInOut))
                     {
+                        WriteMCC(LastAction, EMCCAction.IJ01_IN_WAIT_TIME_JIG_1);
+                        Thread.Sleep(500);
                         isJigLeftLoaded = true;
                         if ((LeftJigDetect || LeftJigTiltState) &&
                             _machineStatus.RunWithoutInOut == false)
@@ -1443,8 +1453,6 @@ namespace SDV_MoldingInjection.Process
                             break;
                         }
 
-                        WriteMCC(LastAction, EMCCAction.IJ01_IN_WAIT_TIME_JIG_1);
-                        WriteMCC(LastAction, EMCCAction.IJ01_COMPONENT_IN_JIG_1);
                         Log.Debug("Cell ID 1 (B2107) Bit On -> Get Cell ID 1");
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.GetCellId1;
                         break;
@@ -1453,6 +1461,9 @@ namespace SDV_MoldingInjection.Process
                     if (CellId2SendOn ||
                        (_machineStatus.IsDryRunMode && isJigRightLoaded == false && isLoadingDry && _machineStatus.RunWithoutInOut))
                     {
+                        WriteMCC(LastAction, EMCCAction.IJ01_IN_WAIT_TIME_JIG_2);
+                        Thread.Sleep(500);
+
                         isJigRightLoaded = true;
                         if ((RightJigDetect || RightJigTiltState) &&
                             _machineStatus.RunWithoutInOut == false)
@@ -1461,8 +1472,6 @@ namespace SDV_MoldingInjection.Process
                             break;
                         }
 
-                        WriteMCC(LastAction, EMCCAction.IJ01_IN_WAIT_TIME_JIG_2);
-                        WriteMCC(LastAction, EMCCAction.IJ01_COMPONENT_IN_JIG_2);
                         Log.Debug("Cell ID 2 Bit (B2108) On -> Get Cell ID 2");
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.GetCellId2;
                         break;
@@ -1473,11 +1482,11 @@ namespace SDV_MoldingInjection.Process
                         _optionRecipe.SkipHead12 == false &&
                         JigStatuses[(int)EJig.JigLeft] == EJigStatus.MoldingFinish)
                     {
-                        WriteMCC(LastAction, EMCCAction.IJ01_COMPONENT_OUT_JIG_1);
+                        WriteMCC(LastAction, EMCCAction.IJ01_OUT_WAIT_TIME_JIG_1);
+
                         Log.Debug("Unloading Left Jig");
                         LeftJigID = string.Empty;
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.CIM_TrackOut_LeftJig;
-                        WriteMCC(LastAction, EMCCAction.IJ01_OUT_WAIT_TIME_JIG_1);
                         break;
                     }
 
@@ -1485,12 +1494,12 @@ namespace SDV_MoldingInjection.Process
                         _optionRecipe.SkipHead34 == false &&
                         JigStatuses[(int)EJig.JigRight] == EJigStatus.MoldingFinish)
                     {
-                        WriteMCC(LastAction, EMCCAction.IJ01_COMPONENT_OUT_JIG_2);
+                        WriteMCC(LastAction, EMCCAction.IJ01_OUT_WAIT_TIME_JIG_2);
+
                         Log.Debug("Unloading Right Jig");
                         RightJigID = string.Empty;
                         isLoadingDry = true;
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.CIM_TrackOut_RightJig;
-                        WriteMCC(LastAction, EMCCAction.IJ01_OUT_WAIT_TIME_JIG_2);
                         break;
                     }
 
@@ -1511,9 +1520,11 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Load_Jig_Check;
                     break;
                 case EMoldProcLoadingUnloadingStep.GetCellId1:
+                    _cIMCollection.WriteMCC(LastAction, new List<EMCCAction>() { EMCCAction.IJ01_COMPONENT_IN_JIG_1, EMCCAction.IJ01_GET_JIG_ID_1_AND_CHECKIN });
+                    LastAction = EMCCAction.IJ01_GET_JIG_ID_1_AND_CHECKIN;
+
                     string LeftJigIDDryRun = "LEFT" + random.Next(100, 1000).ToString();
                     LeftJigID = _machineStatus.RunWithoutInOut ? LeftJigIDDryRun : GetCellId(isJigLeft: true);
-                    WriteMCC(LastAction, EMCCAction.IJ01_GET_JIG_ID_1_AND_CHECKIN);
                     Log.Info($"Get Left Jig ID '{LeftJigID}'");
                     Step.RunStep++;
                     break;
@@ -1533,10 +1544,9 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Set_Cell1ReplyBitOn:
-                    WriteMCC(LastAction, EMCCAction.IJ01_GET_REPLY_VALIDATION_JIG_1);
                     CellIdTrackInStatus = CIMValidation(isJigLeft: true);
                     CellId1Reply = true;
-                    Log.Debug("Cell 1 Reply Bit (B2007) On");
+                    Log.Debug($"Cell 1 Reply Bit (B2007) On | B2109 {CIMValidation(isJigLeft: true)}");
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Wait_Cell1SendBitOff:
@@ -1557,13 +1567,18 @@ namespace SDV_MoldingInjection.Process
                     CellIdTrackInStatus = false;
                     Log.Debug("Cell TrackIn Status Bit (B2009) Off");
                     UpdateBothJigStatus(EJigStatus.Ready, isLeftJig: true);
-                    WriteMCC(LastAction, EMCCAction.IJ01_WAIT_INOUT_LD_UL_1ST);
+
+                    _cIMCollection.WriteMCC(new List<EMCCAction>() { EMCCAction.IJ01_COMPONENT_IN_JIG_1, EMCCAction.IJ01_GET_JIG_ID_1_AND_CHECKIN }, EMCCAction.IJ01_WAIT_INOUT_LD_UL_1ST);
+                    LastAction = EMCCAction.IJ01_WAIT_INOUT_LD_UL_1ST;
+
                     Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandler_Working_RequestStart;
                     break;
                 case EMoldProcLoadingUnloadingStep.GetCellId2:
+                    _cIMCollection.WriteMCC(LastAction, new List<EMCCAction>() { EMCCAction.IJ01_COMPONENT_IN_JIG_2, EMCCAction.IJ01_GET_JIG_ID_2_AND_CHECKIN });
+                    LastAction = EMCCAction.IJ01_GET_JIG_ID_2_AND_CHECKIN;
+
                     RightJigID = _machineStatus.RunWithoutInOut ? "RIGHT" + random.Next(100, 1000).ToString() : GetCellId(isJigLeft: false);
                     Log.Info($"Get Right Jig ID '{RightJigID}'");
-                    WriteMCC(LastAction, EMCCAction.IJ01_GET_JIG_ID_2_AND_CHECKIN);
                     if (_optionRecipe.SkipHead12 == false)
                     {
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Set_Cell2ReplyBitOn;
@@ -1588,7 +1603,6 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Set_Cell2ReplyBitOn:
-                    WriteMCC(LastAction, EMCCAction.IJ01_GET_REPLY_VALIDATION_JIG_2);
                     CellIdTrackInStatus = CIMValidation(isJigLeft: false);
                     CellId2Reply = true;
                     Log.Debug("Cell 2 Reply Bit (B2008) On");
@@ -1612,12 +1626,18 @@ namespace SDV_MoldingInjection.Process
                     CellIdTrackInStatus = false;
                     Log.Debug("Cell TrackIn Status Bit (B2009) Off");
                     UpdateBothJigStatus(EJigStatus.Ready, isLeftJig: false);
-                    WriteMCC(LastAction, EMCCAction.IJ01_WAIT_INOUT_LD_UL_2ND);
+
+                    _cIMCollection.WriteMCC(new List<EMCCAction>() { EMCCAction.IJ01_COMPONENT_IN_JIG_2, EMCCAction.IJ01_GET_JIG_ID_2_AND_CHECKIN }, EMCCAction.IJ01_WAIT_INOUT_LD_UL_2ND);
+                    LastAction = EMCCAction.IJ01_WAIT_INOUT_LD_UL_2ND;
+
                     Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandler_Working_RequestStart;
                     break;
                 case EMoldProcLoadingUnloadingStep.CIM_TrackOut_LeftJig:
                     Log.Debug("Left Jig TrackOut");
-                    WriteMCC(LastAction, EMCCAction.IJ01_PUT_UNLOAD_JIG_1);
+
+                    _cIMCollection.WriteMCC(LastAction, new List<EMCCAction>() { EMCCAction.IJ01_COMPONENT_OUT_JIG_1, EMCCAction.IJ01_PUT_UNLOAD_JIG_1 });
+                    LastAction = EMCCAction.IJ01_PUT_UNLOAD_JIG_1;
+
                     if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
                     {
                         if (CellJobProcessInfo_Left == null)
@@ -1641,13 +1661,16 @@ namespace SDV_MoldingInjection.Process
                         outputCount++;
                     }
 
-                    WriteMCC(LastAction, EMCCAction.IJ01_WAIT_INOUT_LD_UL_3RD);
+                    _cIMCollection.WriteMCC(new List<EMCCAction>() { EMCCAction.IJ01_COMPONENT_OUT_JIG_1, EMCCAction.IJ01_PUT_UNLOAD_JIG_1 }, EMCCAction.IJ01_WAIT_INOUT_LD_UL_3RD);
+                    LastAction = EMCCAction.IJ01_WAIT_INOUT_LD_UL_3RD;
+
                     Step.RunStep = _optionRecipe.SkipHead34 ?
                         (int)EMoldProcLoadingUnloadingStep.Unloading_WriteData :
                         (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandler_Working_RequestStart;
                     break;
                 case EMoldProcLoadingUnloadingStep.CIM_TrackOut_RightJig:
-                    WriteMCC(LastAction, EMCCAction.IJ01_PUT_UNLOAD_JIG_2);
+                    _cIMCollection.WriteMCC(LastAction, new List<EMCCAction>() { EMCCAction.IJ01_COMPONENT_OUT_JIG_2, EMCCAction.IJ01_PUT_UNLOAD_JIG_2 });
+                    LastAction = EMCCAction.IJ01_PUT_UNLOAD_JIG_2;
 
                     if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
                     {
@@ -1672,21 +1695,23 @@ namespace SDV_MoldingInjection.Process
                         outputCount++;
                     }
 
-                    WriteMCC(LastAction, EMCCAction.IJ01_WAIT_INOUT_LD_UL_4TH);
+                    _cIMCollection.WriteMCC(new List<EMCCAction>() { EMCCAction.IJ01_COMPONENT_OUT_JIG_2, EMCCAction.IJ01_PUT_UNLOAD_JIG_2 }, EMCCAction.IJ01_WAIT_INOUT_LD_UL_4TH);
+                    LastAction = EMCCAction.IJ01_WAIT_INOUT_LD_UL_4TH;
+
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Unloading_WriteData:
                     Log.Debug($"Write data output count: {outputCount}");
                     _productionService.WriteData(EProductionWriteType.Output, outputCount);
-                    if(IsFirstCycle)
-                    {
-                        IsFirstCycle = false;
-                        _tactTimeList.TactCounterStart();
-                    }
-                    else
-                    {
-                        _tactTimeList.TactCounterEnd(_machineStatus.IsDryRunMode ? 2 : outputCount);
-                    }
+                    //if(IsFirstCycle)
+                    //{
+                    //    IsFirstCycle = false;
+                    //    _tactTimeList.TactCounterStart();
+                    //}
+                    //else
+                    //{
+                    //    _tactTimeList.TactCounterEnd(_machineStatus.IsDryRunMode ? 2 : outputCount);
+                    //}
 
                     outputCount = 0;
 
@@ -1750,6 +1775,8 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Write data input count: {inputCount}");
                     _productionService.WriteData(EProductionWriteType.Input, inputCount);
                     inputCount = 0;
+                    Log.Debug("Set TactTimeCounter Start");
+                    _tactTimeList.TactCounterStart();
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Chamber_CoverClose:
@@ -2117,7 +2144,7 @@ namespace SDV_MoldingInjection.Process
                     if (sequence == ESequence.IdlePurge)
                     {
                         Log.Debug("Wait next cycle IdlePurge");
-                        Wait(_currentRecipe.IdlePurgeRecipe.IdlePurgeAfterStopTime * 60);
+                        Wait(_currentRecipe.IdlePurgeRecipe.IdlePurgeCycleTime * 60);
                         Step.RunStep = (int)EMoldProcDummyShotStep.Chamber_Close;
                         break;
                     }
@@ -2128,9 +2155,12 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.Stop;
                     }
 
-                    if (sequence == ESequence.DummyShot && Parent!.Sequence == ESequence.AutoRun)
+                    if (sequence == ESequence.DummyShot && 
+                        Parent!.Sequence == ESequence.AutoRun &&
+                        NeedleCleanCount >= Recipe.NiddleCleanCycleCount)
                     {
-                        Log.Info("Set next sequence to needdle clean");
+                        Log.Info("Set Next Sequence To NeeddleClean");
+                        NeedleCleanCount = 0;
                         Sequence = ESequence.NeedleCleaning;
                     }
                     else
@@ -3270,8 +3300,9 @@ namespace SDV_MoldingInjection.Process
             string jigID = isJigLeft ? LeftJigID : RightJigID;
 
             Log.Info($"Validationing JIG '{jigID}'");
-            if (EquipEventHelpers.SpecificValidation(1, jigID, ref outCellID) == false)
+            if (EquipEventHelpers.SpecificValidation(isJigLeft ? 1 : 2, jigID, ref outCellID) == false)
             {
+                Log.Error("CIM_CELL_VALIDATION_FAIL");
                 return false;
             }
 
@@ -3284,8 +3315,9 @@ namespace SDV_MoldingInjection.Process
                 RightCellId = outCellID;
             }
 
-            if (EquipEventHelpers.CellTrackIn(1, isJigLeft ? LeftCellId : RightCellId, 9, _cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON ? 2 : 3) == false)
+            if (EquipEventHelpers.CellTrackIn(isJigLeft ? 1 : 2, isJigLeft ? LeftCellId : RightCellId, 9, _cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON ? 2 : 3) == false)
             {
+                Log.Error("CIM_CELL_TRACKING_FAIL");
                 return false;
             }
 
@@ -3293,7 +3325,7 @@ namespace SDV_MoldingInjection.Process
 
             Log.Info($"Jig '{cellId}' tracking successed");
 
-            CellJobProcessCimToPlcArea cellJobProcess = EquipEventHelpers.CellJobProcessConfirm(1, cellId, _cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON);
+            CellJobProcessCimToPlcArea cellJobProcess = EquipEventHelpers.CellJobProcessConfirm(isJigLeft ? 1 : 2, cellId, _cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON);
 
             if (isJigLeft)
             {
@@ -3328,9 +3360,10 @@ namespace SDV_MoldingInjection.Process
                 {
                     CellJobProcessInfo_Right.UserDefine_TrackOutJudge = "O";
                     CellJobProcessInfo_Right.UserDefine_TrackOutDescription = "VALIDATION_FAIL";
-                    EquipEventHelpers.CellTrackOut(1, CellJobProcessInfo_Right, true, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Right_1, MaterialAssemblyArea_Right_2 });
+                    EquipEventHelpers.CellTrackOut(2, CellJobProcessInfo_Right, true, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Right_1, MaterialAssemblyArea_Right_2 });
                 }
 
+                Log.Error("CIM_CELL_JOB_PROCESS_START_FAIL");
                 return false;
             }
 
@@ -3470,6 +3503,7 @@ namespace SDV_MoldingInjection.Process
             _cIMCollection.WriteMCC(lastAction, action);
             LastAction = action;
         }
+     
         private void WriteMCC(EMCCAction lastAction, EMCCAction action, EMCCUnit unit, string jigId)
         {
             _cIMCollection.WriteMCC(lastAction, action, unit, jigId);
@@ -3496,7 +3530,7 @@ namespace SDV_MoldingInjection.Process
         private int inputCount;
         private int outputCount;
         private int DryutputCount;
-        private int _needleCleanCount = 0;
+        private int NeedleCleanCount = 0;
         private int _nzlCleanCount = 0;
         private double _yAxisCleaningTargetMm;
         private double _waitTimeNoProduct;

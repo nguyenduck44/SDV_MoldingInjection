@@ -178,6 +178,29 @@ namespace SDV_MoldingInjection.Defines.CIM
             WriteMCC(lastAction, nextAction);
         }
 
+        public void WriteMCC(EMCCAction lastAction, List<EMCCAction> nextActions)
+        {
+            DateTime dt = DateTime.Now;
+
+            WriteMCC_OnlyEnd(lastAction, dt);
+
+            foreach (var nextAction in nextActions)
+            {
+                WriteMCC_OnlyStart(nextAction, dt);
+            }
+        }
+
+        public void WriteMCC(List<EMCCAction> lastActions, EMCCAction nextAction)
+        {
+            DateTime dt = DateTime.Now;
+            foreach (var lastAction in lastActions)
+            {
+                WriteMCC_OnlyEnd(lastAction, dt);
+            }
+
+            WriteMCC_OnlyStart(nextAction, dt);
+        }
+
         public void WriteMCC_OnlyStart(EMCCAction mCCAction, DateTime? dt = null)
         {
             if ((int)mCCAction >= MCCActionMap.Count) return;
@@ -194,6 +217,15 @@ namespace SDV_MoldingInjection.Defines.CIM
             mCCLinkIEWords.WriteWords(cIMMCCActionInfo.StartTimeAddress, 4, time);
         }
 
+        public void WriteMCC_OnlyStart(List<EMCCAction> mCCActions)
+        {
+            DateTime dt = DateTime.Now;
+            foreach (var action in mCCActions)
+            {
+                WriteMCC_OnlyStart(action, dt);
+            }
+        }
+
         public void WriteMCC_OnlyEnd(EMCCAction mCCAction, DateTime? dt = null)
         {
             if ((int)mCCAction >= MCCActionMap.Count) return;
@@ -208,6 +240,15 @@ namespace SDV_MoldingInjection.Defines.CIM
                 (short)(dt == null ? DateTime.Now.Millisecond : dt.Value.Millisecond),
             ];
             mCCLinkIEWords.WriteWords(cIMMCCActionInfo.EndTimeAddress, 4, time);
+        }
+
+        public void WriteMCC_OnlyEnd(List<EMCCAction> mCCActions)
+        {
+            DateTime dt = DateTime.Now;
+            foreach (var action in mCCActions)
+            {
+                WriteMCC_OnlyEnd(action, dt);
+            }
         }
 
         public void WriteMCC_CellID(EMCCUnit unit, string cellID)
@@ -283,7 +324,7 @@ namespace SDV_MoldingInjection.Defines.CIM
             #endregion
 
             #region Utility
-            Application.Current.Dispatcher.Invoke(() =>
+            Application.Current?.Dispatcher.Invoke(() =>
             {
                 FDCHelper.WriteFDCValue(EFDCValue.MAIN_PANEL_TEMPRATURE, (int)(_devices.PanelIndicator.Temperature * 1000));
                 FDCHelper.WriteFDCValue(EFDCValue.MAIN_PANEL_HUMIDITY, (int)(_devices.PanelIndicator.Humidity * 1000));

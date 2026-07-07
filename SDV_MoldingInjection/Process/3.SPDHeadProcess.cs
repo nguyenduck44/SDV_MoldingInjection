@@ -1070,15 +1070,6 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.Charge_PosVel_Calculte:
-                    if (sequence == ESequence.ResinInject)
-                    {
-                        WriteHeadMCC(EMCCAction.SP01_MOVE_T_TO_INJECT_GATE_CLOSE_POS, EMCCAction.SP01_CALCULATE_CHARGE_INJECT);
-                    }
-                    else if (sequence == ESequence.DummyShot)
-                    {
-                        WriteHeadMCC(EMCCAction.SP01_MOVE_T_TO_DUMMY_GATE_CLOSE_POS, EMCCAction.SP01_CALCULATE_DUMMY_CHARGE_POS);
-                    }
-
                     switch (sequence)
                     {
                         case ESequence.ResinInject:
@@ -1089,7 +1080,7 @@ namespace SDV_MoldingInjection.Process
                             break;
                         case ESequence.IdlePurge:
                             double heightChargeIdlePurge = _currentRecipe.IdlePurgeRecipe.IdlePurgeWeight * ((_pAxisBase_Pos - _currentSPDHeadRecipe.PAxisInjectChargePos) / _currentSPDHeadRecipe.ResinWeight);
-                            _pAxisCharge_Pos = _pAxisBase_Pos - heightChargeIdlePurge;
+                            _pAxisCharge_Pos = Math.Round(_pAxisBase_Pos - heightChargeIdlePurge, 3);
                             break;
                         case ESequence.DummyShot:
                         case ESequence.DummyShot_H1:
@@ -1097,7 +1088,7 @@ namespace SDV_MoldingInjection.Process
                         case ESequence.DummyShot_H3:
                         case ESequence.DummyShot_H4:
                             double heightChargeDummyShot = _currentSPDHeadRecipe.DummyShotWeight * ((_pAxisBase_Pos - _currentSPDHeadRecipe.PAxisInjectChargePos) / _currentSPDHeadRecipe.ResinWeight);
-                            _pAxisCharge_Pos = _pAxisBase_Pos - heightChargeDummyShot;
+                            _pAxisCharge_Pos = Math.Round(_pAxisBase_Pos - heightChargeDummyShot, 3);
                             break;
                         case ESequence.BubbleRemove:
                         case ESequence.BubbleRemove_H1:
@@ -1105,7 +1096,7 @@ namespace SDV_MoldingInjection.Process
                         case ESequence.BubbleRemove_H3:
                         case ESequence.BubbleRemove_H4:
                             double heightChargeBubbleRemove = _currentSPDHeadRecipe.BubbleRemoveWeight * ((_pAxisBase_Pos - _currentSPDHeadRecipe.PAxisInjectChargePos) / _currentSPDHeadRecipe.ResinWeight);
-                            _pAxisCharge_Pos = _pAxisBase_Pos - heightChargeBubbleRemove;
+                            _pAxisCharge_Pos = Math.Round(_pAxisBase_Pos - heightChargeBubbleRemove, 3);
                             break;
                         default: throw new NotImplementedException();
                     }
@@ -1114,8 +1105,8 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcCommonStep.PAxis_ChargePos_Move:
                     if (sequence == ESequence.ResinInject)
                     {
-                        WriteHeadMCC(EMCCAction.SP01_CALCULATE_CHARGE_INJECT, EMCCAction.SP01_MOVE_Z_TO_INJECT_CHARGE_POS);
-                        if (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing)
+                        WriteHeadMCC(EMCCAction.SP01_MOVE_T_TO_INJECT_GATE_CLOSE_POS, EMCCAction.SP01_MOVE_Z_TO_INJECT_CHARGE_POS);
+                        if (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing || _machineStatus.IsPassRunMode)
                         {
                             Log.Debug("DryRun Or SkipDispensing PAxis Not Move");
                             Step.RunStep++;
@@ -1124,8 +1115,8 @@ namespace SDV_MoldingInjection.Process
                     }
                     else if (sequence == ESequence.DummyShot)
                     {
-                        WriteHeadMCC(EMCCAction.SP01_CALCULATE_DUMMY_CHARGE_POS, EMCCAction.SP01_MOVE_Z_TO_DUMMY_CHARGE_POS);
-                        if (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing)
+                        WriteHeadMCC(EMCCAction.SP01_MOVE_T_TO_DUMMY_GATE_CLOSE_POS, EMCCAction.SP01_MOVE_Z_TO_DUMMY_CHARGE_POS);
+                        if (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing || _machineStatus.IsPassRunMode)
                         {
                             Log.Debug("DryRun Or SkipDispensing PAxis Not Move");
                             Step.RunStep++;
@@ -1141,7 +1132,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESPDHeadProcCommonStep.PAxis_ChargePos_MoveWait:
                     if (WaitTimeOutOccurred &&
-                        _machineStatus.IsDryRunMode == false &&
+                        _machineStatus.IsAutoRunMode &&
                         OptionRecipe.SkipDispensing == false)
                     {
                         RaiseHeadAlarm(EAlarm.MO_SPD_H01_P1_AXIS_CHARGE_POS_TIMEOUT);
@@ -1153,15 +1144,6 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.Base_PosVel_Calculte:
-                    if (sequence == ESequence.ResinInject)
-                    {
-                        WriteHeadMCC(EMCCAction.SP01_MOVE_Z_TO_INJECT_CHARGE_POS, EMCCAction.SP01_CALCULATE_INJECT_BASE_POS);
-                    }
-                    else if (sequence == ESequence.DummyShot)
-                    {
-                        WriteHeadMCC(EMCCAction.SP01_MOVE_Z_TO_DUMMY_CHARGE_POS, EMCCAction.SP01_CALCULATE_BASE_DUMMY);
-                    }
-
                     Log.Debug("Calculate InjectPos and Velocity");
                     _pAxisInject_Pos = _pAxisBase_Pos;
                     switch (sequence)
@@ -1215,7 +1197,7 @@ namespace SDV_MoldingInjection.Process
                         case ESequence.BubbleRemove_H4:
                             if (_bubbleRemoveRotateCount != 2)
                             {
-                                _pAxisInject_Pos = _pAxisCharge_Pos + (_bubbleRemoveRotateCount * Math.Abs(_pAxisCharge_Pos - _pAxisBase_Pos) / _bubbleRemoveTotalRotateCount);
+                                _pAxisInject_Pos = Math.Round(_pAxisCharge_Pos + (_bubbleRemoveRotateCount * Math.Abs(_pAxisCharge_Pos - _pAxisBase_Pos) / _bubbleRemoveTotalRotateCount), 3);
                             }
 
                             _gAxisBubbleRemove_Pos = GAxis.Status.ActualPosition + 180;
@@ -1260,11 +1242,11 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcCommonStep.Gate_Open:
                     if (sequence == ESequence.ResinInject)
                     {
-                        WriteHeadMCC(EMCCAction.SP01_CALCULATE_INJECT_BASE_POS, EMCCAction.SP01_MOVE_T_TO_GATE_INJECT_OPEN_POS);
+                        WriteHeadMCC(EMCCAction.SP01_MOVE_Z_TO_INJECT_CHARGE_POS, EMCCAction.SP01_MOVE_T_TO_GATE_INJECT_OPEN_POS);
                     }
                     else if (sequence == ESequence.DummyShot)
                     {
-                        WriteHeadMCC(EMCCAction.SP01_CALCULATE_BASE_DUMMY, EMCCAction.SP01_MOVE_T_TO_DUMMY_GATE_OPEN_POS);
+                        WriteHeadMCC(EMCCAction.SP01_MOVE_Z_TO_DUMMY_CHARGE_POS, EMCCAction.SP01_MOVE_T_TO_DUMMY_GATE_OPEN_POS);
                     }
 
                     Log.Debug($"{GAxis.Name} moving to OpenPos [{_currentSPDHeadRecipe.GateOpenPos}°]");
@@ -1321,7 +1303,7 @@ namespace SDV_MoldingInjection.Process
                     if (sequence == ESequence.ResinInject)
                     {
                         WriteHeadMCC(EMCCAction.SP01_WAIT_REQUEST_INJECT, EMCCAction.SP01_MOVE_Z_TO_BASE_INJECT_POS);
-                        if (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing)
+                        if (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing || _machineStatus.IsPassRunMode)
                         {
                             Log.Debug("Dry Run Mode Or Skip Dispensing -> P Axis Not Move");
                             CarrierJigStatus.InjectTime = 0;
@@ -1336,7 +1318,7 @@ namespace SDV_MoldingInjection.Process
                     else if (sequence == ESequence.DummyShot)
                     {
                         WriteHeadMCC(EMCCAction.SP01_WAIT_REQUEST_DUMMY, EMCCAction.SP01_MOVE_Z_TO_BASE_DUMMY_POS);
-                        if (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing)
+                        if (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing || _machineStatus.IsPassRunMode)
                         {
                             Log.Debug("DryRun Mode Or SkipDispensing -> P Axis Not Move");
                             Step.RunStep++;
@@ -1409,7 +1391,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESPDHeadProcCommonStep.PAxis_InjectPos_MoveWait:
                     if (WaitTimeOutOccurred &&
-                        _machineStatus.IsDryRunMode == false &&
+                        _machineStatus.IsAutoRunMode &&
                         OptionRecipe.SkipDispensing == false)
                     {
                         RaiseHeadAlarm(EAlarm.MO_SPD_H01_P1_AXIS_INJECT_POS_TIMEOUT);
@@ -1450,7 +1432,7 @@ namespace SDV_MoldingInjection.Process
                     if (sequence == ESequence.ResinInject)
                     {
                         TactTime.SetTactTime();
-                        WriteHeadMCC(EMCCAction.SP01_MOVE_Z_TO_BASE_INJECT_POS, EMCCAction.SP01_ACT_WAIT_DUMMY_SHOT);
+                        WriteHeadMCC(EMCCAction.SP01_MOVE_Z_TO_BASE_INJECT_POS, OptionRecipe.SkipDummyShot ? EMCCAction.SP01_IN_WAIT_TIME : EMCCAction.SP01_ACT_WAIT_DUMMY_SHOT);
                     }
                     else if (sequence == ESequence.DummyShot)
                     {

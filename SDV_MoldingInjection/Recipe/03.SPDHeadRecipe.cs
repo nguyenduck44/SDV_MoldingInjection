@@ -30,7 +30,7 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _resinWeightSpec, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
-        [SingleRecipeDescription(Description = "Z-Axis SAFETY position (ready position)", Unit = Unit.mm)]
+        [SingleRecipeDescription(Description = "Z-Axis SAFETY Position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "ZAxis")]
         [SingleRecipeMinMax(Min = -5)]
         [ParameterDescription(35)]
@@ -74,7 +74,7 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _zAxisInjectPosOffset, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
-        [SingleRecipeDescription(Description = "Z-Axis INJECT Up Distance", Detail ="Z Axis Move Inject Position With Slow Speed", Unit = Unit.mm)]
+        [SingleRecipeDescription(Description = "Z-Axis INJECT GAP", Detail ="Z Axis Move Inject Position With Slow Speed", Unit = Unit.mm)]
         [ParameterDescription(39)]
         public double ZAxisInjectUpDistance
         {

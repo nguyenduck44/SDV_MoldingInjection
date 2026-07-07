@@ -30,10 +30,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         CommunicationHandle,
 
+        RecipeHandle,
+
         MotionDeviceHandle,
         IODeviceHandle,
-
-        RecipeHandle,
 
         ProcessHandle,
 
@@ -93,6 +93,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             [FromKeyedServices("BalanceLeft")] MettlerToledoWKC204C balanceLeft,
             [FromKeyedServices("BalanceRight")] MettlerToledoWKC204C balanceRight,
             [FromKeyedServices("IndicatorModbusCommunication")] IModbusCommunication indicatorModbusCommunication,
+            [FromKeyedServices("Accura2550Communication")] IModbusCommunication accura2550Communication,
+            Config config,
             InterlockService interlockService,
             SyringAmountStatusList syringAmountStatusList,
             CarrierJigStatusList carrierJigStatusList,
@@ -115,6 +117,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _balanceLeft = balanceLeft;
             _balanceRight = balanceRight;
             _indicatorModbusCommunication = indicatorModbusCommunication;
+            _accura2550Communication = accura2550Communication;
+            _config = config;
             _interlockService = interlockService;
             _syringAmountStatusList = syringAmountStatusList;
             _carrierJigStatusList = carrierJigStatusList;
@@ -187,9 +191,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         {
                             ErrorMessages.Add("Indicator Connect Fail");
                         }
-
+                        
                         _cimAction.Start();
-
                         Thread.Sleep(50);
                         _step++;
                         break;
@@ -209,7 +212,28 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                             ErrorMessages.Add("Balance Connection Failed.");
                         }
 
+                        if (_config.IsConnectEBoxMainPower)
+                        {
+                            if (_accura2550Communication.Connect() == false)
+                            {
+                                ErrorMessages.Add("Accura 2500D Connection Failed.");
+                            }
+                        }
+
                         Thread.Sleep(50);
+                        _step++;
+                        break;
+                    case EHandleStep.RecipeHandle:
+                        SubscibeResinWeightChanged();
+                        SubscribeSkipHeadChanged();
+                        Log.Debug("Load Recipes");
+                        MessageText = "Load Recipes";
+                        if (_recipeSelector.Load() == false)
+                        {
+                            ErrorMessages.Add("Recipes Load Fail.");
+                            Log.Debug("Recipe Load Fail");
+                        }
+                        Thread.Sleep(500);
                         _step++;
                         break;
                     case EHandleStep.MotionDeviceHandle:
@@ -246,19 +270,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         Thread.Sleep(50);
                         _step++;
                         break;
-                    case EHandleStep.RecipeHandle:
-                        SubscibeResinWeightChanged();
-                        SubscribeSkipHeadChanged();
-                        Log.Debug("Load Recipes");
-                        MessageText = "Load Recipes";
-                        if (_recipeSelector.Load() == false)
-                        {
-                            ErrorMessages.Add("Recipes Load Fail.");
-                            Log.Debug("Recipe Load Fail");
-                        }
-                        Thread.Sleep(50);
-                        _step++;
-                        break;
                     case EHandleStep.ProcessHandle:
                         Log.Debug("Init processes");
 
@@ -281,14 +292,14 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         break;
                     case EHandleStep.WorkDataHandle:
                         StartLogCleanupScheduler();
-                        Thread.Sleep(50);
+                        Thread.Sleep(100);
                         _step++;
                         break;
                     case EHandleStep.End:
                         _devices.Outputs.Lamp_Stop();
                         _machineStatus.MachineMode = _devices.Inputs.AutoSW.Value ? EMachineMode.Auto : EMachineMode.Teach;
                         _devices.Outputs.SWKeyLock.Value = false;
-                        Thread.Sleep(50);
+                        Thread.Sleep(100);
                         _step++;
                         break;
                     case EHandleStep.Error:
@@ -296,12 +307,12 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         {
                             Log.Error("Error: " + string.Join(", ", ErrorMessages));
                             MessageText = "Error: " + string.Join(", ", ErrorMessages);
-                            Thread.Sleep(500);
                         }
                         else
                         {
                             MessageText = "Initialization completed successfully.";
                         }
+                        Thread.Sleep(100);
                         _step++;
                         break;
                     case EHandleStep.Navigate:
@@ -410,7 +421,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         // Set isHandling to false to stop the loop
 
                         Thread.Sleep(1000);
-                        Application.Current.Dispatcher.Invoke(() =>
+                        Application.Current?.Dispatcher.Invoke(() =>
                         {
                             Application.Current.Shutdown(100);
                         });
@@ -609,6 +620,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly MettlerToledoWKC204C _balanceLeft;
         private readonly MettlerToledoWKC204C _balanceRight;
         private readonly IModbusCommunication _indicatorModbusCommunication;
+        private readonly IModbusCommunication _accura2550Communication;
+        private readonly Config _config;
         private readonly InterlockService _interlockService;
         private readonly SyringAmountStatusList _syringAmountStatusList;
         private readonly CarrierJigStatusList _carrierJigStatusList;

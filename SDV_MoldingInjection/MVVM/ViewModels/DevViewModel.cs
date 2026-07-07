@@ -173,11 +173,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         #region Private Methods
         private void StatusUpdateTimerHandler(object? sender, System.Timers.ElapsedEventArgs e)
         {
-            OnPropertyChanged(nameof(IsBitB2007));
-            OnPropertyChanged(nameof(IsBitB2008));
-            OnPropertyChanged(nameof(IsBitB2107));
-            OnPropertyChanged(nameof(IsBitB2108));
-            OnPropertyChanged(nameof(IsBitB2009));
+            //OnPropertyChanged(nameof(IsBitB2007));
+            //OnPropertyChanged(nameof(IsBitB2008));
+            //OnPropertyChanged(nameof(IsBitB2107));
+            //OnPropertyChanged(nameof(IsBitB2108));
+            //OnPropertyChanged(nameof(IsBitB2009));
         }
         #endregion
     }

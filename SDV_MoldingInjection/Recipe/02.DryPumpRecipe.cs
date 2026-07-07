@@ -5,7 +5,7 @@ namespace SDV_MoldingInjection.Recipe
 {
     public class DryPumpRecipe : RecipeBase
     {
-        [SingleRecipeDescription(Description = "Chamber Vacuum Pressure Spec", Unit = Unit.Torr)]
+        [SingleRecipeDescription(Description = "Chamber Vacuum Pressure Target", Unit = Unit.Torr)]
         [ParameterDescription(30)]
         public double VacuumPressureSpec
         {
@@ -13,7 +13,7 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _vacuumPressureSpec, value);
         }
 
-        [SingleRecipeDescription(Description = "Pressure Hold Under Spec", 
+        [SingleRecipeDescription(Description = "Chamber Vacuum Pressure Upper Spec", 
             Detail = "Hold pressure under spec while inject", Unit = Unit.Torr)]
         [ParameterDescription(31)]
         public double VacuumPressureHoldUnderSpec

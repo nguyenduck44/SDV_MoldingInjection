@@ -51,6 +51,8 @@
                         Command="{Binding OPCallMsgNavigateCommand}" />
                 <Button Content="Interlock Msg"
                         Command="{Binding InterlockMsgNavigateCommand}" />
+                <Button Content="History Data"
+                        Command="{Binding HistoryDataNavigateCommand}" />
             </StackPanel>
         </GroupBox>
 
@@ -64,6 +66,9 @@
                 <Button Content="Processes Status"
                         Command="{Binding ProcessesStatusNavigateCommand}"
                         Visibility="{Binding IsSuperUserPermission,Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <Button Content="EBox Main Power Status"
+                        Command="{Binding Accura2550DNavigateCommand}"
+                        Visibility="{Binding IsConnectEBoxMainPower,Converter={StaticResource BooleanToVisibilityConverter}}" />
             </StackPanel>
         </GroupBox>
         <GroupBox Header="Others"

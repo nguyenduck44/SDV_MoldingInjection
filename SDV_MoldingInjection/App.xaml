@@ -190,6 +190,9 @@
             <DataTemplate DataType="{x:Type vm:AnalogStatusViewModel}">
                 <views:AnalogStatusView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:EBoxMainPowerMonitoringViewModel}">
+                <views:EBoxMainPowerMonitoringView />
+            </DataTemplate>
 
             <DataTemplate DataType="{x:Type vm:DevViewModel}">
                 <views:DevView />

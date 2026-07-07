@@ -69,7 +69,7 @@ namespace SDV_MoldingInjection.Process
                     _machineStatus.CurrentProcessMode == EProcessMode.ToAlarm ||
                     _machineStatus.CurrentProcessMode == EProcessMode.Alarm)
                 {
-                    Application.Current.Dispatcher.Invoke(() =>
+                    Application.Current?.Dispatcher.Invoke(() =>
                     {
                         bool isShown = Application.Current.Windows.OfType<AlertNotifyView>().Any();
                         if (isShown) Application.Current.Windows.OfType<AlertNotifyView>().ToList().ForEach(anv => anv.Close());

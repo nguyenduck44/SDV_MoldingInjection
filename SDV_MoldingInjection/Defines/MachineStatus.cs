@@ -25,11 +25,13 @@ namespace SDV_MoldingInjection.Defines
         public bool CanJogWithDoorOpen => IsTeachMode && IsDoorPasswordVerified;
         public static short[] AlarmTotalWords = new short[400];
         public bool SetDummyShotBeforeInject { get; set; }
+        
         #endregion
 
         #region Contructors
         public MachineStatus()
         {
+            
         }
         #endregion
 
