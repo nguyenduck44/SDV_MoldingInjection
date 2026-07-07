@@ -1249,6 +1249,13 @@ namespace SDV_MoldingInjection.Process
                         WriteHeadMCC(EMCCAction.SP01_MOVE_Z_TO_DUMMY_CHARGE_POS, EMCCAction.SP01_MOVE_T_TO_DUMMY_GATE_OPEN_POS);
                     }
 
+                    if (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing || _machineStatus.IsPassRunMode)
+                    {
+                        Log.Debug("DryRun Mode Or SkipDispensing -> G Axis Not Open");
+                        Step.RunStep++;
+                        break;
+                    }
+
                     Log.Debug($"{GAxis.Name} moving to OpenPos [{_currentSPDHeadRecipe.GateOpenPos}°]");
                     GAxis.MoveAbs(_currentSPDHeadRecipe.GateOpenPos);
                     Wait(_currentRecipe.CommonRecipe.MotionMoveTimeout,
@@ -1256,7 +1263,9 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.Gate_OpenWait:
-                    if (WaitTimeOutOccurred)
+                    if (WaitTimeOutOccurred &&
+                        _machineStatus.IsAutoRunMode &&
+                        OptionRecipe.SkipDispensing == false)
                     {
                         RaiseHeadAlarm(EAlarm.MO_SPD_H01_G1_AXIS_OPEN_POS_TIMEOUT);
                         break;
@@ -1473,39 +1482,42 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.End:
-                    if (sequence == ESequence.IdlePurge)
-                    {
-                        Sequence = ESequence.IdlePurge;
-                        break;
-                    }
-
-                    if (sequence == ESequence.ResinInject && _currentRecipe.AdditionalMolding_Recipe.UseAddTail)
-                    {
-                        Log.Info($"Set next sequence SPDHeadAddTail");
-                        dummyShotBeforeInject = false;
-                        Sequence = ESequence.ResinInjectAddTail;
-                        break;
-                    }
+                    Log.Info($"{sequence} End");
                     if (Parent?.Sequence != ESequence.AutoRun)
                     {
+                        if (sequence == ESequence.IdlePurge)
+                        {
+                            Log.Info("Wait Next Cycle IdlePurge");
+                            Wait(_currentRecipe.IdlePurgeRecipe.IdlePurgeCycleTime * 60);
+                            Step.RunStep = (int)ESPDHeadProcCommonStep.Gate_Close;
+                            break;
+                        }
+
                         Sequence = ESequence.Stop;
                         break;
                     }
 
-                    Log.Debug($"{sequence} end");
-                    if (sequence == ESequence.ResinInject && OptionRecipe.SkipDummyShot == false)
+                    if (sequence == ESequence.ResinInject)
                     {
-                        Log.Info($"Set next sequence to DummyShot");
-                        TactTime.SetCycleTime();
                         dummyShotBeforeInject = false;
-                        Sequence = ESequence.DummyShot;
-                        break;
+                        if (_currentRecipe.AdditionalMolding_Recipe.UseAddTail)
+                        {
+                            Log.Info($"Set Next Sequence SPDHeadAddTail");
+                            Sequence = ESequence.ResinInjectAddTail;
+                            break;
+                        }
+                        if (OptionRecipe.SkipDummyShot)
+                        {
+                            Log.Info($"Set Next Sequence To ResinInject");
+                            TactTime.SetCycleTime();
+                            Sequence = ESequence.ResinInject;
+                            break;
+                        }
                     }
-                    else
-                    {
-                        Sequence = ESequence.ResinInject;
-                        break;
-                    }
+
+                    Log.Info($"Set Next Sequence To DummyShot");
+                    Sequence = ESequence.DummyShot;
+                    break;
             }
         }
 
@@ -1632,26 +1644,24 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAddTailStep.End:
-                    Log.Debug($"Inject add tail end");
+                    Log.Info($"Inject Add Tail End");
                     if (Parent?.Sequence != ESequence.AutoRun)
                     {
                         Sequence = ESequence.Stop;
                         break;
                     }
 
-                    if (OptionRecipe.SkipDummyShot == false)
+                    if (OptionRecipe.SkipDummyShot)
                     {
-                        Log.Info($"Set next sequence to DummyShot");
-                        Sequence = ESequence.DummyShot;
-                        break;
-                    }
-                    else
-                    {
+                        Log.Info($"Set Next Sequence To ResinInject");
                         TactTime.SetCycleTime();
-                        TactTime.SetTactTime();
                         Sequence = ESequence.ResinInject;
                         break;
                     }
+
+                    Log.Info($"Set Next Sequence To DummyShot");
+                    Sequence = ESequence.DummyShot;
+                    break;
             }
         }
 
@@ -1865,11 +1875,13 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.End:
+                    Log.Info("DotWeighting End");
                     if (Parent?.Sequence != ESequence.AutoRun)
                     {
                         Sequence = ESequence.Stop;
                         break;
                     }
+
                     Sequence = ESequence.AutoRun;
                     break;
             }

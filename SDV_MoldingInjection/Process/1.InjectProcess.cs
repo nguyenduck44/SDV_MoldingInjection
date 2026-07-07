@@ -1207,23 +1207,35 @@ namespace SDV_MoldingInjection.Process
                     NeedleCleanCount++;
                     if (_currentRecipe.AdditionalMolding_Recipe.UseAddTail)
                     {
+                        Log.Info("Next Sequence To Inject Add Tail");
                         Sequence = ESequence.ResinInjectAddTail;
                         break;
                     }
+
                     Log.Info("ResinInject end");
                     if (Parent?.Sequence != ESequence.AutoRun)
                     {
                         Sequence = ESequence.Stop;
                         break;
                     }
-                    if (_optionRecipe.SkipDummyShot && NeedleCleanCount >= Recipe.NiddleCleanCycleCount)
+
+                    if (_optionRecipe.SkipDummyShot)
                     {
+                        if (_optionRecipe.SkipNeedleClean ||
+                            NeedleCleanCount < Recipe.NiddleCleanCycleCount)
+                        {
+                            Log.Info("Next Sequence To Unloading");
+                            Sequence = ESequence.Unloading;
+                            break;
+                        }
+
                         Log.Info("Skip DummyShot Next Sequence To NeddleClean");
                         NeedleCleanCount = 0;
                         Sequence = ESequence.NeedleCleaning;
                         break;
                     }
 
+                    Log.Info("Next Sequence To DummyShot");
                     Sequence = ESequence.DummyShot;
                     break;
             }
@@ -1303,12 +1315,24 @@ namespace SDV_MoldingInjection.Process
                         Sequence = ESequence.Stop;
                         break;
                     }
+
                     if (_optionRecipe.SkipDummyShot)
                     {
-                        Log.Debug("Skip DummyShot");
+                        if (_optionRecipe.SkipNeedleClean ||
+                            NeedleCleanCount < Recipe.NiddleCleanCycleCount)
+                        {
+                            Log.Info("Next Sequence To Unloading");
+                            Sequence = ESequence.Unloading;
+                            break;
+                        }
+
+                        Log.Info("Skip DummyShot Next Sequence To NeddleClean");
+                        NeedleCleanCount = 0;
                         Sequence = ESequence.NeedleCleaning;
+                        break;
                     }
 
+                    Log.Info("Next Sequence To DummyShot");
                     Sequence = ESequence.DummyShot;
                     break;
             }
@@ -1404,7 +1428,6 @@ namespace SDV_MoldingInjection.Process
                         //SEMI SEQUENCE CHECK
                         if (Parent!.Sequence != ESequence.AutoRun)
                         {
-                            Log.Debug("Set Next Step End");
                             Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
                             break;
                         }
@@ -1416,7 +1439,7 @@ namespace SDV_MoldingInjection.Process
                         }
                     }
 
-                    Log.Debug("Set Next Step To Check Load or Unload");
+                    Log.Debug("Next Step To Check InputType");
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.CheckInputType:
@@ -1431,7 +1454,9 @@ namespace SDV_MoldingInjection.Process
                         }
                         else
                         {
-                            //TOOD: Unloading Manual
+                            Log.Debug("Unload Manual Next Step -> Unload Manual");
+                            Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Unloading_Manual;
+                            break;
                         }
                     }
 
@@ -1543,7 +1568,7 @@ namespace SDV_MoldingInjection.Process
 
                     Step.RunStep++;
                     break;
-                case EMoldProcLoadingUnloadingStep.Set_Cell1ReplyBitOn:
+                case EMoldProcLoadingUnloadingStep.Validation_Reply_Jig1:
                     CellIdTrackInStatus = CIMValidation(isJigLeft: true);
                     CellId1Reply = true;
                     Log.Debug($"Cell 1 Reply Bit (B2007) On | B2109 {CIMValidation(isJigLeft: true)}");
@@ -1581,7 +1606,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Info($"Get Right Jig ID '{RightJigID}'");
                     if (_optionRecipe.SkipHead12 == false)
                     {
-                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Set_Cell2ReplyBitOn;
+                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Validation_Reply_Jig2;
                         break;
                     }
 
@@ -1602,7 +1627,7 @@ namespace SDV_MoldingInjection.Process
 
                     Step.RunStep++;
                     break;
-                case EMoldProcLoadingUnloadingStep.Set_Cell2ReplyBitOn:
+                case EMoldProcLoadingUnloadingStep.Validation_Reply_Jig2:
                     CellIdTrackInStatus = CIMValidation(isJigLeft: false);
                     CellId2Reply = true;
                     Log.Debug("Cell 2 Reply Bit (B2008) On");
@@ -1698,6 +1723,37 @@ namespace SDV_MoldingInjection.Process
                     _cIMCollection.WriteMCC(new List<EMCCAction>() { EMCCAction.IJ01_COMPONENT_OUT_JIG_2, EMCCAction.IJ01_PUT_UNLOAD_JIG_2 }, EMCCAction.IJ01_WAIT_INOUT_LD_UL_4TH);
                     LastAction = EMCCAction.IJ01_WAIT_INOUT_LD_UL_4TH;
 
+                    Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Unloading_WriteData;
+                    break;
+                case EMoldProcLoadingUnloadingStep.Unloading_Manual:
+                    if (In_Jig1Detect.Value == false &&
+                        In_Jig2Detect.Value == false &&
+                        _optionRecipe.SkipHead12 == false &&
+                        JigStatuses[(int)EJig.JigLeft] != EJigStatus.None)
+                    {
+                        JigStatuses[(int)EJig.JigLeft] = EJigStatus.None;
+                        LeftJigID = String.Empty;
+                        outputCount++;
+                    }
+
+                    if (In_Jig3Detect.Value == false &&
+                        In_Jig4Detect.Value == false &&
+                        _optionRecipe.SkipHead34 == false &&
+                        JigStatuses[(int)EJig.JigRight] != EJigStatus.None)
+                    {
+                        JigStatuses[(int)EJig.JigRight] = EJigStatus.None;
+                        LeftJigID = String.Empty;
+                        outputCount++;
+                    }
+
+                    if ((_optionRecipe.SkipHead12 == false && JigStatuses[(int)EJig.JigLeft] != EJigStatus.None) ||
+                        (_optionRecipe.SkipHead34 == false && JigStatuses[(int)EJig.JigRight] != EJigStatus.None))
+                    {
+                        Wait(50);
+                        break;
+                    }
+
+                    Log.Debug("Unload Manual Done");
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Unloading_WriteData:
@@ -1717,11 +1773,12 @@ namespace SDV_MoldingInjection.Process
 
                     if (LeftJigDetect == false && RightJigDetect == false)
                     {
-                        Log.Info("Unloading end");
+                        Log.Info("Unloading end. Wait InOut Working And Request Start.");
                         TactTime.SetCycleTime();
                     }
 
-                    Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandler_Working_RequestStart;
+                    Step.RunStep = _optionRecipe.InputTypeAuto ? (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandler_Working_RequestStart :
+                                                                 (int)EMoldProcLoadingUnloadingStep.End;
                     break;
                 case EMoldProcLoadingUnloadingStep.Load_Jig_Check:
                     //TODO: Dry run
@@ -2141,32 +2198,36 @@ namespace SDV_MoldingInjection.Process
                     Log.Info($"{sequence} for {head} end");
                     _machineStatus.MachineIdleTick = Environment.TickCount;
                     _waitTimeNoProduct = Environment.TickCount;
+
+                    if (Parent?.Sequence == ESequence.AutoRun)
+                    {
+                        if (sequence == ESequence.DummyShot)
+                        {
+                            if (_optionRecipe.SkipNeedleClean ||
+                                NeedleCleanCount < Recipe.NiddleCleanCycleCount)
+                            {
+                                Log.Info("Set Next Sequence To Unloading");
+                                Sequence = ESequence.Unloading;
+                                break;
+                            }
+
+                            Log.Info("Set Next Sequence To NeeddleClean");
+                            NeedleCleanCount = 0;
+                            Sequence = ESequence.NeedleCleaning;
+                            break;
+                        }
+                    }
+
                     if (sequence == ESequence.IdlePurge)
                     {
-                        Log.Debug("Wait next cycle IdlePurge");
+                        Log.Debug("Wait Next Cycle IdlePurge");
                         Wait(_currentRecipe.IdlePurgeRecipe.IdlePurgeCycleTime * 60);
                         Step.RunStep = (int)EMoldProcDummyShotStep.Chamber_Close;
                         break;
                     }
 
-                    if (Parent?.Sequence != ESequence.AutoRun)
-                    {
-                        MessageBoxEx.Show($"{sequence} Finish!", false);
-                        Sequence = ESequence.Stop;
-                    }
-
-                    if (sequence == ESequence.DummyShot && 
-                        Parent!.Sequence == ESequence.AutoRun &&
-                        NeedleCleanCount >= Recipe.NiddleCleanCycleCount)
-                    {
-                        Log.Info("Set Next Sequence To NeeddleClean");
-                        NeedleCleanCount = 0;
-                        Sequence = ESequence.NeedleCleaning;
-                    }
-                    else
-                    {
-                        Sequence = ESequence.Stop;
-                    }
+                    MessageBoxEx.Show($"{sequence} Finish!", false);
+                    Sequence = ESequence.Stop;
                     break;
             }
         }
@@ -2177,17 +2238,6 @@ namespace SDV_MoldingInjection.Process
             {
                 case EMoldProcNeedleCleaningStep.Start:
                     Log.Info("NeedleClean start");
-                    if (head == ESPDHead.SPDHead1 && _currentRecipe.OptionRecipe.SkipHead12 ||
-                        head == ESPDHead.SPDHead2 && _currentRecipe.OptionRecipe.SkipHead12 ||
-                        head == ESPDHead.SPDHead3 && _currentRecipe.OptionRecipe.SkipHead34 ||
-                        head == ESPDHead.SPDHead4 && _currentRecipe.OptionRecipe.SkipHead34 ||
-                        _optionRecipe.SkipNeedleClean)
-                    {
-                        Log.Info("HEAD SKIP CLEAN");
-                        Step.RunStep = (int)EMoldProcNeedleCleaningStep.End;
-                        break;
-                    }
-
                     Step.RunStep++;
                     break;
                 case EMoldProcNeedleCleaningStep.Chamber_Close:
@@ -3503,7 +3553,7 @@ namespace SDV_MoldingInjection.Process
             _cIMCollection.WriteMCC(lastAction, action);
             LastAction = action;
         }
-     
+
         private void WriteMCC(EMCCAction lastAction, EMCCAction action, EMCCUnit unit, string jigId)
         {
             _cIMCollection.WriteMCC(lastAction, action, unit, jigId);
