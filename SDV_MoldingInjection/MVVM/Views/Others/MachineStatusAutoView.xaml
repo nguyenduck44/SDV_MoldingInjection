@@ -117,7 +117,7 @@
                                      IsReadOnly="True"
                                      FontWeight="Bold"
                                      FontSize="14"
-                                     Text="{Binding PanelTemperature, Mode=OneWay, StringFormat='{}{0:0.###} °C'}" />
+                                     Text="{Binding MainPowerTemperature, Mode=OneWay, StringFormat='{}{0:0.###} °C'}" />
                             <Label Content="💧 Humidity"
                                    FontWeight="SemiBold"
                                    FontSize="12"
@@ -126,7 +126,7 @@
                                      IsReadOnly="True"
                                      FontWeight="Bold"
                                      FontSize="14"
-                                     Text="{Binding PanelHumidity, Mode=OneWay, StringFormat='{}{0:0.###} %'}" />
+                                     Text="{Binding MainPowerHumidity, Mode=OneWay, StringFormat='{}{0:0.###} %'}" />
                         </UniformGrid>
                     </StackPanel>
                 </Border>

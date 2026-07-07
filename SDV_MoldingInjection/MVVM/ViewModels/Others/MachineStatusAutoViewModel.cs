@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;
+using System.Windows;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
@@ -27,8 +28,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public string RightJigID => InjectProcess.RightJigID;
         public double PanelTemperature => Devices.PanelIndicator.Temperature;
         public double PanelHumidity => Devices.PanelIndicator.Humidity;
-        public double MainPowerTemperature => Devices.EBoxMainPowerIndicator.Temperature;
-        public double MainPowerHumidity => Devices.EBoxMainPowerIndicator.Humidity;
+        public double MainPowerTemperature => _config.IsConnectEBoxMainPower ? Devices.EBoxMainPowerIndicator.Temperature : 0.0;
+        public double MainPowerHumidity => _config.IsConnectEBoxMainPower ? Devices.EBoxMainPowerIndicator.Humidity : 0.0;
         public bool IsLeakSensor_H1 => Devices.Inputs.DummyOverflowDetect1.Value == false;
         public bool IsLeakSensor_H2 => Devices.Inputs.DummyOverflowDetect2.Value == false;
         public bool IsLeakSensor_H3 => Devices.Inputs.DummyOverflowDetect3.Value == false;
@@ -159,8 +160,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
             if (_config.IsConnectEBoxMainPower)
             {
-                OnPropertyChanged(nameof(MainPowerTemperature));
-                OnPropertyChanged(nameof(MainPowerHumidity));
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    OnPropertyChanged(nameof(MainPowerTemperature));
+                    OnPropertyChanged(nameof(MainPowerHumidity));
+                });
             }
         }
         #endregion
