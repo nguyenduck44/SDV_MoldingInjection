@@ -15,6 +15,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private bool h4Working;
         private readonly NavigationStore _navigationStore;
         private readonly IServiceProvider _serviceProvider;
+        private readonly Config _config;
         private readonly NonOverlappingTimer statusUpdateTimer;
         private Processes _processes => _serviceProvider.GetRequiredService<Processes>();
         private InjectProcess InjectProcess => _processes.All.OfType<InjectProcess>().First();
@@ -26,12 +27,15 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public string RightJigID => InjectProcess.RightJigID;
         public double PanelTemperature => Devices.PanelIndicator.Temperature;
         public double PanelHumidity => Devices.PanelIndicator.Humidity;
+        public double MainPowerTemperature => Devices.EBoxMainPowerIndicator.Temperature;
+        public double MainPowerHumidity => Devices.EBoxMainPowerIndicator.Humidity;
         public bool IsLeakSensor_H1 => Devices.Inputs.DummyOverflowDetect1.Value == false;
         public bool IsLeakSensor_H2 => Devices.Inputs.DummyOverflowDetect2.Value == false;
         public bool IsLeakSensor_H3 => Devices.Inputs.DummyOverflowDetect3.Value == false;
         public bool IsLeakSensor_H4 => Devices.Inputs.DummyOverflowDetect4.Value == false;
         public bool IsLeftJigDetected => Devices.Inputs.Jig1Detect.Value && Devices.Inputs.Jig2Detect.Value == true;
         public bool IsRightJigDetected => Devices.Inputs.Jig3Detect.Value && Devices.Inputs.Jig4Detect.Value == true;
+        public bool IsConnectMainPower => _config.IsConnectEBoxMainPower;
 
         public bool H1Working
         {
@@ -85,7 +89,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             MachineStatus machineStatus,
             RecipeSelector recipeSelector,
             CDAStatus cDAStatus,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            Config config)
         {
             Devices = devices;
             MachineStatus = machineStatus;
@@ -93,6 +98,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             CDAStatus = cDAStatus;
             _navigationStore = navigationStore;
             _serviceProvider = serviceProvider;
+            _config = config;
             statusUpdateTimer = new NonOverlappingTimer(100);
             statusUpdateTimer.Elapsed += StatusUpdateTimerHandler;
             statusUpdateTimer.Start();
@@ -150,6 +156,12 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             OnPropertyChanged(nameof(RightJigID));
             OnPropertyChanged(nameof(IsLeftJigDetected));
             OnPropertyChanged(nameof(IsRightJigDetected));
+
+            if (_config.IsConnectEBoxMainPower)
+            {
+                OnPropertyChanged(nameof(MainPowerTemperature));
+                OnPropertyChanged(nameof(MainPowerHumidity));
+            }
         }
         #endregion
     }

@@ -12,7 +12,8 @@ namespace SDV_MoldingInjection.Defines
             AnalogInputs analogInputs,
             Balances balances,
             MachineStatus machineStatus,
-            [FromKeyedServices("PanelIndicator")] NEOSHSDIndicator panelIndicator)
+            [FromKeyedServices("PanelIndicator")] NEOSHSDIndicator panelIndicator,
+            [FromKeyedServices("EBoxMainPowerIndicator")] NEOSHSDIndicator eBoxMainPowerIndicator)
         {
             Inputs = inputs;
             Outputs = outputs;
@@ -21,6 +22,7 @@ namespace SDV_MoldingInjection.Defines
             AnalogInputs = analogInputs;
             Balances = balances;
             PanelIndicator = panelIndicator;
+            EBoxMainPowerIndicator = eBoxMainPowerIndicator;
         }
 
         public Inputs Inputs { get; }
@@ -30,6 +32,8 @@ namespace SDV_MoldingInjection.Defines
         public AnalogInputs AnalogInputs { get; }
         public Balances Balances { get; }
         public NEOSHSDIndicator PanelIndicator { get; }
+        public NEOSHSDIndicator EBoxMainPowerIndicator { get; }
+
         #region Public Methods
         #endregion
     }
