@@ -49,11 +49,15 @@
                         Command="{Binding RunModeChangeCommand}"
                         IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"/>
                 <Button Content="TPM"
-                        Command="{Binding TMPLossChangeCommand}" />
+                        Command="{Binding TMPLossChangeCommand}"
+                        IsEnabled="{Binding MachineStatus.IsStandByProcessMode}" />
                 <Button Content="Material Ports"
                         Command="{Binding MaterialPortsViewNavigateCommand}" />
                 <Button Content="Security Control"
                         Command="{Binding SecurityControlNavigateCommand}" />
+                <Button Content="CIM Function"
+                        Command="{Binding OpenCIMFunctionTestCommand}"
+                        IsEnabled="{Binding MachineStatus.IsStandByProcessMode}" />
             </StackPanel>
         </GroupBox>
 

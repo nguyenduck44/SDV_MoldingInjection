@@ -55,8 +55,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 {
                     FDCHelper.WriteFDCValue(EFDCValue.N02_U_T_PW, EnergyReceived * 1000);
                     FDCHelper.WriteFDCValue(EFDCValue.N02_U_I_PW, (int)(MaxActivePowerTotal * 1000));
-                    FDCHelper.WriteFDCValue(EFDCValue.N02_U_R_VOL, (int)(ABVoltage * 1000));
-                    FDCHelper.WriteFDCValue(EFDCValue.N02_U_T_VOL, (int)(BCVoltage * 1000));
+                    FDCHelper.WriteFDCValue(EFDCValue.N02_U_R_VOL, (int)(ABVoltage * 10));
+                    FDCHelper.WriteFDCValue(EFDCValue.N02_U_T_VOL, (int)(BCVoltage * 10));
                     FDCHelper.WriteFDCValue(EFDCValue.N02_U_R_CUR, (int)(ACurrent * 1000));
                     FDCHelper.WriteFDCValue(EFDCValue.N02_U_T_CUR, (int)(BCurrent * 1000));
 

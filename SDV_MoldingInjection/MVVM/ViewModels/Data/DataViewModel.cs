@@ -6,6 +6,7 @@ using EQX.Core.Communication.CIM.Custom;
 using EQX.UI.Controls;
 using EQX.UI.MVVM;
 using SDV_MoldingInjection.Defines;
+using System.Windows;
 using System.Windows.Input;
 using TOPENG_Device;
 
@@ -68,6 +69,26 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
         }
 
+        public ICommand OpenCIMFunctionTestCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    var window = new Window
+                    {
+                        Title = "EQP Function Change",
+                        Content = new CIMFunctionView(),
+                        SizeToContent = SizeToContent.WidthAndHeight,
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen
+                    };
+
+                    window.DataContext = _cIMFunctionViewModel;
+                    window.Show();
+                });
+            }
+        }
+
         public ICommand RunModeChangeCommand => new RelayCommand(() =>
         {
             var result = RunModeDialog.ShowRunModeDialog<EQX.Core.Common.EMachineRunMode>(new List<EQX.Core.Common.EMachineRunMode>()
@@ -116,15 +137,19 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         #endregion
 
         #region Constructor(s)
-        public DataViewModel(INavigationService navigationService, MachineStatus machineStatus)
+        public DataViewModel(INavigationService navigationService, 
+            MachineStatus machineStatus,
+            CIMFunctionViewModel cIMFunctionViewModel)
         {
             _navigationService = navigationService;
+            _cIMFunctionViewModel = cIMFunctionViewModel;
             MachineStatus = machineStatus;
         }
         #endregion
 
         #region Privates
         private readonly INavigationService _navigationService;
+        private readonly CIMFunctionViewModel _cIMFunctionViewModel;
         #endregion
     }
 }
