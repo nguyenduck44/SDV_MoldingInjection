@@ -147,8 +147,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             H2Working = Devices.Motions.Z2Axis.Status.IsMotioning || Devices.Motions.P2Axis.Status.IsMotioning;
             H3Working = Devices.Motions.Z3Axis.Status.IsMotioning || Devices.Motions.P3Axis.Status.IsMotioning;
             H4Working = Devices.Motions.Z4Axis.Status.IsMotioning || Devices.Motions.P4Axis.Status.IsMotioning;
-            OnPropertyChanged(nameof(PanelTemperature));
-            OnPropertyChanged(nameof(PanelHumidity));
+
             OnPropertyChanged(nameof(IsLeakSensor_H1));
             OnPropertyChanged(nameof(IsLeakSensor_H2));
             OnPropertyChanged(nameof(IsLeakSensor_H3));
@@ -160,11 +159,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
             if (_config.IsConnectEBoxMainPower)
             {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    OnPropertyChanged(nameof(MainPowerTemperature));
-                    OnPropertyChanged(nameof(MainPowerHumidity));
-                });
+                OnPropertyChanged(nameof(MainPowerTemperature));
+                OnPropertyChanged(nameof(MainPowerHumidity));
             }
         }
         #endregion

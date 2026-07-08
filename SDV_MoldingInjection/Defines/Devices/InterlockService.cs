@@ -35,16 +35,16 @@ namespace SDV_MoldingInjection.Defines
 
             try
             {
-                object? z1_Axis_InjectPos_Interlock = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Top Engineering", "Z1_Axis_InjectPos_Interlock", "");
+                object? z1_Axis_InjectPos_Interlock = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Top Engineering", "Z1_Axis_InjectPos_Interlock", "-70");
                 Z1_Axis_InjectPos_Interlock = double.Parse(z1_Axis_InjectPos_Interlock.ToString());
 
-                object? z2_Axis_InjectPos_Interlock = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Top Engineering", "Z2_Axis_InjectPos_Interlock", "");
+                object? z2_Axis_InjectPos_Interlock = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Top Engineering", "Z2_Axis_InjectPos_Interlock", "-70");
                 Z2_Axis_InjectPos_Interlock = double.Parse(z2_Axis_InjectPos_Interlock.ToString());
 
-                object? z3_Axis_InjectPos_Interlock = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Top Engineering", "Z3_Axis_InjectPos_Interlock", "");
+                object? z3_Axis_InjectPos_Interlock = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Top Engineering", "Z3_Axis_InjectPos_Interlock", "-70");
                 Z3_Axis_InjectPos_Interlock = double.Parse(z3_Axis_InjectPos_Interlock.ToString());
 
-                object? z4_Axis_InjectPos_Interlock = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Top Engineering", "Z4_Axis_InjectPos_Interlock", "");
+                object? z4_Axis_InjectPos_Interlock = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Top Engineering", "Z4_Axis_InjectPos_Interlock", "-70");
                 Z4_Axis_InjectPos_Interlock = double.Parse(z4_Axis_InjectPos_Interlock.ToString());
             }
             catch
