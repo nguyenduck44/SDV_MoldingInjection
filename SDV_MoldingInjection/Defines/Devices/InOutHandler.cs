@@ -138,7 +138,7 @@ namespace SDV_MoldingInjection.Defines
             string receivedCommand = ExtractCommand(receivedBytes);
             MessageReceived?.Invoke($"{receivedCommand}: {FormatBytes(receivedBytes)}");
 
-            Log.Debug($"[{DateTime.Now:HH:mm:ss.fff}] Data Received : {receivedCommand}: {FormatBytes(receivedBytes)}");
+            //Log.Debug($"[{DateTime.Now:HH:mm:ss.fff}] Data Received : {receivedCommand}: {FormatBytes(receivedBytes)}");
             
             if (_recipeSelector.CurrentRecipe.OptionRecipe.InputTypeManual) return;
 
@@ -504,7 +504,7 @@ namespace SDV_MoldingInjection.Defines
             _serialCommunicator.Write(buffer);
             MessageTransmitted?.Invoke(formattedData);
 
-            Log.Debug($"[{DateTime.Now:HH:mm:ss.fff}] Data Sent : {command}: {formattedData}");
+            //Log.Debug($"[{DateTime.Now:HH:mm:ss.fff}] Data Sent : {command}: {formattedData}");
         }
 
         private bool MachineReadyCheck()

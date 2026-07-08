@@ -1571,7 +1571,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.Validation_Reply_Jig1:
                     CellIdTrackInStatus = CIMValidation(isJigLeft: true);
                     CellId1Reply = true;
-                    Log.Debug($"Cell 1 Reply Bit (B2007) On | B2109 {CIMValidation(isJigLeft: true)}");
+                    Log.Debug($"Cell 1 Reply Bit (B2007) On");
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Wait_Cell1SendBitOff:
@@ -3373,7 +3373,7 @@ namespace SDV_MoldingInjection.Process
 
             string cellId = isJigLeft ? LeftCellId : RightCellId;
 
-            Log.Info($"Jig '{cellId}' tracking successed");
+            Log.Info($"Cell ID '{cellId}' tracking successed");
 
             CellJobProcessCimToPlcArea cellJobProcess = EquipEventHelpers.CellJobProcessConfirm(isJigLeft ? 1 : 2, cellId, _cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON);
 
@@ -3417,7 +3417,7 @@ namespace SDV_MoldingInjection.Process
                 return false;
             }
 
-            Log.Info($"Jig '{cellId}' Job Process Start successed");
+            Log.Info($"Cell ID '{cellId}' Job Process Start Successed");
             return true;
         }
         #endregion
