@@ -1205,6 +1205,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcResinInjectStep.End:
                     NeedleCleanCount++;
+                    DummyShotCount++;
                     if (_currentRecipe.AdditionalMolding_Recipe.UseAddTail)
                     {
                         Log.Info("Next Sequence To Inject Add Tail");
@@ -1232,6 +1233,13 @@ namespace SDV_MoldingInjection.Process
                         Log.Info("Skip DummyShot Next Sequence To NeddleClean");
                         NeedleCleanCount = 0;
                         Sequence = ESequence.NeedleCleaning;
+                        break;
+                    }
+
+                    if (DummyShotCount < Recipe.DummyShotCycleCount)
+                    {
+                        Log.Info("Next Sequence To Unloading");
+                        Sequence = ESequence.Unloading;
                         break;
                     }
 
@@ -3579,8 +3587,8 @@ namespace SDV_MoldingInjection.Process
         private readonly CIMCollection _cIMCollection;
         private int inputCount;
         private int outputCount;
-        private int DryutputCount;
         private int NeedleCleanCount = 0;
+        private int DummyShotCount = 0;
         private int _nzlCleanCount = 0;
         private double _yAxisCleaningTargetMm;
         private double _waitTimeNoProduct;

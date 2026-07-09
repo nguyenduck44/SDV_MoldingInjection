@@ -181,6 +181,13 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _niddleCleanShiftDist, value);
         }
 
+        [SingleRecipeDescription(Description = "DummyShot Cycle Count")]
+        public int DummyShotCycleCount
+        {
+            get => _dummyShotCycleCount;
+            set => SetRecipe(ref _dummyShotCycleCount, value);
+        }
+
         #region Privates
         private double _xAxisReadyPos;
         private double _xAxisInjectPos;
@@ -199,9 +206,7 @@ namespace SDV_MoldingInjection.Recipe
         private double _xAxisNeedleCleanPos;
         private double _xAxisNeedleCleanPosOffset;
 
-        private int _niddleCleanCycleCount;
         private double _niddleCleanShiftDist;
-
         private double _yAxisNeedleClean;
         private double _yAxisNeedleCleanPosOffset;
         private double _xAxisH13DotWeightPos;
@@ -210,7 +215,8 @@ namespace SDV_MoldingInjection.Recipe
         private double _xAxisH24DotWeightingPosOffset;
         private double _xAxisReadyPosOffset;
 
-
+        private int _niddleCleanCycleCount;
+        private int _dummyShotCycleCount;
         #endregion
     }
 }
