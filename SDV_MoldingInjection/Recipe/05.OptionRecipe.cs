@@ -31,6 +31,7 @@ namespace SDV_MoldingInjection.Recipe
         private bool _skipHead3;
         private bool _skipHead4;
         private bool _dummyBeforeInject;
+        private bool _skipDryPumpPressure;
 
         #endregion
 
@@ -252,5 +253,10 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _dummyBeforeInject, value);
         }
 
+        public bool SkipDryPumpPressure
+        {
+            get { return _skipDryPumpPressure; }
+            set => SetRecipe(ref _skipDryPumpPressure, value);
+        }
     }
 }

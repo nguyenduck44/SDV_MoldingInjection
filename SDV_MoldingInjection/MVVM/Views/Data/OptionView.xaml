@@ -108,6 +108,10 @@
                                   Margin="5"
                                   IsChecked="{Binding RecipeList.OptionRecipe.InjectAfterOpenAngleValve}"
                                   Tag="Check to start inject after open angle valve" />
+                        <CheckBox Content="Skip DryPump"
+                                  Margin="5"
+                                  IsChecked="{Binding RecipeList.OptionRecipe.SkipDryPumpPressure}"
+                                  Tag="DryPump do not open valve when inject" />
                     </UniformGrid>
                 </StackPanel>
             </GroupBox>

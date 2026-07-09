@@ -99,6 +99,7 @@ namespace SDV_MoldingInjection.Process
             }
 
             if (EnablePressureHold && 
+                _currentRecipe.OptionRecipe.SkipDryPumpPressure == false &&
                (_machineStatus.IsDryRunMode == false || _machineStatus.DryRunUseChamberPressure))
             {
                 IsCanStop = false;
@@ -442,12 +443,17 @@ namespace SDV_MoldingInjection.Process
 
                     PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.ValveOpen);
                     EnableWritePressureLog = true;
-                    AngleValve.Open();
-                    Wait(_currentRecipe.CylinderDelayTimeRecipe.AngleValveCylinderMoveDelay, AngleValve.IsOpen);
+                    if (_currentRecipe.OptionRecipe.SkipDryPumpPressure == false)
+                    {
+                        AngleValve.Open();
+                        Wait(_currentRecipe.CylinderDelayTimeRecipe.AngleValveCylinderMoveDelay, AngleValve.IsOpen);
+                    }
+                    
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.AngleValve_OpenWait:
                     if (WaitTimeOutOccurred && 
+                        _currentRecipe.OptionRecipe.SkipDryPumpPressure == false &&
                        (_machineStatus.DryRunUseChamberPressure || _machineStatus.IsDryRunMode == false))
                     {
                         RaiseWarning(EWarning.CY_ANGLE_VALUE_OPEN_FAIL);
@@ -519,7 +525,8 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EDryPumpProcResinInjectStep.VacuumGauge_Target_Wait:
                     if (_devices.AnalogInputs.VacuumPressureInTorr > _currentRecipe.DryPumpRecipe.VacuumPressureSpec &&
-                       (_machineStatus.IsDryRunMode == false || _machineStatus.DryRunUseChamberPressure))
+                       (_machineStatus.IsDryRunMode == false || _machineStatus.DryRunUseChamberPressure) &&
+                       _currentRecipe.OptionRecipe.SkipDryPumpPressure == false)
                     {
                         Wait(50);
                         break;
