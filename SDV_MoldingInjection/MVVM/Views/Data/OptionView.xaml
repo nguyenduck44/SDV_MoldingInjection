@@ -72,17 +72,48 @@
                               Tag="Check to Input type by Robot" />
                 </StackPanel>
             </GroupBox>
-
-            <GroupBox Header="Log"
-                      FontWeight="Bold"
-                      Style="{x:Null}"
+            <GroupBox Header="CIM" 
+                      Style="{x:Null}"  
                       Grid.Column="2">
-                <StackPanel Orientation="Vertical">
-                    <CheckBox Content="Save Pressure Log"
-                              Margin="5"
-                              IsChecked="{Binding RecipeList.OptionRecipe.SavePressureLog}"
-                              Tag="Check to Save Pressure Log" />
-                </StackPanel>
+                <UniformGrid Columns="2" 
+                             VerticalAlignment="Top">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="20"
+                                     Height="20"
+                                     Fill="{Binding IsNoError , Converter={StaticResource BooleanToOnOffBrushConverter}}" />
+                            <Label Content="No Alarm"
+                                   FontSize="14" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="20"
+                                     Height="20"
+                                     Fill="{Binding IsNoJig , Converter={StaticResource BooleanToOnOffBrushConverter}}" />
+                            <Label Content="No Jig"
+                                   FontSize="14" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="20"
+                                     Height="20"
+                                     Fill="{Binding IsCIMConnect , Converter={StaticResource BooleanToOnOffBrushConverter}}" />
+                            <Label Content="CIM Connect"
+                                   FontSize="14" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="20"
+                                     Height="20"
+                                     Fill="{Binding IsNoInterlock , Converter={StaticResource BooleanToOnOffBrushConverter}}" />
+                            <Label Content="No Interlock"
+                                   FontSize="14" />
+                        </StackPanel>
+                    </StackPanel>
+                    <CheckBox Content="Use CIM"
+                              IsChecked="{Binding RecipeList.OptionRecipe.UseCIM}"
+                              Tag="Check to Use CIM Report"
+                              IsEnabled="{Binding IsEnableCIMModeChange}" 
+                              Width="150"/>
+                </UniformGrid>
+
             </GroupBox>
 
             <GroupBox Header="Inject"
@@ -138,10 +169,14 @@
                                   Margin="5"
                                   IsChecked="{Binding RecipeList.OptionRecipe.DummyBeforeInject}"
                                   Tag="Check to use DummyShot before inject" />
-                        <CheckBox Content="Use CIM"
+                        <!--<CheckBox Content="Use CIM"
                                   Margin="5"
                                   IsChecked="{Binding RecipeList.OptionRecipe.UseCIM}"
-                                  Tag="Check to Use CIM" />
+                                  Tag="Check to Use CIM" />-->
+                        <CheckBox Content="Save Pressure Log"
+                                  Margin="5"
+                                  IsChecked="{Binding RecipeList.OptionRecipe.SavePressureLog}"
+                                  Tag="Check to Save Pressure Log" />
                     </UniformGrid>
                 </StackPanel>
             </GroupBox>
