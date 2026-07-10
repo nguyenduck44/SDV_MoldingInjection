@@ -22,7 +22,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public Devices Devices { get; }
         public MachineStatus MachineStatus { get; }
 
-        public string IsMasterAlive => MachineStatus.EquipState.IsMasterAlive ? "ONLINE" : "OFFLINE";
+        public string IsMasterAlive => RecipeSelector.CurrentRecipe.OptionRecipe.UseCIM ? "REMOTE" : "OFFLINE";
 
         public string CurrentView => _navigationStore?.CurrentViewModel?.GetType().Name.TrimEnd("Model".ToCharArray())!;
 
