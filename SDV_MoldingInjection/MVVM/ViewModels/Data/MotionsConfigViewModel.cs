@@ -8,26 +8,43 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Process;
+using SDV_MoldingInjection.Recipe;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Windows;
 using System.Windows.Input;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
     public class MotionsConfigViewModel : ViewModelBase
     {
-        public MotionsConfigViewModel(Motions motions, MachineStatus machineStatus, IConfiguration configuration)
+        public MotionsConfigViewModel(Motions motions,
+            MachineStatus machineStatus, 
+            IConfiguration configuration,
+            RecipeSelector recipeSelector)
         {
             Motions = motions;
             MachineStatus = machineStatus;
             _configuration = configuration;
+            _recipeSelector = recipeSelector;
         }
-
+        public MotionSpeedRecipe MotionSpeedRecipe => _recipeSelector.CurrentRecipe.MotionSpeedRecipe;
         public Motions Motions { get; }
         public MachineStatus MachineStatus { get; }
 
         public ObservableCollection<IMotion> MotionList => new ObservableCollection<IMotion>(Motions.All);
+        public ICommand SaveCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    if (MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_SaveAllData"]) == false) return;
+                    _recipeSelector.Save();
 
+                });
+            }
+        }
         public ICommand SaveMotionConfigCommand => new RelayCommand(() =>
         {
             try
@@ -93,5 +110,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         }
 
         private readonly IConfiguration _configuration;
+        private readonly RecipeSelector _recipeSelector;
     }
 }

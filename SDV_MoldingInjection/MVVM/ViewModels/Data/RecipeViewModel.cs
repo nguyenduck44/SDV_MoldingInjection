@@ -80,7 +80,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                                     r is not IdlePurgeRecipe && 
                                     r is not CylinderDelayTimeRecipe && 
                                     r is not InjectTimeRecipe &&
-                                    r is not CDASettingRecipe)
+                                    r is not CDASettingRecipe &&
+                                    r is not MotionSpeedRecipe)
                                     .ToList();
 
                 return new ObservableCollection<RecipeBase>(recipeObjects);

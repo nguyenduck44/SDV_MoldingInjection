@@ -226,6 +226,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     case EHandleStep.RecipeHandle:
                         SubscibeResinWeightChanged();
                         SubscribeSkipHeadChanged();
+                        SubscibMotionSpeedChanged();
                         Log.Debug("Load Recipes");
                         MessageText = "Load Recipes";
                         if (_recipeSelector.Load() == false)
@@ -488,7 +489,191 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 _carrierJigStatusList.CarrierJigStatusH4.ResinWeight = weight;
             };
         }
-
+        private void SubscibMotionSpeedChanged()
+        {
+            // X Speed
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.XAxisVelocityChanged += (speed) =>
+            {
+                _devices.Motions.XAxis.Parameter.Velocity = speed;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.XAxisAccelChanged += (accel) =>
+            {
+                _devices.Motions.XAxis.Parameter.Acceleration = accel;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.XAxisDeccelChanged += (deccel) =>
+            {
+                _devices.Motions.XAxis.Parameter.Deceleration = deccel;
+            };
+            // Stage Y Speed
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.StageYAxisVelocityChanged += (speed) =>
+            {
+                _devices.Motions.StageYAxis.Parameter.Velocity = speed;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.StageYAxisAccelChanged += (accel) =>
+            {
+                _devices.Motions.StageYAxis.Parameter.Acceleration = accel;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.StageYAxisDeccelChanged += (deccel) =>
+            {
+                _devices.Motions.StageYAxis.Parameter.Deceleration = deccel;
+            };
+            // Stage Z1 Speed
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.Z1AxisVelocityChanged += (speed) =>
+            {
+                _devices.Motions.Z1Axis.Parameter.Velocity = speed;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.Z1AxisAccelChanged += (accel) =>
+            {
+                _devices.Motions.Z1Axis.Parameter.Acceleration = accel;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.Z1AxisDeccelChanged += (deccel) =>
+            {
+                _devices.Motions.Z1Axis.Parameter.Deceleration = deccel;
+            };
+            // Stage Z2 Speed
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.Z2AxisVelocityChanged += (speed) =>
+            {
+                _devices.Motions.Z2Axis.Parameter.Velocity = speed;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.Z2AxisAccelChanged += (accel) =>
+            {
+                _devices.Motions.Z2Axis.Parameter.Acceleration = accel;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.Z2AxisDeccelChanged += (deccel) =>
+            {
+                _devices.Motions.Z2Axis.Parameter.Deceleration = deccel;
+            };
+            // Stage Z3 Speed
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.Z3AxisVelocityChanged += (speed) =>
+            {
+                _devices.Motions.Z3Axis.Parameter.Velocity = speed;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.Z3AxisAccelChanged += (accel) =>
+            {
+                _devices.Motions.Z3Axis.Parameter.Acceleration = accel;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.Z3AxisDeccelChanged += (deccel) =>
+            {
+                _devices.Motions.Z3Axis.Parameter.Deceleration = deccel;
+            };
+            // Stage Z4 Speed
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.Z4AxisVelocityChanged += (speed) =>
+            {
+                _devices.Motions.Z4Axis.Parameter.Velocity = speed;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.Z4AxisAccelChanged += (accel) =>
+            {
+                _devices.Motions.Z4Axis.Parameter.Acceleration = accel;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.Z4AxisDeccelChanged += (deccel) =>
+            {
+                _devices.Motions.Z4Axis.Parameter.Deceleration = deccel;
+            };
+            // Stage P1 Speed
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.P1AxisVelocityChanged += (speed) =>
+            {
+                _devices.Motions.P1Axis.Parameter.Velocity = speed;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.P1AxisAccelChanged += (accel) =>
+            {
+                _devices.Motions.P1Axis.Parameter.Acceleration = accel;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.P1AxisDeccelChanged += (deccel) =>
+            {
+                _devices.Motions.P1Axis.Parameter.Deceleration = deccel;
+            };
+            // Stage P2 Speed
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.P2AxisVelocityChanged += (speed) =>
+            {
+                _devices.Motions.P2Axis.Parameter.Velocity = speed;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.P2AxisAccelChanged += (accel) =>
+            {
+                _devices.Motions.P2Axis.Parameter.Acceleration = accel;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.P2AxisDeccelChanged += (deccel) =>
+            {
+                _devices.Motions.P2Axis.Parameter.Deceleration = deccel;
+            };
+            // Stage P3 Speed
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.P3AxisVelocityChanged += (speed) =>
+            {
+                _devices.Motions.P3Axis.Parameter.Velocity = speed;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.P3AxisAccelChanged += (accel) =>
+            {
+                _devices.Motions.P3Axis.Parameter.Acceleration = accel;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.P3AxisDeccelChanged += (deccel) =>
+            {
+                _devices.Motions.P3Axis.Parameter.Deceleration = deccel;
+            };
+            // Stage P4 Speed
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.P4AxisVelocityChanged += (speed) =>
+            {
+                _devices.Motions.P4Axis.Parameter.Velocity = speed;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.P4AxisAccelChanged += (accel) =>
+            {
+                _devices.Motions.P4Axis.Parameter.Acceleration = accel;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.P4AxisDeccelChanged += (deccel) =>
+            {
+                _devices.Motions.P4Axis.Parameter.Deceleration = deccel;
+            };
+            // Stage G1 Speed
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.G1AxisVelocityChanged += (speed) =>
+            {
+                _devices.Motions.G1Axis.Parameter.Velocity = speed;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.G1AxisAccelChanged += (accel) =>
+            {
+                _devices.Motions.G1Axis.Parameter.Acceleration = accel;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.G1AxisDeccelChanged += (deccel) =>
+            {
+                _devices.Motions.G1Axis.Parameter.Deceleration = deccel;
+            };
+            // Stage G2 Speed
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.G2AxisVelocityChanged += (speed) =>
+            {
+                _devices.Motions.G2Axis.Parameter.Velocity = speed;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.G2AxisAccelChanged += (accel) =>
+            {
+                _devices.Motions.G2Axis.Parameter.Acceleration = accel;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.G2AxisDeccelChanged += (deccel) =>
+            {
+                _devices.Motions.G2Axis.Parameter.Deceleration = deccel;
+            };
+            // Stage G3 Speed
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.G3AxisVelocityChanged += (speed) =>
+            {
+                _devices.Motions.G3Axis.Parameter.Velocity = speed;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.G3AxisAccelChanged += (accel) =>
+            {
+                _devices.Motions.G3Axis.Parameter.Acceleration = accel;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.G3AxisDeccelChanged += (deccel) =>
+            {
+                _devices.Motions.G3Axis.Parameter.Deceleration = deccel;
+            };
+            // Stage G4 Speed
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.G4AxisVelocityChanged += (speed) =>
+            {
+                _devices.Motions.G4Axis.Parameter.Velocity = speed;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.G4AxisAccelChanged += (accel) =>
+            {
+                _devices.Motions.G4Axis.Parameter.Acceleration = accel;
+            };
+            _recipeSelector.CurrentRecipe.MotionSpeedRecipe.G4AxisDeccelChanged += (deccel) =>
+            {
+                _devices.Motions.G4Axis.Parameter.Deceleration = deccel;
+            };
+        }
         private void StartLogCleanupScheduler()
         {
             if (_logCleanupStarted)
