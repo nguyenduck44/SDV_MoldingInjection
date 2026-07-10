@@ -25,7 +25,6 @@ namespace SDV_MoldingInjection.Recipe
         private bool _skipNeedleClean;
         private bool _skipDispensing;
         private bool _useCIM;
-        private bool _readBarcode;
         private bool _skipHead1;
         private bool _skipHead2;
         private bool _skipHead3;
@@ -36,7 +35,7 @@ namespace SDV_MoldingInjection.Recipe
         #endregion
 
         [SingleRecipeDescription(Description = "Skip Head 1 & 2", Detail = "Check to Skip Head 1 & Head 2")]
-        [ParameterDescription(197)]
+        [ParameterDescription(204)]
         public bool SkipHead12
         {
             get => _skipHead12;
@@ -54,7 +53,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Skip Head 3 & 4", Detail = "Check to Skip Head 3 & Head 4")]
-        [ParameterDescription(198)]
+        [ParameterDescription(205)]
         public bool SkipHead34
         {
             get => _skipHead34;
@@ -72,7 +71,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Skip Head 1", Detail = "Check to Skip Head 1")]
-        [ParameterDescription(199)]
+        [ParameterDescription(206)]
         public bool SkipHead1
         {
             get => _skipHead1;
@@ -88,7 +87,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
         [SingleRecipeDescription(Description = "Skip Head 2", Detail = "Check to Skip Head 2")]
-        [ParameterDescription(200)]
+        [ParameterDescription(207)]
         public bool SkipHead2
         {
             get => _skipHead2;
@@ -104,7 +103,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
         [SingleRecipeDescription(Description = "Skip Head 3", Detail = "Check to Skip Head 3")]
-        [ParameterDescription(201)]
+        [ParameterDescription(208)]
         public bool SkipHead3
         {
             get => _skipHead3;
@@ -120,7 +119,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
         [SingleRecipeDescription(Description = "Skip Head 4", Detail = "Check to Skip Head 4")]
-        [ParameterDescription(202)]
+        [ParameterDescription(209)]
         public bool SkipHead4
         {
             get => _skipHead4;
@@ -136,7 +135,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [ParameterDescription(203)]
+        [ParameterDescription(210)]
         public bool InputTypeManual
         {
             get => _inputTypeManual;
@@ -153,7 +152,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [ParameterDescription(204)]
+        [ParameterDescription(211)]
         public bool InputTypeAuto
         {
             get => _inputTypeAuto;
@@ -170,89 +169,83 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [ParameterDescription(205)]
+        [ParameterDescription(212)]
         public bool SavePressureLog
         {
             get => _savePressureLog;
             set => SetRecipe(ref _savePressureLog, value);
         }
 
-        [ParameterDescription(206)]
+        [ParameterDescription(213)]
         public bool OneTorrAndPurge
         {
             get => _1torrAndPurge;
             set => SetRecipe(ref _1torrAndPurge, value);
         }
 
-        [ParameterDescription(207)]
+        [ParameterDescription(214)]
         public bool SkipVentTime
         {
             get => _skipVentTime;
             set => SetRecipe(ref _skipVentTime, value);
         }
 
-        [ParameterDescription(208)]
+        [ParameterDescription(215)]
         public bool DelayAfterInjectFinish
         {
             get => _delayAfterInjectFinish;
             set => SetRecipe(ref _delayAfterInjectFinish, value);
         }
 
-        [ParameterDescription(209)]
+        [ParameterDescription(216)]
         public bool EnableInjectionPath
         {
             get => _enableInjectionPath;
             set => SetRecipe(ref _enableInjectionPath, value);
         }
 
-        [ParameterDescription(210)]
+        [ParameterDescription(217)]
         public bool InjectAfterOpenAngleValve
         {
             get => _injectAfterOpenAngleValve;
             set => SetRecipe(ref _injectAfterOpenAngleValve, value);
         }
 
-        [ParameterDescription(211)]
+        [ParameterDescription(217)]
         public bool SkipDummyShot
         {
             get => _skipDummyShot;
             set => SetRecipe(ref _skipDummyShot, value);
         }
 
-        [ParameterDescription(212)]
+        [ParameterDescription(219)]
         public bool SkipNeedleClean
         {
             get => _skipNeedleClean;
             set => SetRecipe(ref _skipNeedleClean, value);
         }
 
-        [ParameterDescription(213)]
+        [ParameterDescription(220)]
         public bool SkipDispensing
         {
             get => _skipDispensing;
             set => SetRecipe(ref _skipDispensing, value);
         }
 
-        [ParameterDescription(214)]
+        [ParameterDescription(221)]
         public bool UseCIM
         {
             get { return _useCIM; }
             set { _useCIM = value; }
         }
-        [ParameterDescription(215)]
-        public bool ReadBarcode
-        {
-            get { return _readBarcode; }
-            set => SetRecipe(ref _readBarcode, value);
-        }
-
-        [ParameterDescription(238)]
+        [ParameterDescription(222)]
         public bool DummyBeforeInject
         {
             get { return _dummyBeforeInject; }
             set => SetRecipe(ref _dummyBeforeInject, value);
         }
 
+        [ParameterDescription(223)]
         public bool SkipDryPumpPressure
         {
             get { return _skipDryPumpPressure; }

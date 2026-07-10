@@ -40,8 +40,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                 case EFDCValue.ENABLE_INJECTION_PATH: address = 0xAD41; length = 1; break;
                 case EFDCValue.INJECT_AFTER_OPEN_ANGLE_VALVE: address = 0xAD42; length = 1; break;
                 case EFDCValue.CIM_ONOFF: address = 0xAD43; length = 1; break;
-                case EFDCValue.READ_BARCODE: address = 0xAD44; length = 1; break;
-                case EFDCValue.ENABLE_IDLEPURGE: address = 0xAD45; length = 1; break;
+                case EFDCValue.ENABLE_IDLEPURGE: address = 0xAD44; length = 1; break;
                 case EFDCValue.N02_U_T_PW: address = 0xAF0C; length = 2; break;
                 case EFDCValue.N02_U_I_PW: address = 0xAF0E; length = 2; break;
                 case EFDCValue.N02_U_R_VOL: address = 0xAF10; length = 2; break;

@@ -7,7 +7,7 @@ namespace SDV_MoldingInjection.Recipe
     public class InjectTimeRecipe : RecipeBase
     {
         //[SingleRecipeDescription(Description = "Inject First Time", Detail = "Inject time before Open Angle Valve", Unit = Unit.Second)]
-        [ParameterDescription(216)]
+        [ParameterDescription(224)]
         public double DelayAfterOpenAngleValve
         {
             get => _delayAfterOpenAngleValve;
@@ -15,7 +15,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Delay Time", Detail = "Delay time after inject", Unit = Unit.Second)]
-        [ParameterDescription(217)]
+        [ParameterDescription(225)]
         public double DelayTime
         {
             get => _delayTime;
@@ -23,7 +23,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Inject Time", Unit = Unit.Second)]
-        [ParameterDescription(218)]
+        [ParameterDescription(226)]
         public double InjectTime
         {
             get => _injectTime;
@@ -31,7 +31,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Vent Time After Inject", Unit = Unit.Second)]
-        [ParameterDescription(219)]
+        [ParameterDescription(227)]
         public double VentTimeAfterInject
         {
             get => _ventTimeAfterInject;
@@ -43,7 +43,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Vent Time", Unit = Unit.Second)]
-        [ParameterDescription(220)]
+        [ParameterDescription(228)]
         public double VentTime
         {
             get => _ventTime;
@@ -51,7 +51,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         //[SingleRecipeDescription(Description = "Delay after inject finish", Unit = Unit.Second)]
-        [ParameterDescription(221)]
+        [ParameterDescription(229)]
         public double DelayAfterInjectFinish
         {
             get => _delayAfterInjectFinish;
@@ -59,7 +59,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "DummyShot Before Inject", Detail = "DummyShot After Wait No Product", Unit = Unit.Minute)]
-        [ParameterDescription(222)]
+        [ParameterDescription(230)]
         public double DummyShotBeforeInject
         {
             get => _dummyShotBeforeInject;

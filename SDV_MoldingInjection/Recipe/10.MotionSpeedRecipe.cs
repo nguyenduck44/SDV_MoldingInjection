@@ -165,6 +165,7 @@ namespace SDV_MoldingInjection.Recipe
         [JsonIgnore]
         public Action<double> G4AxisDeccelChanged;
 
+        [ParameterDescription(247)]
         public double XAxisVelocity
         {
             get { return xAxisVelocity; }
@@ -176,6 +177,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        [ParameterDescription(248)]
         public double XAxisAccel
         {
             get { return xAxisAccel; }
@@ -187,6 +189,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        [ParameterDescription(249)]
         public double XAxisDeccel
         {
             get { return xAxisDeccel; }
@@ -197,6 +200,8 @@ namespace SDV_MoldingInjection.Recipe
                 XAxisDeccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(250)]
         public double StageYAxisVelocity
         {
             get { return stageYAxisVelocity; }
@@ -207,6 +212,8 @@ namespace SDV_MoldingInjection.Recipe
                 StageYAxisVelocityChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(251)]
         public double StageYAxisAccel
         {
             get { return stageYAxisAccel; }
@@ -217,6 +224,8 @@ namespace SDV_MoldingInjection.Recipe
                 StageYAxisAccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(252)]
         public double StageYAxisDeccel
         {
             get { return stageYAxisDeccel; }
@@ -228,6 +237,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        [ParameterDescription(253)]
         public double Z1AxisVelocity
         {
             get { return z1AxisVelocity; }
@@ -238,6 +248,8 @@ namespace SDV_MoldingInjection.Recipe
                 Z1AxisVelocityChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(254)]
         public double Z1AxisAccel
         {
             get { return z1AxisAccel; }
@@ -248,6 +260,8 @@ namespace SDV_MoldingInjection.Recipe
                 Z1AxisAccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(255)]
         public double Z1AxisDeccel
         {
             get { return z1AxisDeccel; }
@@ -258,6 +272,8 @@ namespace SDV_MoldingInjection.Recipe
                 Z1AxisDeccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(256)]
         public double Z2AxisVelocity
         {
             get { return z2AxisVelocity; }
@@ -268,6 +284,8 @@ namespace SDV_MoldingInjection.Recipe
                 Z2AxisVelocityChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(257)]
         public double Z2AxisAccel
         {
             get { return z2AxisAccel; }
@@ -278,6 +296,8 @@ namespace SDV_MoldingInjection.Recipe
                 Z2AxisAccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(258)]
         public double Z2AxisDeccel
         {
             get { return z2AxisDeccel; }
@@ -288,6 +308,8 @@ namespace SDV_MoldingInjection.Recipe
                 Z2AxisDeccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(259)]
         public double Z3AxisVelocity
         {
             get { return z3AxisVelocity; }
@@ -298,6 +320,8 @@ namespace SDV_MoldingInjection.Recipe
                 Z3AxisVelocityChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(260)]
         public double Z3AxisAccel
         {
             get { return z3AxisAccel; }
@@ -308,6 +332,8 @@ namespace SDV_MoldingInjection.Recipe
                 Z3AxisAccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(261)]
         public double Z3AxisDeccel
         {
             get { return z3AxisDeccel; }
@@ -318,6 +344,8 @@ namespace SDV_MoldingInjection.Recipe
                 Z3AxisDeccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(262)]
         public double Z4AxisVelocity
         {
             get { return z4AxisVelocity; }
@@ -328,6 +356,8 @@ namespace SDV_MoldingInjection.Recipe
                 Z4AxisVelocityChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(263)]
         public double Z4AxisAccel
         {
             get { return z4AxisAccel; }
@@ -338,6 +368,8 @@ namespace SDV_MoldingInjection.Recipe
                 Z4AxisAccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(264)]
         public double Z4AxisDeccel
         {
             get { return z4AxisDeccel; }
@@ -348,6 +380,8 @@ namespace SDV_MoldingInjection.Recipe
                 Z4AxisDeccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(265)]
         public double P1AxisVelocity
         {
             get { return p1AxisVelocity; }
@@ -358,6 +392,8 @@ namespace SDV_MoldingInjection.Recipe
                 P1AxisVelocityChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(266)]
         public double P1AxisAccel
         {
             get { return p1AxisAccel; }
@@ -368,6 +404,8 @@ namespace SDV_MoldingInjection.Recipe
                 P1AxisAccelChanged?.Invoke(value);
             }
         }
+        
+        [ParameterDescription(267)]
         public double P1AxisDeccel
         {
             get { return p1AxisDeccel; }
@@ -378,6 +416,8 @@ namespace SDV_MoldingInjection.Recipe
                 P1AxisDeccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(268)]
         public double P2AxisVelocity
         {
             get { return p2AxisVelocity; }
@@ -388,6 +428,8 @@ namespace SDV_MoldingInjection.Recipe
                 P2AxisVelocityChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(269)]
         public double P2AxisAccel
         {
             get { return p2AxisAccel; }
@@ -398,6 +440,8 @@ namespace SDV_MoldingInjection.Recipe
                 P2AxisAccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(270)]
         public double P2AxisDeccel
         {
             get { return p2AxisDeccel; }
@@ -408,6 +452,8 @@ namespace SDV_MoldingInjection.Recipe
                 P2AxisDeccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(271)]
         public double P3AxisVelocity
         {
             get { return p3AxisVelocity; }
@@ -418,6 +464,8 @@ namespace SDV_MoldingInjection.Recipe
                 P3AxisVelocityChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(272)]
         public double P3AxisAccel
         {
             get { return p3AxisAccel; }
@@ -428,6 +476,8 @@ namespace SDV_MoldingInjection.Recipe
                 P3AxisAccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(273)]
         public double P3AxisDeccel
         {
             get { return p3AxisDeccel; }
@@ -438,6 +488,8 @@ namespace SDV_MoldingInjection.Recipe
                 P3AxisDeccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(274)]
         public double P4AxisVelocity
         {
             get { return p4AxisVelocity; }
@@ -448,6 +500,8 @@ namespace SDV_MoldingInjection.Recipe
                 P4AxisVelocityChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(275)]
         public double P4AxisAccel
         {
             get { return p4AxisAccel; }
@@ -458,6 +512,8 @@ namespace SDV_MoldingInjection.Recipe
                 P4AxisAccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(276)]
         public double P4AxisDeccel
         {
             get { return p4AxisDeccel; }
@@ -469,6 +525,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        [ParameterDescription(277)]
         public double G1AxisVelocity
         {
             get { return g1AxisVelocity; }
@@ -479,6 +536,8 @@ namespace SDV_MoldingInjection.Recipe
                 G1AxisVelocityChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(278)]
         public double G1AxisAccel
         {
             get { return g1AxisAccel; }
@@ -489,6 +548,8 @@ namespace SDV_MoldingInjection.Recipe
                 G1AxisAccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(279)]
         public double G1AxisDeccel
         {
             get { return g1AxisDeccel; }
@@ -499,6 +560,8 @@ namespace SDV_MoldingInjection.Recipe
                 G1AxisDeccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(280)]
         public double G2AxisVelocity
         {
             get { return g2AxisVelocity; }
@@ -509,6 +572,8 @@ namespace SDV_MoldingInjection.Recipe
                 G2AxisVelocityChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(281)]
         public double G2AxisAccel
         {
             get { return g2AxisAccel; }
@@ -519,6 +584,8 @@ namespace SDV_MoldingInjection.Recipe
                 G2AxisAccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(282)]
         public double G2AxisDeccel
         {
             get { return g2AxisDeccel; }
@@ -529,6 +596,8 @@ namespace SDV_MoldingInjection.Recipe
                 G2AxisDeccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(283)]
         public double G3AxisVelocity
         {
             get { return g3AxisVelocity; }
@@ -539,6 +608,8 @@ namespace SDV_MoldingInjection.Recipe
                 G3AxisVelocityChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(284)]
         public double G3AxisAccel
         {
             get { return g3AxisAccel; }
@@ -549,6 +620,8 @@ namespace SDV_MoldingInjection.Recipe
                 G3AxisAccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(285)]
         public double G3AxisDeccel
         {
             get { return g3AxisDeccel; }
@@ -559,6 +632,8 @@ namespace SDV_MoldingInjection.Recipe
                 G3AxisDeccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(286)]
         public double G4AxisVelocity
         {
             get { return g4AxisVelocity; }
@@ -569,6 +644,8 @@ namespace SDV_MoldingInjection.Recipe
                 G4AxisVelocityChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(287)]
         public double G4AxisAccel
         {
             get { return g4AxisAccel; }
@@ -579,6 +656,8 @@ namespace SDV_MoldingInjection.Recipe
                 G4AxisAccelChanged?.Invoke(value);
             }
         }
+
+        [ParameterDescription(288)]
         public double G4AxisDeccel
         {
             get { return g4AxisDeccel; }

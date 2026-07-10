@@ -352,7 +352,6 @@ namespace SDV_MoldingInjection.Defines.CIM
             FDCHelper.WriteFDCValue(EFDCValue.ENABLE_INJECTION_PATH, _currentRecipe.OptionRecipe.EnableInjectionPath ? 1 : 2);
             FDCHelper.WriteFDCValue(EFDCValue.INJECT_AFTER_OPEN_ANGLE_VALVE, _currentRecipe.OptionRecipe.InjectAfterOpenAngleValve ? 1 : 2);
             FDCHelper.WriteFDCValue(EFDCValue.CIM_ONOFF, _currentRecipe.OptionRecipe.UseCIM ? 1 : 2);
-            FDCHelper.WriteFDCValue(EFDCValue.READ_BARCODE, _currentRecipe.OptionRecipe.ReadBarcode ? 1 : 2);
             FDCHelper.WriteFDCValue(EFDCValue.ENABLE_IDLEPURGE, _currentRecipe.IdlePurgeRecipe.EnableIdlePurge ? 1 : 2);
             #endregion
 

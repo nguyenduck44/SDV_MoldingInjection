@@ -5,6 +5,7 @@ using EQX.Device.Balance;
 using EQX.InOut;
 using EQX.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
+using ScottPlot.Hatches;
 using ScottPlot.Plottables;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.CIM;
@@ -1249,7 +1250,8 @@ namespace SDV_MoldingInjection.Process
                         WriteHeadMCC(EMCCAction.SP01_MOVE_Z_TO_DUMMY_CHARGE_POS, EMCCAction.SP01_MOVE_T_TO_DUMMY_GATE_OPEN_POS);
                     }
 
-                    if (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing || _machineStatus.IsPassRunMode)
+                    if ((_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing || _machineStatus.IsPassRunMode) &&
+                        sequence != ESequence.IdlePurge)
                     {
                         Log.Debug("DryRun Mode Or SkipDispensing -> G Axis Not Open");
                         Step.RunStep++;
@@ -1264,8 +1266,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESPDHeadProcCommonStep.Gate_OpenWait:
                     if (WaitTimeOutOccurred &&
-                        _machineStatus.IsAutoRunMode &&
-                        OptionRecipe.SkipDispensing == false)
+                       ((_machineStatus.IsAutoRunMode && OptionRecipe.SkipDispensing == false) || sequence == ESequence.IdlePurge))
                     {
                         RaiseHeadAlarm(EAlarm.MO_SPD_H01_G1_AXIS_OPEN_POS_TIMEOUT);
                         break;
@@ -1312,7 +1313,7 @@ namespace SDV_MoldingInjection.Process
                     if (sequence == ESequence.ResinInject)
                     {
                         WriteHeadMCC(EMCCAction.SP01_WAIT_REQUEST_INJECT, EMCCAction.SP01_MOVE_Z_TO_BASE_INJECT_POS);
-                        if (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing || _machineStatus.IsPassRunMode)
+                        if ((_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing || _machineStatus.IsPassRunMode) && sequence != ESequence.IdlePurge)
                         {
                             Log.Debug("Dry Run Mode Or Skip Dispensing -> P Axis Not Move");
                             CarrierJigStatus.InjectTime = 0;
@@ -1327,7 +1328,7 @@ namespace SDV_MoldingInjection.Process
                     else if (sequence == ESequence.DummyShot)
                     {
                         WriteHeadMCC(EMCCAction.SP01_WAIT_REQUEST_DUMMY, EMCCAction.SP01_MOVE_Z_TO_BASE_DUMMY_POS);
-                        if (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing || _machineStatus.IsPassRunMode)
+                        if ((_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing || _machineStatus.IsPassRunMode) && sequence != ESequence.IdlePurge)
                         {
                             Log.Debug("DryRun Mode Or SkipDispensing -> P Axis Not Move");
                             Step.RunStep++;
@@ -1400,8 +1401,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESPDHeadProcCommonStep.PAxis_InjectPos_MoveWait:
                     if (WaitTimeOutOccurred &&
-                        _machineStatus.IsAutoRunMode &&
-                        OptionRecipe.SkipDispensing == false)
+                       ((_machineStatus.IsAutoRunMode && OptionRecipe.SkipDispensing == false) || sequence == ESequence.IdlePurge))
                     {
                         RaiseHeadAlarm(EAlarm.MO_SPD_H01_P1_AXIS_INJECT_POS_TIMEOUT);
                         break;
