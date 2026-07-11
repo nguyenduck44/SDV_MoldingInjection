@@ -1232,7 +1232,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    if (_optionRecipe.SkipDummyShot)
+                    if (_optionRecipe.SkipDummyShot || DummyShotCount < Recipe.DummyShotCycleCount)
                     {
                         if (_optionRecipe.SkipNeedleClean ||
                             NeedleCleanCount < Recipe.NiddleCleanCycleCount)
@@ -1245,13 +1245,6 @@ namespace SDV_MoldingInjection.Process
                         Log.Info("Skip DummyShot Next Sequence To NeddleClean");
                         NeedleCleanCount = 0;
                         Sequence = ESequence.NeedleCleaning;
-                        break;
-                    }
-
-                    if (DummyShotCount < Recipe.DummyShotCycleCount)
-                    {
-                        Log.Info("Next Sequence To Unloading");
-                        Sequence = ESequence.Unloading;
                         break;
                     }
 
