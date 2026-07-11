@@ -86,18 +86,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 });
             }
         }
-        public ICommand ECMChangeTest
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    CIMAction.ECMValues[0] = random.Next(10000);
-                    EquipEventHelpers.EquipmentConstantParameterChanged(1, CIMAction.ECMValues[0]);
-                });
-            }
-        }
-
+        
         Random random = new Random();
 
         public ICommand OpenCIMFunctionTestCommand

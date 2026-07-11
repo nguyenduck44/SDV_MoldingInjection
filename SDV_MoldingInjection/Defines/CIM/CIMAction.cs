@@ -308,19 +308,6 @@ namespace SDV_MoldingInjection.Defines.CIM
                         }
                     }
 
-                    {
-                        //short[] data = new short[20];
-                        //PlcDataConverter.SetString(data, 0, 20, _recipeSelector.RecipeSetting.CurrentRecipe);
-
-                        //CIMAddressMap.WriteWords(CIMAddressMap.GetWriteWordIndexFromDAddress("9226"), 20, data);
-                    }
-
-                    for (int i = 0; i < ECMValues.Length; i++)
-                    {
-                        EquipEventHelpers.WriteEcmSingle(i + 1, ECMValues[i]);
-                    }
-                    EquipEventHelpers.WriteFdcItem();
-
                     //Copy Alarm InOut -> CIM
                     short[] buffer = CCLinkIEHelper.ReadWords(0x17000, 200);
                     CIMAddressMap.WriteWords(0xC617, 200, buffer , false);
@@ -331,7 +318,7 @@ namespace SDV_MoldingInjection.Defines.CIM
 
                     //Copy ECM -> CIM
                     short[] bufferECM = CCLinkIEHelper.ReadWords(0x17200, 54);
-                    CIMAddressMap.WriteWords(0xA28A, 54, bufferECM, false);
+                    CIMAddressMap.WriteWords(0xA352, 54, bufferECM, false);
 
                     await Task.Delay(100);
                 }
@@ -347,7 +334,7 @@ namespace SDV_MoldingInjection.Defines.CIM
 
                         while (CCLinkIEHelper.ReadCCIEBit(0x12DF))
                         {
-                            await Task.Delay(100);
+                            await Task.Delay(10);
                         }
                     }
 
@@ -360,14 +347,6 @@ namespace SDV_MoldingInjection.Defines.CIM
                 LogManager.GetLogger("CIM").Error("Load MCC Map Fail");
             }
         }
-
-        public static int[] ECMValues = new int[]
-        {
-        1234,
-        4567,
-        1357,
-        10000
-        };
 
         bool isFirstTime = true;
 

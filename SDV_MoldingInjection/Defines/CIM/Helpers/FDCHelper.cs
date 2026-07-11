@@ -56,8 +56,11 @@ namespace SDV_MoldingInjection.Defines.CIM
         {
             GetFDCInfo(fDCValue, out int address, out int length);
 
-            CIMAddressMap.WriteWords(address, length, new short[length]);
-            CIMAddressMap.WriteWords(address, length, CIMScenarioDispatcher.EncodeAsciiToWords(value));
+            CIMAddressMap.WriteWords(address, length, new short[length], false);
+
+            if (string.IsNullOrEmpty(value)) return;
+
+            CIMAddressMap.WriteWords(address, length, CIMScenarioDispatcher.EncodeAsciiToWords(value), false);
         }
 
         public static void WriteFDCValue(EFDCValue fDCValue, int value)

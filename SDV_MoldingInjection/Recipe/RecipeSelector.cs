@@ -37,6 +37,7 @@ namespace SDV_MoldingInjection.Recipe
         private readonly NavigationStore _navigationStore;
         private bool isChangingModel { get; set; } = false;
 
+        private object lockObj = new object();
         private string recipeFolder => _configuration.GetValue<string>("Folders:RecipeFolder") ?? "";
         #endregion
 
@@ -122,20 +123,15 @@ namespace SDV_MoldingInjection.Recipe
             ParameterWordArea = new ParameterWordArea();
         }
 
-        private async void SingleRecipe_RecipeChanged(object? oldValue, object? newValue, string? propertyName = null, int parameterIndex = -1,PropertyInfo? propertyInfo = null)
+        private async void SingleRecipe_RecipeChanged(object? oldValue, object? newValue, string? propertyName = null, int parameterIndex = -1, PropertyInfo? propertyInfo = null)
         {
-            if (isChangingModel) return;
-
-            // Skip CIM report while program is loading
-            //if (_navigationStore.CurrentViewModel.GetType() == typeof(InitDeinitViewModel)) return;
-
-            var props = CurrentRecipe.CommonRecipe.GetType().GetProperties();
-
             string selectedRecipe = ResolveRecipeName(RecipeSetting.CurrentRecipe);
             if (_recipeCatalog.TryGetRecipeId(selectedRecipe, out int recipeId) == false)
             {
                 throw new Exception("PPID Name format is not match");
             }
+
+            if (propertyInfo == null) return;
 
             if (parameterIndex > 0)
             {
@@ -165,8 +161,19 @@ namespace SDV_MoldingInjection.Recipe
                         throw new Exception($"Typeof '{propertyName}' ('{newValue.GetType()}') is not supported.");
                     }
 
-                    ParameterWordArea.Parameters[parameterIndex - 1] = value;
-                    EquipEventHelpers.ParameterChange(ParameterWordArea, recipeId);
+                    if (propertyInfo.GetCustomAttribute(typeof(ParameterDescriptionAttribute)) != null)
+                    {
+                        lock (lockObj)
+                        {
+                            ParameterWordArea.Parameters[parameterIndex - 1] = value;
+                            EquipEventHelpers.ParameterChange(ParameterWordArea, recipeId);
+                        }
+                    }
+
+                    else if (propertyInfo.GetCustomAttribute(typeof(ECMParameterDescriptionAttribute)) != null)
+                    {
+                        EquipEventHelpers.EquipmentConstantParameterChanged(parameterIndex, value);
+                    }
                 });
             }
 

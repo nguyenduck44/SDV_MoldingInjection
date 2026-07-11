@@ -7,14 +7,14 @@ namespace SDV_MoldingInjection.Recipe
     {
         [SingleRecipeDescription(Description = "X-Axis Ready Position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
-        [ParameterDescription(10)]
+        [ECMParameterDescription(1)]
         public double XAxisReadyPos
         {
             get => _xAxisReadyPos;
             set => SetRecipe(ref _xAxisReadyPos, value);
         }
 
-        [ParameterDescription(11)]
+        [ParameterDescription(8)]
         public double XAxisReadyPosOffset
         {
             get => _xAxisReadyPosOffset;
@@ -23,14 +23,14 @@ namespace SDV_MoldingInjection.Recipe
 
         [SingleRecipeDescription(Description = "Y-Axis Ready Position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "YAxis")]
-        [ParameterDescription(12)]
+        [ECMParameterDescription(2)]
         public double YAxisReadyPos
         {
             get => _yAxisReadyPos;
             set => SetRecipe(ref _yAxisReadyPos, value);
         }
 
-        [ParameterDescription(13)]
+        [ParameterDescription(9)]
         public double YAxisReadyPosOffset
         {
             get => _yAxisReadyPosOffset;
@@ -39,32 +39,30 @@ namespace SDV_MoldingInjection.Recipe
 
         [SingleRecipeDescription(Description = "X-Axis Inject Position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
-        [ParameterDescription(14)]
+        [ECMParameterDescription(3)]
         public double XAxisInjectPos
         {
             get => _xAxisInjectPos;
             set => SetRecipe(ref _xAxisInjectPos, value);
         }
 
-        [ParameterDescription(15)]
+        [ParameterDescription(10)]
         public double XAxisInjectPosOffset
         {
             get => _xAxisInjectPosOffset;
             set => SetRecipe(ref _xAxisInjectPosOffset, value);
         }
-
         
-
         [SingleRecipeDescription(Description = "Y-Axis Inject Position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "YAxis")]
-        [ParameterDescription(16)]
+        [ECMParameterDescription(4)]
         public double YAxisInjectPos
         {
             get => _yAxisInjectPos;
             set => SetRecipe(ref _yAxisInjectPos, value);
         }
 
-        [ParameterDescription(17)]
+        [ParameterDescription(11)]
         public double YAxisInjectPosOffset
         {
             get => _yAxisInjectPosOffset;
@@ -73,14 +71,14 @@ namespace SDV_MoldingInjection.Recipe
 
         [SingleRecipeDescription(Description = "X-Axis H13 Weighting Position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
-        [ParameterDescription(18)]
+        [ECMParameterDescription(5)]
         public double XAxisH13DotWeightingPos
         {
             get => _xAxisH13DotWeightPos;
             set => SetRecipe(ref _xAxisH13DotWeightPos, value);
         }
 
-        [ParameterDescription(19)]
+        [ParameterDescription(12)]
         public double XAxisH13DotWeightingPosOffset
         {
             get => _xAxisH13DotWeightingPosOffset;
@@ -89,14 +87,14 @@ namespace SDV_MoldingInjection.Recipe
 
         [SingleRecipeDescription(Description = "X-Axis H24 Weighting Position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
-        [ParameterDescription(20)]
+        [ECMParameterDescription(6)]
         public double XAxisH24DotWeightingPos
         {
             get => _xAxisH24DotWeightPos;
             set => SetRecipe(ref _xAxisH24DotWeightPos, value);
         }
 
-        [ParameterDescription(21)]
+        [ParameterDescription(13)]
         public double XAxisH24DotWeightingPosOffset
         {
             get => _xAxisH24DotWeightingPosOffset;
@@ -105,14 +103,14 @@ namespace SDV_MoldingInjection.Recipe
 
         [SingleRecipeDescription(Description = "X-Axis Dummy Shot Position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
-        [ParameterDescription(22)]
+        [ECMParameterDescription(7)]
         public double XAxisDummyPos
         {
             get => _xAxisDummyPos;
             set => SetRecipe(ref _xAxisDummyPos, value);
         }
 
-        [ParameterDescription(23)]
+        [ParameterDescription(14)]
         public double XAxisDummyPosOffset
         {
             get => _xAxisDummyPosOffset;
@@ -121,14 +119,14 @@ namespace SDV_MoldingInjection.Recipe
 
         [SingleRecipeDescription(Description = "Y-Axis Dummy Shot Position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "YAxis")]
-        [ParameterDescription(24)]
+        [ECMParameterDescription(8)]
         public double YAxisDummyPos
         {
             get => _yAxisDummyPos;
             set => SetRecipe(ref _yAxisDummyPos, value);
         }
 
-        [ParameterDescription(25)]
+        [ParameterDescription(15)]
         public double YAxisDummyPosOffset
         {
             get => _yAxisDummyPosOffset;
@@ -137,14 +135,14 @@ namespace SDV_MoldingInjection.Recipe
 
         [SingleRecipeDescription(Description = "X-Axis Needle Clean Position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "XAxis")]
-        [ParameterDescription(26)]
+        [ECMParameterDescription(9)]
         public double XAxisNeedleCleanPos
         {
             get => _xAxisNeedleCleanPos;
             set => SetRecipe(ref _xAxisNeedleCleanPos, value);
         }
 
-        [ParameterDescription(27)]
+        [ParameterDescription(16)]
         public double XAxisNeedleCleanPosOffset
         {
             get => _xAxisNeedleCleanPosOffset;
@@ -153,14 +151,14 @@ namespace SDV_MoldingInjection.Recipe
 
         [SingleRecipeDescription(Description = "Y-Axis Needle Clean Position", Unit = Unit.mm)]
         [SinglePositionTeaching(Motion = "YAxis")]
-        [ParameterDescription(28)]
+        [ECMParameterDescription(10)]
         public double YAxisNeedleCleanPos
         {
             get => _yAxisNeedleClean;
             set => SetRecipe(ref _yAxisNeedleClean, value);
         }
 
-        [ParameterDescription(29)]
+        [ParameterDescription(17)]
         public double YAxisNeedleCleanPosOffset
         {
             get => _yAxisNeedleCleanPosOffset;
@@ -168,7 +166,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Needle Clean Cycle Count")]
-        [ParameterDescription(30)]
+        [ParameterDescription(18)]
         public int NiddleCleanCycleCount
         {
             get => _niddleCleanCycleCount;
@@ -176,7 +174,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Needle Clean Shift Dist", Unit = Unit.mm)]
-        [ParameterDescription(31)]
+        [ParameterDescription(19)]
         public double NiddleCleanShiftDist
         {
             get => _niddleCleanShiftDist;
@@ -184,7 +182,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "DummyShot Cycle Count")]
-        [ParameterDescription(32)]
+        [ParameterDescription(20)]
         public int DummyShotCycleCount
         {
             get => _dummyShotCycleCount;
