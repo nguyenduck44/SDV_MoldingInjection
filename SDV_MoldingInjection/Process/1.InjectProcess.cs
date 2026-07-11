@@ -209,6 +209,18 @@ namespace SDV_MoldingInjection.Process
         #endregion
 
         #region Process Methods
+        public override bool PreProcess()
+        {
+            if (In_Jig1Detect.Value == false &&
+                In_Jig2Detect.Value == false &&
+                In_Jig3Detect.Value == false &&
+                In_Jig4Detect.Value == false)
+            {
+                FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, 0);
+            }
+            
+            return base.PreProcess();
+        }
         public override bool ProcessToAlarm()
         {
             DisableChamberOpenClose();

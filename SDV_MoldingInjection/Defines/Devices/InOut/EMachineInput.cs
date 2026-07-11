@@ -78,7 +78,7 @@
         SPARE_IN_56 = 56,
         PUMP_FAN_RUN3 = 57,
         PUMP_FAN_RUN4 = 58,
-        SYLINGE_HEAD_CDA_CHECK = 59,
+        SPARE_IN_59 = 59,
         SPARE_IN_60 = 60,
         SPARE_IN_61 = 61,
         PUMP_FAN_RUN1 = 62,

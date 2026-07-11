@@ -9,9 +9,10 @@ namespace SDV_MoldingInjection.Defines.CIM
         {
             switch (fDCValue)
             {
-                case EFDCValue.DISPENSING_STEP_ID: address = 0xABEC; length = 40; break;
-                case EFDCValue.CHAMBER_DISPENSING_PIRANI_CONTROL: address = 0xAC14; length = 2; break;
-                case EFDCValue.HEAD_DISPENSING_PRESSURE: address = 0xAC16; length = 2; break;
+                case EFDCValue.DISPENSING_CELL_ID: address = 0xABEC; length = 40; break;
+                case EFDCValue.DISPENSING_STEP_ID: address = 0xAC14; length = 2; break;
+                case EFDCValue.CHAMBER_DISPENSING_PIRANI_CONTROL: address = 0xAC16; length = 2; break;
+                case EFDCValue.HEAD_DISPENSING_PRESSURE: address = 0xAC18; length = 2; break;
                 case EFDCValue.PUMP_STEP_ID: address = 0xACB0; length = 2; break;
                 case EFDCValue.CDA_ANGLE_VALVE_PRESSURE: address = 0xACB2; length = 2; break;
                 case EFDCValue.CDA_VENT_PRESSURE: address = 0xACB4; length = 2; break;
