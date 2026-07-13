@@ -152,9 +152,9 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         {
             VirtualKeyboard virtualKeyboard = new VirtualKeyboard()
             {
-                WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                Width = Application.Current.MainWindow.Width,
-                Height = Application.Current.MainWindow.Height * 0.5
+                Height = 400,
+                Width = 1024,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
             };
 
             var result = virtualKeyboard.ShowDialog();

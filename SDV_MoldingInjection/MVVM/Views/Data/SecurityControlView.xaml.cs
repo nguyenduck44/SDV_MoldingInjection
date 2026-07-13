@@ -24,6 +24,9 @@ namespace SDV_MoldingInjection.MVVM.Views
 
             VirtualKeyboard virtualKeyboard = new VirtualKeyboard(false)
             {
+                Height = 400,
+                Width = 1024,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 Owner = Window.GetWindow(this),
                 InputText = textBox.Text
             };

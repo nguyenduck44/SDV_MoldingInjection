@@ -455,18 +455,34 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _recipeSelector.CurrentRecipe.OptionRecipe.Head1SkipChanged += (isSkip) =>
             {
                 _carrierJigStatusList.CarrierJigStatusH1.HeadSkip = isSkip;
+                if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead1 && _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead2)
+                {
+                    _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 = isSkip;
+                }
             };
             _recipeSelector.CurrentRecipe.OptionRecipe.Head2SkipChanged += (isSkip) =>
             {
                 _carrierJigStatusList.CarrierJigStatusH2.HeadSkip = isSkip;
+                if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead1 && _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead2)
+                {
+                    _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 = isSkip;
+                }
             };
             _recipeSelector.CurrentRecipe.OptionRecipe.Head3SkipChanged += (isSkip) =>
             {
                 _carrierJigStatusList.CarrierJigStatusH3.HeadSkip = isSkip;
+                if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead3 && _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead4)
+                {
+                    _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34 = isSkip;
+                }
             };
             _recipeSelector.CurrentRecipe.OptionRecipe.Head4SkipChanged += (isSkip) =>
             {
                 _carrierJigStatusList.CarrierJigStatusH4.HeadSkip = isSkip;
+                if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead3 && _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead4)
+                {
+                    _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34 = isSkip;
+                }
             };
 
 

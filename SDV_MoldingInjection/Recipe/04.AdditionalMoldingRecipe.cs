@@ -12,7 +12,7 @@ namespace SDV_MoldingInjection.Recipe
         private double _addTailSpeed;
         #endregion
 
-        [SingleRecipeDescription(Description = "USE Add Tail", Detail = "Check to Use Add Tail")]
+        [SingleRecipeDescription(Description = "Use Add Tail", Detail = "Check to Use Add Tail")]
         [ParameterDescription(200)]
         public bool UseAddTail
         {

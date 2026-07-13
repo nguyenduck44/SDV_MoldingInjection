@@ -22,7 +22,7 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _delayTime, value);
         }
 
-        [SingleRecipeDescription(Description = "Inject Time", Unit = Unit.Second)]
+        [SingleRecipeDescription(Description = "Inject Time", Detail = "Total Time Inject", Unit = Unit.Second)]
         [ParameterDescription(226)]
         public double InjectTime
         {
@@ -30,7 +30,7 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _injectTime, value);
         }
 
-        [SingleRecipeDescription(Description = "Vent Time After Inject", Unit = Unit.Second)]
+        [SingleRecipeDescription(Description = "Start Vent After Inject", Unit = Unit.Second)]
         [ParameterDescription(227)]
         public double VentTimeAfterInject
         {

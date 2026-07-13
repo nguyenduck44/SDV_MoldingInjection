@@ -55,6 +55,7 @@ namespace SDV_MoldingInjection.Defines.CIM
         private readonly CDAStatus _cDAStatus;
         private readonly Devices _devices;
         private readonly RecipeSelector _recipeSelector;
+        private readonly Config _config;
         private static Task _cimFDCUpdateTask;
         private CancellationTokenSource _cimFDCUpdatetokenSource;
         private int MCCUnitStartWord { get; }
@@ -70,7 +71,8 @@ namespace SDV_MoldingInjection.Defines.CIM
             IConfiguration configuration,
             CDAStatus cDAStatus,
             Devices devices,
-            RecipeSelector recipeSelector)
+            RecipeSelector recipeSelector,
+            Config config)
         {
             MaterialPorts = materialPorts.ToList();
 
@@ -86,7 +88,7 @@ namespace SDV_MoldingInjection.Defines.CIM
             _cDAStatus = cDAStatus;
             _devices = devices;
             _recipeSelector = recipeSelector;
-
+            _config = config;
             try
             {
                 object? val = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Top Engineering", "MCCUnitStartWord", "");
@@ -315,12 +317,6 @@ namespace SDV_MoldingInjection.Defines.CIM
         {
             #region Inject
             FDCHelper.WriteFDCValue(EFDCValue.CHAMBER_DISPENSING_PIRANI_CONTROL, (int)(_devices.AnalogInputs.VacuumPressureInTorr * 1000));
-            FDCHelper.WriteFDCValue(EFDCValue.HEAD_DISPENSING_PRESSURE, (int)(_cDAStatus.SyringeMainAirCDA * 1000));
-            #endregion
-
-            #region DryPump
-            FDCHelper.WriteFDCValue(EFDCValue.CDA_ANGLE_VALVE_PRESSURE, (int)(_cDAStatus.PumpValveVacuum * 1000));
-            FDCHelper.WriteFDCValue(EFDCValue.CDA_VENT_PRESSURE, (int)(_cDAStatus.PumpPurge * 1000));
             #endregion
 
             #region Utility
@@ -328,8 +324,12 @@ namespace SDV_MoldingInjection.Defines.CIM
             {
                 FDCHelper.WriteFDCValue(EFDCValue.MAIN_PANEL_TEMPRATURE, (int)(_devices.PanelIndicator.Temperature * 1000));
                 FDCHelper.WriteFDCValue(EFDCValue.MAIN_PANEL_HUMIDITY, (int)(_devices.PanelIndicator.Humidity * 1000));
+                if (_config.IsConnectEBoxMainPower)
+                {
+                    FDCHelper.WriteFDCValue(EFDCValue.MAIN_POWER_PANEL_TEMPRATURE, (int)(_devices.EBoxMainPowerIndicator.Temperature * 1000));
+                    FDCHelper.WriteFDCValue(EFDCValue.MAIN_POWER_PANEL_HUMIDITY, (int)(_devices.EBoxMainPowerIndicator.Humidity * 1000));
+                }
             });
-            FDCHelper.WriteFDCValue(EFDCValue.CDA_MAIN_AIR_PRESSURE, (int)(_cDAStatus.MainAirCDA * 1000));
             #endregion
 
             #region Function

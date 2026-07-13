@@ -116,7 +116,7 @@ namespace SDV_MoldingInjection.Process
                 }
             }
 
-            if (EnableWritePressureLog && _currentRecipe.OptionRecipe.SavePressureLog == true)
+            if (EnableWritePressureLog)
             {
                 PressureLog(_devices.AnalogInputs.VacuumPressureInTorr);
             }

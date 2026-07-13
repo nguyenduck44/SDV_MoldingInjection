@@ -122,7 +122,7 @@
                       Grid.Row="1"
                       Grid.Column="1">
                 <StackPanel Orientation="Vertical">
-                    <UniformGrid Columns="1">
+                    <UniformGrid Columns="1" VerticalAlignment="Top">
                         <CheckBox Content="Skip Vent Time"
                                   Margin="5"
                                   IsChecked="{Binding RecipeList.OptionRecipe.SkipVentTime}"
@@ -131,14 +131,14 @@
                                   Margin="5"
                                   IsChecked="{Binding RecipeList.OptionRecipe.DelayAfterInjectFinish}"
                                   Tag="Check to delay after inject finish" />
-                        <CheckBox Content="1 Torr And Purge"
+                        <!--<CheckBox Content="1 Torr And Purge"
                                   Margin="5"
                                   IsChecked="{Binding RecipeList.OptionRecipe.OneTorrAndPurge}"
-                                  Tag="Check to start inject with 1 torr and purge" />
-                        <CheckBox Content="Inject First"
+                                  Tag="Check to start inject with 1 torr and purge" />-->
+                        <!--<CheckBox Content="Inject First"
                                   Margin="5"
                                   IsChecked="{Binding RecipeList.OptionRecipe.InjectAfterOpenAngleValve}"
-                                  Tag="Check to start inject after open angle valve" />
+                                  Tag="Check to start inject after open angle valve" />-->
                         <CheckBox Content="Skip DryPump"
                                   Margin="5"
                                   IsChecked="{Binding RecipeList.OptionRecipe.SkipDryPumpPressure}"
@@ -169,14 +169,10 @@
                                   Margin="5"
                                   IsChecked="{Binding RecipeList.OptionRecipe.DummyBeforeInject}"
                                   Tag="Check to use DummyShot before inject" />
-                        <!--<CheckBox Content="Use CIM"
-                                  Margin="5"
-                                  IsChecked="{Binding RecipeList.OptionRecipe.UseCIM}"
-                                  Tag="Check to Use CIM" />-->
-                        <CheckBox Content="Save Pressure Log"
+                        <!--<CheckBox Content="Save Pressure Log"
                                   Margin="5"
                                   IsChecked="{Binding RecipeList.OptionRecipe.SavePressureLog}"
-                                  Tag="Check to Save Pressure Log" />
+                                  Tag="Check to Save Pressure Log" />-->
                     </UniformGrid>
                 </StackPanel>
             </GroupBox>

@@ -2,6 +2,7 @@
 using EQX.Core.Common;
 using EQX.Core.Helpers;
 using OpenCvSharp;
+using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.Recipe;
 
 namespace SDV_MoldingInjection.Defines
@@ -30,6 +31,13 @@ namespace SDV_MoldingInjection.Defines
             OnPropertyChanged(nameof(IsMainAir));
             OnPropertyChanged(nameof(IsPumpValveVacuum));
             OnPropertyChanged(nameof(IsSyringeAirMain));
+
+            #region FDC-CDA
+            FDCHelper.WriteFDCValue(EFDCValue.HEAD_DISPENSING_PRESSURE, (int)(SyringeMainAirCDA * 1000));
+            FDCHelper.WriteFDCValue(EFDCValue.CDA_ANGLE_VALVE_PRESSURE, (int)(PumpValveVacuum * 1000));
+            FDCHelper.WriteFDCValue(EFDCValue.CDA_VENT_PRESSURE, (int)(PumpPurge * 1000));
+            FDCHelper.WriteFDCValue(EFDCValue.CDA_MAIN_AIR_PRESSURE, (int)(MainAirCDA * 1000));
+            #endregion
         }
         public double PumpPurge => AnalogConvertHelper.Convert(_analogInputs.PumpPurge.Volt, 0.6, 5.0, -0.1, 1.0);
         public double MainAirCDA => AnalogConvertHelper.Convert(_analogInputs.MainAir.Volt, 0.6, 5.0, -0.1, 1.0);
