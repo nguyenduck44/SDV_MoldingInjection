@@ -166,6 +166,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "Needle Clean Cycle Count")]
+        [SingleRecipeMinMax(Max = 99, Min = 1)]
         [ParameterDescription(18)]
         public int NiddleCleanCycleCount
         {
@@ -182,6 +183,7 @@ namespace SDV_MoldingInjection.Recipe
         }
 
         [SingleRecipeDescription(Description = "DummyShot Cycle Count")]
+        [SingleRecipeMinMax(Max = 99, Min = 1)]
         [ParameterDescription(20)]
         public int DummyShotCycleCount
         {

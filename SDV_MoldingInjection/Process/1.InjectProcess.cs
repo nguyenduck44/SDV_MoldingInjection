@@ -1036,6 +1036,7 @@ namespace SDV_MoldingInjection.Process
                     WriteMCC(LastAction, EMCCAction.IJ01_WAIT_INJECT_AND_VENT_TIME);
                     Log.Debug($"Set Output {EInjectProcOutput.SPDHeadWorkRequest}");
                     UpdateAllJigStatus(EJigStatus.InMolding);
+                    _machineStatus.DummyShotCount++;
                     procOutputs[EInjectProcOutput.SPDHeadWorkRequest].Value = true;
                     Step.RunStep = (int)EMoldProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
@@ -1217,7 +1218,6 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcResinInjectStep.End:
                     NeedleCleanCount++;
-                    DummyShotCount++;
                     if (_currentRecipe.AdditionalMolding_Recipe.UseAddTail)
                     {
                         Log.Info("Next Sequence To Inject Add Tail");
@@ -1232,7 +1232,7 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    if (_optionRecipe.SkipDummyShot || DummyShotCount < Recipe.DummyShotCycleCount)
+                    if (_optionRecipe.SkipDummyShot || _machineStatus.DummyShotCount < Recipe.DummyShotCycleCount)
                     {
                         if (_optionRecipe.SkipNeedleClean ||
                             NeedleCleanCount < Recipe.NiddleCleanCycleCount)
@@ -1249,6 +1249,7 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     Log.Info("Next Sequence To DummyShot");
+                    _machineStatus.DummyShotCount = 0;
                     Sequence = ESequence.DummyShot;
                     break;
             }
@@ -3597,7 +3598,6 @@ namespace SDV_MoldingInjection.Process
         private int inputCount;
         private int outputCount;
         private int NeedleCleanCount = 0;
-        private int DummyShotCount = 0;
         private int _nzlCleanCount = 0;
         private double _yAxisCleaningTargetMm;
         private double _waitTimeNoProduct;

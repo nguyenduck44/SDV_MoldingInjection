@@ -1506,17 +1506,18 @@ namespace SDV_MoldingInjection.Process
                             Sequence = ESequence.ResinInjectAddTail;
                             break;
                         }
-                        if (OptionRecipe.SkipDummyShot)
+
+                        if (OptionRecipe.SkipDummyShot == false && _machineStatus.DummyShotCount >= _currentRecipe.InjectRecipe.DummyShotCycleCount)
                         {
-                            Log.Info($"Set Next Sequence To ResinInject");
+                            Log.Info($"Set Next Sequence To DummyShot");
                             TactTime.SetCycleTime();
-                            Sequence = ESequence.ResinInject;
+                            Sequence = ESequence.DummyShot;
                             break;
                         }
                     }
 
-                    Log.Info($"Set Next Sequence To DummyShot");
-                    Sequence = ESequence.DummyShot;
+                    Log.Info($"Set Next Sequence To ResinInject");
+                    Sequence = ESequence.ResinInject;
                     break;
             }
         }
