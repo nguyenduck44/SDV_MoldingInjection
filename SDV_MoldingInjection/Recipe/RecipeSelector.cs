@@ -125,6 +125,11 @@ namespace SDV_MoldingInjection.Recipe
 
         private async void SingleRecipe_RecipeChanged(object? oldValue, object? newValue, string? propertyName = null, int parameterIndex = -1, PropertyInfo? propertyInfo = null)
         {
+            if (_navigationStore.CurrentViewModel.GetType() != typeof(InitDeinitViewModel))
+            {
+                LogManager.GetLogger("Data").Info($"{propertyName} value changed {oldValue} -> {newValue}");
+            }
+
             string selectedRecipe = ResolveRecipeName(RecipeSetting.CurrentRecipe);
             if (_recipeCatalog.TryGetRecipeId(selectedRecipe, out int recipeId) == false)
             {
@@ -176,10 +181,6 @@ namespace SDV_MoldingInjection.Recipe
                     }
                 });
             }
-
-            if (_navigationStore.CurrentViewModel.GetType() == typeof(InitDeinitViewModel)) return;
-
-            LogManager.GetLogger("Data").Info($"{propertyName} value changed {oldValue} -> {newValue}");
         }
 
         private void CommonRecipe_SelectedLanguageEvent(ILanguageDefinition obj)
