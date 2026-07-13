@@ -102,12 +102,14 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             ProductionService productionService,
             MachineStatus machineStatus,
             InOutHandler inOutHandler,
-            TactTimeList tactTimeList)
+            TactTimeList tactTimeList,
+            CDAStatus cDAStatus)
         {
             _devices = devices;
             _machineStatus = machineStatus;
             _inOutHandler = inOutHandler;
             _tactTimeList = tactTimeList;
+            _cDAStatus = cDAStatus;
             _processes = processes;
             _navigationService = navigationService;
             _authenticationService = authenticationService;
@@ -346,7 +348,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         StopLogCleanupScheduler();
                         MessageText = "Stop Processes";
                         _processes.ProcessesStop();
-
+                        _cDAStatus.StopUpdateCDA();
                         Thread.Sleep(50);
                         _step++;
                         break;
@@ -818,6 +820,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly MachineStatus _machineStatus;
         private readonly InOutHandler _inOutHandler;
         private readonly TactTimeList _tactTimeList;
+        private readonly CDAStatus _cDAStatus;
         private readonly Processes _processes;
 
         private string _messageText = "";

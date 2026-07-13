@@ -40,5 +40,10 @@ namespace SDV_MoldingInjection.Defines
         public bool IsMainAir => MainAirCDA >= _recipeList.CDASettingRecipe.MainAirThreshold;
         public bool IsPumpValveVacuum => PumpValveVacuum >= _recipeList.CDASettingRecipe.PumpValveVacuumThreshold;
         public bool IsSyringeAirMain => SyringeMainAirCDA >= _recipeList.CDASettingRecipe.SyringeAirMainThreshold;
+
+        public void StopUpdateCDA()
+        {
+            statusUpdateTimer.Stop();
+        }
     }
 }
