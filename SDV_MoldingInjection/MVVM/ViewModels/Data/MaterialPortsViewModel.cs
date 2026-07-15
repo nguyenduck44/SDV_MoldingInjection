@@ -16,18 +16,24 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
     {
         public List<MaterialPort> MaterialPorts => _cimCollection.MaterialPorts;
 
+        public MachineStatus MachineStatus { get; }
+
         private readonly CIMCollection _cimCollection;
         private readonly CIMAction _cimAction;
         private readonly ICIMMapHelper _mapHelper;
         private readonly SyringAmountStatusList _syringAmountStatusList;
 
-        public MaterialPortsViewModel(CIMCollection cimCollection, CIMAction cimAction, ICIMMapHelper mapHelper, SyringAmountStatusList syringAmountStatusList)
+        public MaterialPortsViewModel(CIMCollection cimCollection, 
+            CIMAction cimAction, 
+            ICIMMapHelper mapHelper, 
+            SyringAmountStatusList syringAmountStatusList,
+            MachineStatus machineStatus)
         {
             _cimCollection = cimCollection;
             _cimAction = cimAction;
             _mapHelper = mapHelper;
             _syringAmountStatusList = syringAmountStatusList;
-
+            MachineStatus = machineStatus;
             for (int i = 0; i < MaterialPorts.Count; i++)
             {
                 MaterialPorts[i].TotalQty = (int)(_syringAmountStatusList.SyringeAmounts[i].MaxVolume);

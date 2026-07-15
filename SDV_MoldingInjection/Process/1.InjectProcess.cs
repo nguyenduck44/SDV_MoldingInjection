@@ -972,7 +972,7 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)MoldResinInjectSteps.Dequeue();
                     break;
                 case EMoldProcResinInjectStep.XYAxis_InjectPos_Move:
-                    Log.Debug($"Move XY Axis to Inject Position X:[${Recipe.XAxisInjectPos},Y:[${Recipe.YAxisInjectPos}]");
+                    Log.Debug($"Move XY Axis to Inject Position X:[${XAxisInjectPos},Y:[${YAxisInjectPos}]");
                     WriteMCC(LastAction, EMCCAction.IJ01_MOVE_X_Y_TO_INJECT_POS);
                     XAxis.MoveAbs(XAxisInjectPos);
                     YAxis.MoveAbs(YAxisInjectPos);
@@ -1868,96 +1868,6 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Chamber Closed");
                     Step.RunStep++;
                     break;
-
-                #region Comment CIM_Validation
-                //case EMoldProcLoadingUnloadingStep.CIM_Validation:
-                //_cIMCollection.WriteMCC(EMCCAction.IJ01_LD_JIG_CHECK, EMCCAction.IJ01_CIM_VALIDATION);
-
-                //if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
-                //{
-                //    string outCellID = "";
-
-                //    //Left
-                //    Log.Info($"Validationing JIG '{LeftJigID}'");
-                //    if (EquipEventHelpers.SpecificValidation(1, LeftJigID, ref outCellID) == false)
-                //    {
-                //        // TODO: ALARM RAISING (TIMEOUT? FAIL?)
-                //        RaiseWarning(EWarning.CIM_CELL_VALIDATION_FAIL);
-                //        break;
-                //    }
-
-                //    LeftCellId = outCellID;
-
-                //    if (EquipEventHelpers.CellTrackIn(1, LeftCellId, 9, _cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON ? 2 : 3) == false)
-                //    {
-                //        RaiseWarning(EWarning.CIM_CELL_TRACKING_FAIL);
-                //        break;
-                //    }
-
-                //    Log.Info($"Jig '{LeftCellId}' tracking successed");
-
-                //    CellJobProcessCimToPlcArea cellJobProcess = EquipEventHelpers.CellJobProcessConfirm(1, LeftCellId, _cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON);
-
-                //    CellJobProcessInfo_Left = cellJobProcess;
-                //    if (_cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON)
-                //    {
-                //        CellJobProcessInfo_Left.CellJobProcessCellID = LeftCellId;
-                //    }
-
-                //    if (_cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON && cellJobProcess.CellJobProcessRCMD != $"{(int)ECellJobProcessRCMD.CellJobProcessStart}")
-                //    {
-                //        CellJobProcessInfo_Left.UserDefine_TrackOutJudge = "O";
-                //        CellJobProcessInfo_Left.UserDefine_TrackOutDescription = "VALIDATION_FAIL";
-                //        EquipEventHelpers.CellTrackOut(1, CellJobProcessInfo_Left, true, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Left_1, MaterialAssemblyArea_Left_2 });
-                //        RaiseWarning(EWarning.CIM_CELL_JOB_PROCESS_START_FAIL);
-                //        return;
-                //    }
-
-                //    Log.Info($"Jig '{LeftCellId}' Job Process Start successed");
-
-                //    //Right
-                //    outCellID = "";
-                //    Log.Info($"Validationing JIG '{RightJigID}'");
-                //    if (EquipEventHelpers.SpecificValidation(2, RightJigID, ref outCellID) == false)
-                //    {
-                //        // TODO: ALARM RAISING (TIMEOUT? FAIL?)
-                //        RaiseWarning(EWarning.CIM_CELL_VALIDATION_FAIL);
-                //        break;
-                //    }
-
-                //    RightCellId = outCellID;
-
-                //    if (EquipEventHelpers.CellTrackIn(2, RightCellId, 9, _cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON ? 2 : 3) == false)
-                //    {
-                //        RaiseWarning(EWarning.CIM_CELL_TRACKING_FAIL);
-                //        break;
-                //    }
-
-                //    Log.Info($"Jig '{RightCellId}' tracking successed");
-
-                //    CellJobProcessCimToPlcArea cellJobProcess1 = EquipEventHelpers.CellJobProcessConfirm(2, RightCellId, _cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON);
-
-                //    CellJobProcessInfo_Right = cellJobProcess1;
-                //    if (_cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON)
-                //    {
-                //        CellJobProcessInfo_Right.CellJobProcessCellID = RightCellId;
-                //    }
-
-                //    if (_cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON && cellJobProcess.CellJobProcessRCMD != $"{(int)ECellJobProcessRCMD.CellJobProcessStart}")
-                //    {
-                //        CellJobProcessInfo_Right.UserDefine_TrackOutJudge = "O";
-                //        CellJobProcessInfo_Right.UserDefine_TrackOutDescription = "VALIDATION FAIL";
-                //        EquipEventHelpers.CellTrackOut(2, CellJobProcessInfo_Right, true, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Right_1, MaterialAssemblyArea_Right_2 });
-                //        RaiseWarning(EWarning.CIM_CELL_JOB_PROCESS_START_FAIL);
-                //        return;
-                //    }
-
-                //    Log.Info($"Jig '{RightCellId}' Job Process Start successed");
-                //}
-
-                //Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Update_Jig_Status;
-                //break;
-                #endregion
                 case EMoldProcLoadingUnloadingStep.End:
                     if (Parent?.Sequence != ESequence.AutoRun)
                     {
@@ -2783,22 +2693,22 @@ namespace SDV_MoldingInjection.Process
         {
             if (!_currentRecipe.OptionRecipe.SkipHead12 && !_optionRecipe.SkipHead1)
             {
-                Log.Debug($"Z1 Axis Move Inject Position [{_currentRecipe.SPDHead1_Recipe.ZAxisInjectPos}], Speed [{Z1SlowSpeed}]");
+                Log.Debug($"Z1 Axis Move Inject Position [{Z1AxisInjectPos}], Speed [{Z1SlowSpeed}]");
                 Z1Axis.MoveAbs(Z1AxisInjectPos, Z1SlowSpeed);
             }
             if (!_currentRecipe.OptionRecipe.SkipHead12 && !_optionRecipe.SkipHead2)
             {
-                Log.Debug($"Z2 Axis Move Inject Position [{_currentRecipe.SPDHead2_Recipe.ZAxisInjectPos}], Speed [{Z2SlowSpeed}]");
+                Log.Debug($"Z2 Axis Move Inject Position [{Z2AxisInjectPos}], Speed [{Z2SlowSpeed}]");
                 Z2Axis.MoveAbs(Z2AxisInjectPos, Z2SlowSpeed);
             }
             if (!_currentRecipe.OptionRecipe.SkipHead34 && !_optionRecipe.SkipHead3)
             {
-                Log.Debug($"Z3 Axis Move Inject Position [{_currentRecipe.SPDHead3_Recipe.ZAxisInjectPos}], Speed [{Z3SlowSpeed}]");
+                Log.Debug($"Z3 Axis Move Inject Position [{Z3AxisInjectPos}], Speed [{Z3SlowSpeed}]");
                 Z3Axis.MoveAbs(Z3AxisInjectPos, Z3SlowSpeed);
             }
             if (!_currentRecipe.OptionRecipe.SkipHead34 && !_optionRecipe.SkipHead4)
             {
-                Log.Debug($"Z4 Axis Move Inject Position [{_currentRecipe.SPDHead4_Recipe.ZAxisInjectPos}], Speed [{Z4SlowSpeed}]");
+                Log.Debug($"Z4 Axis Move Inject Position [{Z4AxisInjectPos}], Speed [{Z4SlowSpeed}]");
                 Z4Axis.MoveAbs(Z4AxisInjectPos, Z4SlowSpeed);
             }
         }
@@ -3363,14 +3273,14 @@ namespace SDV_MoldingInjection.Process
 
             string jigID = isJigLeft ? LeftJigID : RightJigID;
 
-            Log.Info($"Validationing JIG '{jigID}'");
+            Log.Info($"Specific Validationing JIG '{jigID}'");
             if (EquipEventHelpers.SpecificValidation(isJigLeft ? 1 : 2, jigID, ref outCellID) == false)
             {
-                Log.Error("CIM_CELL_VALIDATION_FAIL");
+                Log.Error("CIM_JIG_SPECIFIC_VALIDATION_FAIL");
                 return false;
             }
 
-            Log.Info($"Validation JIG '{jigID}' successed");
+            Log.Info($"Specific Validation JIG '{jigID}' successed");
 
             if (isJigLeft)
             {
@@ -3417,7 +3327,7 @@ namespace SDV_MoldingInjection.Process
             }
 
             if (_cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON && cellJobProcess.CellJobProcessRCMD != $"{(int)ECellJobProcessRCMD.CellJobProcessStart}")
-            {
+            {        
                 if (isJigLeft)
                 {
                     CellJobProcessInfo_Left.UserDefine_TrackOutJudge = "O";
@@ -3469,13 +3379,13 @@ namespace SDV_MoldingInjection.Process
         {
             if (currentDotWeightingHead == EDotWeightingHead.HEAD13)
             {
-                Log.Debug($"Move {XAxis.Name} to dot weighting for head 1, 3 pos [{_currentRecipe.InjectRecipe.XAxisH13DotWeightingPos}mm]");
-                XAxis.MoveAbs(Recipe.XAxisH13DotWeightingPos);
+                Log.Debug($"Move {XAxis.Name} to dot weighting for head 1, 3 pos [{XAxisH13DotWeightingPos}mm]");
+                XAxis.MoveAbs(XAxisH13DotWeightingPos);
             }
             else
             {
-                Log.Debug($"Move {XAxis.Name} to dot weighting for head 2, 4 pos [{_currentRecipe.InjectRecipe.XAxisH13DotWeightingPos}mm]");
-                XAxis.MoveAbs(Recipe.XAxisH24DotWeightingPos);
+                Log.Debug($"Move {XAxis.Name} to dot weighting for head 2, 4 pos [{XAxisH24DotWeightingPos}mm]");
+                XAxis.MoveAbs(XAxisH24DotWeightingPos);
             }
         }
 
