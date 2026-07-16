@@ -1041,11 +1041,11 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcCommonStep.Gate_Close:
                     if (sequence == ESequence.ResinInject)
                     {
-                        WriteHeadMCC(EMCCAction.SP01_ACT_WAIT_INJECT, EMCCAction.SP01_MOVE_T_TO_INJECT_GATE_CLOSE_POS);
+                        WriteHeadMCC(EMCCAction.SP01_ACT_WAIT_INJECT, EMCCAction.SP01_MOVE_T_CLOSE_Z_TO_CHARGE_INJECT_POS);
                     }
                     else if (sequence == ESequence.DummyShot)
                     {
-                        WriteHeadMCC(EMCCAction.SP01_ACT_WAIT_DUMMY_SHOT, EMCCAction.SP01_MOVE_T_TO_DUMMY_GATE_CLOSE_POS);
+                        WriteHeadMCC(EMCCAction.SP01_ACT_WAIT_DUMMY_SHOT, EMCCAction.SP01_MOVE_T_CLOSE_Z_TO_CHARGE_DUMMY_POS);
                     }
 
                     if (IsGateOnClosePos)
@@ -1106,7 +1106,6 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcCommonStep.PAxis_ChargePos_Move:
                     if (sequence == ESequence.ResinInject)
                     {
-                        WriteHeadMCC(EMCCAction.SP01_MOVE_T_TO_INJECT_GATE_CLOSE_POS, EMCCAction.SP01_MOVE_Z_TO_INJECT_CHARGE_POS);
                         if (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing || _machineStatus.IsPassRunMode)
                         {
                             Log.Debug("DryRun Or SkipDispensing PAxis Not Move");
@@ -1116,7 +1115,6 @@ namespace SDV_MoldingInjection.Process
                     }
                     else if (sequence == ESequence.DummyShot)
                     {
-                        WriteHeadMCC(EMCCAction.SP01_MOVE_T_TO_DUMMY_GATE_CLOSE_POS, EMCCAction.SP01_MOVE_Z_TO_DUMMY_CHARGE_POS);
                         if (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing || _machineStatus.IsPassRunMode)
                         {
                             Log.Debug("DryRun Or SkipDispensing PAxis Not Move");
@@ -1241,15 +1239,6 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcCommonStep.Gate_Open:
-                    if (sequence == ESequence.ResinInject)
-                    {
-                        WriteHeadMCC(EMCCAction.SP01_MOVE_Z_TO_INJECT_CHARGE_POS, EMCCAction.SP01_MOVE_T_TO_GATE_INJECT_OPEN_POS);
-                    }
-                    else if (sequence == ESequence.DummyShot)
-                    {
-                        WriteHeadMCC(EMCCAction.SP01_MOVE_Z_TO_DUMMY_CHARGE_POS, EMCCAction.SP01_MOVE_T_TO_DUMMY_GATE_OPEN_POS);
-                    }
-
                     if ((_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing || _machineStatus.IsPassRunMode) &&
                         sequence != ESequence.IdlePurge)
                     {
@@ -1276,12 +1265,11 @@ namespace SDV_MoldingInjection.Process
 
                     if (sequence == ESequence.ResinInject)
                     {
-                        WriteHeadMCC(EMCCAction.SP01_MOVE_T_TO_GATE_INJECT_OPEN_POS, EMCCAction.SP01_WAIT_REQUEST_INJECT);
+                        WriteHeadMCC(EMCCAction.SP01_MOVE_T_CLOSE_Z_TO_CHARGE_INJECT_POS, EMCCAction.SP01_WAIT_REQUEST_INJECT);
                     }
                     else if (sequence == ESequence.DummyShot)
                     {
-                        WriteHeadMCC(EMCCAction.SP01_MOVE_T_TO_DUMMY_GATE_OPEN_POS, EMCCAction.SP01_OUT_WAIT_TIME);
-                        WriteHeadMCC(EMCCAction.SP01_OUT_WAIT_TIME, EMCCAction.SP01_WAIT_REQUEST_DUMMY);
+                        WriteHeadMCC(EMCCAction.SP01_MOVE_T_CLOSE_Z_TO_CHARGE_DUMMY_POS, EMCCAction.SP01_WAIT_REQUEST_DUMMY);
                     }
 
                     Step.RunStep++;

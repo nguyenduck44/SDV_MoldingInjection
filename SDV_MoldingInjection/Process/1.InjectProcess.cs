@@ -1555,7 +1555,6 @@ namespace SDV_MoldingInjection.Process
                     isLoadingDry = false;
                     Log.Info("Received Start Request From InOut Machine");
                     _inOutHandler.SendTransmitCTST();
-                    WriteMCC(LastAction, EMCCAction.IJ01_LOAD_CELL_ID_FINISH);
                     Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Load_Jig_Check;
                     break;
                 case EMoldProcLoadingUnloadingStep.GetCellId1:
@@ -1798,7 +1797,6 @@ namespace SDV_MoldingInjection.Process
                     //TODO: Dry run
                     Log.Debug("Load Jig Check");
                     inputCount = 0;
-                    WriteMCC(LastAction, EMCCAction.IJ01_LD_JIG_CHECK);
 #if SIMULATION
                     SimulationInputSetter.SetSimInput(In_Jig1Detect, true);
                     SimulationInputSetter.SetSimInput(In_Jig2Detect, true);
