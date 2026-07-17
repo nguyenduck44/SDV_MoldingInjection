@@ -57,9 +57,9 @@ namespace SDV_MoldingInjection.Process
         #endregion
 
         #region Constructors
-        public DryPumpProcess(Devices devices, 
+        public DryPumpProcess(Devices devices,
             RecipeSelector recipeSelector,
-            ProcessIO processIO, 
+            ProcessIO processIO,
             MachineStatus machineStatus,
             CarrierJigStatusList carrierJigStatusList,
             IConfiguration configuration,
@@ -107,7 +107,7 @@ namespace SDV_MoldingInjection.Process
                 _carrierJigStatusList.CarrierJigStatusH4.DelayTime = _delayTime;
             }
 
-            if (EnablePressureHold && 
+            if (EnablePressureHold &&
                 _currentRecipe.OptionRecipe.SkipDryPumpPressure == false &&
                (_machineStatus.IsDryRunMode == false || _machineStatus.DryRunUseChamberPressure))
             {
@@ -132,7 +132,7 @@ namespace SDV_MoldingInjection.Process
 
             if (Environment.TickCount - _writeFDCStartTick >= 10000 &&
                 EnableWriteFDCDispensingStepID &&
-                Parent!.ProcessMode == EProcessMode.Run && 
+                Parent!.ProcessMode == EProcessMode.Run &&
                 Parent.Sequence == ESequence.AutoRun)
             {
                 _writeFDCStartTick = Environment.TickCount;
@@ -214,7 +214,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EDryPumpProcToRunStep.ChamberTorrCheck:
                     Log.Debug($"Chamber torr check: {_devices.AnalogInputs.VacuumPressureInTorr}");
-                    if(In_ChamberPurgeOn.Value == false)
+                    if (In_ChamberPurgeOn.Value == false)
                     {
                         Log.Debug("No pressure in the chamber, skip purge");
                         Step.ToRunStep = (int)EDryPumpProcToRunStep.ChamperPurge_Off;
@@ -352,9 +352,7 @@ namespace SDV_MoldingInjection.Process
             {
                 case EDryPumpProcResinInjectStep.Start:
                     Log.Info("ResinInject start");
-
-                    _cIMCollection.WriteMCC(EMCCAction.PU01_IN_WAIT_TIME, EMCCAction.PU01_ACT_WAIT_PUMPING);
-
+                    _cIMCollection.WriteMCC_OnlyStart(EMCCAction.PU01_ACT_WAIT_PUMPING);
                     TactTime.CycleTimeCounter = Environment.TickCount;
                     _delayTime = 0;
                     Step.RunStep++;
@@ -446,7 +444,7 @@ namespace SDV_MoldingInjection.Process
                     FDCHelper.WriteFDCValue(EFDCValue.PUMP_STEP_ID, 2);
                     TactTime.TactTimeCounter = Environment.TickCount;
 
-                    _plotter.ClearData();   
+                    _plotter.ClearData();
                     _carrierJigStatusList.CarrierJigStatusH1.VentTime = 0;
                     _carrierJigStatusList.CarrierJigStatusH2.VentTime = 0;
                     _carrierJigStatusList.CarrierJigStatusH3.VentTime = 0;
@@ -474,11 +472,11 @@ namespace SDV_MoldingInjection.Process
                         AngleValve.Open();
                         Wait(_currentRecipe.CylinderDelayTimeRecipe.AngleValveCylinderMoveDelay, AngleValve.IsOpen);
                     }
-                    
+
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.AngleValve_OpenWait:
-                    if (WaitTimeOutOccurred && 
+                    if (WaitTimeOutOccurred &&
                         _currentRecipe.OptionRecipe.SkipDryPumpPressure == false &&
                        (_machineStatus.DryRunUseChamberPressure || _machineStatus.IsDryRunMode == false))
                     {
@@ -580,14 +578,12 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_VacuumDone_Send:
-                    _cIMCollection.WriteMCC(EMCCAction.PU01_VALVE_CLOSE_AND_DELAY_BEFORE_INJECT, EMCCAction.PU01_OUT_WAIT_TIME);
-
                     procOutputs[EDryPumpProcOutput.ChamberVacuumSuccess].Value = true;
                     Log.Info($"Set output {EDryPumpProcOutput.ChamberVacuumSuccess}");
                     if (_currentRecipe.OptionRecipe.SkipVentTime == false)
                     {
                         Log.Debug("Wait Vent");
-                        _cIMCollection.WriteMCC(EMCCAction.PU01_OUT_WAIT_TIME, EMCCAction.PU01_DRYPUMP_WAIT_VEN_TIME);
+                        _cIMCollection.WriteMCC(EMCCAction.PU01_VALVE_CLOSE_AND_DELAY_BEFORE_INJECT, EMCCAction.PU01_DRYPUMP_WAIT_VEN_TIME);
                     }
 
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
@@ -683,8 +679,6 @@ namespace SDV_MoldingInjection.Process
                         break;
                     }
 
-                    _cIMCollection.WriteMCC(EMCCAction.PU01_START_VENT_AND_WAIT, EMCCAction.PU01_IN_WAIT_TIME);
-
                     Log.Info($"Clear output {EDryPumpProcOutput.ChamberVacuumSuccess}");
                     procOutputs[EDryPumpProcOutput.ChamberVacuumSuccess].Value = false;
                     procOutputs[EDryPumpProcOutput.VentComplete].Value = false;
@@ -706,6 +700,7 @@ namespace SDV_MoldingInjection.Process
 
                     TactTime.SetCycleTime();
                     Log.Info("ResinInject end, starting new cycle");
+                    _cIMCollection.WriteMCC_OnlyEnd(EMCCAction.PU01_START_VENT_AND_WAIT);
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.Start;
                     break;
 
@@ -793,6 +788,7 @@ namespace SDV_MoldingInjection.Process
         private DateTime pressureLogWatchTime = DateTime.Now;
         private long _writeFDCStartTick;
         private bool EnableWriteFDCDispensingStepID;
+        private bool IsFirstStart = true;
         #endregion
     }
 }

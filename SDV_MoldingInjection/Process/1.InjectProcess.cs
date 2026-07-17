@@ -1421,7 +1421,6 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Transfer_LoadUnload_SendRequest:
-                    WriteMCC(LastAction, EMCCAction.IJ01_REQUEST_LOAD_UNLOAD);
                     if (isLoading)
                     {
                         //LOADING MANUAL
