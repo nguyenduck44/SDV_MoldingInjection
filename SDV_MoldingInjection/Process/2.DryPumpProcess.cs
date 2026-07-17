@@ -634,7 +634,7 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"Vent Complete: {InjectTimeRecipe.VentTime}s");
 
-                    FDCHelper.WriteFDCValue(EFDCValue.VENT_TIME, (int)_carrierJigStatusList.CarrierJigStatusH1.VentTime);
+                    FDCHelper.WriteFDCValue(EFDCValue.VENT_TIME, (int)_carrierJigStatusList.CarrierJigStatusH1.VentTime * 1000);
                     FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_CELL_ID, DateTime.Now.ToString("yyyyMMddHHmmss"));
 
                     EnableVentTimer = false;
