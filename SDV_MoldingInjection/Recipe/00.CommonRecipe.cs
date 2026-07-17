@@ -25,7 +25,12 @@ namespace SDV_MoldingInjection.Recipe
         public double MotionOriginTimeout
         {
             get => motionOriginTimeout;
-            set => SetRecipe(ref motionOriginTimeout, value);
+            set
+            {
+                if (motionMoveTimeout == value) return;
+                SetRecipe(ref motionOriginTimeout, value);
+            }
+
         }
 
         [SingleRecipeDescription(Description = "Motion Move Timeout", Unit = Unit.Second)]
@@ -74,7 +79,7 @@ namespace SDV_MoldingInjection.Recipe
         public double MaterialWarningCount
         {
             get { return materialWarningCount; }
-            set 
+            set
             {
                 SetRecipe(ref materialWarningCount, value);
             }

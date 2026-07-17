@@ -6,6 +6,7 @@ using EQX.InOut;
 using EQX.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using ScottPlot.Hatches;
+using ScottPlot.Interactivity.UserActionResponses;
 using ScottPlot.Plottables;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.CIM;
@@ -1148,6 +1149,7 @@ namespace SDV_MoldingInjection.Process
                     switch (sequence)
                     {
                         case ESequence.ResinInject:
+                            #region Use Option InjectPath
                             if (_currentRecipe.OptionRecipe.EnableInjectionPath)
                             {
                                 injectPathIndexer = 0;
@@ -1174,9 +1176,10 @@ namespace SDV_MoldingInjection.Process
                                 }
                                 break;
                             }
-
+                            #endregion
                             _pAxisInject_Vel = Math.Abs(_currentSPDHeadRecipe.PAxisInjectChargePos - _pAxisBase_Pos) / InjectTimeRecipe.InjectTime;
                             _carrierJigStatus.PAxisInjectVelocity = _pAxisInject_Vel; // Display UI
+                            HeadWrireFDC(EFDCValue.HEAD_1_INJECT_SPEED, _pAxisInject_Vel);
                             break;
                         case ESequence.DrainShot:
                         case ESequence.IdlePurge:
@@ -1421,7 +1424,9 @@ namespace SDV_MoldingInjection.Process
 
                     EnableTimerInject = false;
                     IsCanStop = true;
+
                     Log.Debug($"{PAxis.Name} moving to InjectPos done");
+                    HeadWrireFDC(EFDCValue.HEAD_1_INJECT_TIME, _carrierJigStatus.InjectTime);
 
                     // Consume syringe amount
                     _syringeAmountStatusList.ConsumeSyringeAmount(head, _pAxisBase_Pos - _pAxisCharge_Pos);
@@ -2078,6 +2083,12 @@ namespace SDV_MoldingInjection.Process
             _cIMCollection.WriteMCC(actionEnd + ((int)(EMCCAction.SP02_INIT_SP02 - EMCCAction.SP01_INIT_SP01)) * ((int)head - 1),
                                     (actionStart + ((int)(EMCCAction.SP02_INIT_SP02 - EMCCAction.SP01_INIT_SP01)) * ((int)head - 1)));
         }
+
+        private void HeadWrireFDC(EFDCValue FDCValue, double value)
+        {
+            FDCHelper.WriteFDCValue(FDCValue + (int)head - 1, (int)(value * 1000));
+        }
+
         #endregion
 
         #region Privates
@@ -2230,6 +2241,7 @@ namespace SDV_MoldingInjection.Process
                 }
             }
         }
+
 
         private bool IsSequenceAssembleOrDisassemble(ESequence sequence)
         {

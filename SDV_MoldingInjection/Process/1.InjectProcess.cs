@@ -1483,7 +1483,6 @@ namespace SDV_MoldingInjection.Process
                        (_machineStatus.IsDryRunMode && isJigLeftLoaded == false && isLoadingDry && _machineStatus.RunWithoutInOut))
                     {
                         WriteMCC(LastAction, EMCCAction.IJ01_IN_WAIT_TIME_JIG_1);
-                        Thread.Sleep(500);
                         isJigLeftLoaded = true;
                         if ((LeftJigDetect || LeftJigTiltState) &&
                             _machineStatus.RunWithoutInOut == false)
@@ -1501,8 +1500,6 @@ namespace SDV_MoldingInjection.Process
                        (_machineStatus.IsDryRunMode && isJigRightLoaded == false && isLoadingDry && _machineStatus.RunWithoutInOut))
                     {
                         WriteMCC(LastAction, EMCCAction.IJ01_IN_WAIT_TIME_JIG_2);
-                        Thread.Sleep(500);
-
                         isJigRightLoaded = true;
                         if ((RightJigDetect || RightJigTiltState) &&
                             _machineStatus.RunWithoutInOut == false)
@@ -1525,6 +1522,7 @@ namespace SDV_MoldingInjection.Process
 
                         Log.Debug("Unloading Left Jig");
                         LeftJigID = string.Empty;
+                        Wait(1000);
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.CIM_TrackOut_LeftJig;
                         break;
                     }
@@ -1538,6 +1536,7 @@ namespace SDV_MoldingInjection.Process
                         Log.Debug("Unloading Right Jig");
                         RightJigID = string.Empty;
                         isLoadingDry = true;
+                        Wait(1000);
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.CIM_TrackOut_RightJig;
                         break;
                     }
@@ -1568,8 +1567,10 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcLoadingUnloadingStep.Write_JigID_1:
                     Log.Info($"Write Left Jig ID : {LeftJigID}");
+#if !SIMULATION
                     _cIMCollection.WriteMCC_CellID(EMCCUnit.IJ01, LeftJigID);
                     Wait(5000, () => _cIMCollection.ReadMCC_CellID(EMCCUnit.IJ01) == LeftJigID);
+#endif
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Wait_Write_JigIID_1:
@@ -1627,8 +1628,10 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcLoadingUnloadingStep.Write_JigID_2:
                     Log.Info($"Write Right Jig ID : {RightJigID}");
+#if !SIMULATION
                     _cIMCollection.WriteMCC_CellID(EMCCUnit.IJ01, RightJigID);
                     Wait(5000, () => _cIMCollection.ReadMCC_CellID(EMCCUnit.IJ01) == RightJigID);
+#endif
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Wait_Write_JigIID_2:
@@ -2566,7 +2569,7 @@ namespace SDV_MoldingInjection.Process
                     break;
             }
         }
-        #endregion
+#endregion
 
         #region Private Methods
         private IMotion GetZAxis(ESPDHead head) => head switch

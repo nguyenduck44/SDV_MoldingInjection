@@ -13,6 +13,15 @@ namespace SDV_MoldingInjection.Defines.CIM
                 case EFDCValue.DISPENSING_STEP_ID: address = 0xAC14; length = 2; break;
                 case EFDCValue.CHAMBER_DISPENSING_PIRANI_CONTROL: address = 0xAC16; length = 2; break;
                 case EFDCValue.HEAD_DISPENSING_PRESSURE: address = 0xAC18; length = 2; break;
+                case EFDCValue.HEAD_1_INJECT_TIME: address = 0xAC1A; length = 2; break;
+                case EFDCValue.HEAD_2_INJECT_TIME: address = 0xAC1C; length = 2; break;
+                case EFDCValue.HEAD_3_INJECT_TIME: address = 0xAC1E; length = 2; break;
+                case EFDCValue.HEAD_4_INJECT_TIME: address = 0xAC20; length = 2; break;
+                case EFDCValue.HEAD_1_INJECT_SPEED: address = 0xAC22; length = 2; break;
+                case EFDCValue.HEAD_2_INJECT_SPEED: address = 0xAC24; length = 2; break;
+                case EFDCValue.HEAD_3_INJECT_SPEED: address = 0xAC26; length = 2; break;
+                case EFDCValue.HEAD_4_INJECT_SPEED: address = 0xAC28; length = 2; break;
+                case EFDCValue.VENT_TIME: address = 0xAC2A; length = 2; break;
                 case EFDCValue.PUMP_STEP_ID: address = 0xACB0; length = 2; break;
                 case EFDCValue.CDA_ANGLE_VALVE_PRESSURE: address = 0xACB2; length = 2; break;
                 case EFDCValue.CDA_VENT_PRESSURE: address = 0xACB4; length = 2; break;

@@ -3,6 +3,7 @@ using EQX.Core.Motion;
 using EQX.Core.Sequence;
 using EQX.InOut;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.MVVM.Models;
@@ -85,6 +86,14 @@ namespace SDV_MoldingInjection.Process
             if (_delayStartTick >= 0 && EnableTimerDelay)
             {
                 _delayTime = (Environment.TickCount64 - _delayStartTick) / 1000.0;
+            }
+
+            if (_ventStartTick >= 0 && EnableVentTimer)
+            {
+                _carrierJigStatusList.CarrierJigStatusH1.VentTime = (Environment.TickCount64 - _ventStartTick) / 1000.0;
+                _carrierJigStatusList.CarrierJigStatusH2.VentTime = (Environment.TickCount64 - _ventStartTick) / 1000.0;
+                _carrierJigStatusList.CarrierJigStatusH3.VentTime = (Environment.TickCount64 - _ventStartTick) / 1000.0;
+                _carrierJigStatusList.CarrierJigStatusH4.VentTime = (Environment.TickCount64 - _ventStartTick) / 1000.0;
             }
 
             if (_currentRecipe.OptionRecipe.SkipHead12 == false)
@@ -176,6 +185,7 @@ namespace SDV_MoldingInjection.Process
                     EnablePressureHold = false;
                     EnableWritePressureLog = false;
                     EnableWriteFDCDispensingStepID = false;
+                    EnableVentTimer = false;
                     PumpRunRetryCount = 0;
                     Step.ToRunStep++;
                     break;
@@ -435,7 +445,13 @@ namespace SDV_MoldingInjection.Process
                     FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, 1);
                     FDCHelper.WriteFDCValue(EFDCValue.PUMP_STEP_ID, 2);
                     TactTime.TactTimeCounter = Environment.TickCount;
-                    _plotter.ClearData();
+
+                    _plotter.ClearData();   
+                    _carrierJigStatusList.CarrierJigStatusH1.VentTime = 0;
+                    _carrierJigStatusList.CarrierJigStatusH2.VentTime = 0;
+                    _carrierJigStatusList.CarrierJigStatusH3.VentTime = 0;
+                    _carrierJigStatusList.CarrierJigStatusH4.VentTime = 0;
+
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.WriteMCC_Open_AngleValve:
@@ -596,8 +612,12 @@ namespace SDV_MoldingInjection.Process
                     _cIMCollection.WriteMCC(EMCCAction.PU01_DRYPUMP_WAIT_VEN_TIME, EMCCAction.PU01_START_VENT_AND_WAIT);
 
                     _ventStartTick = Environment.TickCount;
+                    EnableVentTimer = true;
+
                     PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.VentStart);
                     Out_ChamberPurgeOn.Value = true;
+
+                    Wait(_currentRecipe.InjectTimeRecipe.VentTime);
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.DryPump_PurgeAndWait:
@@ -614,10 +634,13 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"Vent Complete: {InjectTimeRecipe.VentTime}s");
 
+                    FDCHelper.WriteFDCValue(EFDCValue.VENT_TIME, (int)_carrierJigStatusList.CarrierJigStatusH1.VentTime);
                     FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_CELL_ID, DateTime.Now.ToString("yyyyMMddHHmmss"));
-                    EnableWriteFDCDispensingStepID = false;
 
+                    EnableVentTimer = false;
+                    EnableWriteFDCDispensingStepID = false;
                     PressureLog(_devices.AnalogInputs.VacuumPressureInTorr, EPumpAction.VentComplete);
+
                     procOutputs[EDryPumpProcOutput.VentComplete].Value = true;
                     Out_ChamberPurgeOn.Value = false;
                     IsCanStop = true;
@@ -763,6 +786,7 @@ namespace SDV_MoldingInjection.Process
         private bool EnablePressureHold;
         private bool EnableTimerDelay;
         private bool EnableWritePressureLog;
+        private bool EnableVentTimer;
 
         private Queue<EDryPumpProcResinInjectStep> DryPumpResinInjectStep = new Queue<EDryPumpProcResinInjectStep>();
 
