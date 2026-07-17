@@ -493,18 +493,22 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _recipeSelector.CurrentRecipe.SPDHead1_Recipe.ResinWeightChanged += (weight) =>
             {
                 _carrierJigStatusList.CarrierJigStatusH1.ResinWeight = weight;
+                _machineStatus.MachineCalibrationSkip[0] = false;
             };
             _recipeSelector.CurrentRecipe.SPDHead2_Recipe.ResinWeightChanged += (weight) =>
             {
                 _carrierJigStatusList.CarrierJigStatusH2.ResinWeight = weight;
+                _machineStatus.MachineCalibrationSkip[1] = false;
             };
             _recipeSelector.CurrentRecipe.SPDHead3_Recipe.ResinWeightChanged += (weight) =>
             {
                 _carrierJigStatusList.CarrierJigStatusH3.ResinWeight = weight;
+                _machineStatus.MachineCalibrationSkip[2] = false;
             };
             _recipeSelector.CurrentRecipe.SPDHead4_Recipe.ResinWeightChanged += (weight) =>
             {
                 _carrierJigStatusList.CarrierJigStatusH4.ResinWeight = weight;
+                _machineStatus.MachineCalibrationSkip[3] = false;
             };
         }
         private void SubscibMotionSpeedChanged()

@@ -74,7 +74,7 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _zAxisInjectPosOffset, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
 
-        [SingleRecipeDescription(Description = "Z-Axis INJECT GAP", Detail ="Distance With Inject Position Move With Slow Speed", Unit = Unit.mm)]
+        [SingleRecipeDescription(Description = "Z-Axis INJECT GAP", Detail = "Distance With Inject Position Move With Slow Speed", Unit = Unit.mm)]
         [ParameterDescription(34)]
         public double ZAxisInjectUpDistance
         {
@@ -232,6 +232,16 @@ namespace SDV_MoldingInjection.Recipe
             get => _pAxisInjectChargePosOffset;
             set => SetRecipe(ref _pAxisInjectChargePosOffset, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
         }
+        [ParameterDescription(46)]
+        public double PAxisInjectSpeed
+        {
+            get => _pAxisInjectSpeed;
+            set
+            {
+                if (_pAxisInjectSpeed == value) return;
+                SetRecipe(ref _pAxisInjectSpeed, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
+            }
+        }
 
         #region Privates
         private double _zAxisSafetyPos;
@@ -263,7 +273,7 @@ namespace SDV_MoldingInjection.Recipe
         private double _zAxisInjectSlowSpeed;
         private double _zAxisMasterNozzleCheckPos;
         private double _zAxisMasterNozzleCheckPosOffset;
-
+        private double _pAxisInjectSpeed;
         #endregion
     }
 }

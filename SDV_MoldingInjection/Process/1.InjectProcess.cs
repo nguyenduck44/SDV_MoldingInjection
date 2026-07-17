@@ -276,10 +276,10 @@ namespace SDV_MoldingInjection.Process
                     }
 #if !SIMULATION
                     Log.Debug("Machine Calibration check");
-                    _machineStatus.MachineCalibration[0] |= _currentRecipe.OptionRecipe.SkipHead12 || _machineStatus.MachineCalibrationSkip[0];
-                    _machineStatus.MachineCalibration[1] |= _currentRecipe.OptionRecipe.SkipHead12 || _machineStatus.MachineCalibrationSkip[1];
-                    _machineStatus.MachineCalibration[2] |= _currentRecipe.OptionRecipe.SkipHead34 || _machineStatus.MachineCalibrationSkip[2];
-                    _machineStatus.MachineCalibration[3] |= _currentRecipe.OptionRecipe.SkipHead34 || _machineStatus.MachineCalibrationSkip[3];
+                    _machineStatus.MachineCalibration[0] = _currentRecipe.OptionRecipe.SkipHead12 || _machineStatus.MachineCalibrationSkip[0];
+                    _machineStatus.MachineCalibration[1] = _currentRecipe.OptionRecipe.SkipHead12 || _machineStatus.MachineCalibrationSkip[1];
+                    _machineStatus.MachineCalibration[2] = _currentRecipe.OptionRecipe.SkipHead34 || _machineStatus.MachineCalibrationSkip[2];
+                    _machineStatus.MachineCalibration[3] = _currentRecipe.OptionRecipe.SkipHead34 || _machineStatus.MachineCalibrationSkip[3];
 
                     if (_machineStatus.MachineCalibration.All(x => x) == false &&
                         _machineStatus.IsDryRunMode == false)

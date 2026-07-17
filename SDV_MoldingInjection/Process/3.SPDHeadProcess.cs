@@ -888,7 +888,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadPreProcessStep.WriteCarrierJigStatus_InjectTime:
                     if (_injectSequenceStartTick >= 0 && EnableTimerInject)
                     {
-                        CarrierJigStatus.InjectTime = (Environment.TickCount64 - _injectSequenceStartTick) / 1000.0;
+                        _carrierJigStatus.InjectTime = (Environment.TickCount64 - _injectSequenceStartTick) / 1000.0;
                     }
 
                     Step.PreProcessStep++;
@@ -1010,7 +1010,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcCommonStep.ResetInjectTime:
                     if (sequence == ESequence.ResinInject)
                     {
-                        CarrierJigStatus.InjectTime = 0;
+                        _carrierJigStatus.InjectTime = 0;
                     }
 
                     Step.RunStep++;
@@ -1176,7 +1176,7 @@ namespace SDV_MoldingInjection.Process
                             }
 
                             _pAxisInject_Vel = Math.Abs(_currentSPDHeadRecipe.PAxisInjectChargePos - _pAxisBase_Pos) / InjectTimeRecipe.InjectTime;
-                            CarrierJigStatus.PAxisInjectVelocity = _pAxisInject_Vel; // Display UI
+                            _carrierJigStatus.PAxisInjectVelocity = _pAxisInject_Vel; // Display UI
                             break;
                         case ESequence.DrainShot:
                         case ESequence.IdlePurge:
@@ -1304,7 +1304,7 @@ namespace SDV_MoldingInjection.Process
                         if ((_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing || _machineStatus.IsPassRunMode) && sequence != ESequence.IdlePurge)
                         {
                             Log.Debug("Dry Run Mode Or Skip Dispensing -> P Axis Not Move");
-                            CarrierJigStatus.InjectTime = 0;
+                            _carrierJigStatus.InjectTime = 0;
                             EnableTimerInject = true;
                             TactTime.TactTimeCounter = (int)Environment.TickCount64;
                             _injectSequenceStartTick = Environment.TickCount64;
@@ -1353,7 +1353,7 @@ namespace SDV_MoldingInjection.Process
                                 TactTime.TactTimeCounter = (int)Environment.TickCount64;
                             }
 
-                            CarrierJigStatus.PAxisInjectVelocity = InjectPaths[injectPathIndexer].VelocityRate * 0.01 * _pAxisInject_Vel; // Display UI
+                            _carrierJigStatus.PAxisInjectVelocity = InjectPaths[injectPathIndexer].VelocityRate * 0.01 * _pAxisInject_Vel; // Display UI
                             Log.Debug($"{PAxis.Name} moving to InjectPos #{injectPathIndexer} [{InjectPathPositions[injectPathIndexer]}mm]");
                             PAxis.MoveAbs(InjectPathPositions[injectPathIndexer],
                             InjectPaths[injectPathIndexer].VelocityRate * 0.01 * _pAxisInject_Vel);
@@ -1369,7 +1369,7 @@ namespace SDV_MoldingInjection.Process
                             Log.Debug($"{PAxis.Name} moving to InjectPos [{_pAxisInject_Pos}mm]");
                             PAxis.MoveAbs(_pAxisInject_Pos, _pAxisInject_Vel);
                             Log.Debug("Start inject timer");
-                            CarrierJigStatus.InjectTime = 0;
+                            _carrierJigStatus.InjectTime = 0;
                             EnableTimerInject = true;
                             _injectSequenceStartTick = Environment.TickCount64;
                             TactTime.TactTimeCounter = (int)Environment.TickCount64;
@@ -1660,6 +1660,7 @@ namespace SDV_MoldingInjection.Process
             {
                 case ESPDHeadProcDotWeightingStep.Start:
                     _removeResinCount = 0;
+                    HeadCalibration = false;
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcDotWeightingStep.Charge_PosVel_Calculte:
@@ -1837,7 +1838,12 @@ namespace SDV_MoldingInjection.Process
                     {
                         Log.Debug("DotWeighting Pass");
                         _currentSPDHeadRecipe.PAxisInjectChargePos = _pAxisInjectCharge_Pos;
+                        _currentSPDHeadRecipe.PAxisInjectSpeed = Math.Round((Math.Abs(_pAxisInjectCharge_Pos - _pAxisBase_Pos) / InjectTimeRecipe.InjectTime), 3);
                         _recipeSelector.Save();
+
+                        _carrierJigStatus.PAxisInjectVelocity = _currentSPDHeadRecipe.PAxisInjectSpeed;
+                        HeadCalibration = true;
+                        _machineStatus.MachineCalibration[0] = true;
                         Step.RunStep = (int)ESPDHeadProcDotWeightingStep.SetFlag_SPDHead_DotWeighting_Done;
                         break;
                     }
@@ -2156,7 +2162,7 @@ namespace SDV_MoldingInjection.Process
             _ => throw new Exception($"Invalid process name: {Name}")
         };
 
-        private CarrierJigStatus CarrierJigStatus => Name switch
+        private CarrierJigStatus _carrierJigStatus => Name switch
         {
             "SPDHead1" => _carrierJigStatusList.CarrierJigStatusH1,
             "SPDHead2" => _carrierJigStatusList.CarrierJigStatusH2,
@@ -2191,6 +2197,39 @@ namespace SDV_MoldingInjection.Process
             "SPDHead4" => _machineStatus.IsSkipHead4,
             _ => throw new Exception($"Invalid process name: {Name}")
         };
+
+        private bool HeadCalibration
+        {
+            get
+            {
+                return Name switch
+                {
+                    "SPDHead1" => _machineStatus.MachineCalibrationSkip[0],
+                    "SPDHead2" => _machineStatus.MachineCalibrationSkip[1],
+                    "SPDHead3" => _machineStatus.MachineCalibrationSkip[2],
+                    "SPDHead4" => _machineStatus.MachineCalibrationSkip[3],
+                    _ => throw new Exception($"Invalid process name: {Name}")
+                };
+            }
+            set
+            {
+                switch (Name)
+                {
+                    case "SPDHead1":
+                        _machineStatus.MachineCalibrationSkip[0] = value;
+                        break;
+                    case "SPDHead2":
+                        _machineStatus.MachineCalibrationSkip[1] = value;
+                        break;
+                    case "SPDHead3":
+                        _machineStatus.MachineCalibrationSkip[2] = value;
+                        break;
+                    case "SPDHead4":
+                        _machineStatus.MachineCalibrationSkip[3] = value;
+                        break;
+                }
+            }
+        }
 
         private bool IsSequenceAssembleOrDisassemble(ESequence sequence)
         {
