@@ -1521,7 +1521,6 @@ namespace SDV_MoldingInjection.Process
 
                         Log.Debug("Unloading Left Jig");
                         LeftJigID = string.Empty;
-                        Wait(1000);
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.CIM_TrackOut_LeftJig;
                         break;
                     }
@@ -1535,7 +1534,6 @@ namespace SDV_MoldingInjection.Process
                         Log.Debug("Unloading Right Jig");
                         RightJigID = string.Empty;
                         isLoadingDry = true;
-                        Wait(1000);
                         Step.RunStep = (int)EMoldProcLoadingUnloadingStep.CIM_TrackOut_RightJig;
                         break;
                     }
@@ -1558,7 +1556,7 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.GetCellId1:
                     _cIMCollection.WriteMCC(LastAction, new List<EMCCAction>() { EMCCAction.IJ01_COMPONENT_IN_JIG_1, EMCCAction.IJ01_GET_JIG_ID_1_AND_CHECKIN });
                     LastAction = EMCCAction.IJ01_GET_JIG_ID_1_AND_CHECKIN;
-
+                    
                     string LeftJigIDDryRun = "LEFT" + random.Next(100, 1000).ToString();
                     LeftJigID = _machineStatus.RunWithoutInOut ? LeftJigIDDryRun : GetCellId(isJigLeft: true);
                     Log.Info($"Get Left Jig ID '{LeftJigID}'");
@@ -1703,7 +1701,6 @@ namespace SDV_MoldingInjection.Process
 
                     _cIMCollection.WriteMCC(new List<EMCCAction>() { EMCCAction.IJ01_COMPONENT_OUT_JIG_1, EMCCAction.IJ01_PUT_UNLOAD_JIG_1 }, EMCCAction.IJ01_WAIT_INOUT_LD_UL_3RD);
                     LastAction = EMCCAction.IJ01_WAIT_INOUT_LD_UL_3RD;
-
                     Step.RunStep = _optionRecipe.SkipHead34 ?
                         (int)EMoldProcLoadingUnloadingStep.Unloading_WriteData :
                         (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandler_Working_RequestStart;
@@ -1737,7 +1734,6 @@ namespace SDV_MoldingInjection.Process
 
                     _cIMCollection.WriteMCC(new List<EMCCAction>() { EMCCAction.IJ01_COMPONENT_OUT_JIG_2, EMCCAction.IJ01_PUT_UNLOAD_JIG_2 }, EMCCAction.IJ01_WAIT_INOUT_LD_UL_4TH);
                     LastAction = EMCCAction.IJ01_WAIT_INOUT_LD_UL_4TH;
-
                     Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Unloading_WriteData;
                     break;
                 case EMoldProcLoadingUnloadingStep.Unloading_Manual:

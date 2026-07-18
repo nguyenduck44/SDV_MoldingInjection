@@ -2268,8 +2268,7 @@ namespace SDV_MoldingInjection.Process
 
         private OptionRecipe OptionRecipe => _recipeSelector.CurrentRecipe.OptionRecipe;
         private InjectTimeRecipe InjectTimeRecipe => _recipeSelector.CurrentRecipe.InjectTimeRecipe;
-        private EMCCAction LastAction;
-
+        private EMCCAction LastAction = EMCCAction.SP01_INIT_SP01;
         private double _pAxisCharge_Pos;
         private double _pAxisCharge_Vel;
         private double _pAxisInject_Pos;

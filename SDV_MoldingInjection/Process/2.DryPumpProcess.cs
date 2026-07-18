@@ -616,7 +616,6 @@ namespace SDV_MoldingInjection.Process
                     PressureLog(ChamberVacuumPressure, EPumpAction.VentStart);
                     Out_ChamberPurgeOn.Value = true;
 
-                    Wait(_currentRecipe.InjectTimeRecipe.VentTime);
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
 
                     break;
