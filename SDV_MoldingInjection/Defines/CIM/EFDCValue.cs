@@ -15,6 +15,7 @@
         HEAD_3_INJECT_SPEED,
         HEAD_4_INJECT_SPEED,
         VENT_TIME,
+        RATIO_VENT,
         PUMP_STEP_ID,
         CDA_ANGLE_VALVE_PRESSURE,
         CDA_VENT_PRESSURE,

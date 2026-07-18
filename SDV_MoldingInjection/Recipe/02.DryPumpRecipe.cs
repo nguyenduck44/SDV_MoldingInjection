@@ -30,10 +30,28 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _pressureLogTimelaps, value);
         }
 
+        [SingleRecipeDescription(Description = "Ratio Vent Pressure Lower", Unit = Unit.Torr)]
+        [ParameterDescription(24)]
+        public double RatioVentPressureLower
+        {
+            get => _ratioVentPressureLower;
+            set => SetRecipe(ref _ratioVentPressureLower, value);
+        }
+
+        [SingleRecipeDescription(Description = "Ratio Vent Pressure Upper", Unit = Unit.Torr)]
+        [ParameterDescription(25)]
+        public double RatioVentPressureUpper
+        {
+            get => _ratioVentPressureUpper;
+            set => SetRecipe(ref _ratioVentPressureUpper, value);
+        }
+
         #region Privates
         private double _vacuumPressureSpec;
         private double _vacuumPressureHoldUnderSpec;
         private double _pressureLogTimelaps;
+        private double _ratioVentPressureLower;
+        private double _ratioVentPressureUpper;
         #endregion
     }
 }

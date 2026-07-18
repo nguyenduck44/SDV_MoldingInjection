@@ -3,6 +3,7 @@ using EQX.Core.Common;
 using EQX.UI.Controls;
 using EQX.UI.MVVM;
 using log4net;
+using ScottPlot.Interactivity.UserActionResponses;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Productions;
 using SDV_MoldingInjection.MVVM.Models;
@@ -25,6 +26,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         public int TodayInputCount => CurrentProductionData?.TotalInput ?? 0;
         public int TodayOutputCount => CurrentProductionData?.TotalOutput ?? 0;
+        public double RatioVent => MachineStatus.RatioVent;
         #endregion
 
         #region Contructors
@@ -66,6 +68,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             UpdateSyringeStatus();
             OnPropertyChanged(nameof(TodayInputCount));
             OnPropertyChanged(nameof(TodayOutputCount));
+            OnPropertyChanged(nameof(RatioVent));
         }
 
         private void UpdateSyringeStatus()

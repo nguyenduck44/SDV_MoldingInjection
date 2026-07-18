@@ -22,6 +22,7 @@ namespace SDV_MoldingInjection.Defines.CIM
                 case EFDCValue.HEAD_3_INJECT_SPEED: address = 0xAC26; length = 2; break;
                 case EFDCValue.HEAD_4_INJECT_SPEED: address = 0xAC28; length = 2; break;
                 case EFDCValue.VENT_TIME: address = 0xAC2A; length = 2; break;
+                case EFDCValue.RATIO_VENT: address = 0xAC2C; length = 2; break;
                 case EFDCValue.PUMP_STEP_ID: address = 0xACB0; length = 2; break;
                 case EFDCValue.CDA_ANGLE_VALVE_PRESSURE: address = 0xACB2; length = 2; break;
                 case EFDCValue.CDA_VENT_PRESSURE: address = 0xACB4; length = 2; break;

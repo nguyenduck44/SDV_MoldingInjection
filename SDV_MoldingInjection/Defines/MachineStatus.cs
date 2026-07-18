@@ -9,23 +9,28 @@ namespace SDV_MoldingInjection.Defines
     public class MachineStatus : MachineStatusBase<ESemiSequence>
     {
         #region Publics
+        public ObservableCollection<ErrorLogEntry> CurrentAlarms { get; set; } = new ObservableCollection<ErrorLogEntry>();
+        public MultiPointPosition MultiPointPosition { get; set; }
+
+        public static short[] AlarmTotalWords = new short[400];
+
         public bool[] MachineCalibration { get; set; } = new bool[4];
         public bool[] MachineCalibrationSkip { get; set; } = new bool[4];
-        public MultiPointPosition MultiPointPosition { get; set; }
         public bool MachineReadyDone { get; set; }
         public bool MachineTestMode { get; set; }
         public bool DisableSyringeCheck { get; set; }
         public bool DisableDetectJig { get; set; }
         public bool ConfirmLoadingFinish { get; set; }
         public bool InOutHandlerStartRequest { get; set; }
-        public int MachineIdleTick { get; set; } = Environment.TickCount;
         public bool IsAutoMode => MachineMode == EMachineMode.Auto;
         public bool IsTeachMode => MachineMode == EMachineMode.Teach;
-        public ObservableCollection<ErrorLogEntry> CurrentAlarms { get; set; } = new ObservableCollection<ErrorLogEntry>();
         public bool CanJogWithDoorOpen => IsTeachMode && IsDoorPasswordVerified;
-        public static short[] AlarmTotalWords = new short[400];
         public bool SetDummyShotBeforeInject { get; set; }
+
+        public int MachineIdleTick { get; set; } = Environment.TickCount;
         public int DummyShotCount { get; set; }
+
+        public double RatioVent {  get; set; }
         #endregion
 
         #region Contructors
