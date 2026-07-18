@@ -1,4 +1,5 @@
 using EQX.Core.Common;
+using EQX.Core.Communication.CIM.Custom;
 using EQX.Core.Communication.Modbus;
 using EQX.Core.Vision.Algorithms;
 using EQX.Core.Vision.Grabber;
@@ -12,6 +13,7 @@ using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.Defines.Productions;
 using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;
+using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Windows;
@@ -229,6 +231,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         SubscibeResinWeightChanged();
                         SubscribeSkipHeadChanged();
                         SubscibMotionSpeedChanged();
+                        SubscibPAxisSpeedChanged();
                         Log.Debug("Load Recipes");
                         MessageText = "Load Recipes";
                         if (_recipeSelector.Load() == false)
@@ -236,6 +239,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                             ErrorMessages.Add("Recipes Load Fail.");
                             Log.Debug("Recipe Load Fail");
                         }
+
+                        EquipEventHelpers.PPIDChange(_recipeSelector.RecipeSetting.CurrentRecipe);
                         Thread.Sleep(500);
                         _step++;
                         break;
@@ -346,6 +351,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     case EHandleStep.Start:
                         MessageText = "Deinit Start";
                         StopLogCleanupScheduler();
+                        _cimAction.Stop();
                         MessageText = "Stop Processes";
                         _processes.ProcessesStop();
                         _cDAStatus.StopUpdateCDA();
@@ -696,6 +702,50 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 _devices.Motions.G4Axis.Parameter.Deceleration = deccel;
             };
         }
+
+        private void SubscibPAxisSpeedChanged()
+        {
+            _recipeSelector.CurrentRecipe.InjectTimeRecipe.InjectTimeChanged += (time) =>
+            {
+                _carrierJigStatusList.CarrierJigStatusH1.PAxisInjectVelocity = Math.Round(Math.Abs(_recipeSelector.CurrentRecipe.SPDHead1_Recipe.PAxisInjectChargePos - _pAxisBase_Pos) / time, 3);
+                _carrierJigStatusList.CarrierJigStatusH2.PAxisInjectVelocity = Math.Round(Math.Abs(_recipeSelector.CurrentRecipe.SPDHead2_Recipe.PAxisInjectChargePos - _pAxisBase_Pos) / time, 3);
+                _carrierJigStatusList.CarrierJigStatusH3.PAxisInjectVelocity = Math.Round(Math.Abs(_recipeSelector.CurrentRecipe.SPDHead3_Recipe.PAxisInjectChargePos - _pAxisBase_Pos) / time, 3);
+                _carrierJigStatusList.CarrierJigStatusH4.PAxisInjectVelocity = Math.Round(Math.Abs(_recipeSelector.CurrentRecipe.SPDHead4_Recipe.PAxisInjectChargePos - _pAxisBase_Pos) / time, 3);
+                UpdatePAxisSpeed();
+            };
+
+            _recipeSelector.CurrentRecipe.SPDHead1_Recipe.PAxisInjectChargeChanged += (value) =>
+            {
+                _carrierJigStatusList.CarrierJigStatusH1.PAxisInjectVelocity = Math.Round(Math.Abs(value - _pAxisBase_Pos) / _recipeSelector.CurrentRecipe.InjectTimeRecipe.InjectTime, 3);
+                UpdatePAxisSpeed();
+            };
+            _recipeSelector.CurrentRecipe.SPDHead2_Recipe.PAxisInjectChargeChanged += (value) =>
+            {
+                _carrierJigStatusList.CarrierJigStatusH2.PAxisInjectVelocity = Math.Round(Math.Abs(value - _pAxisBase_Pos) / _recipeSelector.CurrentRecipe.InjectTimeRecipe.InjectTime, 3);
+                UpdatePAxisSpeed();
+            };
+            _recipeSelector.CurrentRecipe.SPDHead3_Recipe.PAxisInjectChargeChanged += (value) =>
+            {
+                _carrierJigStatusList.CarrierJigStatusH3.PAxisInjectVelocity = Math.Round(Math.Abs(value - _pAxisBase_Pos) / _recipeSelector.CurrentRecipe.InjectTimeRecipe.InjectTime, 3);
+                UpdatePAxisSpeed();
+            };
+            _recipeSelector.CurrentRecipe.SPDHead4_Recipe.PAxisInjectChargeChanged += (value) =>
+            {
+                _carrierJigStatusList.CarrierJigStatusH4.PAxisInjectVelocity = Math.Round(Math.Abs(value - _pAxisBase_Pos) / _recipeSelector.CurrentRecipe.InjectTimeRecipe.InjectTime, 3);
+                UpdatePAxisSpeed();
+            };
+        }
+
+        private void UpdatePAxisSpeed()
+        {
+            _recipeSelector.CurrentRecipe.SPDHead1_Recipe.PAxisInjectSpeed = _carrierJigStatusList.CarrierJigStatusH1.PAxisInjectVelocity;
+            _recipeSelector.CurrentRecipe.SPDHead2_Recipe.PAxisInjectSpeed = _carrierJigStatusList.CarrierJigStatusH2.PAxisInjectVelocity;
+            _recipeSelector.CurrentRecipe.SPDHead3_Recipe.PAxisInjectSpeed = _carrierJigStatusList.CarrierJigStatusH3.PAxisInjectVelocity;
+            _recipeSelector.CurrentRecipe.SPDHead4_Recipe.PAxisInjectSpeed = _carrierJigStatusList.CarrierJigStatusH4.PAxisInjectVelocity;
+            _recipeSelector.Save();
+            OnPropertyChanged();
+        }
+
         private void StartLogCleanupScheduler()
         {
             if (_logCleanupStarted)
@@ -845,7 +895,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         private string _messageText = "";
         private Task _task;
-
+        private double _pAxisBase_Pos = 20.875;
         EHandleMode mode = EHandleMode.None;
         bool isHandling = true;
 

@@ -246,6 +246,7 @@ namespace SDV_MoldingInjection.Recipe
                     if (backupRecipe != null)
                     {
                         CurrentRecipe.CloneFrom(backupRecipe);
+                        Thread.Sleep(2000);
                         NormalizeSelectedLanguageReference();
                         EQPPPIDArea ppipArea = new EQPPPIDArea
                         {

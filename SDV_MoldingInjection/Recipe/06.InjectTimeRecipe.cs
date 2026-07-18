@@ -1,11 +1,14 @@
 using EQX.Core.Recipe;
 using EQX.Core.Units;
+using Newtonsoft.Json.Linq;
 using SDV_MoldingInjection.MVVM.Models;
 
 namespace SDV_MoldingInjection.Recipe
 {
     public class InjectTimeRecipe : RecipeBase
     {
+        public event Action<double> InjectTimeChanged;
+
         //[SingleRecipeDescription(Description = "Inject First Time", Detail = "Inject time before Open Angle Valve", Unit = Unit.Second)]
         [ParameterDescription(224)]
         public double DelayAfterOpenAngleValve
@@ -27,7 +30,11 @@ namespace SDV_MoldingInjection.Recipe
         public double InjectTime
         {
             get => _injectTime;
-            set => SetRecipe(ref _injectTime, value);
+            set
+            {
+                SetRecipe(ref _injectTime, value);
+                InjectTimeChanged?.Invoke(value);
+            }
         }
 
         [SingleRecipeDescription(Description = "Start Vent After Inject", Unit = Unit.Second)]

@@ -625,7 +625,7 @@ namespace SDV_MoldingInjection.Process
                         if (ChamberVacuumPressure > _currentRecipe.DryPumpRecipe.RatioVentPressureLower && EnableCheckRatioVent == false)
                         {
                             EnableCheckRatioVent = true;
-                            RatioVent.Restart();
+                            RatioVent = Stopwatch.StartNew();
                         }
                         if (ChamberVacuumPressure > _currentRecipe.DryPumpRecipe.RatioVentPressureUpper)
                         {
@@ -638,7 +638,8 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"Vent Complete: {InjectTimeRecipe.VentTime}s");
                     // Calculator Ratio Vent
-                    _machineStatus.RatioVent = Math.Round((_currentRecipe.DryPumpRecipe.RatioVentPressureUpper - _currentRecipe.DryPumpRecipe.RatioVentPressureLower) / RatioVent.ElapsedMilliseconds, 2);
+                    Log.Info($"Ratio VentTime: {RatioVent}");
+                    _machineStatus.RatioVent = Math.Round((_currentRecipe.DryPumpRecipe.RatioVentPressureUpper - _currentRecipe.DryPumpRecipe.RatioVentPressureLower) / (RatioVent.ElapsedMilliseconds / 1000), 2);
                     FDCHelper.WriteFDCValue(EFDCValue.RATIO_VENT, (int)(_machineStatus.RatioVent * 1000));
 
                     FDCHelper.WriteFDCValue(EFDCValue.VENT_TIME, (int)_carrierJigStatusList.CarrierJigStatusH1.VentTime * 1000);

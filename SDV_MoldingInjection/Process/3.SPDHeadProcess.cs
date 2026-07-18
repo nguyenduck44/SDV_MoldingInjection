@@ -1179,7 +1179,7 @@ namespace SDV_MoldingInjection.Process
                             #endregion
                             _pAxisInject_Vel = Math.Abs(_currentSPDHeadRecipe.PAxisInjectChargePos - _pAxisBase_Pos) / InjectTimeRecipe.InjectTime;
                             _carrierJigStatus.PAxisInjectVelocity = _pAxisInject_Vel; // Display UI
-                            HeadWrireFDC(EFDCValue.HEAD_1_INJECT_SPEED, _pAxisInject_Vel);
+                            HeadWrireFDC(EFDCValue.HEAD_1_INJECT_SPEED, Math.Round(_pAxisInject_Vel, 3));
                             break;
                         case ESequence.DrainShot:
                         case ESequence.IdlePurge:
@@ -1851,10 +1851,7 @@ namespace SDV_MoldingInjection.Process
                     {
                         Log.Debug("DotWeighting Pass");
                         _currentSPDHeadRecipe.PAxisInjectChargePos = _pAxisInjectCharge_Pos;
-                        _currentSPDHeadRecipe.PAxisInjectSpeed = Math.Round((Math.Abs(_pAxisInjectCharge_Pos - _pAxisBase_Pos) / InjectTimeRecipe.InjectTime), 3);
                         _recipeSelector.Save();
-
-                        _carrierJigStatus.PAxisInjectVelocity = _currentSPDHeadRecipe.PAxisInjectSpeed;
                         HeadCalibration = true;
                         _machineStatus.MachineCalibration[0] = true;
                         Step.RunStep = (int)ESPDHeadProcDotWeightingStep.SetFlag_SPDHead_DotWeighting_Done;

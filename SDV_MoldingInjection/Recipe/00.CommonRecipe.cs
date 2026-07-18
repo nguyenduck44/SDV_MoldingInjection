@@ -27,7 +27,7 @@ namespace SDV_MoldingInjection.Recipe
             get => motionOriginTimeout;
             set
             {
-                if (motionMoveTimeout == value) return;
+                if (motionOriginTimeout == value) return;
                 SetRecipe(ref motionOriginTimeout, value);
             }
 
@@ -38,7 +38,11 @@ namespace SDV_MoldingInjection.Recipe
         public double MotionMoveTimeout
         {
             get => motionMoveTimeout;
-            set => SetRecipe(ref motionMoveTimeout, value);
+            set 
+            {
+                if (motionMoveTimeout == value) return;
+                SetRecipe(ref motionMoveTimeout, value);
+            }
         }
 
         [SingleRecipeDescription(Description = "Vacuum Delay", Unit = Unit.Second)]
@@ -46,7 +50,11 @@ namespace SDV_MoldingInjection.Recipe
         public double VacDelay
         {
             get => vacDelay;
-            set => SetRecipe(ref vacDelay, value);
+            set
+            {
+                if (vacDelay == value) return;
+                SetRecipe(ref vacDelay, value);
+            }
         }
 
         [SingleRecipeDescription(Description = "Syringe Mount Time Change", Unit = Unit.Hour)]
@@ -54,7 +62,11 @@ namespace SDV_MoldingInjection.Recipe
         public double SyringeMountTimeChange
         {
             get => _syringeAmountTimeChange;
-            set => SetRecipe(ref _syringeAmountTimeChange, value);
+            set
+            {
+                if (_syringeAmountTimeChange == value) return;
+                SetRecipe(ref _syringeAmountTimeChange, value);
+            }
         }
 
         [SingleRecipeDescription(Description = "Syringe Amount Weight", Unit = Unit.Gram)]
@@ -62,7 +74,11 @@ namespace SDV_MoldingInjection.Recipe
         public double SyringeAmountWeight
         {
             get => _syringeAmountWeight;
-            set => SetRecipe(ref _syringeAmountWeight, value);
+            set
+            {
+                if (_syringeAmountWeight == value) return;
+                SetRecipe(ref _syringeAmountWeight, value);
+            }
         }
 
         [SingleRecipeDescription(Description = "Log Save Day")]

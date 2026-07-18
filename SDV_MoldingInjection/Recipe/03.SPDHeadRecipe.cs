@@ -7,6 +7,7 @@ namespace SDV_MoldingInjection.Recipe
     public class SPDHeadRecipe : RecipeBase
     {
         public event Action<double> ResinWeightChanged;
+        public event Action<double> PAxisInjectChargeChanged;
 
         [SingleRecipeDescription(Description = "Resin Weight", Unit = Unit.mg)]
         [SingleRecipeMinMax(Max = 380, Min = 0)]
@@ -16,8 +17,8 @@ namespace SDV_MoldingInjection.Recipe
             get => _resinWeight;
             set
             {
-                ResinWeightChanged?.Invoke(value);
                 SetRecipe(ref _resinWeight, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
+                ResinWeightChanged?.Invoke(value);
             }
         }
 
@@ -223,7 +224,11 @@ namespace SDV_MoldingInjection.Recipe
         public double PAxisInjectChargePos
         {
             get => _pAxisInjectChargePos;
-            set => SetRecipe(ref _pAxisInjectChargePos, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
+            set
+            {
+                SetRecipe(ref _pAxisInjectChargePos, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
+                PAxisInjectChargeChanged?.Invoke(value);
+            }
         }
 
         [ParameterDescription(45)]
