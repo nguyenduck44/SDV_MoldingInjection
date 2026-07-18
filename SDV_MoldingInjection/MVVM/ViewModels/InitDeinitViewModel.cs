@@ -325,10 +325,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         break;
                     case EHandleStep.Navigate:
                         MessageText = "Navigating...";
-
-                        // TODO: Remove this on Production
-                        _authenticationService.ValidatePermission(EPermission.SuperUser, "3141");
-
                         _machineStatus.MachineIdleTick = Environment.TickCount;
                         //_tactTimeList.TactCounterStart();
                         _navigationService.NavigateTo<AutoViewModel>();
