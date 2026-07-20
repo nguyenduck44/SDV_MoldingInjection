@@ -1587,7 +1587,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcLoadingUnloadingStep.Wait_Cell1SendBitOff:
                     Log.Debug("Wait InOutMachine OFF B2107");
-                    Wait(5000, () => CellId1SendOn == false);
+                    Wait(10000, () => CellId1SendOn == false);
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Wait_Cell1SendBitOff_TimeOut:
@@ -1648,7 +1648,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case EMoldProcLoadingUnloadingStep.Wait_Cell2SendBitOff:
                     Log.Debug("Wait InOutMachine OFF B2108");
-                    Wait(5000, () => CellId2SendOn == false);
+                    Wait(10000, () => CellId2SendOn == false);
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Wait_Cell2SendBitOff_TimeOut:
