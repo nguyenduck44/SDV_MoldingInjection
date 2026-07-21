@@ -1676,7 +1676,7 @@ namespace SDV_MoldingInjection.Process
                     _cIMCollection.WriteMCC(LastAction, new List<EMCCAction>() { EMCCAction.IJ01_COMPONENT_OUT_JIG_1, EMCCAction.IJ01_PUT_UNLOAD_JIG_1 });
                     LastAction = EMCCAction.IJ01_PUT_UNLOAD_JIG_1;
 
-                    if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
+                    if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM && _machineStatus.IsAutoRunMode)
                     {
                         if (CellJobProcessInfo_Left == null)
                         {
@@ -1709,7 +1709,7 @@ namespace SDV_MoldingInjection.Process
                     _cIMCollection.WriteMCC(LastAction, new List<EMCCAction>() { EMCCAction.IJ01_COMPONENT_OUT_JIG_2, EMCCAction.IJ01_PUT_UNLOAD_JIG_2 });
                     LastAction = EMCCAction.IJ01_PUT_UNLOAD_JIG_2;
 
-                    if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
+                    if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM && _machineStatus.IsAutoRunMode)
                     {
                         if (CellJobProcessInfo_Right == null)
                         {
@@ -3260,7 +3260,8 @@ namespace SDV_MoldingInjection.Process
         private bool CIMValidation(bool isJigLeft)
         {
             if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM == false ||
-                _machineStatus.IsDryRunMode)
+                _machineStatus.IsDryRunMode ||
+                _machineStatus.IsPassRunMode)
             {
                 return true;
             }
