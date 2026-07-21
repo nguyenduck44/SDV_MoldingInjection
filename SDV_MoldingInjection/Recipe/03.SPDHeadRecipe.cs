@@ -49,6 +49,7 @@ namespace SDV_MoldingInjection.Recipe
             {
                 var v = value < -5 ? -5 : value;
                 SetRecipe(ref _zAxisSafetyPos, v, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
+                SPDHeadGapZ = (_zAxisSafetyPos + _zAxisSafetyPosOffset) - (_zAxisInjectPos + _zAxisInjectPosOffset);
             }
         }
 
@@ -56,7 +57,12 @@ namespace SDV_MoldingInjection.Recipe
         public double ZAxisSafetyPosOffset
         {
             get => _zAxisSafetyPosOffset;
-            set => SetRecipe(ref _zAxisSafetyPosOffset, value);
+            set
+            {
+                SetRecipe(ref _zAxisSafetyPosOffset, value);
+                SPDHeadGapZ = (_zAxisSafetyPos + _zAxisSafetyPosOffset) - (_zAxisInjectPos + _zAxisInjectPosOffset);
+            }
+
         }
 
         [SingleRecipeDescription(Description = "Z-Axis INJECT position (down position)", Unit = Unit.mm)]
@@ -65,14 +71,22 @@ namespace SDV_MoldingInjection.Recipe
         public double ZAxisInjectPos
         {
             get => _zAxisInjectPos;
-            set => SetRecipe(ref _zAxisInjectPos, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
+            set
+            {
+                SetRecipe(ref _zAxisInjectPos, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
+                SPDHeadGapZ = (_zAxisSafetyPos + _zAxisSafetyPosOffset) - (_zAxisInjectPos + _zAxisInjectPosOffset);
+            }
         }
 
         [ParameterDescription(33)]
         public double ZAxisInjectPosOffset
         {
             get => _zAxisInjectPosOffset;
-            set => SetRecipe(ref _zAxisInjectPosOffset, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
+            set
+            {
+                SetRecipe(ref _zAxisInjectPosOffset, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
+                SPDHeadGapZ = (_zAxisSafetyPos + _zAxisSafetyPosOffset) - (_zAxisInjectPos + _zAxisInjectPosOffset);
+            }
         }
 
         [SingleRecipeDescription(Description = "Z-Axis INJECT GAP", Detail = "Distance With Inject Position Move With Slow Speed", Unit = Unit.mm)]
@@ -248,6 +262,16 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
+        [ParameterDescription(47)]
+        public double SPDHeadGapZ
+        {
+            get => _sPDHeadGapZ;
+            set
+            {
+                if (_sPDHeadGapZ == value) return;
+                SetRecipe(ref _sPDHeadGapZ, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
+            }
+        }
         #region Privates
         private double _zAxisSafetyPos;
         private double _zAxisSafetyPosOffset;
@@ -279,6 +303,7 @@ namespace SDV_MoldingInjection.Recipe
         private double _zAxisMasterNozzleCheckPos;
         private double _zAxisMasterNozzleCheckPosOffset;
         private double _pAxisInjectSpeed;
+        private double _sPDHeadGapZ;
         #endregion
     }
 }
