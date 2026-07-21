@@ -74,8 +74,10 @@ namespace SDV_MoldingInjection.Defines.CIM
             CIMAddressMap.WriteWords(address, length, CIMScenarioDispatcher.EncodeAsciiToWords(value), false);
         }
 
-        public static void WriteFDCValue(EFDCValue fDCValue, int value)
+        public static void WriteFDCValue(EFDCValue fDCValue, int value, bool isNotWrite = false)
         {
+            if (isNotWrite) return;
+
             GetFDCInfo(fDCValue, out int address, out int length);
 
             short[] data = new short[2];

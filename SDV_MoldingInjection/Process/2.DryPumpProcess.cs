@@ -141,11 +141,6 @@ namespace SDV_MoldingInjection.Process
                 FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_CELL_ID, DateTime.Now.ToString("yyyyMMddHHmmss"));
             }
 
-            if (Parent!.ProcessMode != EProcessMode.Run || EnableWritePressureLog == false)
-            {
-                FDCHelper.WriteFDCValue(EFDCValue.PUMP_STEP_ID, 0);
-            }
-
             return base.PreProcess();
         }
 
@@ -356,6 +351,7 @@ namespace SDV_MoldingInjection.Process
                 case EDryPumpProcResinInjectStep.Start:
                     Log.Info("ResinInject start");
                     _cIMCollection.WriteMCC_OnlyStart(EMCCAction.PU01_ACT_WAIT_PUMPING);
+                    FDCHelper.WriteFDCValue(EFDCValue.PUMP_STEP_ID, 0);
                     TactTime.CycleTimeCounter = Environment.TickCount;
                     _delayTime = 0;
                     Step.RunStep++;
@@ -443,8 +439,8 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Info($"Input detect {EDryPumpProcInput.Vacuum_WorkRequest}");
                     FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_CELL_ID, DateTime.Now.ToString("yyyyMMddHHmmss"));
-                    FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, 1);
-                    FDCHelper.WriteFDCValue(EFDCValue.PUMP_STEP_ID, 2);
+                    FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, 1, _machineStatus.IsAutoRunMode == false);
+                    FDCHelper.WriteFDCValue(EFDCValue.PUMP_STEP_ID, 2, _machineStatus.IsAutoRunMode == false);
                     TactTime.TactTimeCounter = Environment.TickCount;
                     _machineStatus.RatioVent = 0;
                     _plotter.ClearData();
@@ -559,7 +555,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Enable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
 
                     FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_CELL_ID, DateTime.Now.ToString("yyyyMMddHHmmss"));
-                    FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, 2);
+                    FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, 2, _machineStatus.IsAutoRunMode == false);
                     _writeFDCStartTick = Environment.TickCount;
                     EnableWriteFDCDispensingStepID = true;
 
@@ -640,8 +636,9 @@ namespace SDV_MoldingInjection.Process
                     // Calculator Ratio Vent
                     Log.Info($"Ratio VentTime: {RatioVent}");
                     _machineStatus.RatioVent = Math.Round((_currentRecipe.DryPumpRecipe.RatioVentPressureUpper - _currentRecipe.DryPumpRecipe.RatioVentPressureLower) / (RatioVent.ElapsedMilliseconds / 1000), 2);
-                    FDCHelper.WriteFDCValue(EFDCValue.RATIO_VENT, (int)(_machineStatus.RatioVent * 1000));
 
+                    FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, 3, _machineStatus.IsAutoRunMode == false);
+                    FDCHelper.WriteFDCValue(EFDCValue.RATIO_VENT, (int)(_machineStatus.RatioVent * 1000));
                     FDCHelper.WriteFDCValue(EFDCValue.VENT_TIME, (int)_carrierJigStatusList.CarrierJigStatusH1.VentTime * 1000);
                     FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_CELL_ID, DateTime.Now.ToString("yyyyMMddHHmmss"));
 
@@ -699,9 +696,6 @@ namespace SDV_MoldingInjection.Process
 
                     PressureLog(ChamberVacuumPressure, EPumpAction.EndCycle);
                     EnableWritePressureLog = false;
-
-                    FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, 1);
-
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.End:
