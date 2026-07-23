@@ -5,7 +5,7 @@ namespace SDV_MoldingInjection.Recipe
 {
     public class DryPumpRecipe : RecipeBase
     {
-        [SingleRecipeDescription(Description = "Chamber Vacuum Pressure Target", Unit = Unit.Torr)]
+        [SingleRecipeDescription(Description = "Chamber Pirani Target", Unit = Unit.Torr)]
         [ParameterDescription(21)]
         public double VacuumPressureSpec
         {
@@ -13,7 +13,7 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _vacuumPressureSpec, value);
         }
 
-        [SingleRecipeDescription(Description = "Chamber Vacuum Pressure Upper Spec", 
+        [SingleRecipeDescription(Description = "Chamber Pirani Upper Spec", 
             Detail = "Hold pressure under spec while inject", Unit = Unit.Torr)]
         [ParameterDescription(22)]
         public double VacuumPressureHoldUnderSpec
@@ -30,7 +30,7 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _pressureLogTimelaps, value);
         }
 
-        [SingleRecipeDescription(Description = "Ratio Vent Pressure Lower", Unit = Unit.Torr)]
+        [SingleRecipeDescription(Description = "Ratio Vent Pirani Lower", Unit = Unit.Torr)]
         [ParameterDescription(24)]
         public double RatioVentPressureLower
         {
@@ -38,7 +38,7 @@ namespace SDV_MoldingInjection.Recipe
             set => SetRecipe(ref _ratioVentPressureLower, value);
         }
 
-        [SingleRecipeDescription(Description = "Ratio Vent Pressure Upper", Unit = Unit.Torr)]
+        [SingleRecipeDescription(Description = "Ratio Vent Pirani Upper", Unit = Unit.Torr)]
         [ParameterDescription(25)]
         public double RatioVentPressureUpper
         {
