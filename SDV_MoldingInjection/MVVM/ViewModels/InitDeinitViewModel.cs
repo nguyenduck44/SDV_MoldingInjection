@@ -231,7 +231,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         SubscibeResinWeightChanged();
                         SubscribeSkipHeadChanged();
                         SubscibMotionSpeedChanged();
-                        SubscibPAxisSpeedChanged();
                         Log.Debug("Load Recipes");
                         MessageText = "Load Recipes";
                         if (_recipeSelector.Load() == false)
@@ -240,6 +239,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                             Log.Debug("Recipe Load Fail");
                         }
 
+                        SubscibPAxisSpeedChanged();
                         EquipEventHelpers.PPIDChange(_recipeSelector.RecipeSetting.CurrentRecipe);
                         Thread.Sleep(500);
                         _step++;

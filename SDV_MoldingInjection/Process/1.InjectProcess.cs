@@ -1824,8 +1824,8 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Chamber_CoverClose:
-                    _cIMCollection.WriteMCC_OnlyStart(EMCCAction.IJ01_CHAMPER_COVER_CLOSE);
-                    LastAction = EMCCAction.IJ01_CHAMPER_COVER_CLOSE;
+                    LastAction = EMCCAction.IJ01_ACT_WAIT_TRANSFER_REQ_START;
+                    WriteMCC(LastAction, EMCCAction.IJ01_CHAMPER_COVER_CLOSE);
 
                     Log.Debug($"Close {ChamberOpenClose} cylinder");
                     ChamberOpenClose.Close();
