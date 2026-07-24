@@ -1110,6 +1110,7 @@ namespace SDV_MoldingInjection.Process
                         if (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing || _machineStatus.IsPassRunMode)
                         {
                             Log.Debug("DryRun Or SkipDispensing PAxis Not Move");
+                            Wait(4000); //TODO: Clear after check MCC
                             Step.RunStep++;
                             break;
                         }
@@ -1119,6 +1120,7 @@ namespace SDV_MoldingInjection.Process
                         if (_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing || _machineStatus.IsPassRunMode)
                         {
                             Log.Debug("DryRun Or SkipDispensing PAxis Not Move");
+                            Wait(4000); //TODO: Clear after check MCC
                             Step.RunStep++;
                             break;
                         }
@@ -1246,6 +1248,7 @@ namespace SDV_MoldingInjection.Process
                         sequence != ESequence.IdlePurge)
                     {
                         Log.Debug("DryRun Mode Or SkipDispensing -> G Axis Not Open");
+                        Wait(1000); //TODO: Clear after check MCC
                         Step.RunStep++;
                         break;
                     }
@@ -1322,6 +1325,7 @@ namespace SDV_MoldingInjection.Process
                         if ((_machineStatus.IsDryRunMode || OptionRecipe.SkipDispensing || _machineStatus.IsPassRunMode) && sequence != ESequence.IdlePurge)
                         {
                             Log.Debug("DryRun Mode Or SkipDispensing -> P Axis Not Move");
+                            Wait(1000); //TODO: Clear after check MCC
                             Step.RunStep++;
                             break;
                         }
