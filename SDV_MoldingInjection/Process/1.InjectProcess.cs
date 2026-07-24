@@ -216,7 +216,7 @@ namespace SDV_MoldingInjection.Process
                 In_Jig3Detect.Value == false &&
                 In_Jig4Detect.Value == false)
             {
-                FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, 0);
+                //FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, 0);
             }
             
             return base.PreProcess();
@@ -856,6 +856,9 @@ namespace SDV_MoldingInjection.Process
                         JigStatuses[(int)EJig.JigRight] = EJigStatus.None;
                     }
 
+                    FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_CELL_ID, String.Empty);
+                    FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, 0);
+
                     TactTime.CycleTimeCounter = Environment.TickCount;
                     Step.RunStep++;
                     break;
@@ -1444,6 +1447,9 @@ namespace SDV_MoldingInjection.Process
                             Step.RunStep = (int)EMoldProcLoadingUnloadingStep.End;
                             break;
                         }
+
+                        FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_CELL_ID, String.Empty);
+                        FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, 0);
 
                         if (_optionRecipe.InputTypeAuto)
                         {
