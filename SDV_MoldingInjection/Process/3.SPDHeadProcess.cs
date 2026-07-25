@@ -911,7 +911,7 @@ namespace SDV_MoldingInjection.Process
                         _machineStatus.DisableSyringeCheck == false &&
                         (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run) &&
                         IsSequenceAssembleOrDisassemble(Parent!.Sequence) == false &&
-                        Parent?.Sequence != ESequence.IdlePurge)
+                        Parent?.Sequence == ESequence.AutoRun)
                     {
                         RaiseHeadWarning(EWarning.SE_SPD_H01_SYRING_NOT_DETECT);
                     }
@@ -2258,6 +2258,9 @@ namespace SDV_MoldingInjection.Process
             return sequence == ESequence.HeadAssemble_Step1 || sequence == ESequence.HeadDisassemble ||
                    sequence == ESequence.HeadAssemble_Step1_H1 || sequence == ESequence.HeadAssemble_Step1_H2 ||
                    sequence == ESequence.HeadAssemble_Step1_H3 || sequence == ESequence.HeadAssemble_Step1_H4 ||
+                   sequence == ESequence.HeadAssemble_Step2 ||
+                   sequence == ESequence.HeadAssemble_Step2_H1 || sequence == ESequence.HeadAssemble_Step2_H2 ||
+                   sequence == ESequence.HeadAssemble_Step2_H3 || sequence == ESequence.HeadAssemble_Step2_H4 ||
                    sequence == ESequence.HeadDisassemble_H1 || sequence == ESequence.HeadDisassemble_H2 ||
                    sequence == ESequence.HeadDisassemble_H3 || sequence == ESequence.HeadDisassemble_H4;
         }

@@ -71,36 +71,39 @@
                           FontWeight="Bold"
                           Header="Teaching Position"
                           Style="{x:Null}">
-                    <ItemsControl ItemsSource="{Binding GroupedPositions}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Button Margin="3"
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+                        <ItemsControl ItemsSource="{Binding GroupedPositions}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Margin="3"
                                         Height="50"
                                         Content="{Binding Name}"
                                         Command="{Binding DataContext.TeachingPositionButtonCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                                         CommandParameter="{Binding .}">
-                                    <Button.Style>
-                                        <Style TargetType="Button"
+                                        <Button.Style>
+                                            <Style TargetType="Button"
                                                BasedOn="{StaticResource {x:Type Button}}">
-                                            <Style.Triggers>
-                                                <DataTrigger Value="true">
-                                                    <DataTrigger.Binding>
-                                                        <MultiBinding Converter="{StaticResource ObjectSelectedConverter}">
-                                                            <Binding />
-                                                            <Binding Path="DataContext.SelectedGroupedPosition"
+                                                <Style.Triggers>
+                                                    <DataTrigger Value="true">
+                                                        <DataTrigger.Binding>
+                                                            <MultiBinding Converter="{StaticResource ObjectSelectedConverter}">
+                                                                <Binding />
+                                                                <Binding Path="DataContext.SelectedGroupedPosition"
                                                                      RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
-                                                        </MultiBinding>
-                                                    </DataTrigger.Binding>
-                                                    <Setter Property="Background"
+                                                            </MultiBinding>
+                                                        </DataTrigger.Binding>
+                                                        <Setter Property="Background"
                                                             Value="LightGreen" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
                 </GroupBox>
 
                 <GroupBox Grid.Row="1"
@@ -136,7 +139,7 @@
                         <uiControls:IncControlView  Grid.Row="2"
                                                     IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
                                                     ItemsSource="{Binding SelectedGroupedPosition.Points}"
-                                                    IncStep="{Binding IncStep, Mode=TwoWay}"/>           
+                                                    IncStep="{Binding IncStep, Mode=TwoWay}"/>
 
                         <UniformGrid Grid.Row="3"
                                      Columns="2"
@@ -174,7 +177,7 @@
                         <ContentControl Content="{Binding AutoTeachModeViewModel}" />
                     </GroupBox>
                 </StackPanel>
-                
+
             </Grid>
         </GroupBox>
     </DockPanel>
