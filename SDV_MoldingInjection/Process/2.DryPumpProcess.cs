@@ -652,7 +652,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Info($"Ratio VentTime: {RatioVent}");
                     _machineStatus.RatioVent = Math.Round((_currentRecipe.DryPumpRecipe.RatioVentPressureUpper - _currentRecipe.DryPumpRecipe.RatioVentPressureLower) / (RatioVent.ElapsedMilliseconds / 1000), 2);
 
-                    FDCHelper.WriteFDCValue(EFDCValue.RATIO_VENT, (int)(_machineStatus.RatioVent * 1000));
+                    FDCHelper.WriteFDCValue(EFDCValue.RATIO_VENT, Math.Max(0, (int)(_machineStatus.RatioVent * 1000)));
                     FDCHelper.WriteFDCValue(EFDCValue.VENT_TIME, (int)_carrierJigStatusList.CarrierJigStatusH1.VentTime * 1000);
                     FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_CELL_ID, DateTime.Now.ToString("yyyyMMddHHmmss"));
 

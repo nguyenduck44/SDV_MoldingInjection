@@ -123,6 +123,7 @@ namespace SDV_MoldingInjection.Recipe
             ParameterWordArea = new ParameterWordArea();
         }
 
+        private bool isUpdateParameter2CIM { get; set; } = false;
         private async void SingleRecipe_RecipeChanged(object? oldValue, object? newValue, string? propertyName = null, int parameterIndex = -1, PropertyInfo? propertyInfo = null)
         {
             if (_navigationStore.CurrentViewModel.GetType() != typeof(InitDeinitViewModel))
@@ -140,8 +141,14 @@ namespace SDV_MoldingInjection.Recipe
 
             if (parameterIndex > 0)
             {
-                await Task.Run(() =>
+                await Task.Run(async () =>
                 {
+                    while(isUpdateParameter2CIM)
+                    {
+                        await Task.Delay(5);
+                    }
+
+                    isUpdateParameter2CIM = true;
                     ParameterWordArea.PPIDName = selectedRecipe;
 
                     int value;
@@ -179,6 +186,8 @@ namespace SDV_MoldingInjection.Recipe
                     {
                         EquipEventHelpers.EquipmentConstantParameterChanged(parameterIndex, value);
                     }
+
+                    isUpdateParameter2CIM = false;
                 });
             }
         }
@@ -246,7 +255,6 @@ namespace SDV_MoldingInjection.Recipe
                     if (backupRecipe != null)
                     {
                         CurrentRecipe.CloneFrom(backupRecipe);
-                        Thread.Sleep(2000);
                         NormalizeSelectedLanguageReference();
                         EQPPPIDArea ppipArea = new EQPPPIDArea
                         {

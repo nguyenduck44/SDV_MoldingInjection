@@ -49,7 +49,10 @@ namespace SDV_MoldingInjection.Recipe
             {
                 var v = value < -5 ? -5 : value;
                 SetRecipe(ref _zAxisSafetyPos, v, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
-                SPDHeadGapZ = (_zAxisSafetyPos + _zAxisSafetyPosOffset) - (_zAxisInjectPos + _zAxisInjectPosOffset);
+                if (_zAxisInjectPos != 0)
+                {
+                    SPDHeadGapZ = (_zAxisSafetyPos + _zAxisSafetyPosOffset) - (_zAxisInjectPos + _zAxisInjectPosOffset);
+                }
             }
         }
 
@@ -60,7 +63,10 @@ namespace SDV_MoldingInjection.Recipe
             set
             {
                 SetRecipe(ref _zAxisSafetyPosOffset, value);
-                SPDHeadGapZ = (_zAxisSafetyPos + _zAxisSafetyPosOffset) - (_zAxisInjectPos + _zAxisInjectPosOffset);
+                if (_zAxisInjectPos != 0)
+                {
+                    SPDHeadGapZ = (_zAxisSafetyPos + _zAxisSafetyPosOffset) - (_zAxisInjectPos + _zAxisInjectPosOffset);
+                }
             }
 
         }
@@ -272,6 +278,7 @@ namespace SDV_MoldingInjection.Recipe
                 SetRecipe(ref _sPDHeadGapZ, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
             }
         }
+
         #region Privates
         private double _zAxisSafetyPos;
         private double _zAxisSafetyPosOffset;

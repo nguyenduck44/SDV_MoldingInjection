@@ -1565,16 +1565,16 @@ namespace SDV_MoldingInjection.Process
                     Log.Info($"Write Left Jig ID : {LeftJigID}");
 #if !SIMULATION
                     _cIMCollection.WriteMCC_CellID(EMCCUnit.IJ01, LeftJigID);
-                    Wait(5000, () => _cIMCollection.ReadMCC_CellID(EMCCUnit.IJ01) == LeftJigID);
+                    //Wait(5000, () => _cIMCollection.ReadMCC_CellID(EMCCUnit.IJ01) == LeftJigID);
 #endif
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Wait_Write_JigIID_1:
-                    if (WaitTimeOutOccurred)
-                    {
-                        RaiseWarning(EWarning.MCC_IJ01_WRITE_JIG_ID_TIMEOUT);
-                        break;
-                    }
+                    //if (WaitTimeOutOccurred)
+                    //{
+                    //    RaiseWarning(EWarning.MCC_IJ01_WRITE_JIG_ID_TIMEOUT);
+                    //    break;
+                    //}
 
                     Step.RunStep++;
                     break;
@@ -1607,28 +1607,22 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.GetCellId2:
                     RightJigID = _machineStatus.RunWithoutInOut ? "RIGHT" + random.Next(100, 1000).ToString() : GetCellId(isJigLeft: false);
                     Log.Info($"Get Right Jig ID '{RightJigID}'");
-                    if (_optionRecipe.SkipHead12 == false)
-                    {
-                        Step.RunStep = (int)EMoldProcLoadingUnloadingStep.Validation_Reply_Jig2;
-                        break;
-                    }
-
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Write_JigID_2:
                     Log.Info($"Write Right Jig ID : {RightJigID}");
 #if !SIMULATION
-                    _cIMCollection.WriteMCC_CellID(EMCCUnit.IJ01, RightJigID);
-                    Wait(5000, () => _cIMCollection.ReadMCC_CellID(EMCCUnit.IJ01) == RightJigID);
+                    _cIMCollection.WriteMCC_CellID(EMCCUnit.IJ02, RightJigID);
+                    //Wait(5000, () => _cIMCollection.ReadMCC_CellID(EMCCUnit.IJ01) == RightJigID);
 #endif
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Wait_Write_JigIID_2:
-                    if (WaitTimeOutOccurred)
-                    {
-                        RaiseWarning(EWarning.MCC_IJ01_WRITE_JIG_ID_TIMEOUT);
-                        break;
-                    }
+                    //if (WaitTimeOutOccurred)
+                    //{
+                    //    RaiseWarning(EWarning.MCC_IJ01_WRITE_JIG_ID_TIMEOUT);
+                    //    break;
+                    //}
 
                     Step.RunStep++;
                     break;

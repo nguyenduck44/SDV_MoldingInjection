@@ -231,6 +231,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         SubscibeResinWeightChanged();
                         SubscribeSkipHeadChanged();
                         SubscibMotionSpeedChanged();
+                        SubscibPAxisSpeedChanged();
                         Log.Debug("Load Recipes");
                         MessageText = "Load Recipes";
                         if (_recipeSelector.Load() == false)
@@ -239,7 +240,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                             Log.Debug("Recipe Load Fail");
                         }
 
-                        SubscibPAxisSpeedChanged();
                         EquipEventHelpers.PPIDChange(_recipeSelector.RecipeSetting.CurrentRecipe);
                         Thread.Sleep(500);
                         _step++;
@@ -712,21 +712,25 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
             _recipeSelector.CurrentRecipe.SPDHead1_Recipe.PAxisInjectChargeChanged += (value) =>
             {
+                if (_recipeSelector.CurrentRecipe.InjectTimeRecipe.InjectTime == 0) return;
                 _carrierJigStatusList.CarrierJigStatusH1.PAxisInjectVelocity = Math.Round(Math.Abs(value - _pAxisBase_Pos) / _recipeSelector.CurrentRecipe.InjectTimeRecipe.InjectTime, 3);
                 UpdatePAxisSpeed();
             };
             _recipeSelector.CurrentRecipe.SPDHead2_Recipe.PAxisInjectChargeChanged += (value) =>
             {
+                if (_recipeSelector.CurrentRecipe.InjectTimeRecipe.InjectTime == 0) return;
                 _carrierJigStatusList.CarrierJigStatusH2.PAxisInjectVelocity = Math.Round(Math.Abs(value - _pAxisBase_Pos) / _recipeSelector.CurrentRecipe.InjectTimeRecipe.InjectTime, 3);
                 UpdatePAxisSpeed();
             };
             _recipeSelector.CurrentRecipe.SPDHead3_Recipe.PAxisInjectChargeChanged += (value) =>
             {
+                if (_recipeSelector.CurrentRecipe.InjectTimeRecipe.InjectTime == 0) return;
                 _carrierJigStatusList.CarrierJigStatusH3.PAxisInjectVelocity = Math.Round(Math.Abs(value - _pAxisBase_Pos) / _recipeSelector.CurrentRecipe.InjectTimeRecipe.InjectTime, 3);
                 UpdatePAxisSpeed();
             };
             _recipeSelector.CurrentRecipe.SPDHead4_Recipe.PAxisInjectChargeChanged += (value) =>
             {
+                if (_recipeSelector.CurrentRecipe.InjectTimeRecipe.InjectTime == 0) return;
                 _carrierJigStatusList.CarrierJigStatusH4.PAxisInjectVelocity = Math.Round(Math.Abs(value - _pAxisBase_Pos) / _recipeSelector.CurrentRecipe.InjectTimeRecipe.InjectTime, 3);
                 UpdatePAxisSpeed();
             };
@@ -738,8 +742,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _recipeSelector.CurrentRecipe.SPDHead2_Recipe.PAxisInjectSpeed = _carrierJigStatusList.CarrierJigStatusH2.PAxisInjectVelocity;
             _recipeSelector.CurrentRecipe.SPDHead3_Recipe.PAxisInjectSpeed = _carrierJigStatusList.CarrierJigStatusH3.PAxisInjectVelocity;
             _recipeSelector.CurrentRecipe.SPDHead4_Recipe.PAxisInjectSpeed = _carrierJigStatusList.CarrierJigStatusH4.PAxisInjectVelocity;
-            _recipeSelector.Save();
-            OnPropertyChanged();
         }
 
         private void StartLogCleanupScheduler()
