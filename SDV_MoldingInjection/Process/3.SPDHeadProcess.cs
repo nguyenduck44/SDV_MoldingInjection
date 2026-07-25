@@ -911,7 +911,8 @@ namespace SDV_MoldingInjection.Process
                         _machineStatus.DisableSyringeCheck == false &&
                         (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run) &&
                         IsSequenceAssembleOrDisassemble(Parent!.Sequence) == false &&
-                        Parent?.Sequence == ESequence.AutoRun)
+                        Parent?.Sequence == ESequence.AutoRun &&
+                        Parent?.Childs.OfType<InjectProcess>().First().Sequence != ESequence.Unloading)
                     {
                         RaiseHeadWarning(EWarning.SE_SPD_H01_SYRING_NOT_DETECT);
                     }
