@@ -13,7 +13,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly MachineStatus _machineStatus;
         private readonly Config _config;
         private readonly NonOverlappingTimer statusUpdateTimer;
-        private Task FDCReportTask;
 
         #region Properties
         public int EnergyReceived => _accura2550.EnergyReceived;
@@ -34,40 +33,9 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             statusUpdateTimer = new NonOverlappingTimer(1000);
             statusUpdateTimer.Elapsed += StatusUpdateTimerHandler;
             statusUpdateTimer.Start();
-
-            CancellationToken token = new CancellationToken();
-            FDCReportTask = Task.Factory.StartNew(async () =>
-            {
-                while (true)
-                {
-                    await WriteFDC();
-                    await Task.Delay(500);
-                }
-            }, token);
         }
 
         #region Private Methods
-        private async Task WriteFDC()
-        {
-            if (_config.IsConnectEBoxMainPower)
-            {
-                Application.Current?.Dispatcher.Invoke(() =>
-                {
-                    FDCHelper.WriteFDCValue(EFDCValue.N02_U_T_PW, EnergyReceived * 1000);
-                    FDCHelper.WriteFDCValue(EFDCValue.N02_U_I_PW, (int)(MaxActivePowerTotal * 1000));
-                    FDCHelper.WriteFDCValue(EFDCValue.N02_U_R_VOL, (int)(ABVoltage * 10));
-                    FDCHelper.WriteFDCValue(EFDCValue.N02_U_T_VOL, (int)(BCVoltage * 10));
-                    FDCHelper.WriteFDCValue(EFDCValue.N02_U_R_CUR, (int)(ACurrent * 1000));
-                    FDCHelper.WriteFDCValue(EFDCValue.N02_U_T_CUR, (int)(BCurrent * 1000));
-
-                    if (_accura2550.IsConnected == false)
-                    {
-                        _accura2550.Connect();
-                    }
-                });
-            }
-        }
-
         private void StatusUpdateTimerHandler(object? sender, System.Timers.ElapsedEventArgs e)
         {
             if (_config.IsConnectEBoxMainPower)

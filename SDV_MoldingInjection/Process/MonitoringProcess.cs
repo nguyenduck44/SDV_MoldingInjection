@@ -2,9 +2,11 @@ using EQX.Core.Common;
 using EQX.Core.InOut;
 using EQX.Core.Recipe;
 using EQX.Core.Sequence;
+using EQX.Device.Measurement;
 using EQX.InOut;
 using EQX.Process;
 using EQX.UI.Controls;
+using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.MVVM.ViewModels;
@@ -20,22 +22,34 @@ namespace SDV_MoldingInjection.Process
         #endregion
 
         private readonly MachineStatus _machineStatus;
+        private readonly Accura2550CMZ3PModule _accura2550;
         private readonly RecipeSelector _recipeSelector;
         private readonly Devices _devices;
         private readonly NavigationStore _navigationStore;
         private Queue<IGrouping<uint, PositionPoint>> MoveMultiPointQueueSteps = new Queue<IGrouping<uint, PositionPoint>>();
         private List<PositionPoint> currentPoints = new List<PositionPoint>();
         private Task FDCReportTask;
+        private readonly Config _config;
+
+        #region Properties
+        public int EnergyReceived => _accura2550.EnergyReceived;
+        public double MaxActivePowerTotal => _accura2550.MaxActivePowerTotal;
+        public double ABVoltage => _accura2550.ABVoltage;
+        public double BCVoltage => _accura2550.BCVoltage;
+        public double ACurrent => _accura2550.ACurrent;
+        public double BCurrent => _accura2550.BCurrent;
+        #endregion
         public MonitoringProcess(MachineStatus machineStatus,
             RecipeSelector recipeSelector,
             Devices devices,
-            NavigationStore navigationStore)
+            NavigationStore navigationStore, 
+            [FromKeyedServices("Accura2550")] Accura2550CMZ3PModule accura2550)
         {
             _machineStatus = machineStatus;
             _recipeSelector = recipeSelector;
             _devices = devices;
             _navigationStore = navigationStore;
-
+            _accura2550 = accura2550;
             CancellationToken token = new CancellationToken();
             FDCReportTask = Task.Factory.StartNew(async () =>
             {
@@ -205,7 +219,23 @@ namespace SDV_MoldingInjection.Process
             {
                 FDCHelper.WriteFDCValue(EFDCValue.FUNCTION_STEP_ID, 0);
             }
+            if (_config.IsConnectEBoxMainPower)
+            {
+                Application.Current?.Dispatcher.Invoke(() =>
+                {
+                    FDCHelper.WriteFDCValue(EFDCValue.N02_U_T_PW, EnergyReceived * 1000);
+                    FDCHelper.WriteFDCValue(EFDCValue.N02_U_I_PW, (int)(MaxActivePowerTotal * 1000));
+                    FDCHelper.WriteFDCValue(EFDCValue.N02_U_R_VOL, (int)(ABVoltage * 10));
+                    FDCHelper.WriteFDCValue(EFDCValue.N02_U_T_VOL, (int)(BCVoltage * 10));
+                    FDCHelper.WriteFDCValue(EFDCValue.N02_U_R_CUR, (int)(ACurrent * 1000));
+                    FDCHelper.WriteFDCValue(EFDCValue.N02_U_T_CUR, (int)(BCurrent * 1000));
 
+                    if (_accura2550.IsConnected == false)
+                    {
+                        _accura2550.Connect();
+                    }
+                });
+            }
         }
         #endregion
     }
