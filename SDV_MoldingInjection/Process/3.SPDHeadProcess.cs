@@ -905,8 +905,9 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESPDHeadPreProcessStep.Syringe_Check:
 #if !SIMULATION
-                    if (In_SyringeCheck.Value == false &&
+                    if (In_SyringeCheck.Value == true &&
                         In_AssembleCheck.Value == true &&
+                        _machineStatus.IsAutoRunMode == true &&
                         CurrentHeadSkip == false &&
                         _machineStatus.DisableSyringeCheck == false &&
                         (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run) &&
@@ -1180,7 +1181,7 @@ namespace SDV_MoldingInjection.Process
                                 break;
                             }
                             #endregion
-                            _pAxisInject_Vel = Math.Abs(_currentSPDHeadRecipe.PAxisInjectChargePos - _pAxisBase_Pos) / InjectTimeRecipe.InjectTime;
+                            _pAxisInject_Vel = Math.Abs(_currentSPDHeadRecipe.PAxisDistanceInject) / InjectTimeRecipe.InjectTime;
                             _carrierJigStatus.PAxisInjectVelocity = _pAxisInject_Vel; // Display UI
                             HeadWrireFDC(EFDCValue.HEAD_1_INJECT_SPEED, Math.Round(_pAxisInject_Vel, 3));
                             break;

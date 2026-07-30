@@ -439,8 +439,18 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Info($"Input detect {EDryPumpProcInput.Vacuum_WorkRequest}");
                     FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_CELL_ID, DateTime.Now.ToString("yyyyMMddHHmmss"));
-                    FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, 1, _machineStatus.IsAutoRunMode == false);
-                    FDCHelper.WriteFDCValue(EFDCValue.PUMP_STEP_ID, 2, _machineStatus.IsAutoRunMode == false);
+
+                    if (_machineStatus.IsAutoRunMode == true && _recipeSelector.CurrentRecipe.OptionRecipe.UseCIM == true)
+                    {
+                        FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, 1);
+                        FDCHelper.WriteFDCValue(EFDCValue.PUMP_STEP_ID, 2);
+                    }
+                    else
+                    {
+                        FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, 0);
+                        FDCHelper.WriteFDCValue(EFDCValue.PUMP_STEP_ID, 0);
+                    }
+
                     TactTime.TactTimeCounter = Environment.TickCount;
                     _machineStatus.RatioVent = 0;
                     _plotter.ClearData();
@@ -564,7 +574,14 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Enable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
 
                     FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_CELL_ID, DateTime.Now.ToString("yyyyMMddHHmmss"));
-                    FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, 2, _machineStatus.IsAutoRunMode == false);
+                    if (_machineStatus.IsAutoRunMode == true && _recipeSelector.CurrentRecipe.OptionRecipe.UseCIM == true)
+                    {
+                        FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, 2);
+                    }
+                    else
+                    {
+                        FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, 0);
+                    }
                     _writeFDCStartTick = Environment.TickCount;
                     EnableWriteFDCDispensingStepID = true;
 
@@ -609,8 +626,14 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Disable hold Pressure under {_currentRecipe.DryPumpRecipe.VacuumPressureHoldUnderSpec}");
                     EnablePressureHold = false;
 
-                    FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, 3, _machineStatus.IsAutoRunMode == false);
-
+                    if(_machineStatus.IsAutoRunMode == true && _recipeSelector.CurrentRecipe.OptionRecipe.UseCIM == true)
+                    {
+                        FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, 3);
+                    }
+                    else
+                    {
+                        FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, 0);
+                    }
                     Step.RunStep = (int)EDryPumpProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EDryPumpProcResinInjectStep.SetStartVent:
