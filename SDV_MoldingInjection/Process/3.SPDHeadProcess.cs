@@ -907,6 +907,7 @@ namespace SDV_MoldingInjection.Process
 #if !SIMULATION
                     if (In_SyringeCheck.Value == false &&
                         In_AssembleCheck.Value == true &&
+                        _machineStatus.IsAutoRunMode == true &&
                         CurrentHeadSkip == false &&
                         _machineStatus.DisableSyringeCheck == false &&
                         (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run) &&
