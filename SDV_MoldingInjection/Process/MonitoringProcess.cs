@@ -221,6 +221,7 @@ namespace SDV_MoldingInjection.Process
             {
                 FDCHelper.WriteFDCValue(EFDCValue.FUNCTION_STEP_ID, 0);
             }
+#if !SIMULATION
             if (_config.IsConnectEBoxMainPower)
             {
                 Application.Current?.Dispatcher.Invoke(() =>
@@ -239,6 +240,7 @@ namespace SDV_MoldingInjection.Process
                     }
                 });
             }
+#endif
         }
         #endregion
     }
