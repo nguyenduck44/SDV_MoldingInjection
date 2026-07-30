@@ -22,32 +22,25 @@ namespace SDV_MoldingInjection.Process
         #endregion
 
         private readonly MachineStatus _machineStatus;
-        private readonly Accura2550CMZ3PModule _accura2550;
         private readonly RecipeSelector _recipeSelector;
         private readonly Devices _devices;
+        private readonly Config _config;
         private readonly NavigationStore _navigationStore;
+        private readonly Accura2550CMZ3PModule _accura2550;
         private Queue<IGrouping<uint, PositionPoint>> MoveMultiPointQueueSteps = new Queue<IGrouping<uint, PositionPoint>>();
         private List<PositionPoint> currentPoints = new List<PositionPoint>();
         private Task FDCReportTask;
-        private readonly Config _config;
-
-        #region Properties
-        public int EnergyReceived => _accura2550.EnergyReceived;
-        public double MaxActivePowerTotal => _accura2550.MaxActivePowerTotal;
-        public double ABVoltage => _accura2550.ABVoltage;
-        public double BCVoltage => _accura2550.BCVoltage;
-        public double ACurrent => _accura2550.ACurrent;
-        public double BCurrent => _accura2550.BCurrent;
-        #endregion
         public MonitoringProcess(MachineStatus machineStatus,
             RecipeSelector recipeSelector,
-            Devices devices,
-            NavigationStore navigationStore, 
+            Devices devices, 
+            Config config,
+            NavigationStore navigationStore,
             [FromKeyedServices("Accura2550")] Accura2550CMZ3PModule accura2550)
         {
             _machineStatus = machineStatus;
             _recipeSelector = recipeSelector;
             _devices = devices;
+            _config = config;
             _navigationStore = navigationStore;
             _accura2550 = accura2550;
             CancellationToken token = new CancellationToken();
@@ -60,6 +53,15 @@ namespace SDV_MoldingInjection.Process
                 }
             }, token);
         }
+
+        #region Properties
+        public int EnergyReceived => _accura2550.EnergyReceived;
+        public double MaxActivePowerTotal => _accura2550.MaxActivePowerTotal;
+        public double ABVoltage => _accura2550.ABVoltage;
+        public double BCVoltage => _accura2550.BCVoltage;
+        public double ACurrent => _accura2550.ACurrent;
+        public double BCurrent => _accura2550.BCurrent;
+        #endregion
 
         #region Process Methods
         public override bool PreProcess()
@@ -232,6 +234,7 @@ namespace SDV_MoldingInjection.Process
 
                     if (_accura2550.IsConnected == false)
                     {
+                        Log.Warn("Accura Main Power Reconnect");
                         _accura2550.Connect();
                     }
                 });
