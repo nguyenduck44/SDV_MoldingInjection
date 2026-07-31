@@ -1,16 +1,22 @@
 using log4net;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using SDV_MoldingInjection.Process;
+using SDV_MoldingInjection.Recipe;
 using System.IO;
+using System.Xml.Linq;
 
 namespace SDV_MoldingInjection.Defines
 {
-    public class SyringAmountStatusList
+    public class SyringAmountStatusList : MIProcess
     {
         private readonly IConfiguration _configuration;
+        private readonly RecipeSelector _recipeSelector;
+
         private string BackupFolder => _configuration["Folders:BackupFolder"];
 
-        public SyringAmountStatusList(IConfiguration configuration)
+        public SyringAmountStatusList(IConfiguration configuration,
+                                    RecipeSelector recipeSelector)
         {
             SyringeAmounts = new List<SyringeAmountStatus>
             {
@@ -20,13 +26,15 @@ namespace SDV_MoldingInjection.Defines
                 new SyringeAmountStatus(){Name = "RESIN HEAD 4"}
             };
             _configuration = configuration;
+            _recipeSelector = recipeSelector;
         }
 
         public List<SyringeAmountStatus> SyringeAmounts { get; private set; }
+        public double Rho_Resin { get; private set; }
 
         public void ConsumeSyringeAmount(ESPDHead head, double height)
         {
-            double weight = Math.Round(Math.Pow(2.5,2) * Math.PI * 1.136 * Math.Abs(height), 3); // mm^3 = mg
+            double weight = Math.Round(Math.Pow(2.5,2) * Math.PI * Rho_Resin * Math.Abs(height), 3); // mm^3 = mg
             int index = (int)head - 1;
             if (index < 0 || index >= SyringeAmounts.Count) return;
 

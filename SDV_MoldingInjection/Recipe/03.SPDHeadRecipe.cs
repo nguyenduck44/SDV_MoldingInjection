@@ -8,7 +8,10 @@ namespace SDV_MoldingInjection.Recipe
     {
         public event Action<double> ResinWeightChanged;
         public event Action<double> PAxisInjectChargeChanged;
-        public event Action<double> PAxisDistanceInjectChanged;
+        public event Action<double> PAxisInjectCharge_HeightChanged;
+        public event Action<double> _rho_ResinChanged;
+        public event Action<double> PAxisBase_PosChanged;
+
 
         [SingleRecipeDescription(Description = "Resin Weight", Unit = Unit.mg)]
         [SingleRecipeMinMax(Max = 380, Min = 0)]
@@ -19,7 +22,7 @@ namespace SDV_MoldingInjection.Recipe
             set
             {
                 SetRecipe(ref _resinWeight, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
-                PAxisDistanceInject = ResinWeight / (Math.PI * Math.Pow(2.5, 2) * 1.136);
+                PAxisInjectCharge_Height = ResinWeight / (Math.PI * Math.Pow(2.5, 2) * Rho_Resin);
                 ResinWeightChanged?.Invoke(value);
             }
         }
@@ -280,16 +283,47 @@ namespace SDV_MoldingInjection.Recipe
                 SetRecipe(ref _sPDHeadGapZ, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
             }
         }
-        public double PAxisDistanceInject
+        public double PAxisInjectCharge_Height
         {
-            get => _pAxisDistanceInject;
+            get => _pAxisInjectCharge_Height;
             set
             {
-                if (_pAxisDistanceInject == value) return;
-                SetRecipe(ref _pAxisDistanceInject, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
-                PAxisDistanceInjectChanged?.Invoke(value);
+                if (_pAxisInjectCharge_Height == value) return;
+                SetRecipe(ref _pAxisInjectCharge_Height, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
+
+                PAxisInjectChargePos = PAxisBase_Pos - PAxisInjectCharge_Height;
+                PAxisInjectCharge_HeightChanged?.Invoke(value);
             }
         }
+        public double Rho_Resin
+        {
+            get => _rho_Resin;
+            set
+            {
+                if (_rho_Resin == value) return;
+                SetRecipe(ref _rho_Resin, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
+
+                PAxisInjectCharge_Height = ResinWeight / (Math.PI * Math.Pow(2.5, 2) * Rho_Resin);
+                _rho_ResinChanged?.Invoke(value);
+            }
+        }
+        public double PAxisBase_Pos
+        {
+            get => _pAxisBase_Pos;
+            set
+            {
+                if (_pAxisBase_Pos == value) return;
+                SetRecipe(ref _pAxisBase_Pos, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
+
+                PAxisInjectCharge_Height = ResinWeight / (Math.PI * Math.Pow(2.5, 2) * Rho_Resin);
+                PAxisBase_PosChanged?.Invoke(value);
+            }
+        }
+
+        // Rho_Resin = ResinWeight / (Math.PI * Math.Pow(2.5, 2) * PAxisInjectCharge_Height);
+        // PAxisInjectCharge_Height = ResinWeight / (Math.PI* Math.Pow(2.5, 2) * Rho_Resin);
+
+
         #region Privates
         private double _zAxisSafetyPos;
         private double _zAxisSafetyPosOffset;
@@ -309,11 +343,11 @@ namespace SDV_MoldingInjection.Recipe
         private double _gateOpenPos;
         private double _gateOpenPosOffset;
 
-        private double _pAxisInjectChargePos;
+        private double _pAxisInjectChargePos; // 
         private double _pAxisInjectChargePosOffset;
 
-        private double _resinWeight;
-        private double _resinWeightSpec;
+        private double _resinWeight; // trọng lượng keo
+        private double _resinWeightSpec; // spec
         private double _dummyShotWeight;
         private double _bubbleRemoveWeight;
         private double _zxisInjectUpDistance;
@@ -322,7 +356,9 @@ namespace SDV_MoldingInjection.Recipe
         private double _zAxisMasterNozzleCheckPosOffset;
         private double _pAxisInjectSpeed;
         private double _sPDHeadGapZ;
-        private double _pAxisDistanceInject;
+        private double _pAxisInjectCharge_Height; // chiều cao kéo lên cylinder
+        private double _rho_Resin = 1.136; // Rho
+        private double _pAxisBase_Pos = 20.875;
         #endregion
     }
 }
