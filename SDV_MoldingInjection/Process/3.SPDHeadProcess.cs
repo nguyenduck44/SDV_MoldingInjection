@@ -905,7 +905,7 @@ namespace SDV_MoldingInjection.Process
                     break;
                 case ESPDHeadPreProcessStep.Syringe_Check:
 #if !SIMULATION
-                    if (In_SyringeCheck.Value == true &&
+                    if (In_SyringeCheck.Value == false &&
                         In_AssembleCheck.Value == true &&
                         _machineStatus.IsAutoRunMode == true &&
                         CurrentHeadSkip == false &&
