@@ -346,7 +346,7 @@ namespace SDV_MoldingInjection.Recipe
 
             if (string.IsNullOrEmpty(fromCIMRecipeNumberWithText) || recipeNumber == null)
             {
-                bool? confirm = MessageBoxEx.ShowDialog($"DO you realy want to DELETE RECIPE {selectedRecipe}");
+                bool? confirm = MessageBoxEx.ShowDialog($"Do you really want to DELETE RECIPE {selectedRecipe}");
 
                 if (confirm != true) return;
             }
@@ -384,20 +384,20 @@ namespace SDV_MoldingInjection.Recipe
                 MessageBoxEx.Show($"Recipe name '{newRecipeName}' already exists in RecipeInfo.");
                 return;
             }
-            if (recipeInfo.Id <= 90)
-            {
-                MessageBoxEx.Show($"Recipe Id for '{newRecipeName}' is not valid.");
-                return;
-            }
+            //if (recipeInfo.Id <= 90)
+            //{
+            //    MessageBoxEx.Show($"Recipe Id for '{newRecipeName}' is not valid.");
+            //    return;
+            //}
             if (_recipeCatalog.ContainsId(recipeInfo.Id))
             {
                 MessageBoxEx.Show($"Recipe Id '{recipeInfo.Id}' already exists in RecipeInfo.");
                 return;
             }
 
-            if (recipeInfo.Name.StartsWith("TT") == false)
+            if (recipeInfo.Name.StartsWith("TT") == false && recipeInfo.Id > 90)
             {
-                MessageBoxEx.Show($"Recipe Name for '{newRecipeName}' is not valid.");
+                MessageBoxEx.Show($"Recipe ID > 90 Name for '{newRecipeName}' is not valid.");
                 return;
             }
 

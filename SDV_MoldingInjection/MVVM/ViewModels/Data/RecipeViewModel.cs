@@ -152,6 +152,12 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
+                    if (string.IsNullOrEmpty(SelectedModel))
+                    {
+                        MessageBoxEx.Show("Please Select Model for Copy", false, "WARN");
+                        return;
+                    }
+
                     CreateNewRecipeWindow createNewRecipeWindow = new CreateNewRecipeWindow()
                     {
                         Width = 500,
@@ -178,6 +184,18 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
+                    if (string.IsNullOrEmpty(SelectedModel))
+                    {
+                        MessageBoxEx.Show("Please Select Model for Delete", false, "WARN");
+                        return;
+                    }
+
+                    if (SelectedModel == RecipeSelector.RecipeSetting.CurrentRecipe)
+                    {
+                        MessageBoxEx.Show("Can't DELETE CURRENT MODEL", false, "WARN");
+                        return;
+                    }                   
+
                     RecipeSelector.Delete(SelectedModel);
                 });
             }
