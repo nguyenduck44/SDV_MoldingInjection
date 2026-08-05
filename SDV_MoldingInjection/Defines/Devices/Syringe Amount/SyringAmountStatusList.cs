@@ -30,7 +30,7 @@ namespace SDV_MoldingInjection.Defines
         }
 
         public List<SyringeAmountStatus> SyringeAmounts { get; private set; }
-        public double Rho_Resin { get; private set; }
+        public double Rho_Resin => _recipeSelector.CurrentRecipe.SPDHead1_Recipe.Rho_Resin;
 
         public void ConsumeSyringeAmount(ESPDHead head, double height)
         {

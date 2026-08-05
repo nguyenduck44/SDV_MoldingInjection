@@ -7,11 +7,7 @@ namespace SDV_MoldingInjection.Recipe
     public class SPDHeadRecipe : RecipeBase
     {
         public event Action<double> ResinWeightChanged;
-        public event Action<double> PAxisInjectChargeChanged;
         public event Action<double> PAxisInjectCharge_HeightChanged;
-        public event Action<double> _rho_ResinChanged;
-        public event Action<double> PAxisBase_PosChanged;
-
 
         [SingleRecipeDescription(Description = "Resin Weight", Unit = Unit.mg)]
         [SingleRecipeMinMax(Max = 380, Min = 0)]
@@ -22,7 +18,7 @@ namespace SDV_MoldingInjection.Recipe
             set
             {
                 SetRecipe(ref _resinWeight, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
-                PAxisInjectCharge_Height = ResinWeight / (Math.PI * Math.Pow(2.5, 2) * Rho_Resin);
+                PAxisInjectCharge_Height = Math.Round(ResinWeight / (Math.PI * Math.Pow(2.5, 2) * Rho_Resin), 3);
                 ResinWeightChanged?.Invoke(value);
             }
         }
@@ -252,7 +248,6 @@ namespace SDV_MoldingInjection.Recipe
             set
             {
                 SetRecipe(ref _pAxisInjectChargePos, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
-                PAxisInjectChargeChanged?.Invoke(value);
             }
         }
 
@@ -295,6 +290,7 @@ namespace SDV_MoldingInjection.Recipe
                 PAxisInjectCharge_HeightChanged?.Invoke(value);
             }
         }
+
         public double Rho_Resin
         {
             get => _rho_Resin;
@@ -303,10 +299,10 @@ namespace SDV_MoldingInjection.Recipe
                 if (_rho_Resin == value) return;
                 SetRecipe(ref _rho_Resin, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
 
-                PAxisInjectCharge_Height = ResinWeight / (Math.PI * Math.Pow(2.5, 2) * Rho_Resin);
-                _rho_ResinChanged?.Invoke(value);
+                PAxisInjectCharge_Height = Math.Round(ResinWeight / (Math.PI * Math.Pow(2.5, 2) * Rho_Resin), 3);
             }
         }
+
         public double PAxisBase_Pos
         {
             get => _pAxisBase_Pos;
@@ -314,15 +310,8 @@ namespace SDV_MoldingInjection.Recipe
             {
                 if (_pAxisBase_Pos == value) return;
                 SetRecipe(ref _pAxisBase_Pos, value, Name == "SPDHead1_Recipe" ? 0 : Name == "SPDHead2_Recipe" ? 40 : Name == "SPDHead3_Recipe" ? 80 : 120);
-
-                PAxisInjectCharge_Height = ResinWeight / (Math.PI * Math.Pow(2.5, 2) * Rho_Resin);
-                PAxisBase_PosChanged?.Invoke(value);
             }
         }
-
-        // Rho_Resin = ResinWeight / (Math.PI * Math.Pow(2.5, 2) * PAxisInjectCharge_Height);
-        // PAxisInjectCharge_Height = ResinWeight / (Math.PI* Math.Pow(2.5, 2) * Rho_Resin);
-
 
         #region Privates
         private double _zAxisSafetyPos;

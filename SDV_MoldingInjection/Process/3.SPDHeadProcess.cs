@@ -1435,7 +1435,7 @@ namespace SDV_MoldingInjection.Process
                     HeadWrireFDC(EFDCValue.HEAD_1_INJECT_TIME, _carrierJigStatus.InjectTime);
 
                     // Consume syringe amount
-                    _syringeAmountStatusList.ConsumeSyringeAmount(head, PAxisInjectCharge_Height);
+                    _syringeAmountStatusList.ConsumeSyringeAmount(head, PAxisBase_Pos - _pAxisCharge_Pos);
 
                     if (sequence == ESequence.ResinInject)
                     {
@@ -1857,7 +1857,7 @@ namespace SDV_MoldingInjection.Process
                     {
                         Log.Debug("DotWeighting Pass");
 
-                        _currentSPDHeadRecipe.Rho_Resin = Math.Round(ResinWeight / (Math.PI * Math.Pow(2.5, 2) * PAxisInjectCharge_Height), 3) ;
+                        _currentSPDHeadRecipe.Rho_Resin = Math.Round(ResinWeight / (Math.PI * Math.Pow(2.5, 2) * PAxisInjectCharge_Height), 3);
 
                         _recipeSelector.Save();
                         HeadCalibration = true;
