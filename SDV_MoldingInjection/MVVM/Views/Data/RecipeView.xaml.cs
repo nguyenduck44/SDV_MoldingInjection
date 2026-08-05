@@ -37,6 +37,12 @@ namespace SDV_MoldingInjection.MVVM.Views
             {
                 if (this.DataContext is RecipeViewModel dataContext)
                 {
+                    if (string.IsNullOrEmpty(dataContext.SelectedModel))
+                    {
+                        MessageBoxEx.Show("Please Select Model for CHANGE", false, "WARN");
+                        return;
+                    }
+
                     EquipEventHelpers.PPIDChange(dataContext.SelectedModel);
                     dataContext.RecipeSelector.SetCurrentModel(dataContext.SelectedModel);
                     LoadRecipe(dataContext.CurrentRecipe);

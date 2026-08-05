@@ -102,7 +102,7 @@ namespace SDV_MoldingInjection.Recipe
             {
                 if (TryGetRecipeInfoUnsafe(recipeNameOrDisplay, out RecipeInfo? recipeInfo))
                 {
-                    return recipeInfo.FolderName;
+                    return recipeInfo != null ? recipeInfo.FolderName : "";
                 }
             }
 
@@ -289,6 +289,8 @@ namespace SDV_MoldingInjection.Recipe
         private bool TryGetRecipeInfoUnsafe(string recipeNameOrDisplay, out RecipeInfo? recipeInfo)
         {
             recipeInfo = null;
+
+            if (string.IsNullOrEmpty(recipeNameOrDisplay)) return false;
 
             if (_recipesByName.TryGetValue(recipeNameOrDisplay, out RecipeInfo? byName))
             {
