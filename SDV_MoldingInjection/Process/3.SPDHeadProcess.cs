@@ -181,7 +181,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcToRunStep.SyringeAirCheck:
                     Log.Debug("Syringe Air Check");
 #if !SIMULATION
-                    if (In_SyringeAir.Value == false &&
+                    if ( _machineStatus.IsAutoMode == false && In_SyringeAir.Value == false &&
                         In_SyringeCheck.Value &&
                         _machineStatus.DisableSyringeCheck == false &&
                         CurrentHeadSkip == false)
