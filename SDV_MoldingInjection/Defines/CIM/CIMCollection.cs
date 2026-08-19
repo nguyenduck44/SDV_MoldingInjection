@@ -80,7 +80,7 @@ namespace SDV_MoldingInjection.Defines.CIM
             {
                 MaterialPorts[i].Id = i + 1;
                 MaterialPorts[i].Name = $"Material Port Head {i + 1}";
-                MaterialPorts[i].Type = "RESIN";
+                MaterialPorts[i].Type = "BIM";
             }
             MaterialPorts.First().IsCurrentActived = true;
             CimFunction = cimFunction;
