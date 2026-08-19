@@ -38,6 +38,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 MaterialPorts[i].TotalQty = (int)(_syringAmountStatusList.SyringeAmounts[i].MaxVolume);
                 MaterialPorts[i].UseQty = (int)(_syringAmountStatusList.SyringeAmounts[i].UsedVolume);
+                MaterialPorts[i].BatchID = _syringAmountStatusList.SyringeAmounts[i].BatchID;
                 MaterialPorts[i].OnKittingSent += MaterialPortsViewModel_OnKittingSent;
                 MaterialPorts[i].OnCancelSent += MaterialPortsViewModel_OnCancelSent;
             }
@@ -116,6 +117,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             var mp = MaterialPorts.First(mp => mp.Id.ToString() == cimArea.MaterialProtID);
 
             mp.Result = cimArea.MaterialReplyStatus;
+            mp.ReplyText = cimArea.MaterialReplyText;
 
             if (mp.Result.Contains("PASS") == false)
             {
@@ -142,6 +144,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             _syringAmountStatusList.SyringeAmounts[int.Parse(cimArea.MaterialProtID) - 1].IsAttached = mp.LastKittingCEID == EMaterialKittingCEID.KITTING;
             _syringAmountStatusList.SyringeAmounts[int.Parse(cimArea.MaterialProtID) - 1].MaxVolume = mp.TotalQty;
             _syringAmountStatusList.SyringeAmounts[int.Parse(cimArea.MaterialProtID) - 1].RemainVolume = mp.RemainQty;
+            _syringAmountStatusList.SyringeAmounts[int.Parse(cimArea.MaterialProtID) - 1].BatchID = mp.BatchID;
+
+            if (mp.LastKittingCEID == EMaterialKittingCEID.KITTING_CANCEL)
+            {
+                _syringAmountStatusList.SyringeAmounts[int.Parse(cimArea.MaterialProtID) - 1].BatchID = string.Empty;
+                mp.BatchID = string.Empty;
+            }
 
             Log.Info($"{cimArea.MaterialReplyText} {cimArea.MaterialTotalQTY} {cimArea.MaterialProtID}");
             handlingAction = false;

@@ -16,6 +16,7 @@ namespace SDV_MoldingInjection.Defines
         public bool IsAttached { get; set; }
 
         public string Name { get; set; }
+        public string BatchID { get; set; }
         public double MaxVolume
         {
             get { return maxVolume; }

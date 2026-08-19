@@ -1,6 +1,7 @@
 using log4net;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;
 using System.IO;
@@ -12,11 +13,13 @@ namespace SDV_MoldingInjection.Defines
     {
         private readonly IConfiguration _configuration;
         private readonly RecipeSelector _recipeSelector;
+        private readonly CIMCollection _cIMCollection;
 
         private string BackupFolder => _configuration["Folders:BackupFolder"];
 
         public SyringAmountStatusList(IConfiguration configuration,
-                                    RecipeSelector recipeSelector)
+                                    RecipeSelector recipeSelector,
+                                    CIMCollection cIMCollection)
         {
             SyringeAmounts = new List<SyringeAmountStatus>
             {
@@ -27,6 +30,7 @@ namespace SDV_MoldingInjection.Defines
             };
             _configuration = configuration;
             _recipeSelector = recipeSelector;
+            _cIMCollection = cIMCollection;
         }
 
         public List<SyringeAmountStatus> SyringeAmounts { get; private set; }
@@ -50,6 +54,7 @@ namespace SDV_MoldingInjection.Defines
 
             var syringeAmount = SyringeAmounts[index];
             syringeAmount.RemainVolume = Math.Max(0, syringeAmount.RemainVolume - weight);
+            _cIMCollection.MaterialPorts[(int)head - 1].UseQty = (int)syringeAmount.UsedVolume;
             LogManager.GetLogger("SyringeAmount").Info($"{head} consume: {weight}EA");
         }
 
