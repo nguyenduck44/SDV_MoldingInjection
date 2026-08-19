@@ -75,6 +75,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             if (obj == null) return;
             if (obj.CIMCommand != CIMCommand.MaterialInfoSend1) return;
 
+            if (_cimCollection.CimFunction.MaterialTrackingState != OnOffNothing.ON) return;
+
             MaterialInfoSend1Handle(obj);
         }
 
