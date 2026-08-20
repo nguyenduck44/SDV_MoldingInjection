@@ -125,11 +125,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 if (mp.LastKittingCEID == EMaterialKittingCEID.KITTING)
                 {
-                    MessageBoxEx.Show($"Kitting '{mp.BatchID}' Fail");
+                    MessageBoxEx.Show($"Kitting '{mp.ReplyText}' Fail");
                 }
                 else
                 {
-                    MessageBoxEx.Show($"Cancel '{mp.BatchID}' Fail");
+                    MessageBoxEx.Show($"Cancel '{mp.ReplyText}' Fail");
                 }
                 mp.UIUpdate();
                 handlingAction = false;
@@ -151,7 +151,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             if (mp.LastKittingCEID == EMaterialKittingCEID.KITTING_CANCEL)
             {
                 _syringAmountStatusList.SyringeAmounts[int.Parse(cimArea.MaterialProtID) - 1].BatchID = string.Empty;
-                mp.BatchID = string.Empty;
+               // mp.BatchID = string.Empty;
             }
 
             Log.Info($"{cimArea.MaterialReplyText} {cimArea.MaterialTotalQTY} {cimArea.MaterialProtID}");
