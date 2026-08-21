@@ -21,7 +21,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public CarrierJigStatusList CarrierJigStatusList { get; }
         public Plotter Plotter { get; }
         public MachineStatusAutoViewModel MachineStatusAuto { get; }
-        public TactTimeList TactTimeList { get; }
 
         public int TodayInputCount => CurrentProductionData?.TotalInput ?? 0;
         public int TodayOutputCount => CurrentProductionData?.TotalOutput ?? 0;
@@ -37,8 +36,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             CarrierJigStatusList carrierJigStatusList,
             Plotter plotter,
             ProductionService productionService,
-            MachineStatusAutoViewModel machineStatusAuto,
-            TactTimeList tactTimeList)
+            MachineStatusAutoViewModel machineStatusAuto)
         {
             Devices = devices;
             MachineStatus = machineStatus;
@@ -49,7 +47,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             Plotter = plotter;
             _productionService = productionService;
             MachineStatusAuto = machineStatusAuto;
-            TactTimeList = tactTimeList;
             Log = LogManager.GetLogger("AutoVM");
 
             PCInformationsystemViewModel = new PCInformationsystemViewModel();
