@@ -1079,7 +1079,7 @@ namespace SDV_MoldingInjection.Process
                             _cIMCollection.MaterialPorts[0].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, LeftCellId);
                             Thread.Sleep(300);
                             _cIMCollection.MaterialPorts[1].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, LeftCellId);
-
+                            Thread.Sleep(300);
                             MaterialAssemblyArea_Left_1 = _cIMCollection.MaterialPorts[0].MaterialAssemblyArea;
                             MaterialAssemblyArea_Left_2 = _cIMCollection.MaterialPorts[1].MaterialAssemblyArea;
                         }
