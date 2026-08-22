@@ -129,12 +129,12 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 if (mp.LastKittingCEID == EMaterialKittingCEID.KITTING)
                 {
                     MessageBoxEx.Show($"Kitting '{mp.ReplyText}' Fail");
-                    _syringAmountStatusList.SyringeAmounts[int.Parse(cimArea.MaterialProtID) - 1].BatchID = string.Empty;
+                    mp.BatchID = string.Empty;
                 }
                 else
                 {
                     MessageBoxEx.Show($"Cancel '{mp.ReplyText}' Fail");
-                    _syringAmountStatusList.SyringeAmounts[int.Parse(cimArea.MaterialProtID) - 1].BatchID = string.Empty;
+                    mp.BatchID = string.Empty;
                 }
                 mp.UIUpdate();
                 handlingAction = false;
