@@ -111,7 +111,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
                     else
                     {
-                        EquipEventHelpers.OperatorLogin(operatorID, password);
+                        if(EquipEventHelpers.OperatorLogin(operatorID, password) == false)
+                        {
+                            _log.Info($"Login Fail");
+                            MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_WrongPassword"]);
+                            return;
+                        }
+
                         _log.Info($"Login {operatorID} Permission");
                         IsLoggedIn = true;
                     }
@@ -134,6 +140,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 });
             }
         }
+
         #endregion
 
         public LoginViewModel(
