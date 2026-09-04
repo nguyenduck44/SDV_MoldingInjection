@@ -1076,30 +1076,43 @@ namespace SDV_MoldingInjection.Process
                     {
                         if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead1 == false)
                         {
-                            _cIMCollection.MaterialPorts[0].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, LeftCellId);
-                            Thread.Sleep(300);
-                            MaterialAssemblyArea_Left_1 = _cIMCollection.MaterialPorts[0].MaterialAssemblyArea;
+                            _ = Task.Run(() =>
+                            {
+                                _cIMCollection.MaterialPorts[0].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, LeftCellId);
+                                Thread.Sleep(300);
+                                MaterialAssemblyArea_Left_1 = _cIMCollection.MaterialPorts[0].MaterialAssemblyArea;
+                            });
+
                         }
 
                         if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead2 == false)
                         {
-                            _cIMCollection.MaterialPorts[1].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, LeftCellId);
-                            Thread.Sleep(300);
-                            MaterialAssemblyArea_Left_2 = _cIMCollection.MaterialPorts[1].MaterialAssemblyArea;
+                            _ = Task.Run(() =>
+                            {
+                                _cIMCollection.MaterialPorts[1].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, LeftCellId);
+                                Thread.Sleep(300);
+                                MaterialAssemblyArea_Left_2 = _cIMCollection.MaterialPorts[1].MaterialAssemblyArea;
+                            });
                         }
 
                         if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead3 == false)
                         {
-                            _cIMCollection.MaterialPorts[2].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, RightCellId);
-                            Thread.Sleep(300);
-                            MaterialAssemblyArea_Right_1 = _cIMCollection.MaterialPorts[2].MaterialAssemblyArea;
+                            _ = Task.Run(() => 
+                            {
+                                _cIMCollection.MaterialPorts[2].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, RightCellId);
+                                Thread.Sleep(300);
+                                MaterialAssemblyArea_Right_1 = _cIMCollection.MaterialPorts[2].MaterialAssemblyArea;
+                            });
                         }
 
                         if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead4 == false)
                         {
-                            _cIMCollection.MaterialPorts[3].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, RightCellId);
-                            Thread.Sleep(300);
-                            MaterialAssemblyArea_Right_2 = _cIMCollection.MaterialPorts[3].MaterialAssemblyArea;
+                            _ = Task.Run(() =>
+                            {
+                                _cIMCollection.MaterialPorts[3].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, RightCellId);
+                                Thread.Sleep(300);
+                                MaterialAssemblyArea_Right_2 = _cIMCollection.MaterialPorts[3].MaterialAssemblyArea;
+                            });
                         }
 
                         string portShortageWarning = string.Empty;
