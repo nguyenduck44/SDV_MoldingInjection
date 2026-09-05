@@ -1687,6 +1687,7 @@ namespace SDV_MoldingInjection.Process
                             RaiseWarning(EWarning.CIM_CELL_TRACKOUT_FAIL);
                             break;
                         }
+                        Thread.Sleep(500);
                     }
 
                     Log.Debug($"Update Status Left Jig: {EJigStatus.None}");
@@ -1715,6 +1716,7 @@ namespace SDV_MoldingInjection.Process
                             RaiseWarning(EWarning.CIM_CELL_TRACKOUT_FAIL);
                             break;
                         }
+                        Thread.Sleep(500);
                     }
 
                     Log.Debug($"Update Status Right Jig: {EJigStatus.None}");
@@ -3323,12 +3325,14 @@ namespace SDV_MoldingInjection.Process
                     CellJobProcessInfo_Left.UserDefine_TrackOutJudge = "O";
                     CellJobProcessInfo_Left.UserDefine_TrackOutDescription = "VALIDATION_FAIL";
                     EquipEventHelpers.CellTrackOut(1, CellJobProcessInfo_Left, true, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Left_1, MaterialAssemblyArea_Left_2 });
+                    Thread.Sleep(500);
                 }
                 else
                 {
                     CellJobProcessInfo_Right.UserDefine_TrackOutJudge = "O";
                     CellJobProcessInfo_Right.UserDefine_TrackOutDescription = "VALIDATION_FAIL";
                     EquipEventHelpers.CellTrackOut(2, CellJobProcessInfo_Right, true, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Right_1, MaterialAssemblyArea_Right_2 });
+                    Thread.Sleep(500);
                 }
 
                 Log.Error("CIM_CELL_JOB_PROCESS_START_FAIL");

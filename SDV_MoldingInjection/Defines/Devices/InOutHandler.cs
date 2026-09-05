@@ -157,7 +157,7 @@ namespace SDV_MoldingInjection.Defines
                     break;
                 case "CRRN": //CHECK RUN
                     Handler_CheckRun_Received(messageBuffer);
-                    Log.Debug("CRRN_Recv_Check Run");
+                    //Log.Debug("CRRN_Recv_Check Run");
                     break;
                 case "CRCH": //CHECK PRODUCT
                     Handler_ProductCheck_Received(messageBuffer);
@@ -190,6 +190,48 @@ namespace SDV_MoldingInjection.Defines
                 case "CRCC": //COVER CHECK
                     Handler_CoverCheck_Received(messageBuffer);
                     Log.Debug("CRCC_Recv_Cover Check");
+                    break;
+            }
+        }
+        private void TransmitData(byte[] buffer)
+        {
+            string command = ExtractCommand(buffer);
+            string formattedData = $"{command}: {FormatBytes(buffer)}";
+
+            if (_recipeSelector.CurrentRecipe.OptionRecipe.InputTypeManual)
+            {
+                MessageTransmitted?.Invoke($"{formattedData} [SKIPPED: InputTypeManual]");
+                return;
+            }
+
+            _serialCommunicator.Write(buffer);
+            MessageTransmitted?.Invoke(formattedData);
+
+            switch (command)
+            {
+                case "CTRD":
+                    Log.Debug($"Ready Send_{formattedData}");
+                    break;
+                case "CTRN":
+                    //Log.Debug($"Check Run Send_{formattedData}");
+                    break;
+                case "CTCH":
+                    Log.Debug($"Product Check Send_{formattedData}");
+                    break;
+                case "CTPT":
+                    Log.Debug($"Position Check Send_{formattedData}");
+                    break;
+                case "CTST":
+                    Log.Debug($"Start Send_{formattedData}");
+                    break;
+                case "CTSP":
+                    Log.Debug($"Stop Send_{formattedData}");
+                    break;
+                case "CTSI":
+                    Log.Debug($"Set Idle Purge Send_{formattedData}");
+                    break;
+                case "CTCI":
+                    Log.Debug($"Clear Idle Purge Send_{formattedData}");
                     break;
             }
         }
@@ -500,48 +542,6 @@ namespace SDV_MoldingInjection.Defines
             };
         }
 
-        private void TransmitData(byte[] buffer)
-        {
-            string command = ExtractCommand(buffer);
-            string formattedData = $"{command}: {FormatBytes(buffer)}";
-
-            if (_recipeSelector.CurrentRecipe.OptionRecipe.InputTypeManual)
-            {
-                MessageTransmitted?.Invoke($"{formattedData} [SKIPPED: InputTypeManual]");
-                return;
-            }
-
-            _serialCommunicator.Write(buffer);
-            MessageTransmitted?.Invoke(formattedData);
-
-            switch (command)
-            {
-                case "CTRD":
-                    Log.Debug($"Ready Send_{formattedData}");
-                    break;
-                case "CTRN":
-                    Log.Debug($"Check Run Send_{formattedData}");
-                    break;
-                case "CTCH":
-                    Log.Debug($"Product Check Send_{formattedData}");
-                    break;
-                case "CTPT":
-                    Log.Debug($"Position Check Send_{formattedData}");
-                    break;
-                case "CTST":
-                    Log.Debug($"Start Send_{formattedData}");
-                    break;
-                case "CTSP":
-                    Log.Debug($"Stop Send_{formattedData}");
-                    break;
-                case "CTSI":
-                    Log.Debug($"Set Idle Purge Send_{formattedData}");
-                    break;
-                case "CTCI":
-                    Log.Debug($"Clear Idle Purge Send_{formattedData}");
-                    break;
-            }
-        }
 
         private bool MachineReadyCheck()
         {
