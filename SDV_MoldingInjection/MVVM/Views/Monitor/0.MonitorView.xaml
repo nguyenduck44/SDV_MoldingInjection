@@ -22,24 +22,24 @@
     </UserControl.Resources>
     <UniformGrid Rows="1">
         <GroupBox Header="I/O Status"
-                  Margin="5 0">
+                  Margin="5">
             <StackPanel Orientation="Vertical">
 
-                <Button Content="Machine In/Out Check"
+                <Button Content="Machine In/Out"
                         Command="{Binding MachineIONavigate}" />
-                <Button Content="Head 1 In/Out Check"
+                <Button Content="Head 1 In/Out"
                         Command="{Binding Head1IONavigate}" />
-                <Button Content="Head 2 In/Out Check"
+                <Button Content="Head 2 In/Out"
                         Command="{Binding Head2IONavigate}" />
-                <Button Content="Head 3 In/Out Check"
+                <Button Content="Head 3 In/Out"
                         Command="{Binding Head3IONavigate}" />
-                <Button Content="Head 4 In/Out Check"
+                <Button Content="Head 4 In/Out"
                         Command="{Binding Head4IONavigate}" />
             </StackPanel>
         </GroupBox>
 
         <GroupBox Header="Product Monitor"
-                  Margin="5 0">
+                  Margin="5">
             <StackPanel Orientation="Vertical">
                 <Button Content="Production Infor"
                         Command="{Binding ProductionInforNavigateCommand}" />
@@ -51,14 +51,31 @@
                         Command="{Binding OPCallMsgNavigateCommand}" />
                 <Button Content="Interlock Msg"
                         Command="{Binding InterlockMsgNavigateCommand}" />
+                <Button Content="History Data"
+                        Command="{Binding HistoryDataNavigateCommand}" />
             </StackPanel>
         </GroupBox>
 
-        <GroupBox Header="Servo Status"
-                  Margin="5 0">
+        <GroupBox Header="Status"
+                  Margin="5">
             <StackPanel Margin="5 0">
                 <Button Content="Motions Status"
                         Command="{Binding MotionsStatusNavigateCommand}" />
+                <Button Content="CDA Status"
+         Command="{Binding CDAStatusNavigateCommand}" />
+                <Button Content="Processes Status"
+                        Command="{Binding ProcessesStatusNavigateCommand}"
+                        Visibility="{Binding IsSuperUserPermission,Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <Button Content="EBox Main Power Status"
+                        Command="{Binding Accura2550DNavigateCommand}"
+                        Visibility="{Binding IsConnectEBoxMainPower,Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="Others"
+                  Margin="5">
+            <StackPanel Margin="5 0">
+                <Button Content="Interface In/Out"
+                        Command="{Binding InterfaceInOutNavigateCommand}" />
             </StackPanel>
         </GroupBox>
     </UniformGrid>

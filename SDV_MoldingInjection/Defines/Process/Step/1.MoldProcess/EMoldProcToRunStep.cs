@@ -9,8 +9,6 @@
 
         Wait_DryPump_Request_Run,
         SetFlag_ChamberReadyOut,
-        ChamberClose,
-        ChamberClose_Wait,
 
         Bellow_Down,
         Bellow_DownWait,

@@ -1,10 +1,6 @@
-﻿using EQX.Core.InOut;
+﻿using EQX.Core.Helpers;
+using EQX.Core.InOut;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SDV_MoldingInjection.Defines
 {
@@ -13,6 +9,11 @@ namespace SDV_MoldingInjection.Defines
         #region Properties
         public IAInput FanSpeed => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.FAN_SPEED);
         public IAInput VacuumGauge => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.VACUUM_GAUGE);
+        public IAInput MainAir => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.MAIN_AIR_CDA);
+        public IAInput SyringeMainAirCDA => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.SYRINGE_AIR_MAIN);
+        public IAInput PumpPurge => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.PUMP_PURGE);
+        public IAInput PumpValveVacuum => _aInputDevice.AnalogInputs.First(a => a.Id == (int)EAnalogInput.PUMP_VALVE_VACUUM);
+
 
         // mbar : 6.143
         // Torr : 6.304
@@ -29,12 +30,8 @@ namespace SDV_MoldingInjection.Defines
             get
             {
                 double volt = VacuumGauge.Volt;
-
-                //if (volt > 9.0) volt = 9.0;
+                if (volt > 9.0) volt = 9.0;
                 if (volt < 2.7) volt = 2.7;
-                //if (volt < 2.7 || volt > 9.0)
-                //    return -1;
-
                 return Math.Pow(10, (volt - 6.125) / 1.0);
             }
         }
@@ -62,6 +59,9 @@ namespace SDV_MoldingInjection.Defines
             return _aInputDevice.Disconnect();
         }
 
+        #region Methods
+        
+        #endregion
         #region Privates
         private readonly IAInputDevice _aInputDevice;
         #endregion

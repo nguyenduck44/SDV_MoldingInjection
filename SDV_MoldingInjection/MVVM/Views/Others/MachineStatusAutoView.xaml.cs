@@ -25,6 +25,9 @@ namespace SDV_MoldingInjection.MVVM.Views
                 return;
             }
 
+            if (this.DataContext is MachineStatusAutoViewModel machineStatusAutoViewModel == false) return;
+            if (machineStatusAutoViewModel.RecipeSelector.CurrentRecipe.OptionRecipe.InputTypeAuto) return;
+
             Point clickPosInElement = e.GetPosition((IInputElement)sender);
             Point screenPos = (sender as Visual)!.PointToScreen(clickPosInElement);
 
@@ -41,10 +44,7 @@ namespace SDV_MoldingInjection.MVVM.Views
             bool? result = dialog.ShowDialog();
             if (result == true)
             {
-                if (this.DataContext is MachineStatusAutoViewModel machineStatusAutoViewModel)
-                {
-                    machineStatusAutoViewModel.MachineStatus.ConfirmLoadingFinish = dialog.IsLoadingFinish;
-                }
+                machineStatusAutoViewModel.MachineStatus.ConfirmLoadingFinish = dialog.IsLoadingFinish;
             }
         }
     }

@@ -8,33 +8,42 @@ namespace SDV_MoldingInjection.Defines
 {
     public class MachineStatus : MachineStatusBase<ESemiSequence>
     {
+        #region Publics
+        public ObservableCollection<ErrorLogEntry> CurrentAlarms { get; set; } = new ObservableCollection<ErrorLogEntry>();
+        public MultiPointPosition MultiPointPosition { get; set; }
+
+        public static short[] AlarmTotalWords = new short[400];
+
         public bool[] MachineCalibration { get; set; } = new bool[4];
         public bool[] MachineCalibrationSkip { get; set; } = new bool[4];
-        public MultiPointPosition MultiPointPosition { get; set; }
         public bool MachineReadyDone { get; set; }
         public bool MachineTestMode { get; set; }
         public bool DisableSyringeCheck { get; set; }
         public bool DisableDetectJig { get; set; }
         public bool ConfirmLoadingFinish { get; set; }
         public bool InOutHandlerStartRequest { get; set; }
+        public bool IsAutoMode => MachineMode == EMachineMode.Auto;
+        public bool IsTeachMode => MachineMode == EMachineMode.Teach;
+        public bool CanJogWithDoorOpen => IsTeachMode && IsDoorPasswordVerified;
+        public bool SetDummyShotBeforeInject { get; set; }
+
         public int MachineIdleTick { get; set; } = Environment.TickCount;
+        public int DummyShotCount { get; set; }
 
-        public MachineStatus(Inputs inputs)
+        public double RatioVent {  get; set; }
+        #endregion
+
+        #region Contructors
+        public MachineStatus()
         {
-            _inputs = inputs;
-
-            _inputs.Jig1Detect.ValueChanged += JigDetect_ValueChanged;
-            _inputs.Jig2Detect.ValueChanged += JigDetect_ValueChanged;
-            _inputs.Jig3Detect.ValueChanged += JigDetect_ValueChanged;
-            _inputs.Jig4Detect.ValueChanged += JigDetect_ValueChanged;
+            
         }
+        #endregion
 
-        private void JigDetect_ValueChanged(object? sender, EventArgs e)
-        {
-            EquipState.IsCellInEquip = _inputs.Jig1Detect.Value || _inputs.Jig2Detect.Value ||
-                _inputs.Jig3Detect.Value || _inputs.Jig4Detect.Value;
-        }
+        #region Private Methods
+        #endregion
 
+        #region Properties
         public bool OriginDone
         {
             get { return _originDone; }
@@ -111,9 +120,26 @@ namespace SDV_MoldingInjection.Defines
             }
         }
 
-        public bool IsAutoMode => MachineMode == EMachineMode.Auto;
-        public bool IsTeachMode => MachineMode == EMachineMode.Teach;
-        public ObservableCollection<ErrorLogEntry> CurrentAlarms { get; set; } = new ObservableCollection<ErrorLogEntry>();
+        public bool RunWithoutInOut
+        {
+            get { return runWithoutInOut; }
+            set
+            {
+                runWithoutInOut = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool DryRunUseChamberPressure
+        {
+            get { return dryRunUseChamberPressure; }
+            set
+            {
+                dryRunUseChamberPressure = value;
+                OnPropertyChanged();
+            }
+        }
+
         public bool IsDoorPasswordVerified
         {
             get => _isDoorPasswordVerified;
@@ -125,8 +151,6 @@ namespace SDV_MoldingInjection.Defines
                 OnPropertyChanged(nameof(CanJogWithDoorOpen));
             }
         }
-
-        public bool CanJogWithDoorOpen => IsTeachMode && IsDoorPasswordVerified;
 
         public EMachineMode MachineMode
         {
@@ -141,6 +165,14 @@ namespace SDV_MoldingInjection.Defines
             }
         }
 
+
+        public int ActionCount
+        {
+            get { return countAction; }
+            set { countAction = value; }
+        }
+
+
         public override void MoveMultiPointPositionSequence(MultiPointPosition multiPointPosition)
         {
             if (multiPointPosition == null || multiPointPosition.Points.Count <= 0) return;
@@ -150,20 +182,23 @@ namespace SDV_MoldingInjection.Defines
             OPCommand = EOperationCommand.SemiAuto;
             SemiAutoSequence = ESemiSequence.MoveMultiPoint;
         }
+        #endregion
 
         #region Privates
         private double timeInject;
+        private int countAction = 1;
         private string message;
         private bool isDotWeightingTest;
         private bool _originDone;
-        private readonly Inputs _inputs;
 
         private bool isSkipHead1 = true;
         private bool isSkipHead2 = true;
         private bool isSkipHead3 = true;
         private bool isSkipHead4 = true;
+        private bool runWithoutInOut;
         private EMachineMode machineMode;
         private bool _isDoorPasswordVerified;
+        private bool dryRunUseChamberPressure;
         #endregion
     }
 }

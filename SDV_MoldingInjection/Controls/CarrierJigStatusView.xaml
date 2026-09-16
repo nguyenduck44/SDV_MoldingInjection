@@ -33,12 +33,12 @@
                 </Button.Resources>
             </Button>
 
-            <Border Style="{StaticResource TightCardStyle}">
+            <!--<Border Style="{StaticResource TightCardStyle}">
                 <StackPanel>
                     <TextBlock Text="DELAY" FontSize="9" Foreground="#9E9E9E" HorizontalAlignment="Center"/>
                     <TextBlock Text="{Binding DelayTime, StringFormat={}{0:0.00}s}" FontSize="13" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,-2,0,0"/>
                 </StackPanel>
-            </Border>
+            </Border>-->
 
             <Border Style="{StaticResource TightCardStyle}" BorderBrush="#1976D2">
                 <StackPanel>
@@ -46,7 +46,12 @@
                     <TextBlock Text="{Binding InjectTime, StringFormat={}{0:0.00}s}" FontSize="13" FontWeight="Bold" Foreground="#1976D2" HorizontalAlignment="Center" Margin="0,-2,0,0"/>
                 </StackPanel>
             </Border>
-
+            <Border Style="{StaticResource TightCardStyle}" BorderBrush="#9E9E9E">
+                <StackPanel>
+                    <TextBlock Text="VENT TIME" FontSize="9" Foreground="#9E9E9E" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding VentTime, StringFormat={}{0:0.00}s}" FontSize="13" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,-2,0,0"/>
+                </StackPanel>
+            </Border>
             <Border Style="{StaticResource TightCardStyle}" BorderBrush="#9E9E9E">
                 <StackPanel>
                     <TextBlock Text="VEL-P" FontSize="9" Foreground="#9E9E9E" FontWeight="Bold" HorizontalAlignment="Center"/>

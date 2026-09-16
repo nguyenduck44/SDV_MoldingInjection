@@ -7,7 +7,6 @@
              xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
              xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
              xmlns:uiControls="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
-             IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type vm:SPDHeadMaintenanceViewModel}}"
              d:DesignHeight="450"
@@ -62,7 +61,8 @@
                 <GroupBox Grid.ColumnSpan="2"
                           Header="{Binding SelectedGroupedPosition.Name}"
                           Style="{x:Null}"
-                          FontWeight="Bold">
+                          FontWeight="Bold"
+                          IsEnabled="{Binding MachineStatus.IsStandByProcessMode}">
                     <uiControls:PositionPointGridView ItemsSource="{Binding SelectedGroupedPosition.Points}" />
                 </GroupBox>
                 <!-- POSITION SELECTION -->
@@ -120,7 +120,8 @@
                         <UniformGrid Columns="2"
                                      Margin="0 0 0 0"
                                      Height="40"
-                                     VerticalAlignment="Top">
+                                     VerticalAlignment="Top"
+                                     IsEnabled="{Binding MachineStatus.IsStandByProcessMode}">
                             <Button Command="{Binding MoveToTarget}"
                                     Content="Move to Target"
                                     Margin="2 1" />
@@ -136,10 +137,12 @@
 
                         <uiControls:IncControlView Grid.Row="2"
                                                    ItemsSource="{Binding SelectedGroupedPosition.Points}"
-                                                   IncStep="{Binding IncStep, Mode=TwoWay}"/>
+                                                   IncStep="{Binding IncStep, Mode=TwoWay}" 
+                                                   IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"/>
                         <UniformGrid Grid.Row="3"
                                      Columns="2"
-                                     Margin="0 2 0 0">
+                                     Margin="0 2 0 0"
+                                     IsEnabled="{Binding MachineStatus.IsStandByProcessMode}">
                             <Button Background="LightBlue"
                                     Command="{Binding TeachPositionSaveCommand}"
                                     Content="Save"
@@ -155,7 +158,8 @@
                 <GroupBox Header="Balance"
                           Grid.Column="2"
                           FontWeight="Bold"
-                          Style="{x:Null}">
+                          Style="{x:Null}"
+                          IsEnabled="{Binding MachineStatus.IsStandByProcessMode}">
                     <UniformGrid Rows="3">
                         <UniformGrid Columns="2">
                             <Button Content="Dot Weighting"
@@ -189,21 +193,31 @@
                         </UniformGrid>
                     </UniformGrid>
                 </GroupBox>
-
-                <GroupBox Grid.Row="1"
-                          Grid.Column="2"
-                        Style="{x:Null}"
-                        FontWeight="Bold"
-                        Grid.ColumnSpan="2"
-                        Header="Cylinders">
-                    <ItemsControl ItemsSource="{Binding Cylinders}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-                </GroupBox>
+                <UniformGrid Grid.Row="1"
+                             Grid.Column="2"
+                             Rows="2"
+                             IsEnabled="{Binding MachineStatus.IsStandByProcessMode}">
+                    <GroupBox Style="{x:Null}"
+                              FontWeight="Bold"
+                              Grid.ColumnSpan="2"
+                              Header="Cylinders">
+                        <ItemsControl ItemsSource="{Binding Cylinders}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </GroupBox>
+                    <GroupBox Style="{x:Null}"
+                              FontWeight="Bold"
+                              Grid.ColumnSpan="2"
+                              Header="Safety Mode">
+                        <ContentControl Content="{Binding AutoTeachModeViewModel}"
+                                        Height="60"
+                                        VerticalAlignment="Top"/>
+                    </GroupBox>
+                </UniformGrid>
             </Grid>
         </GroupBox>
     </DockPanel>

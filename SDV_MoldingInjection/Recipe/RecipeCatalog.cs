@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.IO;
+using System.Windows;
 
 namespace SDV_MoldingInjection.Recipe
 {
@@ -101,11 +102,29 @@ namespace SDV_MoldingInjection.Recipe
             {
                 if (TryGetRecipeInfoUnsafe(recipeNameOrDisplay, out RecipeInfo? recipeInfo))
                 {
-                    return recipeInfo.FolderName;
+                    return recipeInfo != null ? recipeInfo.FolderName : "";
                 }
             }
 
             return recipeNameOrDisplay;
+        }
+
+        public bool TryGetRecipeId(string recipeNameOrDisplay, out int recipeId)
+        {
+            if (TryGetRecipeInfo(recipeNameOrDisplay, out RecipeInfo? recipeInfo) == false)
+            {
+                recipeId = -1;
+                return false;
+            }
+
+            if (recipeInfo == null)
+            {
+                recipeId = -1;
+                return false;
+            }
+
+            recipeId = recipeInfo.Id;
+            return true;
         }
 
         public bool TryGetRecipeInfo(string recipeNameOrDisplay, out RecipeInfo? recipeInfo)
@@ -203,9 +222,10 @@ namespace SDV_MoldingInjection.Recipe
                 recipeInfo.Name = recipeFolderName;
             }
 
-            if (recipeInfo.Id <= 0 && CIMHelpers.TryParseRecipeNumber(recipeInfo.Name, out int recipeId))
+            if (recipeInfo.Id <= 0)
             {
-                recipeInfo.Id = recipeId;
+                MessageBox.Show("Recipe Id is not valid");
+                return recipeInfo;
             }
 
             recipeInfo.FolderName = recipeFolderName;
@@ -269,6 +289,8 @@ namespace SDV_MoldingInjection.Recipe
         private bool TryGetRecipeInfoUnsafe(string recipeNameOrDisplay, out RecipeInfo? recipeInfo)
         {
             recipeInfo = null;
+
+            if (string.IsNullOrEmpty(recipeNameOrDisplay)) return false;
 
             if (_recipesByName.TryGetValue(recipeNameOrDisplay, out RecipeInfo? byName))
             {

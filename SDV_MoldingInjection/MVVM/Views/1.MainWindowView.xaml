@@ -21,67 +21,118 @@
         Loaded="Window_Loaded"
         Closing="Window_Closing"
         Title="MainWindowView">
+    <Window.Resources>
+        <Style x:Key="DoorIndicatorRectangleStyle"
+               TargetType="Rectangle">
+            <Setter Property="HorizontalAlignment"
+                    Value="Stretch" />
+            <Setter Property="VerticalAlignment"
+                    Value="Stretch" />
+            <Setter Property="RadiusX"
+                    Value="2" />
+            <Setter Property="RadiusY"
+                    Value="2" />
+            <Setter Property="Stroke"
+                    Value="Black" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="Margin"
+                    Value="0" />
+        </Style>
+    </Window.Resources>
     <Grid>
-        <DockPanel
-            Margin="7 7 0 0">
-            <Grid
-                Height="11"
-                DockPanel.Dock="Bottom"
-                Background="{StaticResource SecondaryBackgroundColor}" />
-            <ContentControl
-                Content="{Binding HeaderVM}"
-                DockPanel.Dock="Top"
-                Height="Auto" />
-            <ContentControl
-                Content="{Binding FooterVM}"
-                DockPanel.Dock="Bottom" />
+        <DockPanel Margin="7 7 0 0">
+            <Grid Height="11"
+                  DockPanel.Dock="Bottom"
+                  Background="{StaticResource SecondaryBackgroundColor}" />
+            <ContentControl Content="{Binding HeaderVM}"
+                            DockPanel.Dock="Top"
+                            Height="Auto" />
+            <ContentControl Content="{Binding FooterVM}"
+                            DockPanel.Dock="Bottom" />
 
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition
-                        Width="6*" />
-                    <ColumnDefinition
-                        Width="Auto" />
+                    <ColumnDefinition Width="6*" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <ContentControl
-                    Content="{Binding CurrentFrameVM}" />
-                <ContentControl
-                    Grid.Column="1"
-                    Width="180"
-                    Content="{Binding RightPanelVM}"
-                    Visibility="{Binding ShowRightPanelVM, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <ContentControl Content="{Binding CurrentFrameVM}" />
+                <ContentControl Grid.Column="1"
+                                Width="180"
+                                Content="{Binding RightPanelVM}"
+                                Visibility="{Binding ShowRightPanelVM, Converter={StaticResource BooleanToVisibilityConverter}}" />
             </Grid>
         </DockPanel>
 
-        <Border
-            Background="#CC000000"
-            Visibility="{Binding IsDoorSafetyOverlayVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Border Background="#CC000000"
+                Visibility="{Binding IsDoorSafetyOverlayVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid>
-                <StackPanel
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    Width="860">
-                    <TextBlock
-                        Text="{Binding DoorSafetyOverlayMessage}"
-                        TextAlignment="Center"
-                        TextWrapping="Wrap"
-                        FontSize="52"
-                        FontWeight="Bold"
-                        Foreground="#FFFF5555"
-                        Margin="0,0,0,24" />
-                    <Button
-                        Content="Enter Password"
-                        Command="{Binding ConfirmDoorSafetyCommand}"
-                        Height="58"
-                        Width="420"
-                        HorizontalAlignment="Center"
-                        FontSize="24"
-                        FontWeight="Bold" />
+                <!--<Grid Opacity="0.3"
+                      Visibility="{Binding IsDoorOpen, Converter={StaticResource BooleanToVisibilityConverter}}"
+                      Margin="234,123,234,236">
+                    --><!-- MACHINE --><!--
+                    <DockPanel Grid.Row="2"
+                               Margin="0 8 0 0">
+                        <local:MachineStatusAutoView DataContext="{Binding MachineStatusAutoViewModel}" />
+                    </DockPanel>
+                </Grid>-->
+                <!-- DoorLock View -->
+                <!--<Grid
+                    Opacity="0.3"
+                    Visibility="{Binding IsDoorOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Canvas>
+                        <Grid Width="322"
+                              Height="30"
+                              Canvas.Right="17"
+                              Canvas.Top="503"
+                              Canvas.Left="462"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center">
+                            <Rectangle Style="{StaticResource DoorIndicatorRectangleStyle}">
+                                <Rectangle.Fill>
+                                    <MultiBinding Converter="{StaticResource DoorStatusToBrushConverterRevers}">
+                                        <Binding Path="Devices.Inputs.InOutMachineDoorOpen.Value" />
+                                        <Binding Path="Devices.Inputs.InOutMachineDoorOpen.Value" />
+                                    </MultiBinding>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <TextBlock Text="IN OUT MACHINE DOOR"
+                                       Width="322"
+                                       Foreground="Black"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       TextAlignment="Center"
+                                       FontSize="20"
+                                       Height="30">
+                            </TextBlock>
+                        </Grid>
+                    </Canvas>
+                </Grid>-->
+                <StackPanel VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Width="860">
+                    <TextBlock Text="{Binding DoorSafetyOverlayMessage}"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               FontSize="52"
+                               FontWeight="Bold"
+                               Foreground="#FFFF5555"
+                               Margin="0,0,0,24" />
+                    <Button Visibility="{Binding IsDoorClose,Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Content="Enter Password"
+                            Command="{Binding ConfirmDoorSafetyCommand}"
+                            Height="58"
+                            Width="420"
+                            HorizontalAlignment="Center"
+                            FontSize="24"
+                            FontWeight="Bold" />
                 </StackPanel>
+
             </Grid>
         </Border>
     </Grid>
-    
-    
+
+
 </Window>

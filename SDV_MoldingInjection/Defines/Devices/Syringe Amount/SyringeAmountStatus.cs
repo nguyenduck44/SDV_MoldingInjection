@@ -10,8 +10,12 @@ namespace SDV_MoldingInjection.Defines
         private DateTime resetTime = DateTime.Now;
         private TimeSpan pausedElapsedTime = TimeSpan.Zero;
         private bool isTimeOver;
+
         private bool isHeadAvailable = true;
 
+        public bool IsAttached { get; set; }
+
+        public string Name { get; set; }
         public double MaxVolume
         {
             get { return maxVolume; }
@@ -20,6 +24,7 @@ namespace SDV_MoldingInjection.Defines
                 maxVolume = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(RemainPercent));
+                OnPropertyChanged(nameof(UsedVolume));
             }
         }
 
@@ -31,6 +36,7 @@ namespace SDV_MoldingInjection.Defines
                 remainVolume = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(RemainPercent));
+                OnPropertyChanged(nameof(UsedVolume));
             }
         }
 
@@ -52,6 +58,8 @@ namespace SDV_MoldingInjection.Defines
                 OnPropertyChanged();
             }
         }
+
+        public double UsedVolume => MaxVolume - RemainVolume;
 
         public TimeSpan ElapsedTime => IsHeadAvailable ? DateTime.Now - ResetTime : pausedElapsedTime;
 

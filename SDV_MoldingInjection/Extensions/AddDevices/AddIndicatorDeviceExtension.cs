@@ -40,6 +40,11 @@ namespace SDV_MoldingInjection.Extensions
                     return new NEOSHSDIndicator(1,"PanelIndicator", serviceProvider.GetRequiredKeyedService<IModbusCommunication>("IndicatorModbusCommunication"));
                 });
 
+                services.AddKeyedSingleton<NEOSHSDIndicator>("EBoxMainPowerIndicator", (serviceProvider, key) =>
+                {
+                    return new NEOSHSDIndicator(2, "EBoxMainPowerIndicator", serviceProvider.GetRequiredKeyedService<IModbusCommunication>("IndicatorModbusCommunication"));
+                });
+
             });
 
             return hostBuilder;

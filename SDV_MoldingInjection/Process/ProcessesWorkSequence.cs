@@ -8,9 +8,12 @@ namespace SDV_MoldingInjection.Process
         public static readonly List<EDryPumpProcResinInjectStep> DryPumpResinInjectSequence = new List<EDryPumpProcResinInjectStep>
         {
             EDryPumpProcResinInjectStep.DryPump_Vacuum_RequestWait,
+            EDryPumpProcResinInjectStep.WriteMCC_Open_AngleValve,
             EDryPumpProcResinInjectStep.AngleValve_Open,
             EDryPumpProcResinInjectStep.AngleValve_OpenWait,
+            EDryPumpProcResinInjectStep.WriteMCC_VacuumGauge_Target_Wait,
             EDryPumpProcResinInjectStep.VacuumGauge_Target_Wait,
+            EDryPumpProcResinInjectStep.WriteMCC_Close_AngleValve,
             EDryPumpProcResinInjectStep.AngleValve_Close,
             EDryPumpProcResinInjectStep.AngleValve_CloseWait,
             EDryPumpProcResinInjectStep.Delay_BeforeInject,
@@ -26,6 +29,7 @@ namespace SDV_MoldingInjection.Process
         public static readonly List<EDryPumpProcResinInjectStep> DryPumpResinInjectSequence_Use1Torr = new List<EDryPumpProcResinInjectStep>
         {
             EDryPumpProcResinInjectStep.DryPump_Vacuum_RequestWait,
+            EDryPumpProcResinInjectStep.WriteMCC_Open_AngleValve,
             EDryPumpProcResinInjectStep.AngleValve_Open,
             EDryPumpProcResinInjectStep.AngleValve_OpenWait,
             EDryPumpProcResinInjectStep.VacuumGauge_SpecIn_Wait_1torr,
@@ -35,7 +39,9 @@ namespace SDV_MoldingInjection.Process
             EDryPumpProcResinInjectStep.DryPump_Purge_Wait,
             EDryPumpProcResinInjectStep.AngleValve_Open,
             EDryPumpProcResinInjectStep.AngleValve_OpenWait,
+            EDryPumpProcResinInjectStep.WriteMCC_VacuumGauge_Target_Wait,
             EDryPumpProcResinInjectStep.VacuumGauge_Target_Wait,
+            EDryPumpProcResinInjectStep.WriteMCC_Close_AngleValve,
             EDryPumpProcResinInjectStep.AngleValve_Close,
             EDryPumpProcResinInjectStep.AngleValve_CloseWait,
             EDryPumpProcResinInjectStep.Delay_BeforeInject,
@@ -51,9 +57,12 @@ namespace SDV_MoldingInjection.Process
         public static readonly List<EDryPumpProcResinInjectStep> DryPumpResinInjectSequence_SkipVent = new List<EDryPumpProcResinInjectStep>
         {
             EDryPumpProcResinInjectStep.DryPump_Vacuum_RequestWait,
+            EDryPumpProcResinInjectStep.WriteMCC_Open_AngleValve,
             EDryPumpProcResinInjectStep.AngleValve_Open,
             EDryPumpProcResinInjectStep.AngleValve_OpenWait,
+            EDryPumpProcResinInjectStep.WriteMCC_VacuumGauge_Target_Wait,
             EDryPumpProcResinInjectStep.VacuumGauge_Target_Wait,
+            EDryPumpProcResinInjectStep.WriteMCC_Close_AngleValve,
             EDryPumpProcResinInjectStep.AngleValve_Close,
             EDryPumpProcResinInjectStep.AngleValve_CloseWait,
             EDryPumpProcResinInjectStep.Delay_BeforeInject,
@@ -69,6 +78,7 @@ namespace SDV_MoldingInjection.Process
         public static readonly List<EDryPumpProcResinInjectStep> DryPumpResinInjectSequence_Use1Torr_SkipVent = new List<EDryPumpProcResinInjectStep>
         {
             EDryPumpProcResinInjectStep.DryPump_Vacuum_RequestWait,
+            EDryPumpProcResinInjectStep.WriteMCC_Open_AngleValve,
             EDryPumpProcResinInjectStep.AngleValve_Open,
             EDryPumpProcResinInjectStep.AngleValve_OpenWait,
             EDryPumpProcResinInjectStep.VacuumGauge_SpecIn_Wait_1torr,
@@ -78,7 +88,9 @@ namespace SDV_MoldingInjection.Process
             EDryPumpProcResinInjectStep.DryPump_Purge_Wait,
             EDryPumpProcResinInjectStep.AngleValve_Open,
             EDryPumpProcResinInjectStep.AngleValve_OpenWait,
+            EDryPumpProcResinInjectStep.WriteMCC_VacuumGauge_Target_Wait,
             EDryPumpProcResinInjectStep.VacuumGauge_Target_Wait,
+            EDryPumpProcResinInjectStep.WriteMCC_Close_AngleValve,
             EDryPumpProcResinInjectStep.AngleValve_Close,
             EDryPumpProcResinInjectStep.AngleValve_CloseWait,
             EDryPumpProcResinInjectStep.Delay_BeforeInject,
@@ -106,8 +118,10 @@ namespace SDV_MoldingInjection.Process
         {
             EMoldProcResinInjectStep.XYAxis_InjectPos_Move,
             EMoldProcResinInjectStep.XYAxis_InjectPos_MoveWait,
-            EMoldProcResinInjectStep.ZAxisBellowCyl_InjectPos_Move,
-            EMoldProcResinInjectStep.ZAxisBellowCyl_InjectPos_MoveWait,
+            EMoldProcResinInjectStep.ZAxisBellowCyl_InjectPos_UpDistance_Move,
+            EMoldProcResinInjectStep.ZAxisBellowCyl_InjectPos_UpDistance_MoveWait,
+            EMoldProcResinInjectStep.ZAxis_InjectPos_Move,
+            EMoldProcResinInjectStep.ZAxis_InjectPos_MoveWait,
             EMoldProcResinInjectStep.DryPump_Vacuum_Request,
             EMoldProcResinInjectStep.DryPump_Vacuum_DoneWait,
             EMoldProcResinInjectStep.SDPHead_Work_Request,
@@ -118,8 +132,10 @@ namespace SDV_MoldingInjection.Process
         {
             EMoldProcResinInjectStep.XYAxis_InjectPos_Move,
             EMoldProcResinInjectStep.XYAxis_InjectPos_MoveWait,
-            EMoldProcResinInjectStep.ZAxisBellowCyl_InjectPos_Move,
-            EMoldProcResinInjectStep.ZAxisBellowCyl_InjectPos_MoveWait,
+            EMoldProcResinInjectStep.ZAxisBellowCyl_InjectPos_UpDistance_Move,
+            EMoldProcResinInjectStep.ZAxisBellowCyl_InjectPos_UpDistance_MoveWait,
+            EMoldProcResinInjectStep.ZAxis_InjectPos_Move,
+            EMoldProcResinInjectStep.ZAxis_InjectPos_MoveWait,
             EMoldProcResinInjectStep.SDPHead_Work_Request,
             EMoldProcResinInjectStep.DelayAfter_AngleValve_Open,
             EMoldProcResinInjectStep.DryPump_Vacuum_Request,

@@ -6,9 +6,7 @@ using EQX.Core.Communication.CIM.Custom;
 using EQX.UI.Controls;
 using EQX.UI.MVVM;
 using SDV_MoldingInjection.Defines;
-using SDV_MoldingInjection.Process;
-using SDV_MoldingInjection.Recipe;
-using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
 using TOPENG_Device;
 
@@ -17,7 +15,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
     public class DataViewModel : ViewModelBase
     {
         public string RunModeButtonContent =>
-            _machineStatus.MachineRunMode == EMachineRunMode.Auto ? "Dry Run Mode" : "Auto Run Mode";
+            MachineStatus.MachineRunMode == EMachineRunMode.Auto ? "Dry Run Mode" : "Auto Run Mode";
 
         #region Commands
         public ICommand RecipeDataNavigateCommand => new RelayCommand(() =>
@@ -27,17 +25,22 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         public ICommand AdditionalMoldingDataNavigateCommand => new RelayCommand(() =>
         {
-           _navigationService.NavigateTo<AdditionalMoldingViewModel>();
+            _navigationService.NavigateTo<AdditionalMoldingViewModel>();
+        });
+
+        public ICommand CDASettingNavigateCommand => new RelayCommand(() =>
+        {
+            _navigationService.NavigateTo<CDASettingViewModel>();
         });
 
         public ICommand IdlePurgeDataNavigateCommand => new RelayCommand(() =>
         {
-           _navigationService.NavigateTo<IdlePurgeViewModel>();
+            _navigationService.NavigateTo<IdlePurgeViewModel>();
         });
 
         public ICommand OptionNavigateCommand => new RelayCommand(() =>
         {
-           _navigationService.NavigateTo<OptionViewModel>();
+            _navigationService.NavigateTo<OptionViewModel>();
         });
 
         public ICommand MaterialPortsViewNavigateCommand => new RelayCommand(() =>
@@ -66,18 +69,36 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
         }
 
+        public ICommand OpenCIMFunctionTestCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    var window = new Window
+                    {
+                        Title = "EQP Function Change",
+                        Content = new CIMFunctionView(),
+                        SizeToContent = SizeToContent.WidthAndHeight,
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen
+                    };
+
+                    window.DataContext = _cIMFunctionViewModel;
+                    window.Show();
+                });
+            }
+        }
+
         public ICommand RunModeChangeCommand => new RelayCommand(() =>
         {
-            EMachineRunMode currentMode = _machineStatus.MachineRunMode;
-            EMachineRunMode newMode = currentMode == EMachineRunMode.Auto ? EMachineRunMode.DryRun : EMachineRunMode.Auto;
-
-            bool? result = MessageBoxEx.ShowDialog($"Do you want to change RunMode {currentMode} -> {newMode}");
-
-            if (result == true)
+            var result = RunModeDialog.ShowRunModeDialog<EQX.Core.Common.EMachineRunMode>(new List<EQX.Core.Common.EMachineRunMode>()
             {
-                _machineStatus.MachineRunMode = newMode;
-                OnPropertyChanged(nameof(RunModeButtonContent));
-            }
+                EQX.Core.Common.EMachineRunMode.Auto,
+                EQX.Core.Common.EMachineRunMode.DryRun,
+                EQX.Core.Common.EMachineRunMode.PassRun,
+            });
+
+            if (result != null) MachineStatus.MachineRunMode = (EQX.Core.Common.EMachineRunMode)result;
         });
 
         public ICommand InjectTimeNavigateCommand => new RelayCommand(() =>
@@ -111,19 +132,24 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 });
             }
         }
+
+        public MachineStatus MachineStatus { get; }
         #endregion
 
         #region Constructor(s)
-        public DataViewModel(INavigationService navigationService, MachineStatus machineStatus)
+        public DataViewModel(INavigationService navigationService, 
+            MachineStatus machineStatus,
+            CIMFunctionViewModel cIMFunctionViewModel)
         {
             _navigationService = navigationService;
-            _machineStatus = machineStatus;
+            _cIMFunctionViewModel = cIMFunctionViewModel;
+            MachineStatus = machineStatus;
         }
         #endregion
 
         #region Privates
         private readonly INavigationService _navigationService;
-        private readonly MachineStatus _machineStatus;
+        private readonly CIMFunctionViewModel _cIMFunctionViewModel;
         #endregion
     }
 }

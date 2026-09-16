@@ -3,6 +3,7 @@ using EQX.Core.Common;
 using EQX.UI.Controls;
 using EQX.UI.MVVM;
 using log4net;
+using ScottPlot.Interactivity.UserActionResponses;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Defines.Productions;
 using SDV_MoldingInjection.MVVM.Models;
@@ -21,9 +22,11 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public CarrierJigStatusList CarrierJigStatusList { get; }
         public Plotter Plotter { get; }
         public MachineStatusAutoViewModel MachineStatusAuto { get; }
+        public TactTimeList TactTimeList { get; }
 
         public int TodayInputCount => CurrentProductionData?.TotalInput ?? 0;
         public int TodayOutputCount => CurrentProductionData?.TotalOutput ?? 0;
+        public double RatioVent => MachineStatus.RatioVent;
         #endregion
 
         #region Contructors
@@ -36,7 +39,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             CarrierJigStatusList carrierJigStatusList,
             Plotter plotter,
             ProductionService productionService,
-            MachineStatusAutoViewModel machineStatusAuto)
+            MachineStatusAutoViewModel machineStatusAuto,
+            TactTimeList tactTimeList)
         {
             Devices = devices;
             MachineStatus = machineStatus;
@@ -47,6 +51,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             Plotter = plotter;
             _productionService = productionService;
             MachineStatusAuto = machineStatusAuto;
+            TactTimeList = tactTimeList;
             Log = LogManager.GetLogger("AutoVM");
 
             PCInformationsystemViewModel = new PCInformationsystemViewModel();
@@ -63,6 +68,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             UpdateSyringeStatus();
             OnPropertyChanged(nameof(TodayInputCount));
             OnPropertyChanged(nameof(TodayOutputCount));
+            OnPropertyChanged(nameof(RatioVent));
         }
 
         private void UpdateSyringeStatus()
@@ -85,14 +91,14 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 var status = SyringeAmountStatusList.SyringeAmounts[i];
                 if (status == null) continue;
 
-                if (maxVolumeG > 0 && Math.Abs(status.MaxVolume - maxVolumeG) > 0.0001)
-                {
-                    status.MaxVolume = maxVolumeG;
-                    if (status.RemainVolume <= 0)
-                    {
-                        status.RemainVolume = maxVolumeG;
-                    }
-                }
+                //if (maxVolumeG > 0 && Math.Abs(status.MaxVolume - maxVolumeG) > 0.0001)
+                //{
+                //    status.MaxVolume = maxVolumeG;
+                //    if (status.RemainVolume <= 0)
+                //    {
+                //        status.RemainVolume = maxVolumeG;
+                //    }
+                //}
 
                 bool isOver = false;
                 if (limitHours > 0)
@@ -132,7 +138,23 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         return;
                     }
 
+                    if (Devices.Inputs.AutoSW.Value)
+                    {
+                        MessageBoxEx.ShowDialog("OP KEY IN AUTO MODE, CAN NOT OPEN THE DOOR!!!", false, "WARNING");
+                        return;
+                    }
+
+                    if (Devices.Inputs.LockKeyCheckSwitch.Value == false && Devices.Inputs.DoorLock)
+                    {
+                        MessageBoxEx.ShowDialog("PLEASE REMOVE KEY OUT MACHINE!!!", false, "WARNING");
+                        return;
+                    }
+
                     Devices.Outputs.EQPStop.Value = !Devices.Outputs.EQPStop.Value;
+                    if(Devices.Outputs.EQPStop.Value == false)
+                    {
+                        Devices.Outputs.SWKeyLock.Value = true;
+                    }
                 });
             }
         }

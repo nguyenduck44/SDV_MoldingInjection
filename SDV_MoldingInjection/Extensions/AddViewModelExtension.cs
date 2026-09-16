@@ -34,9 +34,10 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddViewModel<AutoViewModel>();
                 services.AddViewModel<MachineStatusAutoViewModel>();
                 services.AddViewModel<ManualViewModel>();
-
                 services.AddViewModel<TeachViewModel>();
                 services.AddViewModel<IdlePurgeModeViewModel>();
+
+                #region Datas
                 services.AddViewModel<DataViewModel>();
                 services.AddViewModel<RecipeViewModel>();
                 services.AddViewModel<MotionsConfigViewModel>();
@@ -45,29 +46,26 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddViewModel<OptionViewModel>();
                 services.AddViewModel<InjectTimeViewModel>();
                 services.AddViewModel<CylinderDelayTimeViewModel>();
+                services.AddViewModel<CDASettingViewModel>();
                 services.AddViewModel<MaterialPortsViewModel>();
                 services.AddViewModel<SecurityControlViewModel>();
+                #endregion
 
+                #region Monitors
                 services.AddViewModel<MonitorViewModel>();
                 services.AddViewModel<MonitorIOViewModel>();
-
-                services.AddViewModel<CurrentAlarmViewModel>();
-                services.AddViewModel<ErrorViewModel>();
-                services.AddViewModel<AlarmViewModel>();
-                services.AddViewModel<LogViewModel>();
-                services.AddViewModel<LoginViewModel>();
-                services.AddViewModel<DevViewModel>();
-
+                services.AddViewModel<ProcessesMonitoringViewModel>();
                 services.AddViewModel<MonitorIOViewModel>();
-                services.AddViewModel<MonitorMotionViewModel>();
+                services.AddViewModel<InterfaceInOutViewModel>();
+                services.AddViewModel<AnalogStatusViewModel>();
                 services.AddViewModel<ProductionInforViewModel>();
                 services.AddViewModel<TactTimeViewModel>();
                 services.AddSingleton<TactTimeListViewModel>();
                 services.AddViewModel<OPCallMessageViewModel>();
                 services.AddViewModel<InterlockMessageViewModel>();
                 services.AddViewModel<TerminalMessageViewModel>();
-                services.AddSingleton<ILeakTestResultViewModelFactory, LeakTestResultViewModelFactory>();
-                services.AddSingleton<ILeakTestResultDialogService, LeakTestResultDialogService>();
+                services.AddViewModel<HistoryDataViewModel>();
+                services.AddViewModel<EBoxMainPowerMonitoringViewModel>();
                 services.AddSingleton<MotionsStatusViewModel>((s) =>
                 {
                     return new MotionsStatusViewModel()
@@ -75,19 +73,37 @@ namespace SDV_MoldingInjection.Extensions
                         AllMotions = s.GetRequiredService<Motions>().All
                     };
                 });
+                #endregion
 
+                #region Alarms
+                services.AddViewModel<CurrentAlarmViewModel>();
+                services.AddViewModel<ErrorViewModel>();
+                services.AddViewModel<AlarmViewModel>();
+                services.AddViewModel<LogViewModel>();
+                services.AddViewModel<LoginViewModel>();
+                #endregion
+
+                #region DEV
+                services.AddViewModel<DevViewModel>();
                 services.AddViewModel<CIMTestViewModel>();
+                #endregion
 
+                #region Others
+                services.AddViewModel<AutoTeachModeViewModel>();
+                services.AddSingleton<ILeakTestResultViewModelFactory, LeakTestResultViewModelFactory>();
+                services.AddSingleton<ILeakTestResultDialogService, LeakTestResultDialogService>();
                 services.AddSingleton<IViewModelFactory, ViewModelFactory>();
-
                 services.AddSingleton<IInputSimulationViewModel>(new MMFInputSimulationViewModel<EMachineInput>(
                     new List<string>
                     {
+                        EMachineInput.OP_KEY_SW_AUTO.ToString(),
                     },
                     new List<string>
                     {
+                        EMachineInput.OP_KEY_SW_AUTO.ToString(),
                     }
                 ));
+                #endregion
             });
 
             return hostBuilder;

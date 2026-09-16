@@ -47,7 +47,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(async () =>
                 {
-                    CellTracking(1);
+                    await Task.Run(() =>
+                    {
+                        EquipEventHelpers.CellTrackIn(1, "PORT1_123456789");
+                    });
                 });
             }
         }
@@ -58,7 +61,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(async () =>
                 {
-                    CellTracking(2);
+                    await Task.Run(() =>
+                    {
+                        EquipEventHelpers.CellTrackIn(2, "PORT2_987654321");
+                    });
                 });
             }
         }
@@ -80,18 +86,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 });
             }
         }
-        public ICommand ECMChangeTest
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    CIMAction.ECMValues[0] = random.Next(10000);
-                    EquipEventHelpers.EquipmentConstantParameterChanged(1, CIMAction.ECMValues[0]);
-                });
-            }
-        }
-
+        
         Random random = new Random();
 
         public ICommand OpenCIMFunctionTestCommand
@@ -144,7 +139,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
 
             CellJobProcessCimToPlcArea cellJobProcess = EquipEventHelpers.CellJobProcessConfirm(jigIndex, outCellID);
-            
+
             bool isJobProcessFail = false;
             if (cellJobProcess.CellJobProcessRCMD != $"{(int)ECellJobProcessRCMD.CellJobProcessStart}")
             {
@@ -158,7 +153,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 await Task.Delay(3000);
             }
 
-            EquipEventHelpers.CellTrackOut(jigIndex, cellJobProcess, isJobProcessFail);
+            //EquipEventHelpers.CellTrackOut(jigIndex, cellJobProcess, isJobProcessFail);
             Message = "TRACKOUT DONE";
         }
         #endregion

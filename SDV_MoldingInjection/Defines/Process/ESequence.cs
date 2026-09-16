@@ -52,16 +52,27 @@ namespace SDV_MoldingInjection.Defines
         [Description("Dot weighting H4")]
         DotWeighting_H4,
 
-        [Description("Head ASSEMBLE")]
-        HeadAssemble,
-        [Description("Head ASSEMBLE H1")]
-        HeadAssemble_H1,
-        [Description("Head ASSEMBLE H2")]
-        HeadAssemble_H2,
-        [Description("Head ASSEMBLE H3")]
-        HeadAssemble_H3,
-        [Description("Head ASSEMBLE H4")]
-        HeadAssemble_H4,
+        [Description("Head ASSEMBLE STEP#1")]
+        HeadAssemble_Step1,
+        [Description("Head ASSEMBLE H1 STEP#1")]
+        HeadAssemble_Step1_H1,
+        [Description("Head ASSEMBLE H2 STEP#1")]
+        HeadAssemble_Step1_H2,
+        [Description("Head ASSEMBLE H3 STEP#1")]
+        HeadAssemble_Step1_H3,
+        [Description("Head ASSEMBLE H4 STEP#1")]
+        HeadAssemble_Step1_H4,
+
+        [Description("Head ASSEMBLE STEP#2")]
+        HeadAssemble_Step2,
+        [Description("Head ASSEMBLE H1 STEP#2")]
+        HeadAssemble_Step2_H1,
+        [Description("Head ASSEMBLE H2 STEP#2")]
+        HeadAssemble_Step2_H2,
+        [Description("Head ASSEMBLE H3 STEP#2")]
+        HeadAssemble_Step2_H3,
+        [Description("Head ASSEMBLE H4 STEP#2")]
+        HeadAssemble_Step2_H4,
 
         [Description("Head DISASSEMBLE")]
         HeadDisassemble,
@@ -93,7 +104,7 @@ namespace SDV_MoldingInjection.Defines
         DotWeighting,
         [Description("Drain Shot")]
         DrainShot,
-        [Description("IdlePurge")]
+        [Description("Idle Purge")]
         IdlePurge,
 
         MoveMultiPoint,
@@ -142,16 +153,27 @@ namespace SDV_MoldingInjection.Defines
         [Description("Dot weighting H4")]
         DotWeighting_H4,
 
-        [Description("Head ASSEMBLE")]
-        HeadAssemble,
-        [Description("Head ASSEMBLE H1")]
-        HeadAssemble_H1,
-        [Description("Head ASSEMBLE H2")]
-        HeadAssemble_H2,
-        [Description("Head ASSEMBLE H3")]
-        HeadAssemble_H3,
-        [Description("Head ASSEMBLE H4")]
-        HeadAssemble_H4,
+        [Description("Head ASSEMBLE STEP#1")]
+        HeadAssemble_Step1,
+        [Description("Head ASSEMBLE H1 STEP#1")]
+        HeadAssemble_Step1_H1,
+        [Description("Head ASSEMBLE H2 STEP#1")]
+        HeadAssemble_Step1_H2,
+        [Description("Head ASSEMBLE H3 STEP#1")]
+        HeadAssemble_Step1_H3,
+        [Description("Head ASSEMBLE H4 STEP#1")]
+        HeadAssemble_Step1_H4,
+
+        [Description("Head ASSEMBLE STEP#2")]
+        HeadAssemble_Step2,
+        [Description("Head ASSEMBLE H1 STEP#2")]
+        HeadAssemble_Step2_H1,
+        [Description("Head ASSEMBLE H2 STEP#2")]
+        HeadAssemble_Step2_H2,
+        [Description("Head ASSEMBLE H3 STEP#2")]
+        HeadAssemble_Step2_H3,
+        [Description("Head ASSEMBLE H4 STEP#2")]
+        HeadAssemble_Step2_H4,
 
         [Description("Head DISASSEMBLE")]
         HeadDisassemble,
@@ -183,7 +205,7 @@ namespace SDV_MoldingInjection.Defines
         DotWeighting,
         [Description("Drain Shot")]
         DrainShot,
-        [Description("IdlePurge")]
+        [Description("Idle Purge")]
         IdlePurge,
 
         MoveMultiPoint,

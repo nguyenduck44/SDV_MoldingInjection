@@ -160,10 +160,10 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
                 foreach (var item in errorList)
                 {
-
                     errorLogEntries.Add(item);
                 }
-                return errorLogEntries;
+
+                return new ObservableCollection<ErrorLogEntry>(errorLogEntries.Reverse());
             }
             catch (Exception ex)
             {
@@ -206,6 +206,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                     }
 
                     logEntries.Add(logEntry);
+                    logEntries.Reverse();
                 }
             }
             return logEntries;

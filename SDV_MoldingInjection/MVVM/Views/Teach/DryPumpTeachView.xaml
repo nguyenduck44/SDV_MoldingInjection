@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
              xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
              xmlns:uiControls="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
-             IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type vm:DryPumpMaintenanceViewModel}}"
              d:DesignHeight="450"
@@ -62,6 +61,7 @@
                 <!-- POSITION TABLE -->
                 <GroupBox Grid.ColumnSpan="2"
                           Header="{Binding SelectedGroupedPosition.Name}"
+                          IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
                           Style="{x:Null}"
                           FontWeight="Bold">
                     <uiControls:PositionPointGridView ItemsSource="{Binding SelectedGroupedPosition.Points}" />
@@ -118,7 +118,8 @@
                         <UniformGrid Columns="2"
                                      Margin="0 0 0 0"
                                      Height="40"
-                                     VerticalAlignment="Top">
+                                     VerticalAlignment="Top"
+                                     IsEnabled="{Binding MachineStatus.IsStandByProcessMode}">
                             <Button Command="{Binding MoveToTarget}"
                                     Content="Move to Target"
                                     Margin="2 1" />
@@ -133,12 +134,13 @@
                                 Margin="2 1" />
 
                         <uiControls:IncControlView Grid.Row="2"
-                                                   ItemsSource="{Binding SelectedGroupedPosition.Points}"
-                                                   IncStep="{Binding IncStep, Mode=TwoWay}" />
+                           ItemsSource="{Binding SelectedGroupedPosition.Points}"
+                           IncStep="{Binding IncStep, Mode=TwoWay}" />
 
                         <UniformGrid Grid.Row="3"
                                      Columns="2"
-                                     Margin="0 5 0 0">
+                                     Margin="0 5 0 0"
+                                     IsEnabled="{Binding MachineStatus.IsStandByProcessMode}">
                             <Button Background="LightBlue"
                                     Command="{Binding TeachPositionSaveCommand}"
                                     Content="Save"
@@ -151,20 +153,29 @@
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Grid.Row="1"
-                          Grid.Column="2"
-                          Style="{x:Null}"
-                          FontWeight="Bold"
-                          Grid.ColumnSpan="2"
-                          Header="Cylinders">
-                    <ItemsControl ItemsSource="{Binding Cylinders}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-                </GroupBox>
+                <StackPanel Grid.Row="1"
+                             Grid.Column="2"
+                             IsEnabled="{Binding MachineStatus.IsStandByProcessMode}">
+                    <GroupBox Style="{x:Null}"
+                              FontWeight="Bold"
+                              Header="Cylinders">
+                        <ItemsControl ItemsSource="{Binding Cylinders}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </GroupBox>
+                    <GroupBox Style="{x:Null}"
+                              FontWeight="Bold"
+                              Grid.ColumnSpan="2"
+                              Header="Safety Mode">
+                        <ContentControl Content="{Binding AutoTeachModeViewModel}"
+                                        Height="60"
+                                        VerticalAlignment="Top" />
+                    </GroupBox>
+                </StackPanel>
             </Grid>
         </GroupBox>
     </DockPanel>

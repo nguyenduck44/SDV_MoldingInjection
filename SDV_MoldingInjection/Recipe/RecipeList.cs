@@ -9,15 +9,17 @@ namespace SDV_MoldingInjection.Recipe
             CommonRecipe = new();
             InjectRecipe = new();
             DryPumpRecipe = new();
-            SPDHead1_Recipe = new();
-            SPDHead2_Recipe = new();
-            SPDHead3_Recipe = new();
-            SPDHead4_Recipe = new();
+            SPDHead1_Recipe = new() { Name = "SPDHead1_Recipe" };
+            SPDHead2_Recipe = new() { Name = "SPDHead2_Recipe" };
+            SPDHead3_Recipe = new() { Name = "SPDHead3_Recipe" };
+            SPDHead4_Recipe = new() { Name = "SPDHead4_Recipe" };
             AdditionalMolding_Recipe = new();
             OptionRecipe = new();
             InjectTimeRecipe = new();
             IdlePurgeRecipe = new();
             CylinderDelayTimeRecipe = new();
+            CDASettingRecipe = new();
+            MotionSpeedRecipe = new() { Name = "Motion_Speed_Recipe"};
         }
 
         public CommonRecipe CommonRecipe { get; }
@@ -32,6 +34,8 @@ namespace SDV_MoldingInjection.Recipe
         public InjectTimeRecipe InjectTimeRecipe { get; }
         public IdlePurgeRecipe IdlePurgeRecipe { get; }
         public CylinderDelayTimeRecipe CylinderDelayTimeRecipe { get; }
+        public CDASettingRecipe CDASettingRecipe { get; }
+        public MotionSpeedRecipe MotionSpeedRecipe { get; }
 
         public void CloneFrom(RecipeList source)
         {
@@ -49,6 +53,8 @@ namespace SDV_MoldingInjection.Recipe
             InjectTimeRecipe.Clone(source.InjectTimeRecipe);
             IdlePurgeRecipe.Clone(source.IdlePurgeRecipe);
             CylinderDelayTimeRecipe.Clone(source.CylinderDelayTimeRecipe);
+            CDASettingRecipe.Clone(source.CDASettingRecipe);
+            MotionSpeedRecipe.Clone(source.MotionSpeedRecipe);
         }
     }
 }

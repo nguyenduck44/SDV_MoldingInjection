@@ -54,23 +54,32 @@
                         <ContentControl Content="{Binding CarrierJigStatusList.CarrierJigStatusH4}" />
                     </UniformGrid>
                 </GroupBox>
-
+                
                 <GroupBox Header="Chamber Pressure Chart"
                           Style="{x:Null}">
                     <ContentControl Content="{Binding Plotter.ChamberPressurePlot, Mode=OneWay}"
                                     Height="250" />
                 </GroupBox>
             </StackPanel>
-
-            
+            <Canvas>
+                <GroupBox Header="Ratio Vent"
+                          FontSize="10"
+                          Style="{x:Null}"
+                          Canvas.Top="307"
+                          Canvas.Right="0"
+                          Background="White">
+                    <TextBlock Text="{Binding RatioVent}"
+                               FontSize="14"
+                               HorizontalAlignment="Center" />
+                </GroupBox>
+            </Canvas>
         </Grid>
-
 
         <Grid Grid.Column="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition />
-                <ColumnDefinition Width="165" />
+                <ColumnDefinition Width="170" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -155,78 +164,151 @@
             </Grid>
 
             <!-- PRODUCTION -->
-            <GroupBox Header="PRODUCTION"
-                      Style="{x:Null}"
-                      Width="148"
-                      Height="100"
-                      VerticalAlignment="Top"
-                      HorizontalAlignment="Left"
-                      Grid.Column="1">
-                <Grid Margin="8 6">
-                    <Grid.Resources>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="FontSize"
-                                    Value="14" />
-                            <Setter Property="FontWeight"
-                                    Value="SemiBold" />
-                        </Style>
-                        <Style TargetType="TextBox">
-                            <Setter Property="FontSize"
-                                    Value="14" />
-                            <Setter Property="FontWeight"
-                                    Value="SemiBold" />
-                        </Style>
-                    </Grid.Resources>
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="1">
+                <GroupBox Header="PRODUCTION"
+                          Style="{x:Null}"
+                          Width="142"
+                          Height="90"
+                          VerticalAlignment="Top"
+                          HorizontalAlignment="Left">
+                    <Grid Margin="8 6">
+                        <Grid.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontSize"
+                                        Value="14" />
+                                <Setter Property="FontWeight"
+                                        Value="SemiBold" />
+                            </Style>
+                            <Style TargetType="TextBox">
+                                <Setter Property="FontSize"
+                                        Value="14" />
+                                <Setter Property="FontWeight"
+                                        Value="SemiBold" />
+                            </Style>
+                        </Grid.Resources>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
-                    <Border Grid.Row="0"
-                            Grid.Column="0"
-                            BorderBrush="Gray"
-                            BorderThickness="1"
-                            Padding="6 2">
-                        <TextBlock VerticalAlignment="Center"
-                                   Text="Input" />
-                    </Border>
-                    <Border Grid.Row="0"
-                            Grid.Column="1"
-                            BorderBrush="Gray"
-                            BorderThickness="1"
-                            Padding="2">
-                        <TextBox IsReadOnly="True"
-                                 BorderThickness="0"
-                                 Background="Transparent"
-                                 HorizontalContentAlignment="Right"
-                                 Text="{Binding TodayInputCount,Mode=OneWay}" />
-                    </Border>
+                        <Border Grid.Row="0"
+                                Grid.Column="0"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                Padding="6 2">
+                            <TextBlock VerticalAlignment="Center"
+                                       Text="Input" />
+                        </Border>
+                        <Border Grid.Row="0"
+                                Grid.Column="1"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                Padding="2">
+                            <TextBox IsReadOnly="True"
+                                     BorderThickness="0"
+                                     Background="Transparent"
+                                     HorizontalContentAlignment="Right"
+                                     Text="{Binding TodayInputCount,Mode=OneWay}" />
+                        </Border>
 
-                    <Border Grid.Row="1"
-                            Grid.Column="0"
-                            BorderBrush="Gray"
-                            BorderThickness="1"
-                            Padding="6 2">
-                        <TextBlock VerticalAlignment="Center"
-                                   Text="Output" />
-                    </Border>
-                    <Border Grid.Row="1"
-                            Grid.Column="1"
-                            BorderBrush="Gray"
-                            BorderThickness="1"
-                            Padding="2">
-                        <TextBox IsReadOnly="True"
-                                 BorderThickness="0"
-                                 Background="Transparent"
-                                 HorizontalContentAlignment="Right"
-                                 Text="{Binding TodayOutputCount,Mode=OneWay}" />
-                    </Border>
-                </Grid>
-            </GroupBox>
+                        <Border Grid.Row="1"
+                                Grid.Column="0"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                Padding="6 2">
+                            <TextBlock VerticalAlignment="Center"
+                                       Text="Output" />
+                        </Border>
+                        <Border Grid.Row="1"
+                                Grid.Column="1"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                Padding="2">
+                            <TextBox IsReadOnly="True"
+                                     BorderThickness="0"
+                                     Background="Transparent"
+                                     HorizontalContentAlignment="Right"
+                                     Text="{Binding TodayOutputCount,Mode=OneWay}" />
+                        </Border>
+                    </Grid>
+                </GroupBox>
+
+                <GroupBox Header="TACT TIME"
+                          Style="{x:Null}"
+                          Width="142"
+                          Height="90"
+                          VerticalAlignment="Top"
+                          HorizontalAlignment="Left">
+                    <Grid Margin="8 6">
+                        <Grid.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontSize"
+                                        Value="14" />
+                                <Setter Property="FontWeight"
+                                        Value="SemiBold" />
+                            </Style>
+                            <Style TargetType="TextBox">
+                                <Setter Property="FontSize"
+                                        Value="14" />
+                                <Setter Property="FontWeight"
+                                        Value="SemiBold" />
+                            </Style>
+                        </Grid.Resources>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Row="0"
+                                Grid.Column="0"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                Padding="6 2">
+                            <TextBlock VerticalAlignment="Center"
+                                       Text="T/T(s)" />
+                        </Border>
+                        <Border Grid.Row="0"
+                                Grid.Column="1"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                Padding="2">
+                            <TextBox IsReadOnly="True"
+                                     BorderThickness="0"
+                                     Background="Transparent"
+                                     HorizontalContentAlignment="Right"
+                                     Text="{Binding TactTimeList.TactTimeListViewModel.TactTimes[0],Mode=OneWay,StringFormat={}{0:F2}}" />
+                        </Border>
+
+                        <Border Grid.Row="1"
+                                Grid.Column="0"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                Padding="6 2">
+                            <TextBlock VerticalAlignment="Center"
+                                       Text="AVG(s)" />
+                        </Border>
+                        <Border Grid.Row="1"
+                                Grid.Column="1"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                Padding="2">
+                            <TextBox IsReadOnly="True"
+                                     BorderThickness="0"
+                                     Background="Transparent"
+                                     HorizontalContentAlignment="Right"
+                                     Text="{Binding TactTimeList.TactTimeListViewModel.AverageTactTime,Mode=OneWay,StringFormat={}{0:F2}}" />
+                        </Border>
+                    </Grid>
+                </GroupBox>
+            </StackPanel>
 
             <!-- PC INFORMATION -->
             <StackPanel Grid.Column="2"
@@ -249,7 +331,7 @@
                                 Canvas.Top="140"
                                 Canvas.Left="120"
                                 Width="100"
-                                Height="50"
+                                Height="55"
                                 Margin="2">
                     <ui:ImageButton.Style>
                         <Style TargetType="{x:Type ui:ImageButton}"
@@ -258,12 +340,16 @@
                                 <DataTrigger Binding="{Binding Devices.Outputs.EQPStop.Value}"
                                              Value="True">
                                     <Setter Property="Content"
-                                            Value="Door Lock" />
+                                            Value="DOOR LOCK"/>
+                                    <Setter Property="Background"
+                                            Value="Tomato"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Devices.Outputs.EQPStop.Value}"
                                              Value="False">
                                     <Setter Property="Content"
-                                            Value="Door Unlock" />
+                                            Value="DOOR UNLOCK" />
+                                    <Setter Property="Background"
+                                            Value="LightCyan"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>

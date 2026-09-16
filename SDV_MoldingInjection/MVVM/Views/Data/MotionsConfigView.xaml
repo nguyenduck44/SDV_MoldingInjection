@@ -4,27 +4,130 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
+             xmlns:controls="clr-namespace:SDV_MoldingInjection.Resource.Controls"
              xmlns:ui="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
              mc:Ignorable="d"
              IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
              d:DataContext="{d:DesignInstance Type={x:Type vm:MotionsConfigViewModel}}"
              d:DesignHeight="450"
              d:DesignWidth="800">
-    <Grid>
+    <Grid Margin="5">
         <Grid.RowDefinitions>
-            <RowDefinition />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ui:MotionsSpeedConfigView MotionList="{Binding DataContext.MotionList, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                   IsEnabled="{Binding DataContext.MachineStatus.IsStandByProcessMode, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+        <TextBlock Text="Motion Velocity Setting" 
+                   FontSize="20"
+                   HorizontalAlignment="Center"
+                   FontWeight="SemiBold"
+                   Margin="0 5 0 10"
+                   Foreground="#273c75"/>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.Resources>
+                <Style TargetType="{x:Type Label}">
+                    <Style.Setters>
+                        <Setter Property="BorderBrush"
+                                Value="Gray" />
+                        <Setter Property="BorderThickness"
+                                Value="1" />
+                        <Setter Property="HorizontalContentAlignment"
+                                Value="Center" />
+                        <Setter Property="FontWeight"
+                                Value="Bold" />
+                        <Setter Property="FontSize"
+                                Value="18" />
+                        <Setter Property="Background" 
+                                Value="LightGray"/>
+                    </Style.Setters>
+                </Style>
+            </Grid.Resources>
+            <Label Content="Axis Name" />
+            <Label Content="Speed (mm / s)"
+                   Grid.Column="1" />
+            <Label Content="Acceleration (s)"
+                   Grid.Column="2" />
+            <Label Content="Deceleration (s)"
+                   Grid.Column="3" />
+        </Grid>
 
-        <ui:ImageButton Grid.Row="1"
-                        Margin="5"
-                        Width="200"
-                        Height="50"
+        <UniformGrid Rows="14"
+                     Grid.Row="2">
+            <controls:SingleAxisSpeedConfig AxisName="X Axis"
+                                            Speed="{Binding DataContext.MotionSpeedRecipe.XAxisVelocity,Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Accel="{Binding DataContext.MotionSpeedRecipe.XAxisAccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Decel="{Binding DataContext.MotionSpeedRecipe.XAxisDeccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+            <controls:SingleAxisSpeedConfig AxisName="Stage Y Axis"
+                                            Speed="{Binding DataContext.MotionSpeedRecipe.StageYAxisVelocity,Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Accel="{Binding DataContext.MotionSpeedRecipe.StageYAxisAccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Decel="{Binding DataContext.MotionSpeedRecipe.StageYAxisDeccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+            <controls:SingleAxisSpeedConfig AxisName="Z1 Axis"
+                                            Speed="{Binding DataContext.MotionSpeedRecipe.Z1AxisVelocity,Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Accel="{Binding DataContext.MotionSpeedRecipe.Z1AxisAccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Decel="{Binding DataContext.MotionSpeedRecipe.Z1AxisDeccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+            <controls:SingleAxisSpeedConfig AxisName="Z2 Axis"
+                                            Speed="{Binding DataContext.MotionSpeedRecipe.Z2AxisVelocity,Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Accel="{Binding DataContext.MotionSpeedRecipe.Z2AxisAccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Decel="{Binding DataContext.MotionSpeedRecipe.Z2AxisDeccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+            <controls:SingleAxisSpeedConfig AxisName="Z3 Axis"
+                                            Speed="{Binding DataContext.MotionSpeedRecipe.Z3AxisVelocity,Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Accel="{Binding DataContext.MotionSpeedRecipe.Z3AxisAccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Decel="{Binding DataContext.MotionSpeedRecipe.Z3AxisDeccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+            <controls:SingleAxisSpeedConfig AxisName="Z4 Axis"
+                                            Speed="{Binding DataContext.MotionSpeedRecipe.Z4AxisVelocity,Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Accel="{Binding DataContext.MotionSpeedRecipe.Z4AxisAccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Decel="{Binding DataContext.MotionSpeedRecipe.Z4AxisDeccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+            <controls:SingleAxisSpeedConfig AxisName="P1 Axis"
+                                            Speed="{Binding DataContext.MotionSpeedRecipe.P1AxisVelocity,Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Accel="{Binding DataContext.MotionSpeedRecipe.P1AxisAccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Decel="{Binding DataContext.MotionSpeedRecipe.P1AxisDeccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+            <controls:SingleAxisSpeedConfig AxisName="P2 Axis"
+                                            Speed="{Binding DataContext.MotionSpeedRecipe.P2AxisVelocity,Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Accel="{Binding DataContext.MotionSpeedRecipe.P2AxisAccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Decel="{Binding DataContext.MotionSpeedRecipe.P2AxisDeccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+            <controls:SingleAxisSpeedConfig AxisName="P3 Axis"
+                                            Speed="{Binding DataContext.MotionSpeedRecipe.P3AxisVelocity,Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Accel="{Binding DataContext.MotionSpeedRecipe.P3AxisAccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Decel="{Binding DataContext.MotionSpeedRecipe.P3AxisDeccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+            <controls:SingleAxisSpeedConfig AxisName="P4 Axis"
+                                            Speed="{Binding DataContext.MotionSpeedRecipe.P4AxisVelocity,Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Accel="{Binding DataContext.MotionSpeedRecipe.P4AxisAccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Decel="{Binding DataContext.MotionSpeedRecipe.P4AxisDeccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+            <controls:SingleAxisSpeedConfig AxisName="G1 Axis"
+                                            Speed="{Binding DataContext.MotionSpeedRecipe.G1AxisVelocity,Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Accel="{Binding DataContext.MotionSpeedRecipe.G1AxisAccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Decel="{Binding DataContext.MotionSpeedRecipe.G1AxisDeccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+            <controls:SingleAxisSpeedConfig AxisName="G2 Axis"
+                                            Speed="{Binding DataContext.MotionSpeedRecipe.G2AxisVelocity,Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Accel="{Binding DataContext.MotionSpeedRecipe.G2AxisAccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Decel="{Binding DataContext.MotionSpeedRecipe.G2AxisDeccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+            <controls:SingleAxisSpeedConfig AxisName="G3 Axis"
+                                            Speed="{Binding DataContext.MotionSpeedRecipe.G3AxisVelocity,Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Accel="{Binding DataContext.MotionSpeedRecipe.G3AxisAccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Decel="{Binding DataContext.MotionSpeedRecipe.G3AxisDeccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+            <controls:SingleAxisSpeedConfig AxisName="G4 Axis"
+                                            Speed="{Binding DataContext.MotionSpeedRecipe.G4AxisVelocity,Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Accel="{Binding DataContext.MotionSpeedRecipe.G4AxisAccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            Decel="{Binding DataContext.MotionSpeedRecipe.G4AxisDeccel, Mode=TwoWay,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+
+
+        </UniformGrid>
+
+        <ui:ImageButton Content="{DynamicResource str_Save}"
+                        Command="{Binding SaveCommand}"
+                        Image="{StaticResource image_save_all_selected}"
+                        VerticalAlignment="Bottom"
                         FontSize="16"
-                        Content="{DynamicResource str_Save}"
-                        Command="{Binding SaveMotionConfigCommand}"
-                        Image="{StaticResource image_save_all_selected}" />
+                        Grid.Row="3"
+                        Margin="5"
+                        Height="50"
+                        Width="200" />
     </Grid>
 </UserControl>

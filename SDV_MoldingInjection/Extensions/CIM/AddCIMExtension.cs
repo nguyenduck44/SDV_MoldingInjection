@@ -27,7 +27,10 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddSingleton<CIMFunctionViewModel>((ser) =>
                 {
                     var configuration = ser.GetRequiredService<IConfiguration>();
-                    return new CIMFunctionViewModel(configuration["Files:CIMFunctionFile"]);
+                    return new CIMFunctionViewModel(configuration["Files:CIMFunctionFile"])
+                    {
+                        IsUseAPC = false
+                    };
                 });
             });
             return hostBuilder;

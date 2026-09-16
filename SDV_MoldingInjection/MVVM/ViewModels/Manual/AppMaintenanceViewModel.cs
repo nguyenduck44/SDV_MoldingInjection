@@ -53,6 +53,23 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         }
         #endregion
 
+        public bool IsOPSwitchTeachMode => _devices.Inputs.TeachSW.Value && _devices.Inputs.AutoSW.Value == false;
+
+        protected override void ExternalTimerElapsedAction()
+        {
+            OnPropertyChanged(nameof(IsOPSwitchTeachMode));
+        }
+        protected override bool JogInterlockCheck()
+        {
+            if(_devices.Inputs.AutoSW.Value)
+            {
+                MessageBoxEx.ShowDialog("Machine is Auto Mode , Can't Move Jog", "Confirm");
+                return false;
+            }
+
+            return true;
+        }
+
         protected override RecipePositionManagerBase<RecipeList> UpdatePositionManager()
         {
             return new RecipePositionManager(_recipeSelector.CurrentRecipe, _devices.Motions.All);
@@ -155,6 +172,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         private void OnTeachingPointPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
+            if (_navigationStore.CurrentViewModel is AppMaintenanceViewModel == false) return;
+
             if (_recipeSelector.IsLoadingRecipe || _isRestoringTeachingSnapshot || _isHandlingTeachingChange)
             {
                 return;

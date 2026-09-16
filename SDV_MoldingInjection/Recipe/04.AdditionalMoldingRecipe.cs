@@ -10,45 +10,39 @@ namespace SDV_MoldingInjection.Recipe
         private double _addTailWeight;
         private double _zUpDistanceAddTail;
         private double _addTailSpeed;
-        private double _bubbleRemoveCount;
         #endregion
 
-        [SingleRecipeDescription(Description = "USE Add Tail", Detail = "Check to Use Add Tail")]
+        [SingleRecipeDescription(Description = "Use Add Tail", Detail = "Check to Use Add Tail")]
+        [ParameterDescription(200)]
         public bool UseAddTail
         {
             get => _useAddTail;
-            set => SetRecipe(ref _useAddTail, value, nameof(UseAddTail));
+            set => SetRecipe(ref _useAddTail, value);
         }
 
         [SingleRecipeDescription(Description = "Z-UP Distance Add Tail", Unit = Unit.mm)]
+        [ParameterDescription(201)]
         public double ZUpDistanceAddTail
         {
             get => _zUpDistanceAddTail;
-            set => SetRecipe(ref _zUpDistanceAddTail, value, nameof(ZUpDistanceAddTail));
+            set => SetRecipe(ref _zUpDistanceAddTail, value);
         }
 
         [SingleRecipeDescription(Description = "Add Tail Weight", Unit = Unit.mg)]
         [SingleRecipeMinMax(Max = 380, Min = 0)]
+        [ParameterDescription(202)]
         public double AddTailWeight
         {
             get => _addTailWeight;
-            set => SetRecipe(ref _addTailWeight, value, nameof(AddTailWeight));
+            set => SetRecipe(ref _addTailWeight, value);
         }
 
         [SingleRecipeDescription(Description = "Add Tail Speed", Unit = Unit.mmPerSecond)]
+        [ParameterDescription(203)]
         public double AddTailSpeed
         {
             get => _addTailSpeed;
-            set => SetRecipe(ref _addTailSpeed, value, nameof(AddTailSpeed));
-        }
-
-        [SingleRecipeDescription(Description = "Bubble remove count")]
-        [CIMParameterAddress((int)ECIMParamter.BubbleRemoveCount)]
-        [SingleRecipeMinMax(Min = 1, Max = 100)]
-        public double BubbleRemoveCount
-        {
-            get => _bubbleRemoveCount;
-            set => SetRecipe(ref _bubbleRemoveCount, value, nameof(BubbleRemoveCount));
+            set => SetRecipe(ref _addTailSpeed, value);
         }
     }
 }

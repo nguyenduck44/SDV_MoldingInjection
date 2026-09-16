@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
              xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
              mc:Ignorable="d"
+             IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
              d:DataContext="{d:DesignInstance Type=vm:MaterialPortsViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>

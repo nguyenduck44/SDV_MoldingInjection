@@ -1,8 +1,15 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using EQX.Core.Common;
 using EQX.Core.InOut;
+using EQX.UI.Controls;
+using log4net;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Win32;
+using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.Extensions;
 using System.Linq;
+using TOPENG_Device;
 
 namespace SDV_MoldingInjection.Defines
 {
@@ -13,8 +20,13 @@ namespace SDV_MoldingInjection.Defines
         private readonly IDInputDevice _dHead2InputDevice;
         private readonly IDInputDevice _dHead3InputDevice;
         private readonly IDInputDevice _dHead4InputDevice;
+        private readonly MachineStatus _machineStatus;
 
-        public Inputs(IEnumerable<IDInputDevice> dInputDevices)
+        private int SensorMapStartBit { get; }
+
+        public Inputs(IEnumerable<IDInputDevice> dInputDevices,
+            IConfiguration configuration,
+            MachineStatus machineStatus)
         {
             _dMachineInputDevice = dInputDevices.First(device => device.Name == EInputDevice.MachineInput.ToString());
             _dHead1InputDevice = dInputDevices.First(device => device.Name == EInputDevice.Head1Input.ToString());
@@ -22,7 +34,40 @@ namespace SDV_MoldingInjection.Defines
             _dHead3InputDevice = dInputDevices.First(device => device.Name == EInputDevice.Head3Input.ToString());
             _dHead4InputDevice = dInputDevices.First(device => device.Name == EInputDevice.Head4Input.ToString());
 
+            _machineStatus = machineStatus;
+#if !SIMULATION
+            try
+            {
+                object? sensorStartBit = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Top Engineering", "SensorStartBit", "");
+                SensorMapStartBit = int.Parse(sensorStartBit.ToString(), System.Globalization.NumberStyles.HexNumber);
+            }
+            catch
+            {
+                LogManager.GetLogger("IO").Error("Get Value SensorStartBit Fail . Check Registry Value");
+                MessageBoxEx.ShowDialog("Get Value SensorStartBit Fail . Check Registry Value");
+            }
+#endif
             Initialize();
+
+            NonOverlappingTimer timer = new NonOverlappingTimer(100);
+            timer.Elapsed += Timer_Elapsed;
+            timer.Start();
+        }
+
+        private void Timer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
+        {
+            for (int i = 0; i <= (int)ESensorMap.Dispensing_Transfer_Detect_Sensor; i++)
+            {
+                CIMAddressMap.WritePLCBit(string.Format("{0:X}", SensorMapStartBit + i),
+                (short)(GetCCIEBitValue(0x2110 + i) ? 1 : 0), false);
+            }
+
+            CIMAddressMap.WritePLCBit(string.Format("{0:X}", SensorMapStartBit + ESensorMap.Dispensing_Chamber_Left_Detect_Sensor),
+                (short)(Jig1Detect.Value && Jig2Detect.Value ? 1 : 0), false);
+            CIMAddressMap.WritePLCBit(string.Format("{0:X}", SensorMapStartBit + ESensorMap.Dispensing_Chamber_Right_Detect_Sensor),
+               (short)(Jig3Detect.Value && Jig4Detect.Value ? 1 : 0), false);
+
+            _machineStatus.EquipState.IsCellInEquip = (Jig1Detect.Value && Jig2Detect.Value) || (Jig3Detect.Value && Jig4Detect.Value);
         }
 
         public bool Initialize()
@@ -85,13 +130,12 @@ namespace SDV_MoldingInjection.Defines
 
         public IDInput ServoOn => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SERVO_ON);
         public IDInput MainBreakerTrip => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_BREAKER_TRIP);
-        public IDInput MainCDACheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_CDA_CHECK);
 
         public IDInput DoorOpenLeft => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_OPEN_LEFT);
         public IDInput DoorReleaseLeft => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_RELEASE_LEFT);
         public IDInput DoorOpenRight => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_OPEN_RIGHT);
         public IDInput DoorReleaseRight => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_RELEASE_RIGHT);
-        public IDInput MainPanelCloseCheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_PANEL_CLOSE_CHECK);    
+        public IDInput MainPanelCloseCheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_PANEL_CLOSE_CHECK);
 
         public IDInput MainBreakerTripEBox => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_BREAKER_TRIP_EBOX);
         public IDInput MainPanelFanRun1EBox => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.MAIN_PANEL_FAN_RUN1_EBOX);
@@ -102,6 +146,7 @@ namespace SDV_MoldingInjection.Defines
         public IDInput SmokeDetectAlarmEBox => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SMOKE_DETECT_DETECT_ALARM_EBOX);
         public IDInput TempHighAlarmEBox => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SMOKE_DETECT_TEMP_HIGH_ALARM_EBOX);
         public IDInput TempHighWarningEBox => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SMOKE_DETECT_TEMP_HIGH_WARNING_EBOX);
+        public IDInput PumpMCOn => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_MC_ON);
 
         public IDInput Nozzle1Touch => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.NOZZLE1_TOUCH_DETECT);
         public IDInput Nozzle2Touch => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.NOZZLE2_TOUCH_DETECT);
@@ -134,9 +179,6 @@ namespace SDV_MoldingInjection.Defines
         public IDInput LockMonitorSwitch => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.OP_KEY_SW_LOCK_MONITOR);
         public IDInput LockKeyCheckSwitch => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.OP_KEY_SW_LOCK_KEY_CHECK);
 
-        public IDInput SyringeCDACheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.SYLINGE_HEAD_CDA_CHECK);
-        public IDInput PumpCDACheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_CDA_CHECK);
-        public IDInput PumpVentCDACheck => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_VENT_CDA_CHECK);
         public IDInput PumpFanRun1 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_FAN_RUN1);
         public IDInput PumpFanRun2 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_FAN_RUN2);
         public IDInput PumpFanRun3 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.PUMP_FAN_RUN3);
@@ -145,12 +187,14 @@ namespace SDV_MoldingInjection.Defines
         public IDInput DummyOverflowDetect2 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DUMMY_OVERFLOW_DETECT_2);
         public IDInput DummyOverflowDetect3 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DUMMY_OVERFLOW_DETECT_3);
         public IDInput DummyOverflowDetect4 => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DUMMY_OVERFLOW_DETECT_4);
-        public IDInput EmoInterfaceKNK => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.EMO_INTERFACE_KNK);
+        public IDInput InOutMachineEmo => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.INOUT_MACHINE_EMO);
 
         public IDInput DoorOpenRearLeft => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_OPEN_REAR_LEFT);
         public IDInput DoorReleaseRearLeft => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_RELEASE_REAR_LEFT);
         public IDInput DoorOpenRearRight => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_OPEN_REAR_RIGHT);
         public IDInput DoorReleaseRearRight => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.DOOR_RELEASE_REAR_RIGHT);
+        public IDInput InOutMachineDoorOpen => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.INOUT_MACHINE_DOOR_OPEN);
+        public IDInput InOutMachineMCOn => _dMachineInputDevice.Inputs.First(i => i.Id == (int)EMachineInput.INOUT_MACHINE_MC_ON);
 
         #region SPD Head Inputs
         public IDInput H1_CylUp => _dHead1InputDevice.Inputs.First(i => i.Id == (int)EHeadInput.CYL_UP_POS);
@@ -191,11 +235,26 @@ namespace SDV_MoldingInjection.Defines
             DoorOpenRearRight.Value == false &&
             DoorOpenLeft.Value == false &&
             DoorOpenRight.Value == false;
+        public bool InOutMachineDoorClose => InOutMachineDoorOpen.Value == false;
 
         public bool DoorLock =>
             DoorReleaseRearLeft.Value == false &&
             DoorReleaseRearRight.Value == false &&
             DoorReleaseLeft.Value == false &&
             DoorReleaseRight.Value == false;
+
+        private bool GetCCIEBitValue(int address)
+        {
+            int buff = 0;
+            int size = 1;
+            int startAddress = address - address % 8;
+#if !SIMULATION
+            MCCLinkIE.mdreceive(151, 255, 23, startAddress, ref size, ref buff);
+#endif
+
+            bool value = (buff & (0x01 << (address % 8))) > 0;
+            return value;
+
+        }
     }
 }

@@ -1,163 +1,153 @@
-﻿<UserControl
-    x:Class="SDV_MoldingInjection.MVVM.Views.HeaderView"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
-    xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
-    d:DataContext="{d:DesignInstance Type=vm:HeaderViewModel}"
-    xmlns:eqxui="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
-    Foreground="White"
-    mc:Ignorable="d"
-    d:DesignHeight="70"
-    d:DesignWidth="800">
+﻿<UserControl x:Class="SDV_MoldingInjection.MVVM.Views.HeaderView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
+             xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
+             d:DataContext="{d:DesignInstance Type=vm:HeaderViewModel}"
+             xmlns:eqxui="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
+             Foreground="White"
+             mc:Ignorable="d"
+             d:DesignHeight="70"
+             d:DesignWidth="800">
 
     <UserControl.Resources>
-        <Style
-            TargetType="{x:Type Border}">
+        <Style TargetType="{x:Type Border}">
             <Style.Setters>
-                <Setter
-                    Property="BorderBrush"
-                    Value="{StaticResource SecondaryBackgroundColor}" />
+                <Setter Property="BorderBrush"
+                        Value="{StaticResource SecondaryBackgroundColor}" />
             </Style.Setters>
         </Style>
     </UserControl.Resources>
 
-    <Border
-        Grid.ColumnSpan="3"
-        Grid.RowSpan="2"
-        BorderThickness="3">
-        <Grid
-            Height="70"
-            Background="Transparent">
+    <Border Grid.ColumnSpan="3"
+            Grid.RowSpan="2"
+            BorderThickness="3">
+        <Grid Height="70"
+              Background="Transparent">
             <Grid.RowDefinitions>
-                <RowDefinition
-                    Height="1*" />
-                <RowDefinition
-                    Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition
-                    Width="Auto" />
-                <ColumnDefinition
-                    Width="*" />
-                <ColumnDefinition
-                    Width="Auto" />
-                <ColumnDefinition
-                    Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Image
-                Source="{StaticResource ImageCustomerLogo}"
-                Stretch="Uniform"
-                Margin="5 0"
-                VerticalAlignment="Center" />
+            <Image Source="{StaticResource ImageCustomerLogo}"
+                   Stretch="Uniform"
+                   Margin="5 0"
+                   VerticalAlignment="Center" />
 
-            <Border
-                BorderThickness="0 0 3 0" />
+            <Border BorderThickness="0 0 3 0" />
 
-            <UniformGrid
-                Columns="2"
-                Grid.Row="1">
-                <TextBlock
-                    Text="ONLINE"
-                    FontSize="16"
-                    FontWeight="SemiBold"
-                    TextAlignment="Center"
-                    VerticalAlignment="Center"
-                    Foreground="{StaticResource PrimaryBackgroundColor}" />
-                <Border
-                    BorderThickness="3 0">
-                    <TextBlock
-                        Foreground="{StaticResource PrimaryBackgroundColor}"
-                        FontSize="16"
-                        FontWeight="SemiBold"
-                        TextAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="{Binding Information.SoftwareVersion, StringFormat='{}Ver : {0}'}" />
+            <UniformGrid Columns="2"
+                         Grid.Row="1">
+                <Label FontSize="16"
+                       Content="{Binding IsMasterAlive}"
+                       FontWeight="Bold"
+                       HorizontalContentAlignment="Center"
+                       VerticalAlignment="Center">
+                    <Label.Style>
+                        <Style TargetType="{x:Type Label}"
+                               BasedOn="{StaticResource {x:Type Label}}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsMasterAlive}"
+                                             Value="REMOTE">
+                                    <Setter Property="Foreground"
+                                            Value="{StaticResource PrimaryBackgroundColor}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsMasterAlive}"
+                                             Value="OFFLINE">
+                                    <Setter Property="Foreground"
+                                            Value="Tomato" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                            <Style.Setters>
+                            </Style.Setters>
+                        </Style>
+                    </Label.Style>
+                </Label>
+                <Border BorderThickness="3 0">
+                    <TextBlock Foreground="{StaticResource PrimaryBackgroundColor}"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               TextAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="{Binding Information.SoftwareVersion, StringFormat='{}Ver : {0}'}" />
                 </Border>
             </UniformGrid>
 
-            <Border
-                Grid.Row="1"
-                BorderThickness="0 3 0 0" />
+            <Border Grid.Row="1"
+                    BorderThickness="0 3 0 0" />
 
-            <eqxui:ImageButton
-                Content="BUZZER OFF"
-                Grid.Column="3"
-                Grid.RowSpan="2"
-                Margin="5"
-                Width="103"
-                Command="{Binding BuzzerOffCommand}"
-                DisabledImage="{StaticResource image_cancel_normal_light}"
-                Image="{StaticResource image_alarm_stop_selected}" />
+            <eqxui:ImageButton Content="BUZZER OFF"
+                               Grid.Column="3"
+                               Grid.RowSpan="2"
+                               Margin="5"
+                               Width="103"
+                               Command="{Binding BuzzerOffCommand}"
+                               DisabledImage="{StaticResource image_cancel_normal_light}"
+                               Image="{StaticResource image_alarm_stop_selected}" />
 
 
-            <DockPanel
-                Grid.Column="1">
-                <TextBlock
-                    TextAlignment="Center"
-                    DockPanel.Dock="Left"
-                    VerticalAlignment="Center"
-                    FontWeight="Bold"
-                    FontSize="18"
-                    Margin="10 0"
-                    Foreground="{StaticResource PrimaryBackgroundColor}"
-                    Text="{Binding Now, StringFormat='{}{0:yyyy-MM-dd, HH:mm:ss}'}" />
+            <DockPanel Grid.Column="1">
+                <TextBlock TextAlignment="Center"
+                           DockPanel.Dock="Left"
+                           VerticalAlignment="Center"
+                           FontWeight="Bold"
+                           FontSize="18"
+                           Margin="10 0"
+                           Foreground="{StaticResource PrimaryBackgroundColor}"
+                           Text="{Binding Now, StringFormat='{}{0:yyyy-MM-dd, HH:mm:ss}'}" />
 
-                <Border
-                    BorderThickness="3 0 0 0">
-                    <TextBlock
-                        TextAlignment="Center"
-                        VerticalAlignment="Center"
-                        FontWeight="Bold"
-                        FontSize="18"
-                        Foreground="{StaticResource PrimaryBackgroundColor}"
-                        Text="{Binding CurrentView}" />
+                <Border BorderThickness="3 0 0 0">
+                    <TextBlock TextAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontWeight="Bold"
+                               FontSize="18"
+                               Foreground="{StaticResource PrimaryBackgroundColor}"
+                               Text="{Binding CurrentView}" />
                 </Border>
             </DockPanel>
 
-            <Border
-                Grid.Column="2"
-                Grid.RowSpan="2"
-                BorderThickness="3 0">
-                <UniformGrid
-                    Rows="2">
-                    <TextBlock
-                        Text="EQP ID : EQPID_01"
-                        Margin="10 0"
-                        FontWeight="SemiBold"
-                        FontSize="16"
-                        FontFamily="Consolas"
-                        TextAlignment="Left"
-                        VerticalAlignment="Center"
-                        Foreground="{StaticResource PrimaryBackgroundColor}" />
-                    <Border
-                        BorderThickness="0 3 0 0">
+            <Border Grid.Column="2"
+                    Grid.RowSpan="2"
+                    BorderThickness="3 0">
+                <UniformGrid Rows="2">
+                    <TextBlock Text="{Binding Information.EQPID, StringFormat='{}EQP ID : {0}'}"
+                               Margin="10 0"
+                               FontWeight="SemiBold"
+                               FontSize="16"
+                               FontFamily="Consolas"
+                               TextAlignment="Left"
+                               VerticalAlignment="Center"
+                               Foreground="{StaticResource PrimaryBackgroundColor}" />
+                    <Border BorderThickness="0 3 0 0">
                         <TextBlock Text="{Binding RecipeSelector.CurrentRecipeDisplayName,StringFormat='{}PPID   : {0}'}"
-                            Margin="10 0"
-                            FontWeight="SemiBold"
-                            FontSize="16"
-                            FontFamily="Consolas"
-                            TextAlignment="Left"
-                            VerticalAlignment="Center"
-                            Foreground="{StaticResource PrimaryBackgroundColor}" />
+                                   Margin="10 0"
+                                   FontWeight="SemiBold"
+                                   FontSize="16"
+                                   FontFamily="Consolas"
+                                   TextAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   Foreground="{StaticResource PrimaryBackgroundColor}" />
                     </Border>
                 </UniformGrid>
             </Border>
 
-            <Border
-                Grid.Row="1"
-                Grid.Column="1"
-                BorderThickness="0 3 0 0">
-                <TextBlock
-                    TextAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontWeight="Bold"
-                    FontSize="18"
-                    Foreground="Tomato"
-                    Text="{Binding MachineStatus.Message}" />
+            <Border Grid.Row="1"
+                    Grid.Column="1"
+                    BorderThickness="0 3 0 0">
+                <TextBlock TextAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontWeight="Bold"
+                           FontSize="18"
+                           Foreground="Tomato"
+                           Text="{Binding MachineStatus.Message}" />
             </Border>
         </Grid>
     </Border>

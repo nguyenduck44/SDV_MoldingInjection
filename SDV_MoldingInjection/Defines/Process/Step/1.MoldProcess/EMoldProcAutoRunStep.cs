@@ -4,10 +4,12 @@
     {
         Start,
 
+        Wait_HeadUse,
+
         JigDetect_Check,
         JigStatus_Check,
 
-        Calibration_Check,
+        ResinInject,
 
         End,
     }

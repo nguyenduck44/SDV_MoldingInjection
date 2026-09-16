@@ -12,11 +12,11 @@ namespace SDV_MoldingInjection.Extensions
 {
     public enum EInputDevice
     {
-         MachineInput = 0,
-         Head1Input = 1,
-         Head2Input = 2,
-         Head3Input = 3,
-         Head4Input = 4,
+        MachineInput = 0,
+        Head1Input = 1,
+        Head2Input = 2,
+        Head3Input = 3,
+        Head4Input = 4,
     }
 
     public enum EOutputDevice
@@ -45,7 +45,7 @@ namespace SDV_MoldingInjection.Extensions
                         SimulationOffset = 0,
                     };
                 });
-                
+
                 for (int i = 1; i <= 4; i++)
                 {
                     var index = i;
@@ -158,6 +158,7 @@ namespace SDV_MoldingInjection.Extensions
                 services.AddSingleton<Outputs>();
 
                 services.AddSingleton<AnalogInputs>();
+                services.AddSingleton<CDAStatus>();
             });
 
             return hostBuilder;

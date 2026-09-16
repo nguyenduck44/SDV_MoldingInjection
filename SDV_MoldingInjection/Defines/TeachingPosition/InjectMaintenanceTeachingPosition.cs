@@ -26,11 +26,28 @@ namespace SDV_MoldingInjection.Defines.TeachingPosition
         public PositionPoint Z3AxisInjectPos { get; }
         public PositionPoint Z4AxisInjectPos { get; }
 
+        public PositionPoint Z1AxisDummyPos { get; }
+        public PositionPoint Z2AxisDummyPos { get; }
+        public PositionPoint Z3AxisDummyPos { get; }
+        public PositionPoint Z4AxisDummyPos { get; }
+
+        public PositionPoint Z1AxisNeedleCleanPos { get; }
+        public PositionPoint Z2AxisNeedleCleanPos { get; }
+        public PositionPoint Z3AxisNeedleCleanPos { get; }
+        public PositionPoint Z4AxisNeedleCleanPos { get; }
+
+        public PositionPoint Z1AxisMasterNozzleCheckPos { get; }
+        public PositionPoint Z2AxisMasterNozzleCheckPos { get; }
+        public PositionPoint Z3AxisMasterNozzleCheckPos { get; }
+        public PositionPoint Z4AxisMasterNozzleCheckPos { get; }
 
         public MultiPointPosition ZAxisReadyGroup { get; }
         public MultiPointPosition ReadyGroup { get; }
         public MultiPointPosition InjectZSafetyGroup { get; }
         public MultiPointPosition InjectGroup { get; }
+        public MultiPointPosition MasterNozzleCheckAll { get; }
+        public MultiPointPosition DummyShotAll { get; }
+        public MultiPointPosition NeedleCleanAll { get; }
 
         public RecipePositionManager PositionManager { get; }
 
@@ -83,17 +100,53 @@ namespace SDV_MoldingInjection.Defines.TeachingPosition
             Z4AxisInjectPos = positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisInjectPos,
                         _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisInjectPosOffset, devices.Motions.Z4Axis);
 
+            //ZAxis DummyShot
+            Z1AxisDummyPos = positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisDummyPos,
+                        _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisDummyPosOffset, devices.Motions.Z1Axis);
+            Z2AxisDummyPos = positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisDummyPos,
+                        _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisDummyPosOffset, devices.Motions.Z2Axis);
+            Z3AxisDummyPos = positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisDummyPos,
+                        _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisDummyPosOffset, devices.Motions.Z3Axis);
+            Z4AxisDummyPos = positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisDummyPos,
+                        _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisDummyPosOffset, devices.Motions.Z4Axis);
+
+            //ZAxis Clean
+            Z1AxisNeedleCleanPos = positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisNeedleCleanPos,
+                        _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisNeedleCleanPosOffset, devices.Motions.Z1Axis);
+            Z2AxisNeedleCleanPos = positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisNeedleCleanPos,
+                        _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisNeedleCleanPosOffset, devices.Motions.Z2Axis);
+            Z3AxisNeedleCleanPos = positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisNeedleCleanPos,
+                        _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisNeedleCleanPosOffset, devices.Motions.Z3Axis);
+            Z4AxisNeedleCleanPos = positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisNeedleCleanPos,
+                        _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisNeedleCleanPosOffset, devices.Motions.Z4Axis);
+
+            //ZAxis Master Nozzle Check
+            Z1AxisMasterNozzleCheckPos = positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisMasterNozzleCheckPos,
+                        _currentRecipe => _currentRecipe.SPDHead1_Recipe.ZAxisMasterNozzleCheckPosOffset, devices.Motions.Z1Axis);
+            Z2AxisMasterNozzleCheckPos = positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisMasterNozzleCheckPos,
+                        _currentRecipe => _currentRecipe.SPDHead2_Recipe.ZAxisMasterNozzleCheckPosOffset, devices.Motions.Z2Axis);
+            Z3AxisMasterNozzleCheckPos = positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisMasterNozzleCheckPos,
+                        _currentRecipe => _currentRecipe.SPDHead3_Recipe.ZAxisMasterNozzleCheckPosOffset, devices.Motions.Z3Axis);
+            Z4AxisMasterNozzleCheckPos = positionManager.CreatePositionPoint(2, _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisMasterNozzleCheckPos,
+                        _currentRecipe => _currentRecipe.SPDHead4_Recipe.ZAxisMasterNozzleCheckPosOffset, devices.Motions.Z4Axis);
+
             ReadyGroup = CreateGroup("Ready", XAxisReadyPos, YAxisReadyPos);
             ZAxisReadyGroup = CreateGroup("ZAxis Ready", Z1AxisSafetyPos, Z2AxisSafetyPos, Z3AxisSafetyPos, Z4AxisSafetyPos);
             InjectZSafetyGroup = CreateGroup("Inject ZSafety", XAxisInjectPos, YAxisInjectPos);
             InjectGroup = CreateGroup("Inject", XAxisInjectPos, YAxisInjectPos, Z1AxisInjectPos, Z2AxisInjectPos, Z3AxisInjectPos, Z4AxisInjectPos);
+            MasterNozzleCheckAll = CreateGroup("Master Nozzle All", XAxisInjectPos, YAxisInjectPos, Z1AxisMasterNozzleCheckPos, Z2AxisMasterNozzleCheckPos, Z3AxisMasterNozzleCheckPos, Z4AxisMasterNozzleCheckPos);
+            DummyShotAll = CreateGroup("DummyShot All", XAxisDummyPos, YAxisDummyPos, Z1AxisDummyPos, Z2AxisDummyPos, Z3AxisDummyPos, Z4AxisDummyPos);
+            NeedleCleanAll = CreateGroup("NeedleClean All", XAxisNeedleCleanPos, YAxisNeedleCleanPos, Z1AxisNeedleCleanPos, Z2AxisNeedleCleanPos, Z3AxisNeedleCleanPos, Z4AxisNeedleCleanPos);
 
             positionManager.GroupedPositions = new ObservableCollection<MultiPointPosition>
             {
                 ReadyGroup,
                 ZAxisReadyGroup,
                 InjectZSafetyGroup,
-                InjectGroup
+                InjectGroup,
+                MasterNozzleCheckAll,
+                DummyShotAll,
+                NeedleCleanAll
             };
 
             PositionManager = positionManager;

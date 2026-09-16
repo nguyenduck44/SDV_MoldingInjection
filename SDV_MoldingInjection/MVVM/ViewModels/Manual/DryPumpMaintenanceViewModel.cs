@@ -21,6 +21,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         public double PressureSpec => _recipeSelector.CurrentRecipe.DryPumpRecipe.VacuumPressureSpec;
         public double CurrentPressure => _devices.AnalogInputs.VacuumPressureInTorr;
         public double TimeInSecond { get; set; }
+        public AutoTeachModeViewModel AutoTeachModeViewModel { get; }
         public DryPumpMaintenanceTeachingPosition DryPumpMaintenanceTeachingPosition { get; }
         #endregion
 
@@ -97,6 +98,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             Devices devices,
             RecipeSelector recipeSelector,
             MachineStatus machineStatus,
+            AutoTeachModeViewModel autoTeachModeViewModel,
             DryPumpMaintenanceTeachingPosition dryPumpMaintenanceTeachingPosition,
             ILeakTestResultViewModelFactory leakTestResultViewModelFactory,
             ILeakTestResultDialogService leakTestResultDialogService)
@@ -104,6 +106,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         {
             _devices = devices;
             _recipeSelector = recipeSelector;
+            AutoTeachModeViewModel = autoTeachModeViewModel;
             DryPumpMaintenanceTeachingPosition = dryPumpMaintenanceTeachingPosition;
             _leakTestResultViewModelFactory = leakTestResultViewModelFactory;
             _leakTestResultDialogService = leakTestResultDialogService;
@@ -134,8 +137,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 _devices.Inputs.DryPumpRun,
                 _devices.Inputs.DryPumpAlarm,
-                _devices.Inputs.PumpCDACheck,
-                _devices.Inputs.PumpVentCDACheck,
                 _devices.Inputs.PumpFanRun1,
                 _devices.Inputs.PumpFanRun2,
                 _devices.Inputs.ChamberClose,

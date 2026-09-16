@@ -12,32 +12,15 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 {
     public class LogViewModel : ViewModelBase
     {
-        private readonly IConfiguration _configuration;
+        protected readonly IConfiguration _configuration;
         private string _selectedDay;
-        private string LogFolder => _configuration["Folders:LogFolder"] ?? "";
-        private string ErrorFolder => _configuration["Folders:ErrorFolder"] ?? "";
+        protected virtual string LogFolder => _configuration["Folders:LogFolder"] ?? "";
         public LogViewModel(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
         public ObservableCollection<FileSystemNode> LogFiles { get; set; }
-
-        public ObservableCollection<string> LogDays
-        {
-            get
-            {
-                List<string> logDays = GetLatestLogDayFolders(ErrorFolder);
-
-                var logs = new ObservableCollection<string>();
-                foreach (var day in logDays)
-                {
-                    logs.Add(Path.GetFileName(day));
-                }
-
-                return logs;
-            }
-        }
 
         public string SelectedDay
         {
@@ -77,6 +60,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 });
             }
 
+            logEntries.Reverse();
             return logEntries;
         }
 
@@ -128,36 +112,6 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             return logEntries;
         }
 
-        private List<ErrorLogEntry> LoadErrorLogEntries(string filePath)
-        {
-            var logEntries = new List<ErrorLogEntry>();
-            if (File.Exists(filePath) == false) return logEntries;
-            var lines = File.ReadAllLines(filePath);
-
-            var regex = new Regex(@"\[(?<time>[0-9:\.]+)\],(?<type>\w+)\s*,(?<source>.{0,180}),\[(?<errorcode>\d+)\]\s*(?<message>.+)");
-
-            foreach (var line in lines)
-            {
-                var match = regex.Match(line);
-
-                if (int.TryParse(match.Groups["errorcode"].Value.Trim(), out int errCode) == false)
-                {
-                    continue;
-                }
-
-                if (match.Success && (match.Groups["type"].Value.Trim() == "ERROR" || match.Groups["type"].Value.Trim() == "WARN"))
-                {
-                    logEntries.Add(new ErrorLogEntry
-                    {
-                        Type = match.Groups["type"].Value.Trim(),
-                        Timestamp = DateTime.Parse(match.Groups["time"].Value.Trim()).ToString("HH:mm:ss"),
-                        ErrorCode = int.Parse(match.Groups["errorcode"].Value.Trim()),
-                        Message = match.Groups["message"].Value.Trim()
-                    });
-                }
-            }
-            return logEntries;
-        }
 
         public void LoadLogFiles()
         {

@@ -79,7 +79,9 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                                     r is not OptionRecipe && 
                                     r is not IdlePurgeRecipe && 
                                     r is not CylinderDelayTimeRecipe && 
-                                    r is not InjectTimeRecipe)
+                                    r is not InjectTimeRecipe &&
+                                    r is not CDASettingRecipe &&
+                                    r is not MotionSpeedRecipe)
                                     .ToList();
 
                 return new ObservableCollection<RecipeBase>(recipeObjects);
@@ -150,10 +152,26 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
-                    string CopyRecipe = (string)Application.Current.Resources["str_CopyRecipe"];
-                    if (MessageBoxEx.ShowDialog($"{CopyRecipe} {SelectedModel} ? ") == true)
+                    if (string.IsNullOrEmpty(SelectedModel))
                     {
-                        RecipeSelector.Copy(SelectedModel);
+                        MessageBoxEx.Show("Please Select Model for Copy", false, "WARN");
+                        return;
+                    }
+
+                    CreateNewRecipeWindow createNewRecipeWindow = new CreateNewRecipeWindow()
+                    {
+                        Width = 500,
+                        Height = 200
+                    };
+                    if (createNewRecipeWindow.ShowDialog() == true)
+                    {
+                        RecipeInfo recipeInfo = new RecipeInfo()
+                        {
+                            Id = createNewRecipeWindow.RecipeId,
+                            Name = createNewRecipeWindow.RecipeName,
+                            FolderName = createNewRecipeWindow.RecipeName
+                        };
+                        RecipeSelector.Copy(SelectedModel, recipeInfo);
                         RecipeSelector.UpdateValidRecipes();
                         LoadRecipeEvent?.Invoke();
                     }
@@ -166,6 +184,18 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             {
                 return new RelayCommand(() =>
                 {
+                    if (string.IsNullOrEmpty(SelectedModel))
+                    {
+                        MessageBoxEx.Show("Please Select Model for Delete", false, "WARN");
+                        return;
+                    }
+
+                    if (SelectedModel == RecipeSelector.RecipeSetting.CurrentRecipe)
+                    {
+                        MessageBoxEx.Show("Can't DELETE CURRENT MODEL", false, "WARN");
+                        return;
+                    }                   
+
                     RecipeSelector.Delete(SelectedModel);
                 });
             }

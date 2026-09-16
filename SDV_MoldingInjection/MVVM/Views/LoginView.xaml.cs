@@ -46,7 +46,14 @@ namespace SDV_MoldingInjection.MVVM.Views
 
         private void passwordBox_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            VirtualKeyboard virtualKeyboard = new VirtualKeyboard();
+            VirtualKeyboard virtualKeyboard = new VirtualKeyboard()
+            {
+                Height = 400,
+                Width = 1024,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+
+
             if (virtualKeyboard.ShowDialog() == true)
             {
                 passwordBox.Password = virtualKeyboard.InputText;

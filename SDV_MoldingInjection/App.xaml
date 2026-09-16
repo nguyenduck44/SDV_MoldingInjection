@@ -45,7 +45,7 @@
                     <cvt:ObjectSelectedConverter x:Key="ObjectSelectedConverter" />
                     <uiCvt:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
                     <uiCvt:DoorStatusToBrushConverterRevers x:Key="DoorStatusToBrushConverterRevers" />
-
+                    <cvt:RunStepDisplayConverter x:Key="RunStepDisplayConverter" />
                     <cvt:HeadSkipStatusTextConverter x:Key="HeadSkipStatusTextConverter" />
                     <cvt:HeadSkipStatusBrushConverter x:Key="HeadSkipStatusBrushConverter" />
                 </ResourceDictionary>
@@ -108,6 +108,9 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:CylinderDelayTimeViewModel}">
                 <views:CylinderDelayTimeView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:CDASettingViewModel}">
+                <views:CDASettingView />
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:MaterialPortsViewModel}">
                 <views:MaterialPortsView />
@@ -175,14 +178,20 @@
             <DataTemplate DataType="{x:Type vm:MonitorIOViewModel}">
                 <views:MonitorIOView />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:MonitorMotionViewModel}">
-                <views:MonitorMotionView />
+            <DataTemplate DataType="{x:Type vm:InterfaceInOutViewModel}">
+                <views:InterfaceInOutView />
             </DataTemplate>
             <DataTemplate DataType="{x:Type viewsLib:TactTimeListViewModel}">
                 <viewsLib:TactTimeChartView />
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:TactTimeViewModel}">
                 <views:TactTimeView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:AnalogStatusViewModel}">
+                <views:AnalogStatusView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:EBoxMainPowerMonitoringViewModel}">
+                <views:EBoxMainPowerMonitoringView />
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type vm:DevViewModel}">
@@ -206,8 +215,14 @@
             <DataTemplate DataType="{x:Type vm:MonitorViewModel}">
                 <views:MonitorView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ProcessesMonitoringViewModel}">
+                <views:ProcessesMonitoring />
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:ProductionInforViewModel}">
                 <views:ProductionInforView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:AutoTeachModeViewModel}">
+                <views:AutoTeachModeView />
             </DataTemplate>
             <DataTemplate DataType="{x:Type devices:SyringeAmountStatus}">
                 <controls:SyringeUnitView />

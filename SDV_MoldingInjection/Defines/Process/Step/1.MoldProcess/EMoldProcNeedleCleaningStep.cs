@@ -4,6 +4,9 @@ namespace SDV_MoldingInjection.Defines
     {
         Start,
 
+        Chamber_Close,
+        Chamber_Close_Wait,
+
         YAxis_CleanPos_Calculator,
 
         XY_Axis_NeedleCleanPos_Move,

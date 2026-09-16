@@ -4,8 +4,11 @@
     {
         Start,
 
+        Wait_HeadUse,
+
         ResetInjectTime,
         BubbleRemoveResetCountRotate,
+        DummyShotBeforeInject_Check,
         // ----- CHARGING PHASE -----
         Gate_Close,
         Gate_CloseWait,
@@ -28,6 +31,8 @@
 
         PAxis_InjectPos_Move,
         PAxis_InjectPos_MoveWait,
+
+        ActionCount_Check,
 
         WorkDone_Send,
         WorkDone_Clear,

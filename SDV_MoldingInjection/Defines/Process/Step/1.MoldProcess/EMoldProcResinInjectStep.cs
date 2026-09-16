@@ -4,15 +4,20 @@
     {
         Start,
 
+        Chamber_Close,
+        Chamber_Close_Wait,
+
         InitQueue,
         StepQueue_EmptyCheck,
 
         XYAxis_InjectPos_Move,
         XYAxis_InjectPos_MoveWait,
 
-        ZAxisBellowCyl_InjectPos_Move,
-        ZAxisBellowCyl_InjectPos_MoveWait,
+        ZAxisBellowCyl_InjectPos_UpDistance_Move,
+        ZAxisBellowCyl_InjectPos_UpDistance_MoveWait,
 
+        ZAxis_InjectPos_Move,
+        ZAxis_InjectPos_MoveWait,
 
         SDPHead_Work_Request,
 

@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
              xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
              xmlns:uiControls="clr-namespace:EQX.UI.Controls;assembly=EQX.UI"
-             IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type vm:InjectMaintenanceViewModel}}"
              d:DesignHeight="450"
@@ -63,7 +62,8 @@
                 <GroupBox Grid.ColumnSpan="2"
                           Header="{Binding SelectedGroupedPosition.Name}"
                           Style="{x:Null}"
-                          FontWeight="Bold">
+                          FontWeight="Bold"
+                          IsEnabled="{Binding MachineStatus.IsStandByProcessMode}">
                     <uiControls:PositionPointGridView ItemsSource="{Binding SelectedGroupedPosition.Points}" />
                 </GroupBox>
                 <!-- POSITION SELECTION -->
@@ -71,36 +71,39 @@
                           FontWeight="Bold"
                           Header="Teaching Position"
                           Style="{x:Null}">
-                    <ItemsControl ItemsSource="{Binding GroupedPositions}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Button Margin="3"
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+                        <ItemsControl ItemsSource="{Binding GroupedPositions}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Margin="3"
                                         Height="50"
                                         Content="{Binding Name}"
                                         Command="{Binding DataContext.TeachingPositionButtonCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                                         CommandParameter="{Binding .}">
-                                    <Button.Style>
-                                        <Style TargetType="Button"
+                                        <Button.Style>
+                                            <Style TargetType="Button"
                                                BasedOn="{StaticResource {x:Type Button}}">
-                                            <Style.Triggers>
-                                                <DataTrigger Value="true">
-                                                    <DataTrigger.Binding>
-                                                        <MultiBinding Converter="{StaticResource ObjectSelectedConverter}">
-                                                            <Binding />
-                                                            <Binding Path="DataContext.SelectedGroupedPosition"
+                                                <Style.Triggers>
+                                                    <DataTrigger Value="true">
+                                                        <DataTrigger.Binding>
+                                                            <MultiBinding Converter="{StaticResource ObjectSelectedConverter}">
+                                                                <Binding />
+                                                                <Binding Path="DataContext.SelectedGroupedPosition"
                                                                      RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" />
-                                                        </MultiBinding>
-                                                    </DataTrigger.Binding>
-                                                    <Setter Property="Background"
+                                                            </MultiBinding>
+                                                        </DataTrigger.Binding>
+                                                        <Setter Property="Background"
                                                             Value="LightGreen" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
                 </GroupBox>
 
                 <GroupBox Grid.Row="1"
@@ -118,7 +121,8 @@
                         <UniformGrid Columns="2"
                                      Margin="0 0 0 0"
                                      Height="40"
-                                     VerticalAlignment="Top">
+                                     VerticalAlignment="Top"
+                                     IsEnabled="{Binding MachineStatus.IsStandByProcessMode}">
                             <Button Command="{Binding MoveToTarget}"
                                     Content="Move to Target"
                                     Margin="2 1" />
@@ -132,12 +136,15 @@
                                 Content="STOP" 
                                 Margin="2 1"/>
 
-                        <uiControls:IncControlView Grid.Row="2"
-                                                   ItemsSource="{Binding SelectedGroupedPosition.Points}"
-                                                   IncStep="{Binding IncStep, Mode=TwoWay}" />
+                        <uiControls:IncControlView  Grid.Row="2"
+                                                    IsEnabled="{Binding MachineStatus.IsStandByProcessMode}"
+                                                    ItemsSource="{Binding SelectedGroupedPosition.Points}"
+                                                    IncStep="{Binding IncStep, Mode=TwoWay}"/>
+
                         <UniformGrid Grid.Row="3"
                                      Columns="2"
-                                     Margin="0 5 0 0">
+                                     Margin="0 5 0 0"
+                                     IsEnabled="{Binding MachineStatus.IsStandByProcessMode}">
                             <Button Background="LightBlue"
                                     Command="{Binding TeachPositionSaveCommand}"
                                     Content="Save"
@@ -149,21 +156,28 @@
                         </UniformGrid>
                     </Grid>
                 </GroupBox>
+                <StackPanel Grid.Row="1"
+                            Grid.Column="2"
+                            IsEnabled="{Binding MachineStatus.IsStandByProcessMode}">
+                    <GroupBox Style="{x:Null}"
+                              FontWeight="Bold"
+                              Header="Cylinders">
+                        <ItemsControl ItemsSource="{Binding Cylinders}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </GroupBox>
+                    <GroupBox Style="{x:Null}"
+                              FontWeight="Bold"
+                              Header="Safety Mode"
+                              Height="75">
+                        <ContentControl Content="{Binding AutoTeachModeViewModel}" />
+                    </GroupBox>
+                </StackPanel>
 
-                <GroupBox Grid.Row="1"
-                          Grid.Column="2"
-                          Style="{x:Null}"
-                          FontWeight="Bold"
-                          Grid.ColumnSpan="2"
-                          Header="Cylinders">
-                    <ItemsControl ItemsSource="{Binding Cylinders}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-                </GroupBox>
             </Grid>
         </GroupBox>
     </DockPanel>

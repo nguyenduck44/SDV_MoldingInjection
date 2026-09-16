@@ -35,7 +35,9 @@ namespace SDV_MoldingInjection.Recipe
         private readonly IAlertService _warningService;
         private readonly ILanguageService _languageService;
         private readonly NavigationStore _navigationStore;
+        private bool isChangingModel { get; set; } = false;
 
+        private object lockObj = new object();
         private string recipeFolder => _configuration.GetValue<string>("Folders:RecipeFolder") ?? "";
         #endregion
 
@@ -51,13 +53,12 @@ namespace SDV_MoldingInjection.Recipe
             get
             {
                 string selectedRecipe = ResolveRecipeName(RecipeSetting.CurrentRecipe);
-                bool result1 = CIMHelpers.TryParseRecipeNumber(selectedRecipe, out int index);
-                if (result1 == false)
+                if (_recipeCatalog.TryGetRecipeId(selectedRecipe, out int recipeId) == false)
                 {
                     throw new Exception("PPID Name format is not match");
                 }
 
-                return index;
+                return recipeId;
             }
         }
 
@@ -80,6 +81,7 @@ namespace SDV_MoldingInjection.Recipe
 
         public RecipeList CurrentRecipe { get; private set; }
         public event Action? CurrentModelChanged;
+        public ParameterWordArea ParameterWordArea { get; }
         #endregion
 
         #region Constructor
@@ -115,28 +117,79 @@ namespace SDV_MoldingInjection.Recipe
             CurrentRecipe.InjectTimeRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
             CurrentRecipe.IdlePurgeRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
             CurrentRecipe.CylinderDelayTimeRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
+            CurrentRecipe.CDASettingRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
+            CurrentRecipe.MotionSpeedRecipe.RecipeChanged += SingleRecipe_RecipeChanged;
+
+            ParameterWordArea = new ParameterWordArea();
         }
 
-        private async void SingleRecipe_RecipeChanged(object? oldValue, object? newValue, string? propertyName = null)
+        private bool isUpdateParameter2CIM { get; set; } = false;
+        private async void SingleRecipe_RecipeChanged(object? oldValue, object? newValue, string? propertyName = null, int parameterIndex = -1, PropertyInfo? propertyInfo = null)
         {
-            if (_navigationStore.CurrentViewModel.GetType() == typeof(InitDeinitViewModel)) return;
+            if (_navigationStore.CurrentViewModel.GetType() != typeof(InitDeinitViewModel))
+            {
+                LogManager.GetLogger("Data").Info($"{propertyName} value changed {oldValue} -> {newValue}");
+            }
+
             string selectedRecipe = ResolveRecipeName(RecipeSetting.CurrentRecipe);
-            bool result1 = CIMHelpers.TryParseRecipeNumber(selectedRecipe, out int index);
-            if (result1 == false)
+            if (_recipeCatalog.TryGetRecipeId(selectedRecipe, out int recipeId) == false)
             {
                 throw new Exception("PPID Name format is not match");
             }
-            await Task.Run(() =>
-            {
-                var parameterArea = new ParameterWordArea
-                {
-                    PPIDName = selectedRecipe,
-                };
-                parameterArea.Parameters[0] = CurrentRecipe.CommonRecipe.LogSaveDay;
-                EquipEventHelpers.ParameterChange(parameterArea, index);
-            });
 
-            LogManager.GetLogger("Data").Info($"{propertyName} value changed {oldValue} -> {newValue}");
+            if (propertyInfo == null) return;
+
+            if (parameterIndex > 0)
+            {
+                await Task.Run(async () =>
+                {
+                    while(isUpdateParameter2CIM)
+                    {
+                        await Task.Delay(5);
+                    }
+
+                    isUpdateParameter2CIM = true;
+                    ParameterWordArea.PPIDName = selectedRecipe;
+
+                    int value;
+
+                    if (newValue == null) return;
+
+                    if (newValue.GetType() == typeof(double) ||
+                        newValue.GetType() == typeof(float))
+                    {
+                        value = (int)((double)newValue * 1000.0);
+                    }
+                    else if (newValue.GetType() == typeof(int))
+                    {
+                        value = (int)newValue;
+                    }
+                    else if ((newValue.GetType() == typeof(bool)))
+                    {
+                        value = (bool)newValue ? 1 : 0;
+                    }
+                    else
+                    {
+                        throw new Exception($"Typeof '{propertyName}' ('{newValue.GetType()}') is not supported.");
+                    }
+
+                    if (propertyInfo.GetCustomAttribute(typeof(ParameterDescriptionAttribute)) != null)
+                    {
+                        lock (lockObj)
+                        {
+                            ParameterWordArea.Parameters[parameterIndex - 1] = value;
+                            EquipEventHelpers.ParameterChange(ParameterWordArea, recipeId);
+                        }
+                    }
+
+                    else if (propertyInfo.GetCustomAttribute(typeof(ECMParameterDescriptionAttribute)) != null)
+                    {
+                        EquipEventHelpers.EquipmentConstantParameterChanged(parameterIndex, value);
+                    }
+
+                    isUpdateParameter2CIM = false;
+                });
+            }
         }
 
         private void CommonRecipe_SelectedLanguageEvent(ILanguageDefinition obj)
@@ -228,7 +281,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        public void Create(string newRecipe, string cimRecipeNumber = "")
+        public void Create(string newRecipe, int recipeNumber, string cimRecipeNumberWithText = "")
         {
             string currentRecipeName = ResolveRecipeName(RecipeSetting.CurrentRecipe);
             string currentRecipeFolder = GetRecipeFolderPath(currentRecipeName);
@@ -239,16 +292,19 @@ namespace SDV_MoldingInjection.Recipe
                 return;
             }
 
-            int recipeId = ParseRecipeId(newRecipeName);
             if (_recipeCatalog.ContainsName(newRecipeName))
             {
                 MessageBoxEx.Show($"Recipe name '{newRecipeName}' already exists in RecipeInfo.");
                 return;
             }
-
-            if (recipeId > 0 && _recipeCatalog.ContainsId(recipeId))
+            if (recipeNumber < 0)
             {
-                MessageBoxEx.Show($"Recipe Id '{recipeId}' already exists in RecipeInfo.");
+                MessageBoxEx.Show($"Recipe Id for '{newRecipeName}' is not valid.");
+                return;
+            }
+            if (recipeNumber > 0 && _recipeCatalog.ContainsId(recipeNumber))
+            {
+                MessageBoxEx.Show($"Recipe Id '{recipeNumber}' already exists in RecipeInfo.");
                 return;
             }
 
@@ -265,11 +321,11 @@ namespace SDV_MoldingInjection.Recipe
                 Directory.CreateDirectory(createRecipeFolder);
 
                 CopyDirectory(currentRecipeFolder, createRecipeFolder);
-                _recipeCatalog.WriteRecipeInfo(recipeFolderName, recipeId, newRecipeName);
+                _recipeCatalog.WriteRecipeInfo(recipeFolderName, recipeNumber, newRecipeName);
 
-                EquipEventHelpers.PPIDCreate(newRecipeName, cimRecipeNumber);
+                EquipEventHelpers.PPIDCreate(newRecipeName, recipeNumber, cimRecipeNumberWithText);
 
-                UpdateValidRecipes();
+                UpdateValidRecipes(); // Refresh the list to show the new copied recipe
 
                 MessageBoxEx.Show($"Recipe '{currentRecipeName}' copied successfully to '{newRecipeName}'.");
             }
@@ -279,7 +335,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        public void Delete(string selectedRecipe, string fromCIMRecipeNumber = "")
+        public void Delete(string selectedRecipe, int? recipeNumber = null, string fromCIMRecipeNumberWithText = "")
         {
             selectedRecipe = ResolveRecipeName(selectedRecipe);
             if (_recipeCatalog.TryGetRecipeInfo(selectedRecipe, out RecipeInfo? recipeInfo) == false || recipeInfo == null)
@@ -288,14 +344,14 @@ namespace SDV_MoldingInjection.Recipe
                 return;
             }
 
-            if (string.IsNullOrEmpty(fromCIMRecipeNumber))
+            if (string.IsNullOrEmpty(fromCIMRecipeNumberWithText) || recipeNumber == null)
             {
-                bool? confirm = MessageBoxEx.ShowDialog($"DO you realy want to DELETE RECIPE {selectedRecipe}");
+                bool? confirm = MessageBoxEx.ShowDialog($"Do you really want to DELETE RECIPE {selectedRecipe}");
 
                 if (confirm != true) return;
             }
 
-            string copyRecipe = (string)Application.Current.Resources["str_CopyRecipe"];
+            string CopyRecipe = (string)Application.Current.Resources["str_CopyRecipe"];
             if (selectedRecipe == RecipeSetting.CurrentRecipe)
             {
                 MessageBoxEx.ShowDialog($"Can not delete CURRENT RECIPE {selectedRecipe}");
@@ -308,39 +364,73 @@ namespace SDV_MoldingInjection.Recipe
 
                 UpdateValidRecipes();
 
-                EquipEventHelpers.PPIDListSinglePPIDWrite(selectedRecipe, true);
-                EquipEventHelpers.PPIDDelete(selectedRecipe, fromCIMRecipeNumber);
-                EquipEventHelpers.PPIDListSinglePPIDWrite(selectedRecipe, true);
+                EquipEventHelpers.PPIDListSinglePPIDWrite(selectedRecipe, recipeInfo.Id.ToString(), true);
+                EquipEventHelpers.PPIDDelete(selectedRecipe, fromCIMRecipeNumberWithText);
+                EquipEventHelpers.PPIDListSinglePPIDWrite(selectedRecipe, recipeInfo.Id.ToString(), true);
             }
         }
 
-        public void Copy(string selectedRecipe)
+        public void Copy(string selectedRecipe, RecipeInfo recipeInfo)
         {
-            selectedRecipe = ResolveRecipeName(selectedRecipe);
-            string currentRecipeFolder = GetRecipeFolderPath(selectedRecipe);
-            if (Directory.Exists(currentRecipeFolder) == false)
+            string newRecipeName = recipeInfo.Name;
+            if (string.IsNullOrWhiteSpace(newRecipeName))
             {
-                MessageBox.Show($" Recipe folder \"{currentRecipeFolder}\" not found");
+                MessageBoxEx.Show("Recipe name is empty.");
+                return;
             }
 
-            string destinationFolder = "D:\\MoldInjection\\Recipe\\TT_094_MODEL094";
+            if (_recipeCatalog.ContainsName(newRecipeName))
+            {
+                MessageBoxEx.Show($"Recipe name '{newRecipeName}' already exists in RecipeInfo.");
+                return;
+            }
+            //if (recipeInfo.Id <= 90)
+            //{
+            //    MessageBoxEx.Show($"Recipe Id for '{newRecipeName}' is not valid.");
+            //    return;
+            //}
+            if (_recipeCatalog.ContainsId(recipeInfo.Id))
+            {
+                MessageBoxEx.Show($"Recipe Id '{recipeInfo.Id}' already exists in RecipeInfo.");
+                return;
+            }
+
+            if (recipeInfo.Name.StartsWith("TT") == false && recipeInfo.Id > 90)
+            {
+                MessageBoxEx.Show($"Recipe ID > 90 Name for '{newRecipeName}' is not valid.");
+                return;
+            }
+
+            selectedRecipe = ResolveRecipeName(selectedRecipe);
+            string currentRecipeFolder = GetRecipeFolderPath(selectedRecipe);
+
+            if (Directory.Exists(currentRecipeFolder) == false)
+                MessageBox.Show($" Recipe folder \"{currentRecipeFolder}\" not found");
+
+            string destinationFolder = Path.Combine(recipeFolder, recipeInfo.FolderName);
+
+            var settings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            };
+
             if (Directory.Exists(destinationFolder) == false)
             {
                 Directory.CreateDirectory(destinationFolder);
 
                 CopyDirectory(currentRecipeFolder, destinationFolder);
 
-                UpdateValidRecipes();
+                string RecipeInfoFilePath = Path.Combine(destinationFolder, "RecipeInfo.json");
 
+                File.WriteAllText(RecipeInfoFilePath, JsonConvert.SerializeObject(recipeInfo, Formatting.Indented, settings));
+
+                UpdateValidRecipes(); // Refresh the list to show the new copied recipe
+
+                // TODO: WRITE PARAMETER DATA TO RMS AREA
                 EquipEventHelpers.ParameterWordSingleParameterUpdate(1, CurrentRecipe.CommonRecipe.LogSaveDay);
 
-                bool result1 = CIMHelpers.TryParseRecipeNumber(Path.GetFileName(destinationFolder), out int index);
-                if (result1 == false)
-                {
-                    throw new Exception("PPID Name format is not match");
-                }
-
-                EquipEventHelpers.PPIDCreate(Path.GetFileName(destinationFolder));
+                // TODO : Temp disable
+                //EquipEventHelpers.PPIDCreate(Path.GetFileName(destinationFolder));
             }
             else
             {
@@ -393,10 +483,13 @@ namespace SDV_MoldingInjection.Recipe
 
         public void SetCurrentModel(string selectedRecipe)
         {
+            isChangingModel = true;
+
             selectedRecipe = ResolveRecipeName(selectedRecipe);
             string selectedRecipeFolder = GetRecipeFolderPath(selectedRecipe);
             if (Directory.Exists(selectedRecipeFolder) == false)
             {
+                isChangingModel = false;
                 MessageBoxEx.ShowDialog($"{selectedRecipeFolder} folder not exits");
                 return;
             }
@@ -408,12 +501,159 @@ namespace SDV_MoldingInjection.Recipe
                 RecipeSetting.CurrentRecipe = tempRecipe;
                 File.WriteAllText((Path.Combine(recipeFolder, "RecipeSetting.json")), JsonConvert.SerializeObject(RecipeSetting));
                 Load();
+                isChangingModel = false;
                 return;
             }
 
             CurrentModelChanged?.Invoke();
             OnPropertyChanged(nameof(CurrentRecipeDisplayName));
+            isChangingModel = false;
         }
+
+        public void UpdateRecipeFromCIM(int[] parameters)
+        {
+            var recipeObjects = CurrentRecipe.GetType()
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => typeof(RecipeBase).IsAssignableFrom(p.PropertyType))
+                .Select(p => p.GetValue(CurrentRecipe))
+                .OfType<RecipeBase>()
+                .ToList();
+
+            foreach (var recipeObject in recipeObjects)
+            {
+                PropertyInfo[] properties = recipeObject.GetType().GetProperties();
+
+                foreach (var property in properties)
+                {
+                    foreach (var att in property.GetCustomAttributes())
+                    {
+                        if (att is ParameterDescriptionAttribute parameterDescriptionAttribute)
+                        {
+                            int parameterIndex = parameterDescriptionAttribute.Index - 1;
+                            if (recipeObject is SPDHeadRecipe sPDHeadRecipe)
+                            {
+                                if (sPDHeadRecipe.Name == "SPDHead2_Recipe")
+                                {
+                                    parameterIndex += 40;
+                                }
+                                else if (sPDHeadRecipe.Name == "SPDHead3_Recipe")
+                                {
+                                    parameterIndex += 80;
+                                }
+                                else if (sPDHeadRecipe.Name == "SPDHead4_Recipe")
+                                {
+                                    parameterIndex += 120;
+                                }
+                            }
+
+                            object newValue = parameters[parameterIndex];
+
+                            if (property.PropertyType == typeof(double) ||
+                                property.PropertyType == typeof(float))
+                            {
+                                property.SetValue(recipeObject, (Convert.ToDouble(newValue) / 1000.0));
+                            }
+                            else if (property.PropertyType == typeof(int))
+                            {
+                                property.SetValue(recipeObject, (int)newValue);
+                            }
+                            else if ((property.PropertyType == typeof(bool)))
+                            {
+                                property.SetValue(recipeObject, (int)newValue == 1);
+                            }
+                            else
+                            {
+                                throw new Exception($"Typeof '{property}' ('{property.PropertyType}') is not supported.");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public int[] GetParameters(string ppidName)
+        {
+            int[] data = new int[ParameterWordArea.PARAM_MAX_INT_COUNT];
+
+            string currentRecipeFolder = GetRecipeFolderPath(ppidName);
+            string currentRecipeFile = Path.Combine(currentRecipeFolder, "Recipe.json");
+
+            var settings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            };
+
+            try
+            {
+                RecipeList? backupRecipe = JsonConvert.DeserializeObject<RecipeList>(File.ReadAllText(currentRecipeFile), settings);
+
+                if (backupRecipe == null) return data;
+
+                var recipeObjects = backupRecipe.GetType()
+                    .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                    .Where(p => typeof(RecipeBase).IsAssignableFrom(p.PropertyType))
+                    .Select(p => p.GetValue(CurrentRecipe))
+                    .OfType<RecipeBase>()
+                    .ToList();
+
+                foreach (var recipeObject in recipeObjects)
+                {
+                    PropertyInfo[] properties = recipeObject.GetType().GetProperties();
+
+                    foreach (var property in properties)
+                    {
+                        foreach (var att in property.GetCustomAttributes())
+                        {
+                            if (att is ParameterDescriptionAttribute parameterDescriptionAttribute)
+                            {
+                                int parameterIndex = parameterDescriptionAttribute.Index - 1;
+                                if (recipeObject is SPDHeadRecipe sPDHeadRecipe)
+                                {
+                                    if (sPDHeadRecipe.Name == "SPDHead2_Recipe")
+                                    {
+                                        parameterIndex += 40;
+                                    }
+                                    else if (sPDHeadRecipe.Name == "SPDHead3_Recipe")
+                                    {
+                                        parameterIndex += 80;
+                                    }
+                                    else if (sPDHeadRecipe.Name == "SPDHead4_Recipe")
+                                    {
+                                        parameterIndex += 120;
+                                    }
+                                }
+
+                                object newValue = property.GetValue(recipeObject);
+
+                                if (newValue.GetType() == typeof(double) ||
+                                    newValue.GetType() == typeof(float))
+                                {
+                                    data[parameterIndex - 1] = (int)(Convert.ToDouble(newValue) * 1000);
+                                }
+                                else if (newValue.GetType() == typeof(int))
+                                {
+                                    data[parameterIndex - 1] = Convert.ToInt32(newValue);
+                                }
+                                else if (newValue.GetType() == typeof(bool))
+                                {
+                                    data[parameterIndex - 1] = Convert.ToBoolean(newValue) ? 1 : 0;
+                                }
+                                else
+                                {
+                                    throw new Exception($"Typeof '{property}' ('{property.PropertyType}') is not supported.");
+                                }
+                            }
+                        }
+                    }
+                }
+                return data;
+            }
+            catch
+            {
+                return data;
+            }
+        }
+
         #endregion
 
         #region Private Methods
@@ -456,16 +696,6 @@ namespace SDV_MoldingInjection.Recipe
         private string ResolveRecipeFolderName(string recipeNameOrDisplay)
         {
             return _recipeCatalog.ResolveFolderName(recipeNameOrDisplay);
-        }
-
-        private int ParseRecipeId(string recipeName)
-        {
-            if (CIMHelpers.TryParseRecipeNumber(recipeName, out int recipeId))
-            {
-                return recipeId;
-            }
-
-            return -1;
         }
 
         private void CopyDirectory(string sourceDir, string destinationDir)

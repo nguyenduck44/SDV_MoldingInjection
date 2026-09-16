@@ -1,18 +1,20 @@
 using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
+using EQX.Core.Communication.CIM;
 using EQX.Core.Sequence;
 using EQX.Device.Indicator;
 using EQX.InOut;
-using Microsoft.Extensions.DependencyInjection;
 using EQX.UI.Controls;
 using EQX.UI.Language;
 using log4net;
+using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Defines;
 using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
+using TOPENG_Device;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {

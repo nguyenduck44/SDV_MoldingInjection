@@ -15,8 +15,6 @@
         PistonCyl_Down,
         PistonCyl_DownWait,
 
-        WaitDisOrAssembleSensorStatus,
-        DisOrAssembleSensorStatusCheck,
         AssembleSensorStatus_Confirm,
 
         PistonCyl_Up,

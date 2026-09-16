@@ -26,23 +26,79 @@
                 <CheckBox IsChecked="{Binding MachineStatus.IsDotWeightingTest}"
                           Content="Dot Weighting Test"
                           Tag="Check to Enable Dot Weighting Test Mode" />
+                <CheckBox IsChecked="{Binding IsDisableInterLock}"
+                          Content="Disable Interlock"
+                          Visibility="Visible"
+                          Tag="Check to Disable Interlock" />
                 <CheckBox IsChecked="{Binding MachineStatus.DisableSyringeCheck}"
                           Content="Disable Syringe Check"
                           Tag="Check to Disable Syringe Check" />
                 <CheckBox IsChecked="{Binding MachineStatus.DisableDetectJig}"
                           Content="Disable Detect Jig"
                           Tag="Check to Disable Detect Jig" />
+                <CheckBox IsChecked="{Binding MachineStatus.RunWithoutInOut}"
+                          Content="DryRun Without InOut"
+                          Tag="DryRun Without InOut Machine" />
+                <CheckBox IsChecked="{Binding MachineStatus.DryRunUseChamberPressure}"
+                          Content="DryRun Use Vaccum Pressure"
+                          Tag="DryRun Use Vacuum Pressure" />
                 <Button Height="50"
                         Content="CIM Test View"
                         Command="{Binding CIMTetstViewNavigate}" />
-                <Button Height="50"
+                <!--<Button Height="50"
                         Content="Set Torque ZAxis"
                         Command="{Binding SetTorqueZAxisCommand}" />
                 <Button Height="50"
                         Content="Test Pilot"
                         Command="{Binding TestButtonCommand}" />
+                <Button Height="50"
+                        Content="Test CCIE OnOffBit"
+                        Command="{Binding TestOnOffBitCommand}" />
+                <Button Height="50"
+                        Content="Test MCC Write JigID"
+                        Command="{Binding TestMCCWriteJigIDCommand}" />-->
+
             </UniformGrid>
-            
+            <!--<UniformGrid Columns="2">
+                <Border Background="{Binding IsBitB2107, Converter={StaticResource BooleanToOnOffBrushConverter}}"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                    <TextBlock Text="B2107"
+                               FontSize="20"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+                </Border>
+                <Border Background="{Binding IsBitB2108, Converter={StaticResource BooleanToOnOffBrushConverter}}"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                    <TextBlock Text="B2108"
+                               FontSize="20"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+                </Border>
+                <Button Background="{Binding IsBitB2007, Converter={StaticResource BooleanToOnOffBrushConverter}}"
+                        BorderBrush="Black"
+                        BorderThickness="1"
+                        Content="B2007"
+                        Command="{Binding SetBitB2007Command}"
+                        FontSize="20">
+                </Button>
+                <Button Background="{Binding IsBitB2008, Converter={StaticResource BooleanToOnOffBrushConverter}}"
+                        BorderBrush="Black"
+                        BorderThickness="1"
+                        Content="B2008"
+                        Command="{Binding SetBitB2008Command}"
+                        FontSize="20">
+                </Button>
+                <Border Background="{Binding IsBitB2009, Converter={StaticResource BooleanToOnOffBrushConverter}}"
+                        BorderBrush="Black"
+                        BorderThickness="1">
+                    <TextBlock Text="B2009"
+                               FontSize="20"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+                </Border>
+            </UniformGrid>-->
         </StackPanel>
         <ui:LogDisplayer DockPanel.Dock="Right"
                          Width="600" />

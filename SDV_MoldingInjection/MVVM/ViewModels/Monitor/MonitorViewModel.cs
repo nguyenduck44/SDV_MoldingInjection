@@ -8,6 +8,9 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 {
     public class MonitorViewModel : ViewModelBase
     {
+        public bool IsSuperUserPermission => _userStore.Permission == EPermission.SuperUser;
+        public bool IsConnectEBoxMainPower => _config.IsConnectEBoxMainPower;
+
         #region Commands
         public ICommand ProductionInforNavigateCommand
         {
@@ -127,6 +130,17 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
         }
 
+        public ICommand HistoryDataNavigateCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    _navigationService.NavigateTo<HistoryDataViewModel>();
+                });
+            }
+        }
+
         public ICommand TerminalMessageNavigateCommand
         {
             get
@@ -148,17 +162,67 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 });
             }
         }
+
+        public ICommand CDAStatusNavigateCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    _navigationService.NavigateTo<AnalogStatusViewModel>();
+                });
+            }
+        }
+
+        public ICommand ProcessesStatusNavigateCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    _navigationService.NavigateTo<ProcessesMonitoringViewModel>();
+                });
+            }
+        }
+
+        public ICommand Accura2550DNavigateCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    _navigationService.NavigateTo<EBoxMainPowerMonitoringViewModel>();
+                });
+            }
+        }
+
+        public ICommand InterfaceInOutNavigateCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    _navigationService.NavigateTo<InterfaceInOutViewModel>();
+                });
+            }
+        }
         #endregion
 
         public MonitorViewModel(INavigationService navigationService,
             IViewModelFactory viewModelFactory,
             Inputs inputs,
-            Outputs outputs)
+            Outputs outputs,
+            IUserStore userStore,
+            MachineStatus machineStatus,
+            Config config)
         {
             _navigationService = navigationService;
             _viewModelFactory = viewModelFactory;
             _inputs = inputs;
             _outputs = outputs;
+            _userStore = userStore;
+            _machineStatus = machineStatus;
+            _config = config;
         }
 
         #region Privates
@@ -166,6 +230,9 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private readonly IViewModelFactory _viewModelFactory;
         private readonly Inputs _inputs;
         private readonly Outputs _outputs;
+        private readonly IUserStore _userStore;
+        private readonly MachineStatus _machineStatus;
+        private readonly Config _config;
         #endregion
     }
 }

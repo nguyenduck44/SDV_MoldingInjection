@@ -5,6 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:SDV_MoldingInjection.MVVM.Views"
              mc:Ignorable="d"
+             xmlns:vm="clr-namespace:SDV_MoldingInjection.MVVM.ViewModels"
+             xmlns:localControls="clr-namespace:SDV_MoldingInjection.Controls"
+             d:DataContext="{d:DesignInstance Type={x:Type vm:MachineStatusAutoViewModel}}"
              d:DesignHeight="403"
              d:DesignWidth="557">
     <UserControl.Resources>
@@ -80,8 +83,223 @@
                         </UniformGrid>
                     </StackPanel>
                 </Border>
+
+                <Border Canvas.Top="300"
+                        Canvas.Left="245"
+                        BorderBrush="{StaticResource SecondaryBackgroundColor}"
+                        BorderThickness="1.5"
+                        CornerRadius="3"
+                        Background="White"
+                        Padding="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
+                        Visibility="{Binding IsConnectMainPower, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Border.RenderTransform>
+                        <ScaleTransform ScaleX="0.7"
+                                        ScaleY="0.7" />
+                    </Border.RenderTransform>
+                    <StackPanel Width="190">
+                        <Border Background="{StaticResource SecondaryBackgroundColor}"
+                                Margin="0 0 0 2">
+                            <Label Content="ACCURA 2500D"
+                                   Foreground="Wheat"
+                                   HorizontalAlignment="Center"
+                                   FontWeight="Bold" />
+                        </Border>
+                        <UniformGrid Rows="2"
+                                     Columns="2"
+                                     Margin="2 0 2 4">
+                            <Label Content="🌡 Temperature"
+                                   FontWeight="SemiBold"
+                                   FontSize="12"
+                                   VerticalContentAlignment="Center" />
+                            <TextBox Style="{StaticResource TextBoxWithDescriptionStyle}"
+                                     IsReadOnly="True"
+                                     FontWeight="Bold"
+                                     FontSize="14"
+                                     Text="{Binding MainPowerTemperature, Mode=OneWay, StringFormat='{}{0:0.###} °C'}" />
+                            <Label Content="💧 Humidity"
+                                   FontWeight="SemiBold"
+                                   FontSize="12"
+                                   VerticalContentAlignment="Center" />
+                            <TextBox Style="{StaticResource TextBoxWithDescriptionStyle}"
+                                     IsReadOnly="True"
+                                     FontWeight="Bold"
+                                     FontSize="14"
+                                     Text="{Binding MainPowerHumidity, Mode=OneWay, StringFormat='{}{0:0.###} %'}" />
+                        </UniformGrid>
+                    </StackPanel>
+                </Border>
             </Canvas>
         </Grid>
+
+        <!-- LEAK SENSOR -->
+        <Canvas>
+            <Border Canvas.Left="305"
+                    Canvas.Top="105"
+                    CornerRadius="10"
+                    BorderThickness="1"
+                    Background="{Binding IsLeakSensor_H1, Converter={StaticResource BooleanToOnOffBrushConverter}, ConverterParameter=true}"
+                    Width="20"
+                    Height="20">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsLeakSensor_H1}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard Name="BlinkAnimation">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                             From="1.0"
+                                                             To="0.0"
+                                                             Duration="0:0:0.5"
+                                                             AutoReverse="True"
+                                                             RepeatBehavior="Forever" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <StopStoryboard BeginStoryboardName="BlinkAnimation" />
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsLeakSensor_H1}"
+                                         Value="False">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+            </Border>
+            <Border Canvas.Left="345"
+                    Canvas.Top="105"
+                    CornerRadius="10"
+                    BorderThickness="1"
+                    Background="{Binding IsLeakSensor_H2, Converter={StaticResource BooleanToOnOffBrushConverter}, ConverterParameter=true}"
+                    Width="20"
+                    Height="20">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsLeakSensor_H2}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard Name="BlinkAnimation">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                             From="1.0"
+                                                             To="0.0"
+                                                             Duration="0:0:0.5"
+                                                             AutoReverse="True"
+                                                             RepeatBehavior="Forever" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <StopStoryboard BeginStoryboardName="BlinkAnimation" />
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsLeakSensor_H2}"
+                                         Value="False">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+            </Border>
+            <Border Canvas.Left="410"
+                    Canvas.Top="105"
+                    CornerRadius="10"
+                    BorderThickness="1"
+                    Background="{Binding IsLeakSensor_H3, Converter={StaticResource BooleanToOnOffBrushConverter}, ConverterParameter=true}"
+                    Width="20"
+                    Height="20">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsLeakSensor_H3}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard Name="BlinkAnimation">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                             From="1.0"
+                                                             To="0.0"
+                                                             Duration="0:0:0.5"
+                                                             AutoReverse="True"
+                                                             RepeatBehavior="Forever" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <StopStoryboard BeginStoryboardName="BlinkAnimation" />
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsLeakSensor_H3}"
+                                         Value="False">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+            </Border>
+            <Border Canvas.Left="450"
+                    Canvas.Top="105"
+                    CornerRadius="10"
+                    BorderThickness="1"
+                    Background="{Binding IsLeakSensor_H4, Converter={StaticResource BooleanToOnOffBrushConverter}, ConverterParameter=true}"
+                    Width="20"
+                    Height="20">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsLeakSensor_H4}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard Name="BlinkAnimation">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                             From="1.0"
+                                                             To="0.0"
+                                                             Duration="0:0:0.5"
+                                                             AutoReverse="True"
+                                                             RepeatBehavior="Forever" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <StopStoryboard BeginStoryboardName="BlinkAnimation" />
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsLeakSensor_H4}"
+                                         Value="False">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+            </Border>
+        </Canvas>
 
         <!-- DoorLock View -->
         <Grid Grid.Row="0"
@@ -331,6 +549,55 @@
                 </Image>
             </Canvas>
         </Grid>
+        <Canvas>
+            <Grid Canvas.Left="265"
+                  Canvas.Top="165">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Label Content="LEFT"
+                       BorderBrush="Black"
+                       BorderThickness="1"
+                       Background="WhiteSmoke"
+                       FontSize="10"
+                       FontWeight="Bold" />
+                <Label Content="{Binding LeftJigID}"
+                       FontSize="10"
+                       Width="200"
+                       BorderBrush="Black"
+                       BorderThickness="1"
+                       Background="WhiteSmoke"
+                       Grid.Column="1"
+                       HorizontalAlignment="Center"
+                       VerticalContentAlignment="Center"
+                       FontWeight="Bold" />
+                <Label Content="RIGHT"
+                       Background="WhiteSmoke"
+                       Grid.Row="1"
+                       BorderBrush="Black"
+                       BorderThickness="1"
+                       FontSize="10"
+                       FontWeight="Bold" />
+                <Label Content="{Binding RightJigID}"
+                       Background="WhiteSmoke"
+                       Width="200"
+                       FontSize="10"
+                       BorderBrush="Black"
+                       BorderThickness="1"
+                       Grid.Column="1"
+                       Grid.Row="1"
+                       HorizontalAlignment="Center"
+                       VerticalContentAlignment="Center"
+                       FontWeight="Bold" />
+
+            </Grid>
+        </Canvas>
         <Grid Grid.Row="0"
               Grid.Column="1"
               Grid.RowSpan="2">
@@ -345,11 +612,11 @@
                         RenderTransformOrigin="1.222,0.506">
                     <Image.Visibility>
                         <MultiBinding Converter="{StaticResource BooleanOrToVisibilityConverter}">
-                            <Binding Path="Devices.Inputs.Jig1Detect.Value" />
-                            <Binding Path="Devices.Inputs.Jig2Detect.Value" />
+                            <Binding Path="IsLeftJigDetected" />
                         </MultiBinding>
                     </Image.Visibility>
                 </Image>
+
             </Canvas>
             <Canvas>
                 <Image  Source="/SDV_MoldingInjection;component/Resource/Images/BONDINGJIG.png"
@@ -362,11 +629,11 @@
                         RenderTransformOrigin="1.222,0.506">
                     <Image.Visibility>
                         <MultiBinding Converter="{StaticResource BooleanOrToVisibilityConverter}">
-                            <Binding Path="Devices.Inputs.Jig3Detect.Value" />
-                            <Binding Path="Devices.Inputs.Jig4Detect.Value" />
+                            <Binding Path="IsRightJigDetected" />
                         </MultiBinding>
                     </Image.Visibility>
                 </Image>
+
             </Canvas>
             <Canvas>
                 <Image  Source="/SDV_MoldingInjection;component/Resource/Images/HEAD_LEFT.png"
@@ -456,6 +723,40 @@
                                  Converter="{StaticResource BooleanToVisibilityConverter}" />
                     </Image.Visibility>
                 </Image>
+            </Canvas>
+            <Canvas>
+                <localControls:CDAStatusUnitView Canvas.Left="240"
+                                                 Canvas.Top="100"
+                                                 Width="50"
+                                                 Height="40"
+                                                 FontSize="2"
+                                                 CDAName="MainAir"
+                                                 CDAValue="{Binding DataContext.CDAStatus.MainAirCDA,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"
+                                                 IsThreshold="{Binding DataContext.CDAStatus.IsMainAir,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}" />
+                <localControls:CDAStatusUnitView Canvas.Left="387"
+                                                 Canvas.Top="233"
+                                                 Width="50"
+                                                 Height="40"
+                                                 FontSize="2"
+                                                 CDAName="Syringe Air"
+                                                 CDAValue="{Binding DataContext.CDAStatus.SyringeMainAirCDA,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"
+                                                 IsThreshold="{Binding DataContext.CDAStatus.IsSyringeAirMain,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}" />
+                <localControls:CDAStatusUnitView Canvas.Left="412"
+                                                 Canvas.Top="290"
+                                                 Width="50"
+                                                 Height="40"
+                                                 FontSize="2"
+                                                 CDAName="PumpPurge"
+                                                 CDAValue="{Binding DataContext.CDAStatus.PumpPurge,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"
+                                                 IsThreshold="{Binding DataContext.CDAStatus.IsPumpPurge,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}" />
+                <localControls:CDAStatusUnitView Canvas.Left="467"
+                                                 Canvas.Top="290"
+                                                 Width="50"
+                                                 Height="40"
+                                                 FontSize="2"
+                                                 CDAName="Angle Valve"
+                                                 CDAValue="{Binding DataContext.CDAStatus.PumpValveVacuum,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}"
+                                                 IsThreshold="{Binding DataContext.CDAStatus.IsPumpValveVacuum,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}" />
             </Canvas>
         </Grid>
     </Grid>

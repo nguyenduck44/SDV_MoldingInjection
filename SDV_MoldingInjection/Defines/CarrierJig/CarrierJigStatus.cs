@@ -12,6 +12,7 @@ namespace SDV_MoldingInjection.Defines
         private double dalayTime;
         private double pAxisInjectVelocity;
         private bool headSkip;
+        private double ventTime;
 
         public double ResinWeight
 		{
@@ -43,7 +44,17 @@ namespace SDV_MoldingInjection.Defines
 			}
 		}
 
-		public double PAxisInjectVelocity
+        public double VentTime
+        {
+            get { return ventTime; }
+            set
+            {
+                ventTime = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double PAxisInjectVelocity
 		{
 			get { return pAxisInjectVelocity; }
 			set 

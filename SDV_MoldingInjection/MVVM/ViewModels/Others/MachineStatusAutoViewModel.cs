@@ -1,6 +1,9 @@
 using EQX.Core.Common;
+using Microsoft.Extensions.DependencyInjection;
 using SDV_MoldingInjection.Defines;
+using SDV_MoldingInjection.Process;
 using SDV_MoldingInjection.Recipe;
+using System.Windows;
 
 namespace SDV_MoldingInjection.MVVM.ViewModels
 {
@@ -12,13 +15,28 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private bool h3Working;
         private bool h4Working;
         private readonly NavigationStore _navigationStore;
-        private readonly RecipeSelector _recipeSelector;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly Config _config;
         private readonly NonOverlappingTimer statusUpdateTimer;
+        private Processes _processes => _serviceProvider.GetRequiredService<Processes>();
+        private InjectProcess InjectProcess => _processes.All.OfType<InjectProcess>().First();
         #endregion
+
         #region Properties
         public Devices Devices { get; }
+        public string LeftJigID => InjectProcess.LeftJigID;
+        public string RightJigID => InjectProcess.RightJigID;
         public double PanelTemperature => Devices.PanelIndicator.Temperature;
         public double PanelHumidity => Devices.PanelIndicator.Humidity;
+        public double MainPowerTemperature => _config.IsConnectEBoxMainPower ? Devices.EBoxMainPowerIndicator.Temperature : 0.0;
+        public double MainPowerHumidity => _config.IsConnectEBoxMainPower ? Devices.EBoxMainPowerIndicator.Humidity : 0.0;
+        public bool IsLeakSensor_H1 => Devices.Inputs.DummyOverflowDetect1.Value == false;
+        public bool IsLeakSensor_H2 => Devices.Inputs.DummyOverflowDetect2.Value == false;
+        public bool IsLeakSensor_H3 => Devices.Inputs.DummyOverflowDetect3.Value == false;
+        public bool IsLeakSensor_H4 => Devices.Inputs.DummyOverflowDetect4.Value == false;
+        public bool IsLeftJigDetected => Devices.Inputs.Jig1Detect.Value && Devices.Inputs.Jig2Detect.Value == true;
+        public bool IsRightJigDetected => Devices.Inputs.Jig3Detect.Value && Devices.Inputs.Jig4Detect.Value == true;
+        public bool IsConnectMainPower => _config.IsConnectEBoxMainPower;
 
         public bool H1Working
         {
@@ -60,19 +78,28 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             }
         }
 
+
         public MachineStatus MachineStatus { get; }
+        public RecipeSelector RecipeSelector { get; }
+        public CDAStatus CDAStatus { get; }
         #endregion
+
         #region Contructors
         public MachineStatusAutoViewModel(Devices devices,
             NavigationStore navigationStore,
             MachineStatus machineStatus,
-            RecipeSelector recipeSelector)
+            RecipeSelector recipeSelector,
+            CDAStatus cDAStatus,
+            IServiceProvider serviceProvider,
+            Config config)
         {
             Devices = devices;
-           _navigationStore = navigationStore;
             MachineStatus = machineStatus;
-            _recipeSelector = recipeSelector;
-
+            RecipeSelector = recipeSelector;
+            CDAStatus = cDAStatus;
+            _navigationStore = navigationStore;
+            _serviceProvider = serviceProvider;
+            _config = config;
             statusUpdateTimer = new NonOverlappingTimer(100);
             statusUpdateTimer.Elapsed += StatusUpdateTimerHandler;
             statusUpdateTimer.Start();
@@ -120,8 +147,21 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
             H2Working = Devices.Motions.Z2Axis.Status.IsMotioning || Devices.Motions.P2Axis.Status.IsMotioning;
             H3Working = Devices.Motions.Z3Axis.Status.IsMotioning || Devices.Motions.P3Axis.Status.IsMotioning;
             H4Working = Devices.Motions.Z4Axis.Status.IsMotioning || Devices.Motions.P4Axis.Status.IsMotioning;
-            OnPropertyChanged(nameof(PanelTemperature));
-            OnPropertyChanged(nameof(PanelHumidity));
+
+            OnPropertyChanged(nameof(IsLeakSensor_H1));
+            OnPropertyChanged(nameof(IsLeakSensor_H2));
+            OnPropertyChanged(nameof(IsLeakSensor_H3));
+            OnPropertyChanged(nameof(IsLeakSensor_H4));
+            OnPropertyChanged(nameof(LeftJigID));
+            OnPropertyChanged(nameof(RightJigID));
+            OnPropertyChanged(nameof(IsLeftJigDetected));
+            OnPropertyChanged(nameof(IsRightJigDetected));
+
+            if (_config.IsConnectEBoxMainPower)
+            {
+                OnPropertyChanged(nameof(MainPowerTemperature));
+                OnPropertyChanged(nameof(MainPowerHumidity));
+            }
         }
         #endregion
     }

@@ -10,5 +10,9 @@ namespace SDV_MoldingInjection.Defines
     {
         FAN_SPEED = 0,
         VACUUM_GAUGE = 4,
+        MAIN_AIR_CDA = 8,
+        SYRINGE_AIR_MAIN = 13,
+        PUMP_VALVE_VACUUM,
+        PUMP_PURGE,
     }
 }
