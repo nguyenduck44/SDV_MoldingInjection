@@ -120,4 +120,8 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DLL\" />
+  </ItemGroup>
+
 </Project>
