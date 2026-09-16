@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
 using EQX.Core.Motion;
 using EQX.Motion;
-using EQX.Motion.ByVendor.Ajinextek;
+using EQX.Motion.ByVendor.Inovance;
 using EQX.UI.Controls;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -63,29 +63,50 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         private void SaveMotionConfigurations()
         {
-            SaveAjinMotionConfigurations();
+            //SaveAjinMotionConfigurations();
+            SaveInovanceMotionConfigurations();
             SaveFastechMotionConfigurations();
         }
 
-        private void SaveAjinMotionConfigurations()
+        //private void SaveAjinMotionConfigurations()
+        //{
+        //    var ajinConfigPath = _configuration["Files:MotionAjinParaConfigFile"];
+        //    if (string.IsNullOrWhiteSpace(ajinConfigPath) || !File.Exists(ajinConfigPath))
+        //    {
+        //        return;
+        //    }
+
+        //    var existingAjinParams = JsonConvert.DeserializeObject<List<MotionAjinParameter>>(File.ReadAllText(ajinConfigPath))
+        //        ?? new List<MotionAjinParameter>();
+
+        //    for (int i = 0; i < Motions.AjinMotions.Count && i < existingAjinParams.Count; i++)
+        //    {
+        //        existingAjinParams[i].Velocity = Motions.AjinMotions[i].Parameter.Velocity;
+        //        existingAjinParams[i].Acceleration = Motions.AjinMotions[i].Parameter.Acceleration;
+        //        existingAjinParams[i].Deceleration = Motions.AjinMotions[i].Parameter.Deceleration;
+        //    }
+
+        //    File.WriteAllText(ajinConfigPath, JsonConvert.SerializeObject(existingAjinParams, Formatting.Indented));
+        //}
+        private void SaveInovanceMotionConfigurations()
         {
-            var ajinConfigPath = _configuration["Files:MotionAjinParaConfigFile"];
-            if (string.IsNullOrWhiteSpace(ajinConfigPath) || !File.Exists(ajinConfigPath))
+            var inovanceConfigPath = _configuration["Files:MotionInovanceParaConfigFile"];
+            if (string.IsNullOrWhiteSpace(inovanceConfigPath) || !File.Exists(inovanceConfigPath))
             {
                 return;
             }
 
-            var existingAjinParams = JsonConvert.DeserializeObject<List<MotionAjinParameter>>(File.ReadAllText(ajinConfigPath))
-                ?? new List<MotionAjinParameter>();
+            var existingInovanceParams = JsonConvert.DeserializeObject<List<MotionInovanceParameter>>(File.ReadAllText(inovanceConfigPath))
+                ?? new List<MotionInovanceParameter>();
 
-            for (int i = 0; i < Motions.AjinMotions.Count && i < existingAjinParams.Count; i++)
+            for (int i = 0; i < Motions.InovanceMotions.Count && i < existingInovanceParams.Count; i++)
             {
-                existingAjinParams[i].Velocity = Motions.AjinMotions[i].Parameter.Velocity;
-                existingAjinParams[i].Acceleration = Motions.AjinMotions[i].Parameter.Acceleration;
-                existingAjinParams[i].Deceleration = Motions.AjinMotions[i].Parameter.Deceleration;
+                existingInovanceParams[i].Velocity = Motions.InovanceMotions[i].Parameter.Velocity;
+                existingInovanceParams[i].Acceleration = Motions.InovanceMotions[i].Parameter.Acceleration;
+                existingInovanceParams[i].Deceleration = Motions.InovanceMotions[i].Parameter.Deceleration;
             }
 
-            File.WriteAllText(ajinConfigPath, JsonConvert.SerializeObject(existingAjinParams, Formatting.Indented));
+            File.WriteAllText(inovanceConfigPath, JsonConvert.SerializeObject(existingInovanceParams, Formatting.Indented));
         }
 
         private void SaveFastechMotionConfigurations()

@@ -17,12 +17,30 @@ namespace SDV_MoldingInjection.Extensions
         {
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
-                services.AddKeyedSingleton<List<IMotionParameter>>("MotionAjinParameter", (ser, obj) =>
+                //services.AddKeyedSingleton<List<IMotionParameter>>("MotionAjinParameter", (ser, obj) =>
+                //{
+                //    var configuration = ser.GetRequiredService<IConfiguration>();
+
+                //    var motionParameters = JsonConvert.DeserializeObject<List<MotionAjinParameter>>(
+                //        File.ReadAllText(configuration["Files:MotionAjinParaConfigFile"] ?? "")
+                //    );
+                //    if (motionParameters == null)
+                //    {
+                //        throw new FormatException("MotionParaConfigFile format error");
+                //    }
+                //    List<IMotionParameter> result = new List<IMotionParameter>();
+                //    foreach (var parameter in motionParameters)
+                //    {
+                //        result.Add(parameter);
+                //    }
+                //    return result;
+                //});
+                services.AddKeyedSingleton<List<IMotionParameter>>("MotionInovanceParameter", (ser, obj) =>
                 {
                     var configuration = ser.GetRequiredService<IConfiguration>();
 
-                    var motionParameters = JsonConvert.DeserializeObject<List<MotionAjinParameter>>(
-                        File.ReadAllText(configuration["Files:MotionAjinParaConfigFile"] ?? "")
+                    var motionParameters = JsonConvert.DeserializeObject<List<MotionInovanceParameter>>(
+                        File.ReadAllText(configuration["Files:MotionInovanceParaConfigFile"] ?? "")
                     );
                     if (motionParameters == null)
                     {
@@ -54,7 +72,8 @@ namespace SDV_MoldingInjection.Extensions
                     return result;
                 });
 #if SIMULATION
-                services.AddKeyedScoped<IMotionMaster, SimulationMotionMaster>("AjinMaster#1");
+                //services.AddKeyedScoped<IMotionMaster, SimulationMotionMaster>("AjinMaster#1");
+                services.AddKeyedScoped<IMotionMaster, SimulationMotionMaster>("InovanceMaster#1");
                 services.AddKeyedScoped<IMotionMaster, SimulationMotionMaster>("FastechPlusRMaster#1");
 
                 for (int i = 0; i < Enum.GetNames(typeof(EMachineMotion)).Length; i++)
@@ -63,10 +82,16 @@ namespace SDV_MoldingInjection.Extensions
 
                     services.AddSingleton<IMotion>((ser) =>
                     {
+                        //return new SimulationMotion(
+                        //    index,
+                        //    ((EMachineMotion)index).ToString(),
+                        //    (MotionAjinParameter)(ser.GetRequiredKeyedService<List<IMotionParameter>>("MotionAjinParameter").First(p => p.Name == ((EMachineMotion)index).ToString())))
+                        //{
+                        //};
                         return new SimulationMotion(
                             index,
                             ((EMachineMotion)index).ToString(),
-                            (MotionAjinParameter)(ser.GetRequiredKeyedService<List<IMotionParameter>>("MotionAjinParameter").First(p => p.Name == ((EMachineMotion)index).ToString())))
+                            (MotionInovanceParameter)(ser.GetRequiredKeyedService<List<IMotionParameter>>("MotionInovanceParameter").First(p => p.Name == ((EMachineMotion)index).ToString())))
                         {
                         };
                     });
@@ -86,9 +111,19 @@ namespace SDV_MoldingInjection.Extensions
                     });
                 }
 #else
-                services.AddKeyedScoped<IMotionMaster, MotionMasterAjin>("AjinMaster#1", (ser, obj) =>
+                //services.AddKeyedScoped<IMotionMaster, MotionMasterAjin>("AjinMaster#1", (ser, obj) =>
+                //{
+                //    return new MotionMasterAjin() { NumberOfDevices = Enum.GetNames(typeof(EMachineMotion)).Length };
+                //});
+                services.AddKeyedScoped<IMotionMaster, MotionMasterInovance>("InovanceMaster#1", (ser, obj) =>
                 {
-                    return new MotionMasterAjin() { NumberOfDevices = Enum.GetNames(typeof(EMachineMotion)).Length };
+                    var configuration = ser.GetRequiredService<IConfiguration>();
+                    return new MotionMasterInovance()
+                    {
+                        NumberOfDevices = Enum.GetNames(typeof(EMachineMotion)).Length,
+                        DeviceConfigPath = configuration["Files:InovanceDeviceConfigFile"] ?? "",
+                        SystemConfigPath = configuration["Files:InovanceSystemConfigFile"] ?? ""
+                    };
                 });
                 services.AddKeyedScoped<IMotionMaster, MotionMasterEziPlusR>("FastechPlusRMaster#1", (ser, obj) =>
                 {
@@ -103,12 +138,19 @@ namespace SDV_MoldingInjection.Extensions
 
                     services.AddSingleton<IMotion>((ser) =>
                     {
-                        return new MotionAjin(
+                        //return new MotionAjin(
+                        //    index,
+                        //    ((EMachineMotion)index).ToString(),
+                        //    (MotionAjinParameter)(ser.GetRequiredKeyedService<List<IMotionParameter>>("MotionAjinParameter").First(p => p.Name == ((EMachineMotion)index).ToString())))
+                        //{
+                        //    MotionMaster = (MotionMasterAjin)ser.GetRequiredKeyedService<IMotionMaster>("AjinMaster#1")
+                        //};
+                        return new MotionInovance(
                             index,
                             ((EMachineMotion)index).ToString(),
-                            (MotionAjinParameter)(ser.GetRequiredKeyedService<List<IMotionParameter>>("MotionAjinParameter").First(p => p.Name == ((EMachineMotion)index).ToString())))
+                            (MotionInovanceParameter)(ser.GetRequiredKeyedService<List<IMotionParameter>>("MotionInovanceParameter").First(p => p.Name == ((EMachineMotion)index).ToString())))
                         {
-                            MotionMaster = (MotionMasterAjin)ser.GetRequiredKeyedService<IMotionMaster>("AjinMaster#1")
+                            MotionMaster = (MotionMasterInovance)ser.GetRequiredKeyedService<IMotionMaster>("InovanceMaster#1")
                         };
                     });
                 }

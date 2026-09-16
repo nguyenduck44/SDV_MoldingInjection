@@ -249,7 +249,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
                         MessageText = "Connect Motion Devices";
 
-                        _devices.Motions.AjinMaster.Connect();
+                        //_devices.Motions.AjinMaster.Connect();
+                        _devices.Motions.InovanceMaster.Connect();
                         _devices.Motions.FastechPlusRMaster.Connect();
 
                         _devices.Motions.All.ForEach(m => m.Initialization());
@@ -373,7 +374,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
                         _devices.Outputs.Lamp_Stop();
 
-                        _devices.Motions.AjinMaster.Disconnect();
+                        //_devices.Motions.AjinMaster.Disconnect();
+                        _devices.Motions.InovanceMaster.Disconnect();
 
                         _devices.Motions.All.ForEach(m => m.Disconnect());
                         Thread.Sleep(50);
