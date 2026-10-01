@@ -57,6 +57,7 @@ namespace SDV_MoldingInjection.Defines
             _cIMCollection.MaterialPorts[(int)head - 1].UseQty = (int)syringeAmount.UsedVolume;
             _cIMCollection.MaterialPorts[(int)head - 1].BatchID = syringeAmount.BatchID;
             LogManager.GetLogger("SyringeAmount").Info($"{head} consume: {weight}EA");
+            _cIMCollection.MaterialPorts[(int)head - 1].UIUpdate();
         }
 
         public void Save()

@@ -84,7 +84,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         {
             if (handlingAction) return;
             handlingAction = true;
-
+            MaterialPorts[MaterialPorts.Count].UIUpdate();
             if (isAutoPass & autoPassMP == null)
             {
                 throw new ArgumentException("autoPassMP must not be null, while isAutoPass");
