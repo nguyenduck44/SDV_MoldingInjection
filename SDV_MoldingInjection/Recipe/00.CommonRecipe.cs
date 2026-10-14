@@ -45,7 +45,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "Vacuum Delay", Unit = Unit.Second)]
+       // [SingleRecipeDescription(Description = "Vacuum Delay", Unit = Unit.Second)]
         [ParameterDescription(3)]
         public double VacDelay
         {

@@ -1074,25 +1074,45 @@ namespace SDV_MoldingInjection.Process
 
                     if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
                     {
-                        if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 == false)
+                        if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead1 == false)
                         {
-                            _cIMCollection.MaterialPorts[0].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, LeftCellId);
-                            Thread.Sleep(300);
-                            _cIMCollection.MaterialPorts[1].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, LeftCellId);
+                            _ = Task.Run(() =>
+                            {
+                                _cIMCollection.MaterialPorts[0].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, LeftCellId);
+                                Thread.Sleep(300);
+                                MaterialAssemblyArea_Left_1 = _cIMCollection.MaterialPorts[0].MaterialAssemblyArea;
+                            });
 
-                            MaterialAssemblyArea_Left_1 = _cIMCollection.MaterialPorts[0].MaterialAssemblyArea;
-                            MaterialAssemblyArea_Left_2 = _cIMCollection.MaterialPorts[1].MaterialAssemblyArea;
                         }
 
-                        if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34 == false)
+                        if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead2 == false)
                         {
-                            Thread.Sleep(300);
-                            _cIMCollection.MaterialPorts[2].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, RightCellId);
-                            Thread.Sleep(300);
-                            _cIMCollection.MaterialPorts[3].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, RightCellId);
+                            _ = Task.Run(() =>
+                            {
+                                _cIMCollection.MaterialPorts[1].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, LeftCellId);
+                                Thread.Sleep(300);
+                                MaterialAssemblyArea_Left_2 = _cIMCollection.MaterialPorts[1].MaterialAssemblyArea;
+                            });
+                        }
 
-                            MaterialAssemblyArea_Right_1 = _cIMCollection.MaterialPorts[2].MaterialAssemblyArea;
-                            MaterialAssemblyArea_Right_2 = _cIMCollection.MaterialPorts[3].MaterialAssemblyArea;
+                        if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead3 == false)
+                        {
+                            _ = Task.Run(() => 
+                            {
+                                _cIMCollection.MaterialPorts[2].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, RightCellId);
+                                Thread.Sleep(300);
+                                MaterialAssemblyArea_Right_1 = _cIMCollection.MaterialPorts[2].MaterialAssemblyArea;
+                            });
+                        }
+
+                        if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead4 == false)
+                        {
+                            _ = Task.Run(() =>
+                            {
+                                _cIMCollection.MaterialPorts[3].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, RightCellId);
+                                Thread.Sleep(300);
+                                MaterialAssemblyArea_Right_2 = _cIMCollection.MaterialPorts[3].MaterialAssemblyArea;
+                            });
                         }
 
                         string portShortageWarning = string.Empty;
@@ -1667,6 +1687,7 @@ namespace SDV_MoldingInjection.Process
                             RaiseWarning(EWarning.CIM_CELL_TRACKOUT_FAIL);
                             break;
                         }
+                        Thread.Sleep(500);
                     }
 
                     Log.Debug($"Update Status Left Jig: {EJigStatus.None}");
@@ -1695,6 +1716,7 @@ namespace SDV_MoldingInjection.Process
                             RaiseWarning(EWarning.CIM_CELL_TRACKOUT_FAIL);
                             break;
                         }
+                        Thread.Sleep(500);
                     }
 
                     Log.Debug($"Update Status Right Jig: {EJigStatus.None}");
@@ -3303,12 +3325,14 @@ namespace SDV_MoldingInjection.Process
                     CellJobProcessInfo_Left.UserDefine_TrackOutJudge = "O";
                     CellJobProcessInfo_Left.UserDefine_TrackOutDescription = "VALIDATION_FAIL";
                     EquipEventHelpers.CellTrackOut(1, CellJobProcessInfo_Left, true, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Left_1, MaterialAssemblyArea_Left_2 });
+                    Thread.Sleep(500);
                 }
                 else
                 {
                     CellJobProcessInfo_Right.UserDefine_TrackOutJudge = "O";
                     CellJobProcessInfo_Right.UserDefine_TrackOutDescription = "VALIDATION_FAIL";
                     EquipEventHelpers.CellTrackOut(2, CellJobProcessInfo_Right, true, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Right_1, MaterialAssemblyArea_Right_2 });
+                    Thread.Sleep(500);
                 }
 
                 Log.Error("CIM_CELL_JOB_PROCESS_START_FAIL");

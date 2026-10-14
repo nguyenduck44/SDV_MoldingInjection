@@ -209,11 +209,11 @@ namespace SDV_MoldingInjection.Process
         #region Private Methods
         private async Task WriteFDC()
         {
-            if (Parent?.ProcessMode == EProcessMode.Run && _machineStatus.EquipState.IsMasterAlive)
+            if (Parent?.ProcessMode == EProcessMode.Run && _machineStatus.EquipState.IsMasterAlive && _recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
             {
                 FDCHelper.WriteFDCValue(EFDCValue.FUNCTION_STEP_ID, 2);
             }
-            else if (Parent?.ProcessMode != EProcessMode.Run && _machineStatus.EquipState.IsMasterAlive)
+            else if (Parent?.ProcessMode != EProcessMode.Run && _machineStatus.EquipState.IsMasterAlive && _recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
             {
                 FDCHelper.WriteFDCValue(EFDCValue.FUNCTION_STEP_ID, 1);
             }

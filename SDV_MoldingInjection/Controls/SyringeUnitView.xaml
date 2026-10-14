@@ -32,7 +32,7 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0"
-                   Text="{Binding RemainVolume, StringFormat=F3}"
+                   Text="{Binding RemainVolume}"
                    Style="{StaticResource HeadTextBlockStyle}"
                    FontSize="16"
                    FontWeight="Bold"

@@ -251,10 +251,9 @@ namespace SDV_MoldingInjection.Defines
 #if !SIMULATION
             MCCLinkIE.mdreceive(151, 255, 23, startAddress, ref size, ref buff);
 #endif
-
             bool value = (buff & (0x01 << (address % 8))) > 0;
-            return value;
 
+            return value;
         }
     }
 }

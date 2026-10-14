@@ -181,7 +181,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcToRunStep.SyringeAirCheck:
                     Log.Debug("Syringe Air Check");
 #if !SIMULATION
-                    if (In_SyringeAir.Value == false &&
+                    if ( _machineStatus.IsAutoMode == false && In_SyringeAir.Value == false &&
                         In_SyringeCheck.Value &&
                         _machineStatus.DisableSyringeCheck == false &&
                         CurrentHeadSkip == false)
@@ -402,7 +402,8 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcOriginStep.SetFlag_SPDHeadOriginDone:
                     Log.Debug($"Set flag {head} OriginDone");
                     procOutputs[ESPDHeadProcOutput.OriginDone].Value = true;
-                    _syringeAmountStatusList.ConsumeSyringeAmount(head, PAxisBase_Pos);
+                    //_syringeAmountStatusList.ConsumeSyringeAmount(head, PAxisBase_Pos);
+                    _syringeAmountStatusList.ConsumeSyringeAmount(head, 1);
                     Step.OriginStep++;
                     break;
                 case ESPDHeadProcOriginStep.ClearFlag_SPDHeadOriginDone:
@@ -1435,7 +1436,8 @@ namespace SDV_MoldingInjection.Process
                     HeadWrireFDC(EFDCValue.HEAD_1_INJECT_TIME, _carrierJigStatus.InjectTime);
 
                     // Consume syringe amount
-                    _syringeAmountStatusList.ConsumeSyringeAmount(head, PAxisBase_Pos - _pAxisCharge_Pos);
+                    //_syringeAmountStatusList.ConsumeSyringeAmount(head, PAxisBase_Pos - _pAxisCharge_Pos);
+                    _syringeAmountStatusList.ConsumeSyringeAmount(head, 1);
 
                     if (sequence == ESequence.ResinInject)
                     {
@@ -1632,7 +1634,8 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"{PAxis.Name} moving to InjectPos done");
                     // Consume syringe amount
-                    _syringeAmountStatusList.ConsumeSyringeAmount(head, PAxisBase_Pos - _pAxisCharge_Pos);
+                    //_syringeAmountStatusList.ConsumeSyringeAmount(head, PAxisBase_Pos - _pAxisCharge_Pos);
+                   _syringeAmountStatusList.ConsumeSyringeAmount(head, 1);
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAddTailStep.WorkDone_Send:
@@ -1802,7 +1805,8 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     // Consume syringe amount for dot weighting
-                    _syringeAmountStatusList.ConsumeSyringeAmount(head, PAxisBase_Pos - _pAxisCharge_Pos);
+                    //_syringeAmountStatusList.ConsumeSyringeAmount(head, PAxisBase_Pos - _pAxisCharge_Pos);
+                    _syringeAmountStatusList.ConsumeSyringeAmount(head, 1);
 
                     Log.Debug($"{PAxis.Name} moving to InjectPos turn {_removeResinCount} done");
 

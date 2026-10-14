@@ -17,6 +17,34 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
     public class LoginViewModel : ViewModelBase, IDisposable
     {
         #region Properties
+        public ObservableCollection<string> PasswordModes { get; }
+        public ObservableCollection<string> PermissionLevels { get; }
+
+        public string SelectedPasswordMode
+        {
+            get => _selectedPasswordMode;
+            set
+            {
+                _selectedPasswordMode = value;
+
+                _securityControlStore.Settings.PasswordMode = ParsePasswordMode(value);
+                _securityControlStore.Save();
+                OnPropertyChanged(nameof(SelectedPasswordMode));
+                OnPropertyChanged(nameof(IsEQPPasswordMode));
+                OnPropertyChanged(nameof(IsRMSPasswordMode));
+            }
+        }
+
+        public string SelectedPermissionLevel
+        {
+            get => _selectedPermissionLevel;
+            set
+            {
+                _selectedPermissionLevel = value;
+                OnPropertyChanged(nameof(SelectedPermissionLevel));
+            }
+        }
+
         public ObservableCollection<string> Permissions
         {
             get => _permissions;
@@ -83,7 +111,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
                     else
                     {
-                        EquipEventHelpers.OperatorLogin(operatorID, password);
+                        if(EquipEventHelpers.OperatorLogin(operatorID, password) == false)
+                        {
+                            _log.Info($"Login Fail");
+                            MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_WrongPassword"]);
+                            return;
+                        }
+
                         _log.Info($"Login {operatorID} Permission");
                         IsLoggedIn = true;
                     }
@@ -106,35 +140,50 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                 });
             }
         }
+
         #endregion
 
         public LoginViewModel(
             INavigationService navigationService,
             IAuthenticationService authenticationService,
-            ISecurityControlStore securityControlStore)
+            ISecurityControlStore securityControlStore,
+            IUserStore userStore)
         {
             _navigationService = navigationService;
             _authenticationService = authenticationService;
             _securityControlStore = securityControlStore;
-
+            _userStore = userStore;
             _log = LogManager.GetLogger("LoginVM");
 
             _permissions = new ObservableCollection<string>(Enum.GetNames(typeof(EPermission)).ToList());
             _selectedPermission = _permissions.FirstOrDefault()!;
+
+            PasswordModes = new ObservableCollection<string>(Enum.GetNames(typeof(EPasswordMode)));
+            PermissionLevels = new ObservableCollection<string>(Enum.GetNames(typeof(EPermission)));
+
+            SelectedPasswordMode = _securityControlStore.Settings.PasswordMode.ToString();
+            SelectedPermissionLevel = PermissionLevels.FirstOrDefault() ?? nameof(EPermission.Operator);
         }
 
         #region Private Methods
+        private static EPasswordMode ParsePasswordMode(string mode)
+        {
+            return Enum.TryParse<EPasswordMode>(mode, out var parsedMode) ? parsedMode : EPasswordMode.RMS;
+        }
         #endregion
 
         #region Private Fields
         private readonly INavigationService _navigationService;
         private readonly IAuthenticationService _authenticationService;
         private readonly ISecurityControlStore _securityControlStore;
+        private readonly IUserStore _userStore;
         private readonly ILog _log;
         private ObservableCollection<string> _permissions;
         private string _selectedPermission;
         private string operatorID;
         private bool isLoggedIn;
+        private string _selectedPasswordMode = nameof(EPasswordMode.RMS);
+        private string _selectedPermissionLevel = nameof(EPermission.Operator);
         #endregion
     }
 }
