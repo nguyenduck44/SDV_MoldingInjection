@@ -195,7 +195,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         {
                             ErrorMessages.Add("Indicator Connect Fail");
                         }
-                        
+
                         _cimAction.Start();
                         Thread.Sleep(50);
                         _step++;
@@ -211,7 +211,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
                         _balanceLeft.Connect();
                         _balanceRight.Connect();
                         _inOutHandler.Connect();
-                        if(_balanceLeft.IsConnected == false || _balanceRight.IsConnected == false)
+                        if (_balanceLeft.IsConnected == false || _balanceRight.IsConnected == false)
                         {
                             ErrorMessages.Add("Balance Connection Failed.");
                         }
@@ -249,7 +249,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
                         MessageText = "Connect Motion Devices";
 
-                        _devices.Motions.AjinMaster.Connect();
+                        //_devices.Motions.AjinMaster.Connect();
+                        _devices.Motions.InovanceMaster.Connect();
                         _devices.Motions.FastechPlusRMaster.Connect();
 
                         _devices.Motions.All.ForEach(m => m.Initialization());
@@ -373,7 +374,8 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
                         _devices.Outputs.Lamp_Stop();
 
-                        _devices.Motions.AjinMaster.Disconnect();
+                        //_devices.Motions.AjinMaster.Disconnect();
+                        _devices.Motions.InovanceMaster.Disconnect();
 
                         _devices.Motions.All.ForEach(m => m.Disconnect());
                         Thread.Sleep(50);
