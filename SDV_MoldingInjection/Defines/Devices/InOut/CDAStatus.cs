@@ -39,10 +39,10 @@ namespace SDV_MoldingInjection.Defines
             FDCHelper.WriteFDCValue(EFDCValue.CDA_MAIN_AIR_PRESSURE, (int)(MainAirCDA * 1000));
             #endregion
         }
-        public double PumpPurge => AnalogConvertHelper.Convert(_analogInputs.PumpPurge.Volt, 0.6, 5.0, -0.1, 1.0);
-        public double MainAirCDA => AnalogConvertHelper.Convert(_analogInputs.MainAir.Volt, 0.6, 5.0, -0.1, 1.0);
-        public double PumpValveVacuum => AnalogConvertHelper.Convert(_analogInputs.PumpValveVacuum.Volt, 0.6, 5.0, -0.1, 1.0);
-        public double SyringeMainAirCDA => AnalogConvertHelper.Convert(_analogInputs.SyringeMainAirCDA.Volt, 0.6, 5.0, -0.1, 1.0);
+        public double PumpPurge => AnalogConvertHelper.Convert(_analogInputs.PumpPurge.Volt/1000, 0.5, 10.0, -0.2, 0.55);
+        public double MainAirCDA => AnalogConvertHelper.Convert(_analogInputs.MainAir.Volt/1000, 0.5, 10.0, -0.2, 0.55);
+        public double PumpValveVacuum => AnalogConvertHelper.Convert(_analogInputs.PumpValveVacuum.Volt/1000, 0.5, 10.0, -0.2, 0.55);
+        public double SyringeMainAirCDA => AnalogConvertHelper.Convert(_analogInputs.SyringeMainAirCDA.Volt / 1000, 0.5, 10.0, -0.2, 0.55);
 
         public bool IsPumpPurge => PumpPurge >= _recipeList.CDASettingRecipe.PumpPurgeThreshold;
         public bool IsMainAir => MainAirCDA >= _recipeList.CDASettingRecipe.MainAirThreshold;

@@ -182,7 +182,7 @@ namespace SDV_MoldingInjection.Extensions
                 {
                     return new InovanceAnalogInputDevice<EAnalogInput>()
                     {
-                        Id = 0,
+                        Id = 28,
                         Name = "AnalogInputDevice",
                         MotionMaster = ser.GetRequiredKeyedService<IMotionMaster>("InovanceMaster#1"),
                     };
