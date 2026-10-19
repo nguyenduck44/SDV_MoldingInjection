@@ -600,14 +600,8 @@ namespace SDV_MoldingInjection.Process
                         if (!Z4Axis.Status.IsHomeDone) RaiseWarning(EWarning.MO_Z4_AXIS_HOME_TIMEOUT);
                         break;
                     }
-                    if(Z1Axis.Status.IsHomeDone == false || Z1Axis.Status.IsMotioning ||
-                       Z2Axis.Status.IsHomeDone == false || Z2Axis.Status.IsMotioning ||
-                       Z3Axis.Status.IsHomeDone == false || Z3Axis.Status.IsMotioning ||
-                       Z4Axis.Status.IsHomeDone == false || Z4Axis.Status.IsMotioning)
-                    {
-                        Wait(20);
-                        break;
-                    }
+
+                    Log.Debug("Z-Axes origin search done");
                     Step.OriginStep++;
                     break;
                 case EMoldProcOriginStep.Bellow_Down:
@@ -671,15 +665,20 @@ namespace SDV_MoldingInjection.Process
                         if (!YAxis.Status.IsHomeDone) RaiseWarning(EWarning.MO_Y_AXIS_HOME_TIMEOUT);
                         break;
                     }
-                    if (XAxis.Status.IsHomeDone == false || XAxis.Status.IsMotioning ||
-                        YAxis.Status.IsHomeDone == false || YAxis.Status.IsMotioning)
+
+                    Log.Debug($"{XAxis.Name} {YAxis.Name} origin search done");
+                    Step.OriginStep++;
+                    break;
+                case EMoldProcOriginStep.XYAxis_OriginSeller:
+                    if(!XAxis.Status.IsHomeDone || XAxis.Status.IsMotioning ||
+                        !YAxis.Status.IsHomeDone || YAxis.Status.IsMotioning)
                     {
                         Wait(20);
                         break;
                     }
-                    Log.Debug($"{XAxis.Name} {YAxis.Name} origin search done");
                     Step.OriginStep++;
                     break;
+
                 case EMoldProcOriginStep.XYAxis_MoveDummyPos:
                     Log.Debug($"Move {XAxis.Name} {YAxis.Name} to dummy position");
                     XAxis.MoveAbs(XAxisDummyPos);
