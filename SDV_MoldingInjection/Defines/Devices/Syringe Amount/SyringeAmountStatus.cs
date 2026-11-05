@@ -60,6 +60,9 @@ namespace SDV_MoldingInjection.Defines
             }
         }
 
+        /// <summary>Injects done while SYRINGE_CHECK is OFF. Cleared by Reset (Syringe status reset on AutoView).</summary>
+        public int RunCountWithoutSyringe { get; set; }
+
         public double UsedVolume => MaxVolume - RemainVolume;
 
         public TimeSpan ElapsedTime => IsHeadAvailable ? DateTime.Now - ResetTime : pausedElapsedTime;
@@ -93,9 +96,9 @@ namespace SDV_MoldingInjection.Defines
                 }
 
                 isHeadAvailable = value;
-    #if SIMULATION
+#if SIMULATION
                     isHeadAvailable = true;
-    #endif
+#endif
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(ElapsedTime));
             }
@@ -104,6 +107,7 @@ namespace SDV_MoldingInjection.Defines
         public void Reset()
         {
             RemainVolume = MaxVolume;
+            RunCountWithoutSyringe = 0;
             pausedElapsedTime = TimeSpan.Zero;
             ResetTime = DateTime.Now;
         }

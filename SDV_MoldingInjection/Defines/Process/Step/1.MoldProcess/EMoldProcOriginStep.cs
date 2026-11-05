@@ -23,7 +23,7 @@ namespace SDV_MoldingInjection.Defines
 
         XYAxis_Origin,
         XYAxis_OriginWait,
-        XYAxis_OriginSeller,
+        XYAxis_OriginDoneSettle,
 
         XYAxis_MoveDummyPos,
         XYAxis_MoveDummyPosWait,

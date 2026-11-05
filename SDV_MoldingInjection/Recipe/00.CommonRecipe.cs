@@ -15,6 +15,8 @@ namespace SDV_MoldingInjection.Recipe
         private int logSaveDay = 30;
         private double materialWarningCount;
         private ILanguageDefinition selectLanguage;
+        private int _maxRunCountWithoutSyringe;
+
         public event Action<ILanguageDefinition> SelectedLanguageEvent;
         public event Action SelectedLanguageLoadAllRecipe;
         #endregion
@@ -69,7 +71,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "Syringe Amount Weight", Unit = Unit.Gram)]
+        //[SingleRecipeDescription(Description = "Syringe Amount Weight", Unit = Unit.Gram)]
         [ParameterDescription(5)]
         public double SyringeAmountWeight
         {
@@ -78,6 +80,16 @@ namespace SDV_MoldingInjection.Recipe
             {
                 if (_syringeAmountWeight == value) return;
                 SetRecipe(ref _syringeAmountWeight, value);
+            }
+        }
+        //[SingleRecipeDescription(Description = "Syringe Amount Weight", Unit = Unit.Gram)]
+        public int MaxRunCountWithoutSyringe
+        {
+            get => _maxRunCountWithoutSyringe;
+            set
+            {
+                if (_maxRunCountWithoutSyringe == value) return;
+                SetRecipe(ref _maxRunCountWithoutSyringe, value);
             }
         }
 
