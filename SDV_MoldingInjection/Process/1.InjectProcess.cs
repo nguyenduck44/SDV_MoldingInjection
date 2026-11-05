@@ -655,21 +655,22 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"Searching origin {XAxis.Name} {YAxis.Name}");
                     Wait(_currentRecipe.CommonRecipe.MotionOriginTimeout,
-                        () => XAxis.Status.IsHomeDone && YAxis.Status.IsHomeDone);
+                        () => XAxis.Status.IsHomeDone && XAxis.Status.IsMotioning == false &&
+                              YAxis.Status.IsHomeDone && YAxis.Status.IsMotioning == false);
                     Step.OriginStep++;
                     break;
                 case EMoldProcOriginStep.XYAxis_OriginWait:
                     if (WaitTimeOutOccurred)
                     {
-                        if (!XAxis.Status.IsHomeDone) RaiseWarning(EWarning.MO_X_AXIS_HOME_TIMEOUT);
-                        if (!YAxis.Status.IsHomeDone) RaiseWarning(EWarning.MO_Y_AXIS_HOME_TIMEOUT);
+                        if (!XAxis.Status.IsHomeDone || XAxis.Status.IsMotioning) RaiseWarning(EWarning.MO_X_AXIS_HOME_TIMEOUT);
+                        if (!YAxis.Status.IsHomeDone || YAxis.Status.IsMotioning) RaiseWarning(EWarning.MO_Y_AXIS_HOME_TIMEOUT);
                         break;
                     }
 
                     Log.Debug($"{XAxis.Name} {YAxis.Name} origin search done");
                     Step.OriginStep++;
                     break;
-                case EMoldProcOriginStep.XYAxis_OriginSeller:
+                case EMoldProcOriginStep.XYAxis_OriginDoneSettle:
                     if (!XAxis.Status.IsHomeDone || XAxis.Status.IsMotioning ||
                         !YAxis.Status.IsHomeDone || YAxis.Status.IsMotioning)
                     {
@@ -678,7 +679,6 @@ namespace SDV_MoldingInjection.Process
                     }
                     Step.OriginStep++;
                     break;
-
                 case EMoldProcOriginStep.XYAxis_MoveDummyPos:
                     Log.Debug($"Move {XAxis.Name} {YAxis.Name} to dummy position");
                     XAxis.MoveAbs(XAxisDummyPos);
@@ -3343,6 +3343,19 @@ namespace SDV_MoldingInjection.Process
 
             string jigID = isJigLeft ? LeftJigID : RightJigID;
 
+            if (string.IsNullOrWhiteSpace(jigID))
+            {
+                // InOut machine may not have written the Jig ID yet -> read again once
+                Thread.Sleep(500);
+                jigID = GetCellId(isJigLeft);
+                if (isJigLeft) LeftJigID = jigID; else RightJigID = jigID;
+                if (string.IsNullOrWhiteSpace(jigID))
+                {
+                    Log.Error($"CIM_JIG_ID_EMPTY (Jig {(isJigLeft ? 1 : 2)}) -> NG, skip Specific Validation");
+                    return false;
+                }
+            }
+
             Log.Info($"Specific Validationing JIG '{jigID}'");
             if (EquipEventHelpers.SpecificValidation(isJigLeft ? 1 : 2, jigID, ref outCellID) == false)
             {
@@ -3356,7 +3369,7 @@ namespace SDV_MoldingInjection.Process
             {
                 // Reply words may be read before the CIM word area is refreshed -> wait and read again
                 Log.Warn($"Specific Validation JIG '{jigID}' return empty Cell ID -> re-read reply data");
-                Thread.Sleep(300);
+                Thread.Sleep(1000);
                 if (ReReadSpecificValidationCellID(isJigLeft ? 1 : 2, ref outCellID) == false)
                 {
                     return false;
