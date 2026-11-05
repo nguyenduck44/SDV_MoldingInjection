@@ -669,6 +669,16 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"{XAxis.Name} {YAxis.Name} origin search done");
                     Step.OriginStep++;
                     break;
+                case EMoldProcOriginStep.XYAxis_OriginSeller:
+                    if (!XAxis.Status.IsHomeDone || XAxis.Status.IsMotioning ||
+                        !YAxis.Status.IsHomeDone || YAxis.Status.IsMotioning)
+                    {
+                        Wait(20);
+                        break;
+                    }
+                    Step.OriginStep++;
+                    break;
+
                 case EMoldProcOriginStep.XYAxis_MoveDummyPos:
                     Log.Debug($"Move {XAxis.Name} {YAxis.Name} to dummy position");
                     XAxis.MoveAbs(XAxisDummyPos);
