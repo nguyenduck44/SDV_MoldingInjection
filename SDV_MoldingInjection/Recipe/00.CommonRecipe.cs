@@ -82,7 +82,7 @@ namespace SDV_MoldingInjection.Recipe
                 SetRecipe(ref _syringeAmountWeight, value);
             }
         }
-        //[SingleRecipeDescription(Description = "Syringe Amount Weight", Unit = Unit.Gram)]
+        [SingleRecipeDescription(Description = "Syring Max Run When Sensor Empty Detect", Unit = Unit.ETC)]
         public int MaxRunCountWithoutSyringe
         {
             get => _maxRunCountWithoutSyringe;
