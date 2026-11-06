@@ -25,11 +25,14 @@ namespace SDV_MoldingInjection.Defines
         // Pascals : 4.000
 
         // 1 pa =  1/ strVacuumPressureUnit torr
+        public const double InovanceAIValue = 32000;
+        public const double VoltMax = 10.0;
+        public double InovanceAIScale = InovanceAIValue / VoltMax;
         public double VacuumPressureInTorr
         {
             get
             {
-                double volt = VacuumGauge.Volt;
+                double volt = VacuumGauge.Volt / InovanceAIScale;
                 if (volt > 9.0) volt = 9.0;
                 if (volt < 2.7) volt = 2.7;
                 return Math.Pow(10, (volt - 6.125) / 1.0);
