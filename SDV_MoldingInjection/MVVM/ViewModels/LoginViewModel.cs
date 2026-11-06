@@ -78,7 +78,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         }
 
         public bool IsEQPPasswordMode => _securityControlStore.Settings.PasswordMode == EPasswordMode.EQP;
-        public bool IsRMSPasswordMode => _securityControlStore.Settings.PasswordMode == EPasswordMode.RMS;
+        public bool IsRMSPasswordMode => _securityControlStore.Settings.PasswordMode == EPasswordMode.RMS_OPERATOR;
         #endregion
 
         #region Commands
@@ -111,7 +111,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
                     else
                     {
-                        if(EquipEventHelpers.OperatorLogin(operatorID, password) == false)
+                        if (EquipEventHelpers.OperatorLogin(operatorID, password) == false)
                         {
                             _log.Info($"Login Fail");
                             MessageBoxEx.ShowDialog((string)Application.Current.Resources["str_WrongPassword"]);
@@ -168,7 +168,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         #region Private Methods
         private static EPasswordMode ParsePasswordMode(string mode)
         {
-            return Enum.TryParse<EPasswordMode>(mode, out var parsedMode) ? parsedMode : EPasswordMode.RMS;
+            return Enum.TryParse<EPasswordMode>(mode, out var parsedMode) ? parsedMode : EPasswordMode.RMS_OPERATOR;
         }
         #endregion
 
@@ -182,7 +182,7 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         private string _selectedPermission;
         private string operatorID;
         private bool isLoggedIn;
-        private string _selectedPasswordMode = nameof(EPasswordMode.RMS);
+        private string _selectedPasswordMode = nameof(EPasswordMode.RMS_OPERATOR);
         private string _selectedPermissionLevel = nameof(EPermission.Operator);
         #endregion
     }

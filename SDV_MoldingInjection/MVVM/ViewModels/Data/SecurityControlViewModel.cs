@@ -166,13 +166,13 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
         #region Privates
         private static EPasswordMode ParsePasswordMode(string mode)
         {
-            return Enum.TryParse<EPasswordMode>(mode, out var parsedMode) ? parsedMode : EPasswordMode.RMS;
+            return Enum.TryParse<EPasswordMode>(mode, out var parsedMode) ? parsedMode : EPasswordMode.RMS_OPERATOR;
         }
 
         private readonly ISecurityControlStore _securityControlStore;
         private readonly IUserStore _userStore;
 
-        private string _selectedPasswordMode = nameof(EPasswordMode.RMS);
+        private string _selectedPasswordMode = nameof(EPasswordMode.RMS_OPERATOR);
         private string _selectedPermissionLevel = nameof(EPermission.Operator);
         private int _screenSaverSec = 1000;
         private bool _enableDynamicSuperUserCode = true;

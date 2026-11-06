@@ -2,7 +2,9 @@ using CommunityToolkit.Mvvm.Input;
 using EQX.Core.Common;
 using EQX.Core.Motion;
 using EQX.Motion;
-using EQX.Motion.ByVendor.Ajinextek;
+//using EQX.Motion.ByVendor.Ajinextek;
+//using EQX.Motion.ByVendor.Inovance;
+using EQX.Motion.ByVendor.ZMotion;
 using EQX.UI.Controls;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -63,29 +65,77 @@ namespace SDV_MoldingInjection.MVVM.ViewModels
 
         private void SaveMotionConfigurations()
         {
-            SaveAjinMotionConfigurations();
+            //SaveAjinMotionConfigurations();
+            //SaveInovanceMotionConfigurations();
+            SaveZMotionMotionConfigurations();
             SaveFastechMotionConfigurations();
         }
 
-        private void SaveAjinMotionConfigurations()
+        #region Ajin Motion (legacy - commented)
+        //private void SaveAjinMotionConfigurations()
+        //{
+        //    var ajinConfigPath = _configuration["Files:MotionAjinParaConfigFile"];
+        //    if (string.IsNullOrWhiteSpace(ajinConfigPath) || !File.Exists(ajinConfigPath))
+        //    {
+        //        return;
+        //    }
+        //
+        //    var existingAjinParams = JsonConvert.DeserializeObject<List<MotionAjinParameter>>(File.ReadAllText(ajinConfigPath))
+        //        ?? new List<MotionAjinParameter>();
+        //
+        //    for (int i = 0; i < Motions.AjinMotions.Count && i < existingAjinParams.Count; i++)
+        //    {
+        //        existingAjinParams[i].Velocity = Motions.AjinMotions[i].Parameter.Velocity;
+        //        existingAjinParams[i].Acceleration = Motions.AjinMotions[i].Parameter.Acceleration;
+        //        existingAjinParams[i].Deceleration = Motions.AjinMotions[i].Parameter.Deceleration;
+        //    }
+        //
+        //    File.WriteAllText(ajinConfigPath, JsonConvert.SerializeObject(existingAjinParams, Formatting.Indented));
+        //}
+        #endregion
+
+        #region Inovance Motion (legacy - commented)
+        //private void SaveInovanceMotionConfigurations()
+        //{
+        //    var inovanceConfigPath = _configuration["Files:MotionInovanceParaConfigFile"];
+        //    if (string.IsNullOrWhiteSpace(inovanceConfigPath) || !File.Exists(inovanceConfigPath))
+        //    {
+        //        return;
+        //    }
+        //
+        //    var existingInovanceParams = JsonConvert.DeserializeObject<List<MotionInovanceParameter>>(File.ReadAllText(inovanceConfigPath))
+        //        ?? new List<MotionInovanceParameter>();
+        //
+        //    for (int i = 0; i < Motions.InovanceMotions.Count && i < existingInovanceParams.Count; i++)
+        //    {
+        //        existingInovanceParams[i].Velocity = Motions.InovanceMotions[i].Parameter.Velocity;
+        //        existingInovanceParams[i].Acceleration = Motions.InovanceMotions[i].Parameter.Acceleration;
+        //        existingInovanceParams[i].Deceleration = Motions.InovanceMotions[i].Parameter.Deceleration;
+        //    }
+        //
+        //    File.WriteAllText(inovanceConfigPath, JsonConvert.SerializeObject(existingInovanceParams, Formatting.Indented));
+        //}
+        #endregion
+
+        private void SaveZMotionMotionConfigurations()
         {
-            var ajinConfigPath = _configuration["Files:MotionAjinParaConfigFile"];
-            if (string.IsNullOrWhiteSpace(ajinConfigPath) || !File.Exists(ajinConfigPath))
+            var zmotionConfigPath = _configuration["Files:MotionZMotionParaConfigFile"];
+            if (string.IsNullOrWhiteSpace(zmotionConfigPath) || !File.Exists(zmotionConfigPath))
             {
                 return;
             }
 
-            var existingAjinParams = JsonConvert.DeserializeObject<List<MotionAjinParameter>>(File.ReadAllText(ajinConfigPath))
-                ?? new List<MotionAjinParameter>();
+            var existingZMotionParams = JsonConvert.DeserializeObject<List<MotionZMotionParameter>>(File.ReadAllText(zmotionConfigPath))
+                ?? new List<MotionZMotionParameter>();
 
-            for (int i = 0; i < Motions.AjinMotions.Count && i < existingAjinParams.Count; i++)
+            for (int i = 0; i < Motions.ZMotionMotions.Count && i < existingZMotionParams.Count; i++)
             {
-                existingAjinParams[i].Velocity = Motions.AjinMotions[i].Parameter.Velocity;
-                existingAjinParams[i].Acceleration = Motions.AjinMotions[i].Parameter.Acceleration;
-                existingAjinParams[i].Deceleration = Motions.AjinMotions[i].Parameter.Deceleration;
+                existingZMotionParams[i].Velocity = Motions.ZMotionMotions[i].Parameter.Velocity;
+                existingZMotionParams[i].Acceleration = Motions.ZMotionMotions[i].Parameter.Acceleration;
+                existingZMotionParams[i].Deceleration = Motions.ZMotionMotions[i].Parameter.Deceleration;
             }
 
-            File.WriteAllText(ajinConfigPath, JsonConvert.SerializeObject(existingAjinParams, Formatting.Indented));
+            File.WriteAllText(zmotionConfigPath, JsonConvert.SerializeObject(existingZMotionParams, Formatting.Indented));
         }
 
         private void SaveFastechMotionConfigurations()

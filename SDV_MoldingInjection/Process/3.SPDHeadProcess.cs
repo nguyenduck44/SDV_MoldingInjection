@@ -914,8 +914,10 @@ namespace SDV_MoldingInjection.Process
                         (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run) &&
                         IsSequenceAssembleOrDisassemble(Parent!.Sequence) == false &&
                         Parent?.Sequence == ESequence.AutoRun &&
-                        Parent?.Childs.OfType<InjectProcess>().First().Sequence != ESequence.Unloading)
+                        Parent?.Childs.OfType<InjectProcess>().First().Sequence != ESequence.Unloading &&
+                        SyringeStatus.RunCountWithoutSyringe >= MaxRunCountWithoutSyringe)
                     {
+                        // Allowed injects without syringe used up -> stop until Syringe status is reset on AutoView
                         RaiseHeadWarning(EWarning.SE_SPD_H01_SYRING_NOT_DETECT);
                     }
 #endif
@@ -1441,6 +1443,32 @@ namespace SDV_MoldingInjection.Process
 
                     if (sequence == ESequence.ResinInject)
                     {
+#if !SIMULATION
+                        if (In_SyringeCheck.Value == false &&
+                            _machineStatus.IsAutoRunMode &&
+                            _machineStatus.DisableSyringeCheck == false &&
+                            CurrentHeadSkip == false)
+                        {
+                            SyringeStatus.RunCountWithoutSyringe++;
+                            _syringeAmountStatusList.Save();
+
+                            int runCount = SyringeStatus.RunCountWithoutSyringe;
+                            Log.Warn($"{head} SYRINGE NOT DETECT: inject {runCount}/{MaxRunCountWithoutSyringe} without syringe");
+
+                            _devices.Outputs.Buzzer1On.Value = true;
+                            Task.Run(async () =>
+                            {
+                                await Task.Delay(3000);
+                                _devices.Outputs.Buzzer1On.Value = false;
+                            });
+                            MessageBoxEx.Show($"{head} SYRINGE NOT DETECT!\n" +
+                                              $"Inject {runCount}/{MaxRunCountWithoutSyringe} without syringe.\n" +
+                                              (runCount >= MaxRunCountWithoutSyringe
+                                                  ? "Machine will stop. Change syringe and reset Syringe status on AUTO screen."
+                                                  : $"{MaxRunCountWithoutSyringe - runCount} inject(s) left. Change syringe soon."),
+                                              false, "Warning");
+                        }
+#endif
                         TactTime.SetTactTime();
                         if (OptionRecipe.SkipDummyShot == false && _machineStatus.DummyShotCount >= _currentRecipe.InjectRecipe.DummyShotCycleCount)
                         {
@@ -2208,6 +2236,11 @@ namespace SDV_MoldingInjection.Process
             "SPDHead4" => _syringeAmountStatusList.SyringeAmounts[3].IsTimeOver,
             _ => throw new Exception($"Invalid process name: {Name}")
         };
+
+        /// <summary>Max injects allowed after SYRINGE_CHECK goes OFF, before SYRING_NOT_DETECT stops the head.</summary>
+        private const int MaxRunCountWithoutSyringe = 5;
+
+        private SyringeAmountStatus SyringeStatus => _syringeAmountStatusList.SyringeAmounts[(int)head - 1];
 
         private bool CurrentHeadSkip => Name switch
         {

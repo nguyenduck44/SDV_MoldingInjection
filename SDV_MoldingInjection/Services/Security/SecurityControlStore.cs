@@ -27,7 +27,7 @@ namespace SDV_MoldingInjection.Services.Security
 
         public bool ValidatePassword(EPermission permission, string password)
         {
-            if (permission == EPermission.Operator && Settings.PasswordMode == EPasswordMode.RMS)
+            if (permission == EPermission.Operator && Settings.PasswordMode == EPasswordMode.RMS_OPERATOR)
             {
                 return true;
             }

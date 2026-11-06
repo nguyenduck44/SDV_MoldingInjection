@@ -3,7 +3,8 @@ using EQX.Core.Motion;
 using EQX.InOut;
 using EQX.InOut.InOut.Analog;
 using EQX.Motion;
-using EQX.Motion.ByVendor.Inovance;
+//using EQX.Motion.ByVendor.Inovance;
+using EQX.Motion.ByVendor.ZMotion;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SDV_MoldingInjection.Defines;
@@ -62,13 +63,37 @@ namespace SDV_MoldingInjection.Extensions
                     });
                 }
 #else
-                services.AddSingleton<IDInputDevice>((services) =>
+                #region Ajin Input (legacy - commented)
+                //services.AddSingleton<IDInputDevice>((services) =>
+                //{
+                //    return new AjinInputDevice<EMachineInput>()
+                //    {
+                //        Id = (int)EInputDevice.MachineInput,
+                //        Name = EInputDevice.MachineInput.ToString(),
+                //        MaxPin = 100,
+                //    };
+                //});
+                #endregion
+                #region Inovance Input (legacy - commented)
+                //services.AddSingleton<IDInputDevice>((ser) =>
+                //{
+                //    return new InovanceInputDevice<EMachineInput>()
+                //    {
+                //        Id = (int)EInputDevice.MachineInput,
+                //        Name = EInputDevice.MachineInput.ToString(),
+                //        MaxPin = 100,
+                //        MotionMaster = ser.GetRequiredKeyedService<IMotionMaster>("InovanceMaster#1"),
+                //    };
+                //});
+                #endregion
+                services.AddSingleton<IDInputDevice>((ser) =>
                 {
-                    return new AjinInputDevice<EMachineInput>()
+                    return new ZMotionInputDevice<EMachineInput>()
                     {
                         Id = (int)EInputDevice.MachineInput,
                         Name = EInputDevice.MachineInput.ToString(),
                         MaxPin = 100,
+                        MotionMaster = (MotionMasterZMotion)ser.GetRequiredKeyedService<IMotionMaster>("ZMotionMaster#1"),
                     };
                 });
                 
@@ -115,13 +140,37 @@ namespace SDV_MoldingInjection.Extensions
                     });
                 }
 #else
-                services.AddSingleton<IDOutputDevice>((services) =>
+                #region Ajin Output (legacy - commented)
+                //services.AddSingleton<IDOutputDevice>((services) =>
+                //{
+                //    return new AjinOutputDevice<EMachineOutput>()
+                //    {
+                //        Id = (int)EOutputDevice.MachineOutput,
+                //        Name = EOutputDevice.MachineOutput.ToString(),
+                //        MaxPin = 100,
+                //    };
+                //});
+                #endregion
+                #region Inovance Output (legacy - commented)
+                //services.AddSingleton<IDOutputDevice>((ser) =>
+                //{
+                //    return new InovanceOutputDevice<EMachineOutput>()
+                //    {
+                //        Id = (int)EOutputDevice.MachineOutput,
+                //        Name = EOutputDevice.MachineOutput.ToString(),
+                //        MaxPin = 100,
+                //        MotionMaster = ser.GetRequiredKeyedService<IMotionMaster>("InovanceMaster#1"),
+                //    };
+                //});
+                #endregion
+                services.AddSingleton<IDOutputDevice>((ser) =>
                 {
-                    return new AjinOutputDevice<EMachineOutput>()
+                    return new ZMotionOutputDevice<EMachineOutput>()
                     {
                         Id = (int)EOutputDevice.MachineOutput,
                         Name = EOutputDevice.MachineOutput.ToString(),
                         MaxPin = 100,
+                        MotionMaster = (MotionMasterZMotion)ser.GetRequiredKeyedService<IMotionMaster>("ZMotionMaster#1"),
                     };
                 });
 
@@ -144,12 +193,34 @@ namespace SDV_MoldingInjection.Extensions
 #if SIMULATION
                 services.AddKeyedSingleton<IAInputDevice>("AnalogInputDevice#1", (services, obj) => { return new SimulationAnalogInputDevice<EAnalogInput>(); });
 #else
+                #region Ajin Analog Input (legacy - commented)
+                //services.AddKeyedSingleton<IAInputDevice>("AnalogInputDevice#1", (ser, obj) =>
+                //{
+                //    return new AjinAnalogInputDevice<EAnalogInput>()
+                //    {
+                //        Id = 28,
+                //        Name = "AnalogInputDevice",
+                //    };
+                //});
+                #endregion
+                #region Inovance Analog Input (legacy - commented)
+                //services.AddKeyedSingleton<IAInputDevice>("AnalogInputDevice#1", (ser, obj) =>
+                //{
+                //    return new InovanceAnalogInputDevice<EAnalogInput>()
+                //    {
+                //        Id = 0,
+                //        Name = "AnalogInputDevice",
+                //        MotionMaster = ser.GetRequiredKeyedService<IMotionMaster>("InovanceMaster#1"),
+                //    };
+                //});
+                #endregion
                 services.AddKeyedSingleton<IAInputDevice>("AnalogInputDevice#1", (ser, obj) =>
                 {
-                    return new AjinAnalogInputDevice<EAnalogInput>()
+                    return new ZMotionAnalogInputDevice<EAnalogInput>()
                     {
-                        Id = 28,
+                        Id = 0,
                         Name = "AnalogInputDevice",
+                        MotionMaster = (MotionMasterZMotion)ser.GetRequiredKeyedService<IMotionMaster>("ZMotionMaster#1"),
                     };
                 });
 #endif

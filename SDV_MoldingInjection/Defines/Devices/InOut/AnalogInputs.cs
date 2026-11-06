@@ -25,11 +25,16 @@ namespace SDV_MoldingInjection.Defines
         // Pascals : 4.000
 
         // 1 pa =  1/ strVacuumPressureUnit torr
+        // Inovance AI card: 0~10V -> raw 0~32000
+        private const double VoltScale = 32000.0;
+        private const double vVoltMax = 10.0;
+        private const double analogScale = VoltScale / vVoltMax;
+
         public double VacuumPressureInTorr
         {
             get
             {
-                double volt = VacuumGauge.Volt;
+                double volt = VacuumGauge.Volt * analogScale;
                 if (volt > 9.0) volt = 9.0;
                 if (volt < 2.7) volt = 2.7;
                 return Math.Pow(10, (volt - 6.125) / 1.0);
@@ -60,7 +65,7 @@ namespace SDV_MoldingInjection.Defines
         }
 
         #region Methods
-        
+
         #endregion
         #region Privates
         private readonly IAInputDevice _aInputDevice;

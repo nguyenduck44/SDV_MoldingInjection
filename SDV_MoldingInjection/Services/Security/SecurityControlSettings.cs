@@ -4,13 +4,13 @@ namespace SDV_MoldingInjection.Services.Security
 {
     public enum EPasswordMode
     {
-        RMS,
+        RMS_OPERATOR,
         EQP
     }
 
     public class SecurityControlSettings
     {
-        public EPasswordMode PasswordMode { get; set; } = EPasswordMode.RMS;
+        public EPasswordMode PasswordMode { get; set; } = EPasswordMode.RMS_OPERATOR;
 
         public int ScreenSaverSec { get; set; } = 1000;
 
