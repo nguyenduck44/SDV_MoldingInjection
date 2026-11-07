@@ -1079,6 +1079,14 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EMoldProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EMoldProcResinInjectStep.SDPHead_Work_DoneWait:
+
+                    if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM && isMaterialAssembled == false)
+                    {
+                        // Send only once per inject (this step re-enters while waiting vent complete)
+                        isMaterialAssembled = true;
+                        SendMaterialAssemble();
+                    }
+
                     if (IsSPDHeadWorkDone(ESequence.ResinInject, ESPDHead.SPDHead1) == false ||
                         IsSPDHeadWorkDone(ESequence.ResinInject, ESPDHead.SPDHead2) == false ||
                         IsSPDHeadWorkDone(ESequence.ResinInject, ESPDHead.SPDHead3) == false ||
@@ -1086,13 +1094,6 @@ namespace SDV_MoldingInjection.Process
                     {
                         Wait(50);
                         break;
-                    }
-
-                    if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM && isMaterialAssembled == false)
-                    {
-                        // Send only once per inject (this step re-enters while waiting vent complete)
-                        isMaterialAssembled = true;
-                        SendMaterialAssemble();
                     }
 
                     if (_currentRecipe.OptionRecipe.SkipVentTime == false &&
@@ -3288,7 +3289,9 @@ namespace SDV_MoldingInjection.Process
             }
 
             Log.Info($"MaterialAssemble {materialPort.Name} Cell ID '{cellId}'");
-            return materialPort.MaterialAssemble(ppid, cellId);
+            var value = materialPort.MaterialAssemble(ppid, cellId);
+            Thread.Sleep(500);
+            return value;
         }
 
         private static List<MaterialAssemblyPlcToCimArea?> BuildTrackOutMaterialAreas(MaterialAssemblyPlcToCimArea? port1Area, MaterialAssemblyPlcToCimArea? port2Area)
