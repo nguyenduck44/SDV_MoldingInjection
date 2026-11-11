@@ -3290,9 +3290,30 @@ namespace SDV_MoldingInjection.Process
 
             Log.Info($"MaterialAssemble {materialPort.Name} Cell ID '{cellId}'");
             var value = materialPort.MaterialAssemble(ppid, cellId);
+
+            // Report Material Assemble to CIM right away (W7F4F + B004E, MaterialPortState, MaterialInfoSend1).
+            // Runs in background so the inject sequence is not blocked by CIM ACK waits; ports are sent one by one.
+            Task.Run(() =>
+            {
+                lock (_materialAssemblySendLock)
+                {
+                    try
+                    {
+                        EquipEventHelpers.MaterialInfoSendAssembly(value);
+                        Log.Info($"MaterialInfoSendAssembly {materialPort.Name} Cell ID '{cellId}' done");
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error($"MaterialInfoSendAssembly {materialPort.Name} Cell ID '{cellId}' failed : {ex.Message}");
+                    }
+                }
+            });
+
             Thread.Sleep(500);
             return value;
         }
+
+        private static readonly object _materialAssemblySendLock = new object();
 
         private static List<MaterialAssemblyPlcToCimArea?> BuildTrackOutMaterialAreas(MaterialAssemblyPlcToCimArea? port1Area, MaterialAssemblyPlcToCimArea? port2Area)
         {
