@@ -122,7 +122,7 @@ namespace SDV_MoldingInjection.Process
         // Cell failed CIM validation (TrackIn / Job Process) -> skip MaterialAssemble and TrackOut
         private bool isLeftCellNG;
         private bool isRightCellNG;
-        private bool isMaterialAssembled;
+        private Task _materialAssembleTask = Task.CompletedTask;
 
         private bool SPDHead1OriginSelected => Parent!.Childs!.OfType<SPDHeadProcess>().First(p => p.Name == EProcess.SPDHead1.ToString()).IsOriginOrInitSelected;
         private bool SPDHead2OriginSelected => Parent!.Childs!.OfType<SPDHeadProcess>().First(p => p.Name == EProcess.SPDHead2.ToString()).IsOriginOrInitSelected;
@@ -1055,8 +1055,23 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Set Output {EInjectProcOutput.SPDHeadWorkRequest}");
                     UpdateAllJigStatus(EJigStatus.InMolding);
                     _machineStatus.DummyShotCount++;
-                    isMaterialAssembled = false;
                     procOutputs[EInjectProcOutput.SPDHeadWorkRequest].Value = true;
+
+                    // Send Material Assemble to CIM in background while heads inject (~40s), not after
+                    if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
+                    {
+                        _materialAssembleTask = Task.Run(() =>
+                        {
+                            try
+                            {
+                                SendMaterialAssemble();
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.Error($"SendMaterialAssemble failed : {ex.Message}");
+                            }
+                        });
+                    }
                     Step.RunStep = (int)EMoldProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EMoldProcResinInjectStep.DelayAfter_AngleValve_Open:
@@ -1079,14 +1094,6 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EMoldProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EMoldProcResinInjectStep.SDPHead_Work_DoneWait:
-
-                    if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM && isMaterialAssembled == false)
-                    {
-                        // Send only once per inject (this step re-enters while waiting vent complete)
-                        isMaterialAssembled = true;
-                        SendMaterialAssemble();
-                    }
-
                     if (IsSPDHeadWorkDone(ESequence.ResinInject, ESPDHead.SPDHead1) == false ||
                         IsSPDHeadWorkDone(ESequence.ResinInject, ESPDHead.SPDHead2) == false ||
                         IsSPDHeadWorkDone(ESequence.ResinInject, ESPDHead.SPDHead3) == false ||
@@ -1098,6 +1105,13 @@ namespace SDV_MoldingInjection.Process
 
                     if (_currentRecipe.OptionRecipe.SkipVentTime == false &&
                         procInputs[EInjectProcInput.VentComplete].Value == false)
+                    {
+                        Wait(20);
+                        break;
+                    }
+
+                    // Material data must be ready (and reported) before the jigs go to TrackOut
+                    if (_materialAssembleTask.IsCompleted == false)
                     {
                         Wait(20);
                         break;
@@ -3291,23 +3305,20 @@ namespace SDV_MoldingInjection.Process
             Log.Info($"MaterialAssemble {materialPort.Name} Cell ID '{cellId}'");
             var value = materialPort.MaterialAssemble(ppid, cellId);
 
-            // Report Material Assemble to CIM right away (W7F4F + B004E, MaterialPortState, MaterialInfoSend1).
-            // Runs in background so the inject sequence is not blocked by CIM ACK waits; ports are sent one by one.
-            Task.Run(() =>
+            // Report Material Assemble to CIM (W7F4F + B004E, MaterialPortState, MaterialInfoSend1).
+            // Already on the background task started at inject begin; ports are sent one by one.
+            lock (_materialAssemblySendLock)
             {
-                lock (_materialAssemblySendLock)
+                try
                 {
-                    try
-                    {
-                        EquipEventHelpers.MaterialInfoSendAssembly(value);
-                        Log.Info($"MaterialInfoSendAssembly {materialPort.Name} Cell ID '{cellId}' done");
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error($"MaterialInfoSendAssembly {materialPort.Name} Cell ID '{cellId}' failed : {ex.Message}");
-                    }
+                    EquipEventHelpers.MaterialInfoSendAssembly(value);
+                    Log.Info($"MaterialInfoSendAssembly {materialPort.Name} Cell ID '{cellId}' done");
                 }
-            });
+                catch (Exception ex)
+                {
+                    Log.Error($"MaterialInfoSendAssembly {materialPort.Name} Cell ID '{cellId}' failed : {ex.Message}");
+                }
+            }
 
             Thread.Sleep(500);
             return value;
