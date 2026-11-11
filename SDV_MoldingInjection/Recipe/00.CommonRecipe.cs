@@ -40,14 +40,14 @@ namespace SDV_MoldingInjection.Recipe
         public double MotionMoveTimeout
         {
             get => motionMoveTimeout;
-            set
+            set 
             {
                 if (motionMoveTimeout == value) return;
                 SetRecipe(ref motionMoveTimeout, value);
             }
         }
 
-        // [SingleRecipeDescription(Description = "Vacuum Delay", Unit = Unit.Second)]
+       // [SingleRecipeDescription(Description = "Vacuum Delay", Unit = Unit.Second)]
         [ParameterDescription(3)]
         public double VacDelay
         {
@@ -82,7 +82,7 @@ namespace SDV_MoldingInjection.Recipe
                 SetRecipe(ref _syringeAmountWeight, value);
             }
         }
-        [SingleRecipeDescription(Description = "Max Run Count Without Syringe", Detail = "Syring Max Run When Sensor Empty Detect", Unit = Unit.ETC)]
+        //[SingleRecipeDescription(Description = "Max Run Count Without Syringe", Detail = "Syring Max Run When Sensor Empty Detect", Unit = Unit.ETC)]
         public int MaxRunCountWithoutSyringe
         {
             get => _maxRunCountWithoutSyringe;
