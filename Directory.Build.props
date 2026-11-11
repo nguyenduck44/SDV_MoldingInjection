@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <!-- This machine does not use WMX: build EQX.ThirdParty / EQX.InOut / EQX.Motion without WMX DLLs -->
+    <UseWmx>false</UseWmx>
+  </PropertyGroup>
+</Project>
