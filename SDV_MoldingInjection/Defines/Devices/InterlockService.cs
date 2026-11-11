@@ -32,7 +32,7 @@ namespace SDV_MoldingInjection.Defines
             _machineStatus = machineStatus;
 
             InterlockMonitor.OnInterlockBlocked += HandleInterlockBlocked;
-#if !SIMULATION
+
             try
             {
                 object? z1_Axis_InjectPos_Interlock = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Top Engineering", "Z1_Axis_InjectPos_Interlock", "-70");
@@ -52,7 +52,6 @@ namespace SDV_MoldingInjection.Defines
                 LogManager.GetLogger("Interlock").Error("Get Interlock Z Axis InjectPos. Check Registry Z_Axis_InjectPos_Interlock Value");
                 MessageBoxEx.ShowDialog("Get Interlock Z Axis InjectPos. Check Registry Z_Axis_InjectPos_Interlock Value");
             }
-#endif
         }
         #endregion
 

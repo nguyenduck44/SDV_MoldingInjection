@@ -15,6 +15,8 @@ namespace SDV_MoldingInjection.Recipe
         private int logSaveDay = 30;
         private double materialWarningCount;
         private ILanguageDefinition selectLanguage;
+        private int _maxRunCountWithoutSyringe;
+
         public event Action<ILanguageDefinition> SelectedLanguageEvent;
         public event Action SelectedLanguageLoadAllRecipe;
         #endregion
@@ -38,14 +40,14 @@ namespace SDV_MoldingInjection.Recipe
         public double MotionMoveTimeout
         {
             get => motionMoveTimeout;
-            set 
+            set
             {
                 if (motionMoveTimeout == value) return;
                 SetRecipe(ref motionMoveTimeout, value);
             }
         }
 
-        [SingleRecipeDescription(Description = "Vacuum Delay", Unit = Unit.Second)]
+        // [SingleRecipeDescription(Description = "Vacuum Delay", Unit = Unit.Second)]
         [ParameterDescription(3)]
         public double VacDelay
         {
@@ -69,7 +71,7 @@ namespace SDV_MoldingInjection.Recipe
             }
         }
 
-        [SingleRecipeDescription(Description = "Syringe Amount Weight", Unit = Unit.Gram)]
+        //[SingleRecipeDescription(Description = "Syringe Amount Weight", Unit = Unit.Gram)]
         [ParameterDescription(5)]
         public double SyringeAmountWeight
         {
@@ -78,6 +80,16 @@ namespace SDV_MoldingInjection.Recipe
             {
                 if (_syringeAmountWeight == value) return;
                 SetRecipe(ref _syringeAmountWeight, value);
+            }
+        }
+        [SingleRecipeDescription(Description = "Max Run Count Without Syringe", Detail = "Syring Max Run When Sensor Empty Detect", Unit = Unit.ETC)]
+        public int MaxRunCountWithoutSyringe
+        {
+            get => _maxRunCountWithoutSyringe;
+            set
+            {
+                if (_maxRunCountWithoutSyringe == value) return;
+                SetRecipe(ref _maxRunCountWithoutSyringe, value);
             }
         }
 

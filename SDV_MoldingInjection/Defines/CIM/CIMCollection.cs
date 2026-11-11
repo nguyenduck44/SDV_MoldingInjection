@@ -80,7 +80,7 @@ namespace SDV_MoldingInjection.Defines.CIM
             {
                 MaterialPorts[i].Id = i + 1;
                 MaterialPorts[i].Name = $"Material Port Head {i + 1}";
-                MaterialPorts[i].Type = "RESIN";
+                MaterialPorts[i].Type = "BIM";
             }
             MaterialPorts.First().IsCurrentActived = true;
             CimFunction = cimFunction;
@@ -89,7 +89,6 @@ namespace SDV_MoldingInjection.Defines.CIM
             _devices = devices;
             _recipeSelector = recipeSelector;
             _config = config;
-#if !SIMULATION
             try
             {
                 object? val = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Top Engineering", "MCCUnitStartWord", "");
@@ -111,7 +110,6 @@ namespace SDV_MoldingInjection.Defines.CIM
                 LogManager.GetLogger("IO").Error("Get Value MCCPPIDStartWord Fail . Check Registry Value");
                 MessageBoxEx.ShowDialog("Get Value MCCPPIDStartWord Fail . Check Registry Value");
             }
-#endif
         }
         #endregion
 

@@ -13,6 +13,7 @@ using SDV_MoldingInjection.Defines.CIM;
 using SDV_MoldingInjection.MVVM.Models;
 using SDV_MoldingInjection.Recipe;
 using System.Threading.Tasks;
+using TOPENG_Device;
 
 namespace SDV_MoldingInjection.Process
 {
@@ -181,7 +182,7 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcToRunStep.SyringeAirCheck:
                     Log.Debug("Syringe Air Check");
 #if !SIMULATION
-                    if (In_SyringeAir.Value == false &&
+                    if (_machineStatus.IsAutoMode == false && In_SyringeAir.Value == false &&
                         In_SyringeCheck.Value &&
                         _machineStatus.DisableSyringeCheck == false &&
                         CurrentHeadSkip == false)
@@ -402,7 +403,8 @@ namespace SDV_MoldingInjection.Process
                 case ESPDHeadProcOriginStep.SetFlag_SPDHeadOriginDone:
                     Log.Debug($"Set flag {head} OriginDone");
                     procOutputs[ESPDHeadProcOutput.OriginDone].Value = true;
-                    _syringeAmountStatusList.ConsumeSyringeAmount(head, PAxisBase_Pos);
+                    //_syringeAmountStatusList.ConsumeSyringeAmount(head, PAxisBase_Pos);
+                    _syringeAmountStatusList.ConsumeSyringeAmount(head, 1);
                     Step.OriginStep++;
                     break;
                 case ESPDHeadProcOriginStep.ClearFlag_SPDHeadOriginDone:
@@ -913,8 +915,10 @@ namespace SDV_MoldingInjection.Process
                         (ProcessMode == EProcessMode.ToRun || ProcessMode == EProcessMode.Run) &&
                         IsSequenceAssembleOrDisassemble(Parent!.Sequence) == false &&
                         Parent?.Sequence == ESequence.AutoRun &&
-                        Parent?.Childs.OfType<InjectProcess>().First().Sequence != ESequence.Unloading)
+                        Parent?.Childs.OfType<InjectProcess>().First().Sequence != ESequence.Unloading &&
+                        SyringeStatus.RunCountWithoutSyringe >= _recipeSelector.CurrentRecipe.CommonRecipe.MaxRunCountWithoutSyringe)
                     {
+                        // Allowed injects without syringe used up -> stop until Syringe status is reset on AutoView
                         RaiseHeadWarning(EWarning.SE_SPD_H01_SYRING_NOT_DETECT);
                     }
 #endif
@@ -1435,10 +1439,37 @@ namespace SDV_MoldingInjection.Process
                     HeadWrireFDC(EFDCValue.HEAD_1_INJECT_TIME, _carrierJigStatus.InjectTime);
 
                     // Consume syringe amount
-                    _syringeAmountStatusList.ConsumeSyringeAmount(head, PAxisBase_Pos - _pAxisCharge_Pos);
+                    //_syringeAmountStatusList.ConsumeSyringeAmount(head, PAxisBase_Pos - _pAxisCharge_Pos);
+                    _syringeAmountStatusList.ConsumeSyringeAmount(head, 1);
 
                     if (sequence == ESequence.ResinInject)
                     {
+#if !SIMULATION
+                        if (In_SyringeCheck.Value == false &&
+                            _machineStatus.IsAutoRunMode &&
+                            _machineStatus.DisableSyringeCheck == false &&
+                            CurrentHeadSkip == false)
+                        {
+                            SyringeStatus.RunCountWithoutSyringe++;
+                            _syringeAmountStatusList.Save();
+
+                            int runCount = SyringeStatus.RunCountWithoutSyringe;
+                            Log.Warn($"{head} SYRINGE NOT DETECT: inject {runCount}/{_recipeSelector.CurrentRecipe.CommonRecipe.MaxRunCountWithoutSyringe} without syringe");
+
+                            _devices.Outputs.Buzzer1On.Value = true;
+                            Task.Run(async () =>
+                            {
+                                await Task.Delay(3000);
+                                _devices.Outputs.Buzzer1On.Value = false;
+                            });
+                            MessageBoxEx.Show($"{head} SYRINGE NOT DETECT!\n" +
+                                              $"Inject {runCount}/{_recipeSelector.CurrentRecipe.CommonRecipe.MaxRunCountWithoutSyringe} without syringe.\n" +
+                                              (runCount >= _recipeSelector.CurrentRecipe.CommonRecipe.MaxRunCountWithoutSyringe
+                                                  ? "Machine will stop. Change syringe and reset Syringe status on AUTO screen."
+                                                  : $"{_recipeSelector.CurrentRecipe.CommonRecipe.MaxRunCountWithoutSyringe - runCount} inject(s) left. Change syringe soon."),
+                                              false, "Warning");
+                        }
+#endif
                         TactTime.SetTactTime();
                         if (OptionRecipe.SkipDummyShot == false && _machineStatus.DummyShotCount >= _currentRecipe.InjectRecipe.DummyShotCycleCount)
                         {
@@ -1632,7 +1663,8 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"{PAxis.Name} moving to InjectPos done");
                     // Consume syringe amount
-                    _syringeAmountStatusList.ConsumeSyringeAmount(head, PAxisBase_Pos - _pAxisCharge_Pos);
+                    //_syringeAmountStatusList.ConsumeSyringeAmount(head, PAxisBase_Pos - _pAxisCharge_Pos);
+                    _syringeAmountStatusList.ConsumeSyringeAmount(head, 1);
                     Step.RunStep++;
                     break;
                 case ESPDHeadProcAddTailStep.WorkDone_Send:
@@ -1802,7 +1834,8 @@ namespace SDV_MoldingInjection.Process
                     }
 
                     // Consume syringe amount for dot weighting
-                    _syringeAmountStatusList.ConsumeSyringeAmount(head, PAxisBase_Pos - _pAxisCharge_Pos);
+                    //_syringeAmountStatusList.ConsumeSyringeAmount(head, PAxisBase_Pos - _pAxisCharge_Pos);
+                    _syringeAmountStatusList.ConsumeSyringeAmount(head, 1);
 
                     Log.Debug($"{PAxis.Name} moving to InjectPos turn {_removeResinCount} done");
 
@@ -2204,6 +2237,8 @@ namespace SDV_MoldingInjection.Process
             "SPDHead4" => _syringeAmountStatusList.SyringeAmounts[3].IsTimeOver,
             _ => throw new Exception($"Invalid process name: {Name}")
         };
+
+        private SyringeAmountStatus SyringeStatus => _syringeAmountStatusList.SyringeAmounts[(int)head - 1];
 
         private bool CurrentHeadSkip => Name switch
         {

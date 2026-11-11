@@ -35,7 +35,7 @@ namespace SDV_MoldingInjection.Defines
             _dHead4InputDevice = dInputDevices.First(device => device.Name == EInputDevice.Head4Input.ToString());
 
             _machineStatus = machineStatus;
-#if !SIMULATION
+
             try
             {
                 object? sensorStartBit = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Top Engineering", "SensorStartBit", "");
@@ -46,7 +46,7 @@ namespace SDV_MoldingInjection.Defines
                 LogManager.GetLogger("IO").Error("Get Value SensorStartBit Fail . Check Registry Value");
                 MessageBoxEx.ShowDialog("Get Value SensorStartBit Fail . Check Registry Value");
             }
-#endif
+
             Initialize();
 
             NonOverlappingTimer timer = new NonOverlappingTimer(100);
@@ -248,13 +248,10 @@ namespace SDV_MoldingInjection.Defines
             int buff = 0;
             int size = 1;
             int startAddress = address - address % 8;
-#if !SIMULATION
             MCCLinkIE.mdreceive(151, 255, 23, startAddress, ref size, ref buff);
-#endif
-
             bool value = (buff & (0x01 << (address % 8))) > 0;
-            return value;
 
+            return value;
         }
     }
 }

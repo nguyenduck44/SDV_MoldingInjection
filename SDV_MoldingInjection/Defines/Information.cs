@@ -18,7 +18,6 @@ namespace SDV_MoldingInjection.Defines
         public string EQPID { get; set; }
         public Information()
         {
-#if !SIMULATION
             try
             {
                 object? eQPID = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Top Engineering", "EQPID", "B1BME01_DP01");
@@ -29,7 +28,6 @@ namespace SDV_MoldingInjection.Defines
                 LogManager.GetLogger("IO").Error("Get Value SensorStartBit Fail . Check Registry Value");
                 EQPID = "B1BME01_DP01";
             }
-#endif
         }
     }
 }

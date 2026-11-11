@@ -106,18 +106,23 @@ namespace SDV_MoldingInjection.Process
                 CCLinkIEHelper.SetBit(0x2009, value);
             }
         }
-        private CellJobProcessCimToPlcArea CellJobProcessInfo_Left { get; set; }
-        private CellJobProcessCimToPlcArea CellJobProcessInfo_Right { get; set; }
+        private CellJobProcessCimToPlcArea? CellJobProcessInfo_Left { get; set; }
+        private CellJobProcessCimToPlcArea? CellJobProcessInfo_Right { get; set; }
 
-        public MaterialAssemblyPlcToCimArea MaterialAssemblyArea_Left_1 { get; set; }
-        public MaterialAssemblyPlcToCimArea MaterialAssemblyArea_Left_2 { get; set; }
-        public MaterialAssemblyPlcToCimArea MaterialAssemblyArea_Right_1 { get; set; }
-        public MaterialAssemblyPlcToCimArea MaterialAssemblyArea_Right_2 { get; set; }
+        public MaterialAssemblyPlcToCimArea? MaterialAssemblyArea_Left_1 { get; set; }
+        public MaterialAssemblyPlcToCimArea? MaterialAssemblyArea_Left_2 { get; set; }
+        public MaterialAssemblyPlcToCimArea? MaterialAssemblyArea_Right_1 { get; set; }
+        public MaterialAssemblyPlcToCimArea? MaterialAssemblyArea_Right_2 { get; set; }
 
         public string LeftJigID { get; set; } = "";
         public string RightJigID { get; set; } = "";
-        public string LeftCellId { get; set; }
-        public string RightCellId { get; set; }
+        public string LeftCellId { get; set; } = "";
+        public string RightCellId { get; set; } = "";
+
+        // Cell failed CIM validation (TrackIn / Job Process) -> skip MaterialAssemble and TrackOut
+        private bool isLeftCellNG;
+        private bool isRightCellNG;
+        private bool isMaterialAssembled;
 
         private bool SPDHead1OriginSelected => Parent!.Childs!.OfType<SPDHeadProcess>().First(p => p.Name == EProcess.SPDHead1.ToString()).IsOriginOrInitSelected;
         private bool SPDHead2OriginSelected => Parent!.Childs!.OfType<SPDHeadProcess>().First(p => p.Name == EProcess.SPDHead2.ToString()).IsOriginOrInitSelected;
@@ -218,7 +223,7 @@ namespace SDV_MoldingInjection.Process
             {
                 //FDCHelper.WriteFDCValue(EFDCValue.DISPENSING_STEP_ID, 0);
             }
-            
+
             return base.PreProcess();
         }
         public override bool ProcessToAlarm()
@@ -650,18 +655,28 @@ namespace SDV_MoldingInjection.Process
 
                     Log.Debug($"Searching origin {XAxis.Name} {YAxis.Name}");
                     Wait(_currentRecipe.CommonRecipe.MotionOriginTimeout,
-                        () => XAxis.Status.IsHomeDone && YAxis.Status.IsHomeDone);
+                        () => XAxis.Status.IsHomeDone && XAxis.Status.IsMotioning == false &&
+                              YAxis.Status.IsHomeDone && YAxis.Status.IsMotioning == false);
                     Step.OriginStep++;
                     break;
                 case EMoldProcOriginStep.XYAxis_OriginWait:
                     if (WaitTimeOutOccurred)
                     {
-                        if (!XAxis.Status.IsHomeDone) RaiseWarning(EWarning.MO_X_AXIS_HOME_TIMEOUT);
-                        if (!YAxis.Status.IsHomeDone) RaiseWarning(EWarning.MO_Y_AXIS_HOME_TIMEOUT);
+                        if (!XAxis.Status.IsHomeDone || XAxis.Status.IsMotioning) RaiseWarning(EWarning.MO_X_AXIS_HOME_TIMEOUT);
+                        if (!YAxis.Status.IsHomeDone || YAxis.Status.IsMotioning) RaiseWarning(EWarning.MO_Y_AXIS_HOME_TIMEOUT);
                         break;
                     }
 
                     Log.Debug($"{XAxis.Name} {YAxis.Name} origin search done");
+                    Step.OriginStep++;
+                    break;
+                case EMoldProcOriginStep.XYAxis_OriginDoneSettle:
+                    if (!XAxis.Status.IsHomeDone || XAxis.Status.IsMotioning ||
+                        !YAxis.Status.IsHomeDone || YAxis.Status.IsMotioning)
+                    {
+                        Wait(20);
+                        break;
+                    }
                     Step.OriginStep++;
                     break;
                 case EMoldProcOriginStep.XYAxis_MoveDummyPos:
@@ -1040,6 +1055,7 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug($"Set Output {EInjectProcOutput.SPDHeadWorkRequest}");
                     UpdateAllJigStatus(EJigStatus.InMolding);
                     _machineStatus.DummyShotCount++;
+                    isMaterialAssembled = false;
                     procOutputs[EInjectProcOutput.SPDHeadWorkRequest].Value = true;
                     Step.RunStep = (int)EMoldProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
@@ -1063,6 +1079,14 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep = (int)EMoldProcResinInjectStep.StepQueue_EmptyCheck;
                     break;
                 case EMoldProcResinInjectStep.SDPHead_Work_DoneWait:
+
+                    if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM && isMaterialAssembled == false)
+                    {
+                        // Send only once per inject (this step re-enters while waiting vent complete)
+                        isMaterialAssembled = true;
+                        SendMaterialAssemble();
+                    }
+
                     if (IsSPDHeadWorkDone(ESequence.ResinInject, ESPDHead.SPDHead1) == false ||
                         IsSPDHeadWorkDone(ESequence.ResinInject, ESPDHead.SPDHead2) == false ||
                         IsSPDHeadWorkDone(ESequence.ResinInject, ESPDHead.SPDHead3) == false ||
@@ -1070,52 +1094,6 @@ namespace SDV_MoldingInjection.Process
                     {
                         Wait(50);
                         break;
-                    }
-
-                    if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM)
-                    {
-                        if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead12 == false)
-                        {
-                            _cIMCollection.MaterialPorts[0].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, LeftCellId);
-                            Thread.Sleep(300);
-                            _cIMCollection.MaterialPorts[1].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, LeftCellId);
-
-                            MaterialAssemblyArea_Left_1 = _cIMCollection.MaterialPorts[0].MaterialAssemblyArea;
-                            MaterialAssemblyArea_Left_2 = _cIMCollection.MaterialPorts[1].MaterialAssemblyArea;
-                        }
-
-                        if (_recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34 == false)
-                        {
-                            Thread.Sleep(300);
-                            _cIMCollection.MaterialPorts[2].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, RightCellId);
-                            Thread.Sleep(300);
-                            _cIMCollection.MaterialPorts[3].MaterialAssemble(_recipeSelector.RecipeSetting.CurrentRecipe, RightCellId);
-
-                            MaterialAssemblyArea_Right_1 = _cIMCollection.MaterialPorts[2].MaterialAssemblyArea;
-                            MaterialAssemblyArea_Right_2 = _cIMCollection.MaterialPorts[3].MaterialAssemblyArea;
-                        }
-
-                        string portShortageWarning = string.Empty;
-                        foreach (var materialPort in _cIMCollection.MaterialPorts)
-                        {
-                            //Auto Cancel Material
-                            if (materialPort.RemainQty == 0)
-                            {
-                                materialPort.MaterialCancel?.Execute(null);
-                            }
-                            //MaterialWarning
-                            if (materialPort.RemainQty == _recipeSelector.CurrentRecipe.CommonRecipe.MaterialWarningCount)
-                            {
-                                portShortageWarning += materialPort.Name + ",";
-                                EquipEventHelpers.MaterialWarning(materialPort);
-                                Thread.Sleep(300);
-                            }
-                        }
-
-                        if (_cIMCollection.MaterialPorts.Any(mp => mp.RemainQty == _recipeSelector.CurrentRecipe.CommonRecipe.MaterialWarningCount))
-                        {
-                            MessageBoxEx.Show(portShortageWarning + "MATERIAL SHORTAGE WARNING!!");
-                        }
                     }
 
                     if (_currentRecipe.OptionRecipe.SkipVentTime == false &&
@@ -1579,7 +1557,13 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Validation_Reply_Jig1:
-                    CellIdTrackInStatus = CIMValidation(isJigLeft: true);
+                    bool isLeftCellValid = CIMValidation(isJigLeft: true);
+                    isLeftCellNG = isLeftCellValid == false;
+                    if (isLeftCellNG)
+                    {
+                        Log.Warn($"Left Cell '{LeftCellId}' (Jig '{LeftJigID}') validation fail -> NG, skip MaterialAssemble / TrackOut");
+                    }
+                    CellIdTrackInStatus = isLeftCellValid;
                     CellId1Reply = true;
                     Log.Debug($"Cell 1 Reply Bit (B2007) On");
                     Step.RunStep++;
@@ -1627,7 +1611,13 @@ namespace SDV_MoldingInjection.Process
                     Step.RunStep++;
                     break;
                 case EMoldProcLoadingUnloadingStep.Validation_Reply_Jig2:
-                    CellIdTrackInStatus = CIMValidation(isJigLeft: false);
+                    bool isRightCellValid = CIMValidation(isJigLeft: false);
+                    isRightCellNG = isRightCellValid == false;
+                    if (isRightCellNG)
+                    {
+                        Log.Warn($"Right Cell '{RightCellId}' (Jig '{RightJigID}') validation fail -> NG, skip MaterialAssemble / TrackOut");
+                    }
+                    CellIdTrackInStatus = isRightCellValid;
                     CellId2Reply = true;
                     Log.Debug("Cell 2 Reply Bit (B2008) On");
                     Step.RunStep++;
@@ -1656,19 +1646,28 @@ namespace SDV_MoldingInjection.Process
                     Log.Debug("Left Jig TrackOut");
                     if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM && _machineStatus.IsAutoRunMode)
                     {
-                        if (CellJobProcessInfo_Left == null)
+                        if (isLeftCellNG)
                         {
-                            RaiseWarning(EWarning.CIM_LEFT_CELL_LOST_INFORMATION);
-                            break;
+                            Log.Warn($"Left Cell '{LeftCellId}' is NG (validation fail) -> skip TrackOut");
                         }
-                        Log.Info($"Tracking Out Cell '{CellJobProcessInfo_Left.CellJobProcessCellID}'");
-                        if (EquipEventHelpers.CellTrackOut(1, CellJobProcessInfo_Left, false, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Left_1, MaterialAssemblyArea_Left_2 }) == false)
+                        else
                         {
-                            RaiseWarning(EWarning.CIM_CELL_TRACKOUT_FAIL);
-                            break;
+                            if (CellJobProcessInfo_Left == null)
+                            {
+                                RaiseWarning(EWarning.CIM_LEFT_CELL_LOST_INFORMATION);
+                                break;
+                            }
+                            Log.Info($"Tracking Out Cell '{CellJobProcessInfo_Left.CellJobProcessCellID}'");
+                            if (EquipEventHelpers.CellTrackOut(1, CellJobProcessInfo_Left, false, BuildTrackOutMaterialAreas(MaterialAssemblyArea_Left_1, MaterialAssemblyArea_Left_2)) == false)
+                            {
+                                RaiseWarning(EWarning.CIM_CELL_TRACKOUT_FAIL);
+                                break;
+                            }
+                            Thread.Sleep(500);
                         }
                     }
 
+                    ClearCellInfo(isJigLeft: true);
                     Log.Debug($"Update Status Left Jig: {EJigStatus.None}");
                     Log.Debug("CIM TrackOut Left Jig Done. Wait InOut Working");
                     UpdateBothJigStatus(EJigStatus.None, isLeftJig: true);
@@ -1676,7 +1675,7 @@ namespace SDV_MoldingInjection.Process
                     {
                         outputCount++;
                     }
-                   
+
                     Step.RunStep = _optionRecipe.SkipHead34 ?
                         (int)EMoldProcLoadingUnloadingStep.Unloading_WriteData :
                         (int)EMoldProcLoadingUnloadingStep.Wait_InOutHandler_Working_RequestStart;
@@ -1684,19 +1683,28 @@ namespace SDV_MoldingInjection.Process
                 case EMoldProcLoadingUnloadingStep.CIM_TrackOut_RightJig:
                     if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM && _machineStatus.IsAutoRunMode)
                     {
-                        if (CellJobProcessInfo_Right == null)
+                        if (isRightCellNG)
                         {
-                            RaiseWarning(EWarning.CIM_RIGHT_CELL_LOST_INFORMATION);
-                            break;
+                            Log.Warn($"Right Cell '{RightCellId}' is NG (validation fail) -> skip TrackOut");
                         }
-                        Log.Info($"Tracking Out Cell '{CellJobProcessInfo_Right.CellJobProcessCellID}'");
-                        if (EquipEventHelpers.CellTrackOut(2, CellJobProcessInfo_Right, false, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Right_1, MaterialAssemblyArea_Right_2 }) == false)
+                        else
                         {
-                            RaiseWarning(EWarning.CIM_CELL_TRACKOUT_FAIL);
-                            break;
+                            if (CellJobProcessInfo_Right == null)
+                            {
+                                RaiseWarning(EWarning.CIM_RIGHT_CELL_LOST_INFORMATION);
+                                break;
+                            }
+                            Log.Info($"Tracking Out Cell '{CellJobProcessInfo_Right.CellJobProcessCellID}'");
+                            if (EquipEventHelpers.CellTrackOut(2, CellJobProcessInfo_Right, false, BuildTrackOutMaterialAreas(MaterialAssemblyArea_Right_1, MaterialAssemblyArea_Right_2)) == false)
+                            {
+                                RaiseWarning(EWarning.CIM_CELL_TRACKOUT_FAIL);
+                                break;
+                            }
+                            Thread.Sleep(500);
                         }
                     }
 
+                    ClearCellInfo(isJigLeft: false);
                     Log.Debug($"Update Status Right Jig: {EJigStatus.None}");
                     Log.Debug("CIM TrackOut Right Jig Done. Wait InOut Working");
                     UpdateBothJigStatus(EJigStatus.None, isLeftJig: false);
@@ -2537,7 +2545,7 @@ namespace SDV_MoldingInjection.Process
                     break;
             }
         }
-#endregion
+        #endregion
 
         #region Private Methods
         private IMotion GetZAxis(ESPDHead head) => head switch
@@ -3230,8 +3238,103 @@ namespace SDV_MoldingInjection.Process
             return message.Trim();
         }
 
+        private void SendMaterialAssemble()
+        {
+            var optionRecipe = _recipeSelector.CurrentRecipe.OptionRecipe;
+            string ppid = _recipeSelector.RecipeSetting.CurrentRecipe;
+            string leftCellId = LeftCellId;
+            string rightCellId = RightCellId;
+
+            // Send port by port: all ports share one CIM word area (MaterialAssembleProcess1_1).
+            // Port 1, 2 carry the same Left Cell ID, Port 3, 4 the same Right Cell ID, each with its own material.
+            if (optionRecipe.SkipHead1 == false)
+                MaterialAssemblyArea_Left_1 = MaterialAssemble(0, ppid, leftCellId, isLeftCellNG);
+            if (optionRecipe.SkipHead2 == false)
+                MaterialAssemblyArea_Left_2 = MaterialAssemble(1, ppid, leftCellId, isLeftCellNG);
+            if (optionRecipe.SkipHead3 == false)
+                MaterialAssemblyArea_Right_1 = MaterialAssemble(2, ppid, rightCellId, isRightCellNG);
+            if (optionRecipe.SkipHead4 == false)
+                MaterialAssemblyArea_Right_2 = MaterialAssemble(3, ppid, rightCellId, isRightCellNG);
+
+            string portShortageWarning = string.Empty;
+            foreach (var materialPort in _cIMCollection.MaterialPorts)
+            {
+                //Auto Cancel Material
+                if (materialPort.RemainQty == 0)
+                {
+                    materialPort.MaterialCancel?.Execute(null);
+                }
+                //MaterialWarning
+                if (materialPort.RemainQty == _recipeSelector.CurrentRecipe.CommonRecipe.MaterialWarningCount)
+                {
+                    portShortageWarning += materialPort.Name + ",";
+                    EquipEventHelpers.MaterialWarning(materialPort);
+                    Thread.Sleep(300);
+                }
+            }
+
+            if (_cIMCollection.MaterialPorts.Any(mp => mp.RemainQty == _recipeSelector.CurrentRecipe.CommonRecipe.MaterialWarningCount))
+            {
+                MessageBoxEx.Show(portShortageWarning + "MATERIAL SHORTAGE WARNING!!");
+            }
+        }
+
+        private MaterialAssemblyPlcToCimArea? MaterialAssemble(int portIndex, string ppid, string cellId, bool isCellNG)
+        {
+            var materialPort = _cIMCollection.MaterialPorts[portIndex];
+            if (isCellNG || string.IsNullOrEmpty(cellId))
+            {
+                Log.Warn($"Skip MaterialAssemble {materialPort.Name}: Cell ID '{cellId}' is NG or empty");
+                return null;
+            }
+
+            Log.Info($"MaterialAssemble {materialPort.Name} Cell ID '{cellId}'");
+            var value = materialPort.MaterialAssemble(ppid, cellId);
+            Thread.Sleep(500);
+            return value;
+        }
+
+        private static List<MaterialAssemblyPlcToCimArea?> BuildTrackOutMaterialAreas(MaterialAssemblyPlcToCimArea? port1Area, MaterialAssemblyPlcToCimArea? port2Area)
+        {
+            // No material at all -> CellTrackOut skips the material write
+            if (port1Area == null && port2Area == null)
+            {
+                return new List<MaterialAssemblyPlcToCimArea?>();
+            }
+
+            // One head skipped -> fill its slot with an empty area (120 zero words) so the buffer stays 240 words
+            return new List<MaterialAssemblyPlcToCimArea?>
+            {
+                port1Area ?? new MaterialAssemblyPlcToCimArea(),
+                port2Area ?? new MaterialAssemblyPlcToCimArea(),
+            };
+        }
+
+        private void ClearCellInfo(bool isJigLeft)
+        {
+            if (isJigLeft)
+            {
+                LeftCellId = string.Empty;
+                CellJobProcessInfo_Left = null;
+                MaterialAssemblyArea_Left_1 = null;
+                MaterialAssemblyArea_Left_2 = null;
+                isLeftCellNG = false;
+            }
+            else
+            {
+                RightCellId = string.Empty;
+                CellJobProcessInfo_Right = null;
+                MaterialAssemblyArea_Right_1 = null;
+                MaterialAssemblyArea_Right_2 = null;
+                isRightCellNG = false;
+            }
+        }
+
         private bool CIMValidation(bool isJigLeft)
         {
+            // New jig: drop previous cell information so it can never be re-sent
+            ClearCellInfo(isJigLeft);
+
             if (_recipeSelector.CurrentRecipe.OptionRecipe.UseCIM == false ||
                 _machineStatus.IsDryRunMode ||
                 _machineStatus.IsPassRunMode)
@@ -3243,6 +3346,19 @@ namespace SDV_MoldingInjection.Process
 
             string jigID = isJigLeft ? LeftJigID : RightJigID;
 
+            if (string.IsNullOrWhiteSpace(jigID))
+            {
+                // InOut machine may not have written the Jig ID yet -> read again once
+                Thread.Sleep(500);
+                jigID = GetCellId(isJigLeft);
+                if (isJigLeft) LeftJigID = jigID; else RightJigID = jigID;
+                if (string.IsNullOrWhiteSpace(jigID))
+                {
+                    Log.Error($"CIM_JIG_ID_EMPTY (Jig {(isJigLeft ? 1 : 2)}) -> NG, skip Specific Validation");
+                    return false;
+                }
+            }
+
             Log.Info($"Specific Validationing JIG '{jigID}'");
             if (EquipEventHelpers.SpecificValidation(isJigLeft ? 1 : 2, jigID, ref outCellID) == false)
             {
@@ -3251,6 +3367,17 @@ namespace SDV_MoldingInjection.Process
             }
 
             Log.Info($"Specific Validation JIG '{jigID}' successed");
+
+            if (string.IsNullOrWhiteSpace(outCellID))
+            {
+                // Reply words may be read before the CIM word area is refreshed -> wait and read again
+                Log.Warn($"Specific Validation JIG '{jigID}' return empty Cell ID -> re-read reply data");
+                Thread.Sleep(1000);
+                if (ReReadSpecificValidationCellID(isJigLeft ? 1 : 2, ref outCellID) == false)
+                {
+                    return false;
+                }
+            }
 
             if (isJigLeft)
             {
@@ -3286,36 +3413,48 @@ namespace SDV_MoldingInjection.Process
 
             if (_cIMCollection.CimFunction.CellTrackingState != OnOffNothing.ON)
             {
-                if (isJigLeft)
-                {
-                    CellJobProcessInfo_Left.CellJobProcessCellID = LeftCellId;
-                }
-                else
-                {
-                    CellJobProcessInfo_Right.CellJobProcessCellID = RightCellId;
-                }
+                cellJobProcess.CellJobProcessCellID = cellId;
             }
 
             if (_cIMCollection.CimFunction.CellTrackingState == OnOffNothing.ON && cellJobProcess.CellJobProcessRCMD != $"{(int)ECellJobProcessRCMD.CellJobProcessStart}")
-            {        
-                if (isJigLeft)
-                {
-                    CellJobProcessInfo_Left.UserDefine_TrackOutJudge = "O";
-                    CellJobProcessInfo_Left.UserDefine_TrackOutDescription = "VALIDATION_FAIL";
-                    EquipEventHelpers.CellTrackOut(1, CellJobProcessInfo_Left, true, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Left_1, MaterialAssemblyArea_Left_2 });
-                }
-                else
-                {
-                    CellJobProcessInfo_Right.UserDefine_TrackOutJudge = "O";
-                    CellJobProcessInfo_Right.UserDefine_TrackOutDescription = "VALIDATION_FAIL";
-                    EquipEventHelpers.CellTrackOut(2, CellJobProcessInfo_Right, true, new List<MaterialAssemblyPlcToCimArea> { MaterialAssemblyArea_Right_1, MaterialAssemblyArea_Right_2 });
-                }
+            {
+                // No material has been assembled to this cell yet -> TrackOut without material data
+                cellJobProcess.UserDefine_TrackOutJudge = "O";
+                cellJobProcess.UserDefine_TrackOutDescription = "VALIDATION_FAIL";
+                EquipEventHelpers.CellTrackOut(isJigLeft ? 1 : 2, cellJobProcess, true, new List<MaterialAssemblyPlcToCimArea?>());
+                Thread.Sleep(500);
 
                 Log.Error("CIM_CELL_JOB_PROCESS_START_FAIL");
                 return false;
             }
 
             Log.Info($"Cell ID '{cellId}' Job Process Start Successed");
+            return true;
+        }
+
+        private bool ReReadSpecificValidationCellID(int jigIndex, ref string outCellID)
+        {
+            var validDataCommand = CIMCommandDetail.Create(CIMCommand.SpecificValidationDataSend1 + jigIndex - 1);
+            validDataCommand.ReadCIMWords();
+
+            SpecificValidationDataSendArea dataSendArea = new SpecificValidationDataSendArea();
+            dataSendArea.FromCIMData(validDataCommand.FromCIMDataBuffer);
+            Log.Info($"Re-read SpecificValidationDataSend{jigIndex}: CarrierID '{dataSendArea.CarrierID}', CellID '{dataSendArea.CellID}', " +
+                     $"ReplyStatus '{dataSendArea.ReplyStatus}', ReplyText '{dataSendArea.ReplyText}'");
+
+            if (dataSendArea.ReplyStatus?.ToUpper() == "FAIL")
+            {
+                Log.Error("CIM_JIG_SPECIFIC_VALIDATION_FAIL");
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(dataSendArea.CellID))
+            {
+                Log.Error($"CIM_JIG_SPECIFIC_VALIDATION_EMPTY_CELL_ID (Jig {jigIndex}) -> NG, skip TrackIn");
+                return false;
+            }
+
+            outCellID = dataSendArea.CellID;
             return true;
         }
         #endregion

@@ -153,33 +153,85 @@ namespace SDV_MoldingInjection.Defines
             {
                 case "CRRD": // READY CHECK
                     Handler_ReadyCheck_Received(messageBuffer);
+                    Log.Debug("CRRD_Recv_Ready Check");
                     break;
                 case "CRRN": //CHECK RUN
                     Handler_CheckRun_Received(messageBuffer);
+                    //Log.Debug("CRRN_Recv_Check Run");
                     break;
                 case "CRCH": //CHECK PRODUCT
                     Handler_ProductCheck_Received(messageBuffer);
+                    Log.Debug("CRCH_Recv_Check Product");
                     break;
                 case "CRPT": //CHECK POSITION
                     Handler_PositionCheck_Received(messageBuffer);
+                    Log.Debug("CRPT_Recv_Check Position");
                     break;
                 case "CRUS": // HEAD USE
                     Handler_HeadUse_Received(messageBuffer);
+                    Log.Debug("CRUS_Recv_Head Use");
                     break;
                 case "CRST": // START
                     Handler_Start_Received(messageBuffer);
+                    Log.Debug("CRST_Recv_Start");
                     break;
                 case "CRSP": // STOP
                     Handler_Stop_Received(messageBuffer);
+                    Log.Debug("CRSP_Recv_Stop");
                     break;
                 case "CRSI": //SET IDLE PURGE MODE
                     Handler_SetIdlePurgeMode_Received(messageBuffer);
+                    Log.Debug("CRSI_Recv_Set Idle Purge Mode");
                     break;
                 case "CRCI": //CLEAR ILDE PURGE MODE
                     Handler_ClearIdlePurgeMode_Received(messageBuffer);
+                    Log.Debug("CRCI_Recv_Clear Idle Purge Mode");
                     break;
                 case "CRCC": //COVER CHECK
                     Handler_CoverCheck_Received(messageBuffer);
+                    Log.Debug("CRCC_Recv_Cover Check");
+                    break;
+            }
+        }
+        private void TransmitData(byte[] buffer)
+        {
+            string command = ExtractCommand(buffer);
+            string formattedData = $"{command}: {FormatBytes(buffer)}";
+
+            if (_recipeSelector.CurrentRecipe.OptionRecipe.InputTypeManual)
+            {
+                MessageTransmitted?.Invoke($"{formattedData} [SKIPPED: InputTypeManual]");
+                return;
+            }
+
+            _serialCommunicator.Write(buffer);
+            MessageTransmitted?.Invoke(formattedData);
+
+            switch (command)
+            {
+                case "CTRD":
+                    Log.Debug($"Ready Send_{formattedData}");
+                    break;
+                case "CTRN":
+                    //Log.Debug($"Check Run Send_{formattedData}");
+                    break;
+                case "CTCH":
+                    Log.Debug($"Product Check Send_{formattedData}");
+                    break;
+                case "CTPT":
+                    Log.Debug($"Position Check Send_{formattedData}");
+                    break;
+                case "CTST":
+                    Log.Debug($"Start Send_{formattedData}");
+                    break;
+                case "CTSP":
+                    Log.Debug($"Stop Send_{formattedData}");
+                    break;
+                case "CTSI":
+                    Log.Debug($"Set Idle Purge Send_{formattedData}");
+                    break;
+                case "CTCI":
+                    Log.Debug($"Clear Idle Purge Send_{formattedData}");
                     break;
             }
         }
@@ -296,7 +348,6 @@ namespace SDV_MoldingInjection.Defines
                 if ((spdProcess.Sequence == ESequence.ResinInject && spdProcess.Step.RunStep > (int)ESPDHeadProcCommonStep.WorkRequest_Wait) ||
                     spdProcess.Sequence == ESequence.DummyShot && spdProcess.Step.RunStep > (int)ESPDHeadProcCommonStep.WorkRequest_Wait)
                 {
-                    Handler_Send_HeadUse_Success(head);
                     return;
                 }
             }
@@ -305,6 +356,7 @@ namespace SDV_MoldingInjection.Defines
             else if (head == 1) _recipeSelector.CurrentRecipe.OptionRecipe.SkipHead34 = !isUse;
 
             Handler_Send_HeadUse_Success(head);
+
         }
 
         private void Response_HeadUse_Received()
@@ -490,22 +542,6 @@ namespace SDV_MoldingInjection.Defines
             };
         }
 
-        private void TransmitData(byte[] buffer)
-        {
-            string command = ExtractCommand(buffer);
-            string formattedData = $"{command}: {FormatBytes(buffer)}";
-
-            if (_recipeSelector.CurrentRecipe.OptionRecipe.InputTypeManual)
-            {
-                MessageTransmitted?.Invoke($"{formattedData} [SKIPPED: InputTypeManual]");
-                return;
-            }
-
-            _serialCommunicator.Write(buffer);
-            MessageTransmitted?.Invoke(formattedData);
-
-            //Log.Debug($"[{DateTime.Now:HH:mm:ss.fff}] Data Sent : {command}: {formattedData}");
-        }
 
         private bool MachineReadyCheck()
         {
